@@ -1,10 +1,3 @@
-
-(in-package :cl-user)
-(defpackage strips-asd
-  (:use :cl :asdf))
-(in-package :strips-asd)
-
-
 (defsystem strips
   :version "0.1"
   :author "Masataro Asai"
