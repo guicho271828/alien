@@ -1,0 +1,21 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+
+(ql:quickload :fiveam)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (uiop:quit (if (handler-case
+                     (progn
+                       (asdf:load-system :strips.test)
+                       (eval
+ (read-from-string
+  "(5am:run! :strips)"))
+)
+                   (serious-condition (c)
+                     (describe c)
+                     (uiop:quit 2)))
+                 0 1)))
