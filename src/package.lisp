@@ -4,8 +4,25 @@
 |#
 
 (in-package :cl-user)
-(defpackage strips
-  (:use :cl :iterate :alexandria :trivia))
-(in-package :strips)
 
-;; blah blah blah.
+(defpackage pddl
+  (:import-from :cl :and :or :not :when :-
+                := :> :< :>= :<= :/ :* :+)
+  (:export :define
+           :domain
+           :object
+           :problem
+           :increase
+           :total-cost
+           :?o
+           :exists
+           :forall
+           :imply
+           ))
+
+(defpackage strips
+  (:use :cl :iterate :alexandria :trivia :pddl)
+  (:export))
+
+
+(named-readtables:in-readtable :fare-quasiquote)

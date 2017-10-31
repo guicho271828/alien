@@ -18,5 +18,6 @@ $ update-asdf
 
 
 ((:package)
+ (:util)
  (:rest))
 
