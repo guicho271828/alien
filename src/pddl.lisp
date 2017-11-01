@@ -340,79 +340,159 @@
     (remove-disjunction-axioms)
     (parse6)))
 
-(defun &NNF-DNF (condition)
+(defun &nnf-dnf (condition)
   ;; now we have only and, or, exist, not, predicates.
   ;; OR clause is converted into an iterator.
   (ematch condition
-    (`(or ,@rest)
-      (let ((restk (mapcar #'&NNF-DNF rest)))
+    (`(or ,@conditions)
+      (let ((&conditions (mapcar #'&nnf-dnf conditions)))
         (lambda (k)
           ;; calls k for each element
-          (dolist (nowk restk)
-            (funcall nowk k)))))
+          (dolist (&now &conditions)
+            (funcall &now k)))))
 
-    (`(and ,first ,@rest)
-     (let ((firstk (&NNF-DNF first))
-           (restk  (&NNF-DNF `(and ,@rest))))
-       (lambda (k)
-         (funcall firstk
-                  (lambda (result)
-                    (funcall restk
-                             (lambda (result2)
-                               (funcall k (cons result result2)))))))))
-    ((list 'and)
-      (lambda (k)
-        (funcall k nil)))
-
-    (`(exists ,args ,body)
-      (let ((bodyk (&NNF-DNF body)))
+    (`(and ,@conditions)
+      (let ((&conditions (mapcar #'&nnf-dnf conditions)))
         (lambda (k)
-          (funcall bodyk
+          (labels ((rec (&conditions stack)
+                     (ematch &conditions
+                       ((list* &first &more)
+                        (funcall &first
+                                 (lambda (result)
+                                   (rec &more (cons result stack)))))
+                       (nil
+                        (funcall k `(and ,@stack))))))
+            (rec &conditions nil)))))
+    
+    (`(exists ,args ,body)
+      (let ((&body (&nnf-dnf body)))
+        (lambda (k)
+          (funcall &body
                    (lambda (result)
                      (funcall k `(exists ,args ,result)))))))
     
     (_
      (lambda (k) (funcall k condition)))))
 
-(defun NNF-DNF (condition)
+(defun collect-results (cps)
   (let (acc)
-    (funcall (&NNF-DNF condition)
+    (funcall cps
              (lambda (result)
                (push result acc)))
     (print acc)))
 
-(NNF-DNF 'a)
-(NNF-DNF '(or a b))
-(NNF-DNF '(or a b c (or d e)))
-(NNF-DNF '(and x (or a b)))
-(NNF-DNF '(and (or x y) (or a b)))
-(NNF-DNF '(and (or x y) c (or a b)))
-(NNF-DNF '(and (or (and x z) y) c (or a b)))
-(NNF-DNF '(or (and x (or w z)) y))
+(defun nnf-dnf (condition)
+  (collect-results (&nnf-dnf condition)))
 
-(NNF-DNF '(and (clear ?x)
-           (or (clear ?w)
-            (not (clear ?z)))))
+(progn
+  (nnf-dnf 'a)
+  (nnf-dnf '(or a b))
+  (nnf-dnf '(or a b c (or d e)))
+  (nnf-dnf '(and x (or a b)))
+  (nnf-dnf '(and (or x y) (or a b)))
+  (nnf-dnf '(and (or x y) c (or a b)))
+  (nnf-dnf '(and (or (and x z) y) c (or a b)))
+  (nnf-dnf '(or (and x (or w z)) y))
 
-(NNF-DNF '(exists (?x ?y)
-           (or (clear ?x)
-            (not (clear ?y)))))
+  (nnf-dnf '(and (clear ?x)
+             (or (clear ?w)
+              (not (clear ?z)))))
 
-;; (defun remove-disjunction-actions ()
-;;   (dolist (it *actions3*)
-;;     (push 
-;;      (ematch it
-;;        ((list :action name :parameters params :precondition pre :effects eff)
-;;         (list :action name :parameters params
-;;               :precondition 
-;;               :effects (NNF-DNF eff))))
-;;      *actions5*)))
-;; 
-;; (defun remove-disjunction-axioms ()
-;;   (dolist (it *axioms*)
-;;     (push 
-;;      (ematch it
-;;        ((list :derived derived condition)
-;;         (list :derived derived (remove-forall/condition condition))))
-;;      *axioms5*)))
+  (nnf-dnf '(exists (?x ?y)
+             (or (clear ?x)
+              (not (clear ?y))))))
+
+(defun &nnf-dnf/effect (condition)
+  ;; now we have only and, or, exist, not, predicates.
+  ;; OR clause is converted into an iterator.
+  (ematch condition
+    (`(or ,@conditions)
+      (let ((&conditions (mapcar #'&nnf-dnf conditions)))
+        (lambda (k)
+          ;; calls k for each element
+          (dolist (&now &conditions)
+            (funcall &now k)))))
+
+    (`(and ,@conditions)
+      (let ((&conditions (mapcar #'&nnf-dnf conditions)))
+        (lambda (k)
+          (labels ((rec (&conditions stack)
+                     (ematch &conditions
+                       ((list* &first &more)
+                        (funcall &first
+                                 (lambda (result)
+                                   (rec &more (cons result stack)))))
+                       (nil
+                        (funcall k `(and ,@stack))))))
+            (rec &conditions nil)))))
+    
+    (`(exists ,args ,body)
+      (let ((&body (&nnf-dnf body)))
+        (lambda (k)
+          (funcall &body
+                   (lambda (result)
+                     (funcall k `(exists ,args ,result)))))))
+
+    (`(when ,condition ,effect)
+      (let ((&condition (&nnf-dnf condition))
+            (&effect (&nnf-dnf effect)))
+        (lambda (k)
+          (funcall &condition
+                   (lambda (result1)
+                     (funcall &effect
+                              (lambda (result2)
+                                (funcall k `(when ,result1 ,result2)))))))))
+    
+    (_
+     (lambda (k) (funcall k condition)))))
+
+
+(defun nnf-dnf/effect (condition)
+  (collect-results (&nnf-dnf/effect condition)))
+
+(progn
+  (nnf-dnf/effect 'a)
+  (nnf-dnf/effect '(or a b))
+  (nnf-dnf/effect '(or a b c (or d e)))
+  (nnf-dnf/effect '(and x (or a b)))
+  (nnf-dnf/effect '(and (or x y) (or a b)))
+  (nnf-dnf/effect '(and (or x y) c (or a b)))
+  (nnf-dnf/effect '(and (or (and x z) y) c (or a b)))
+  (nnf-dnf/effect '(or (and x (or w z)) y))
+
+  (nnf-dnf/effect '(and (clear ?x)
+                    (or (clear ?w)
+                     (not (clear ?z)))))
+
+  (nnf-dnf/effect '(exists (?x ?y)
+                    (or (clear ?x)
+                     (not (clear ?y)))))
+
+  (nnf-dnf/effect `(when (or a b)
+                     (and c d (or e f)))))
+
+(defun remove-disjunction-actions ()
+  (dolist (it *actions4*)
+    (ematch it
+      ((list :action name :parameters params :precondition pre :effects eff)
+       (let ((&pre (&nnf-dnf pre))
+             (&eff (&nnf-dnf/effect eff)))
+         (funcall &pre
+                  (lambda (pre)
+                    (funcall &eff
+                             (lambda (eff)
+                               (push (list :action name :parameters params
+                                           :precondition pre
+                                           :effects eff)
+                                     *actions5*))))))))))
+
+(defun remove-disjunction-axioms ()
+  (dolist (it *axioms*)
+    (ematch it
+       ((list :derived derived condition)
+        (let ((&condition (&nnf-dnf condition)))
+          (funcall &condition
+                   (lambda (condition)
+                     (push (list :derived derived condition)
+                           *axioms5*))))))))
 
