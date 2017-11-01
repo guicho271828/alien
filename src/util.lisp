@@ -5,7 +5,7 @@
   (cl:declare (cl:ignore name body))
   (cl:error "This is a dummy macro for editor integration"))
 
-(in-package :strips)
+(cl:in-package :strips)
 
 
 (defun parse-typed-def (list)
@@ -31,6 +31,7 @@
                   (push now buffer)
                   (rec rest)))))
       (rec list))))
+
 
 (print
  (parse-typed-def '(hand level beverage dispenser container - object

@@ -15,6 +15,7 @@
               :trivia
               :trivia.quasiquote)
  :pathname "src"
+ :serial t
  :components ((:file "package")
               (:file "util")
               (:file "pddl"))

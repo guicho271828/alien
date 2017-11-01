@@ -24,5 +24,4 @@
   (:use :cl :iterate :alexandria :trivia :pddl)
   (:export))
 
-
-(named-readtables:in-readtable :fare-quasiquote)
+(setf trivia:*arity-check-by-test-call* nil)
