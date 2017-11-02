@@ -122,7 +122,7 @@
   (dolist (it (remove-if-not (lambda-match ((list* :action _) t)) domain))
     (ematch it
       ((list :action name :parameters params
-             :precondition pre :effects eff)
+             :precondition pre :effect eff)
        (let* ((parsed (parse-typed-def params))
               (w/o-type (mapcar #'car parsed))
               (type-conditions (mapcar (lambda-ematch ((cons arg type) `(,type ,arg))) parsed)))
@@ -131,7 +131,7 @@
                          :precondition
                          (and ,@type-conditions
                               ,(flatten-types pre))
-                         :effects ,eff)
+                         :effect ,eff)
                *actions*))))))
 
 (defun grovel-axioms (domain)
@@ -139,7 +139,7 @@
     (push 
      (ematch it
        ((list :derived derived condition)
-        (list :derived derived (flatten-types conditon))))
+        (list :derived derived (flatten-types condition))))
      *axioms*)))
 
 ;;; parse3 --- convert conditions to NNF, compiling IMPLY away
@@ -198,10 +198,10 @@
   (dolist (it *actions*)
     (push 
      (ematch it
-       ((list :action name :parameters params :precondition pre :effects eff)
+       ((list :action name :parameters params :precondition pre :effect eff)
         (list :action name :parameters params
               :precondition (to-nnf pre)
-              :effects (to-nnf eff))))
+              :effect (to-nnf eff))))
      *actions3*)))
 
 (defun nnf-axioms ()
@@ -304,10 +304,10 @@
   (dolist (it *actions3*)
     (push 
      (ematch it
-       ((list :action name :parameters params :precondition pre :effects eff)
+       ((list :action name :parameters params :precondition pre :effect eff)
         (list :action name :parameters params
               :precondition (remove-forall/condition pre)
-              :effects (remove-forall/effect eff))))
+              :effect (remove-forall/effect eff))))
      *actions4*)))
 
 (defun remove-universal-axioms ()
@@ -478,7 +478,7 @@
 (defun remove-disjunction-actions ()
   (dolist (it *actions4*)
     (ematch it
-      ((list :action name :parameters params :precondition pre :effects eff)
+      ((list :action name :parameters params :precondition pre :effect eff)
        (let ((&pre (&nnf-dnf pre))
              (&eff (&nnf-dnf/effect eff)))
          (funcall &pre
@@ -487,7 +487,7 @@
                              (lambda (eff)
                                (push (list :action name :parameters params
                                            :precondition pre
-                                           :effects eff)
+                                           :effect eff)
                                      *actions5*))))))))))
 
 (defun remove-disjunction-axioms ()
@@ -604,7 +604,7 @@
 (defun move-exists-actions ()
   (dolist (it *actions5*)
     (ematch it
-      ((list :action name :parameters params :precondition pre :effects eff)
+      ((list :action name :parameters params :precondition pre :effect eff)
        (push 
         (match (move-exists/condition pre)
           ;; remove exists
@@ -613,13 +613,13 @@
                   :parameters (append params args)
                   :original-parameters params
                   :precondition condition
-                  :effects (move-exists/effect eff)))
+                  :effect (move-exists/effect eff)))
           (condition
            (list :action name
                  :parameters params
                  :original-parameters params
                  :precondition condition
-                 :effects (move-exists/effect eff))))
+                 :effect (move-exists/effect eff))))
         *actions6*)))))
 
 (defun move-exists-axioms ()
@@ -646,9 +646,9 @@
 (defun simplify-effects-actions ()
   (dolist (it *actions6*)
     (ematch it
-      ((list :action name :parameters params :original-parameters oparams :precondition pre :effects eff)
+      ((list :action name :parameters params :original-parameters oparams :precondition pre :effect eff)
        (push
-        (list :action name :parameters params :original-parameters oparams :precondition pre :effects (simplify-effect eff))
+        (list :action name :parameters params :original-parameters oparams :precondition pre :effect (simplify-effect eff))
         *actions7*)))))
 
 (defmacro foreach (list &body body)
