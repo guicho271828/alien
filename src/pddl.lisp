@@ -70,7 +70,7 @@
             (push `((,parent ?o) (,self ?o)) *axioms*))))))))
 
 (defun grovel-constants (domain)
-  (ematch domain
+  (match domain
     ((assoc :constants typed-def)
      (let ((parsed (parse-typed-def typed-def)))
        (appendf *objects* parsed)
