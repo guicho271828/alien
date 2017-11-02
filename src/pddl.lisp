@@ -140,8 +140,14 @@
   (dolist (it (remove-if-not (lambda-match ((list* (or :derived :axiom) _) t)) domain))
     (push 
      (ematch it
-       ((list :derived derived condition)
-        (list :derived derived (flatten-types condition))))
+       ((list :derived (list* predicate params) condition)
+        (let* ((parsed (parse-typed-def params))
+               (w/o-type (mapcar #'car parsed))
+               (type-conditions (mapcar (lambda-ematch ((cons arg type) `(,type ,arg))) parsed)))
+          (list :derived
+                `(,predicate ,@w/o-type)
+                `(and ,@type-conditions
+                      ,(flatten-types condition))))))
      *axioms*)))
 
 ;;; parse3 --- convert conditions to NNF, compiling IMPLY away
