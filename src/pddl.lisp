@@ -115,7 +115,7 @@
 
 (defun grovel-goal (problem)
   (ematch problem
-    ((assoc :goal condition)
+    ((assoc :goal (list condition))
      ;; goal may contain forall etc. so it needs flattening
      (setf *goal* (flatten-types condition)))))
 
@@ -341,6 +341,7 @@
   (setf
    *goal4*
    (with-gensyms (goal-axiom)
+     (push `(,goal-axiom) *predicates*)
      (push `(:derived (,goal-axiom) ,(remove-forall/condition *goal*)) *axioms4*)
      `(,goal-axiom))))
 
@@ -504,7 +505,7 @@
                                      *actions5*))))))))))
 
 (defun remove-disjunction-axioms ()
-  (dolist (it *axioms*)
+  (dolist (it *axioms4*)
     (ematch it
        ((list :derived derived condition)
         (let ((&condition (&nnf-dnf condition)))
