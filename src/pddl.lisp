@@ -731,11 +731,11 @@
 ;;; parse8 --- output
 
 (defun parse8 ()
-  (list *types*
-        *objects*
-        *predicates*
-        *init4*
-        *goal4*
-        *axioms6*
-        *actions7*))
+  (list :type *types*
+        :objects *objects*
+        :predicates *predicates*
+        :init *init4*
+        :goal *goal4*
+        :axioms *axioms6*
+        :actions *actions7*))
 
