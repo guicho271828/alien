@@ -6,7 +6,7 @@
 (in-package :cl-user)
 (defpackage :strips.test
   (:use :cl
-        :strips
+        :strips :pddl
         :fiveam
         :iterate :alexandria :trivia))
 (in-package :strips.test)
