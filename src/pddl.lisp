@@ -93,15 +93,12 @@
   (ematch domain
     ((assoc :predicates predicates)
      (dolist (predicate predicates)
-       (ematch predicate
-         ((list* name typed-def)
-          (let* ((parsed (parse-typed-def typed-def))
-                 (w/o-type `(,name ,@(mapcar #'car parsed))))
-            (push w/o-type *predicates*)
-            (dolist (pair parsed)
-              (match pair
-                ((cons arg (and type (not 'object)))
-                 (push `(:derived (,type ,arg) ,w/o-type) *axioms*)))))))))))
+       (match predicate
+         (`(,name ,typed-def)
+           (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def typed-def)
+             (push `(,name ,@w/o-type) *predicates*)
+             (dolist (condition type-conditions)
+               (push `(:derived ,condition (,name ,@w/o-type)) *axioms*)))))))))
 
 (defun grovel-init (problem)
   (ematch problem
@@ -125,9 +122,7 @@
     (ematch it
       ((list :action name :parameters params
              :precondition pre :effect eff)
-       (let* ((parsed (parse-typed-def params))
-              (w/o-type (mapcar #'car parsed))
-              (type-conditions (mapcar (lambda-ematch ((cons arg type) `(,type ,arg))) parsed)))
+       (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
          (push `(:action ,name
                          :parameters ,w/o-type
                          :precondition
@@ -141,9 +136,7 @@
     (push 
      (ematch it
        ((list :derived (list* predicate params) condition)
-        (let* ((parsed (parse-typed-def params))
-               (w/o-type (mapcar #'car parsed))
-               (type-conditions (mapcar (lambda-ematch ((cons arg type) `(,type ,arg))) parsed)))
+        (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
           (list :derived
                 `(,predicate ,@w/o-type)
                 `(and ,@type-conditions

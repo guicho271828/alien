@@ -9,7 +9,9 @@
 
 
 (defun parse-typed-def (list)
-  "Parse [objs* - type]* list. Does not handle type inheritance"
+  "Parse [objs* - type]* list. Does not handle the type inheritance.
+ Returns an alist of parameters and their types.
+ Untyped parameters are given the type OBJECT."
   (let (db
         buffer)
     (labels ((add (s type)
@@ -38,12 +40,23 @@
                     ingredient cocktail - beverage
                     shot shaker - container)))
 
+(defun flatten-typed-def (typed-def)
+  "Take a single typed predicate literal L and returns two values:
+the untyped version of L and a list of literals converted from the types of the parameters.
+
+ Example: (?x - table) -> (?x), ((table ?x)) "
+  (let* ((parsed (parse-typed-def typed-def))
+         (w/o-type (mapcar #'car parsed))
+         (type-conditions
+          (iter (for (arg . type) in parsed)
+                (unless (eq type 'object)
+                  (collect `(,type ,arg))))))
+    (values w/o-type type-conditions)))
+
 (defun flatten-types (condition)
   (ematch condition
     ((list (and kind (or 'exists 'forall)) params condition)
-     (let* ((parsed (parse-typed-def params))
-            (w/o-type (mapcar #'car parsed))
-            (type-conditions (mapcar (lambda-match ((cons arg type) `(,type ,arg))) parsed)))
+     (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
        `(,kind ,w/o-type
                (and ,@type-conditions
                     ,(flatten-types condition)))))
