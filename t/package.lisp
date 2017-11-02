@@ -19,8 +19,8 @@
 ;; run test with (run! test-name) 
 
 (test strips
-
-  )
+  (finishes
+    (parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))))
 
 
 

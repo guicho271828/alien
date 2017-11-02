@@ -2,6 +2,10 @@
 
 (in-package :strips)
 
+(defun parse (problem &optional (domain (find-domain problem)))
+  (parse0 domain problem))
+  
+  
 ;;; parse0
 
 (defun parse0 (domain problem)
