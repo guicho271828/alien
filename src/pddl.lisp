@@ -496,3 +496,134 @@
                      (push (list :derived derived condition)
                            *axioms5*))))))))
 
+;;; parse6 --- move existential quantifier
+
+(defvar *actions6*)
+(defvar *axioms6*)
+
+(defun parse6 ()
+  (let (*actions6*
+        *axioms6*)
+    (move-exists-actions)
+    (move-exists-axioms)
+    (parse7)))
+
+
+(defun move-exists/condition (condition)
+  "move existential quantifier as well as flattening an AND tree"
+  (let (args-acc body-acc)
+    (labels ((rec (condition)
+               (ematch condition
+                 (`(and ,@conditions)
+                   (map nil #'rec conditions))
+                 (`(exists ,args ,body)
+                   (let ((aliases (mapcar (lambda (a) (cons a (gensym (symbol-name a)))) args)))
+                     ;; rewrite clauses
+                     (labels ((rewrite (c)
+                                (ematch c
+                                  (`(and ,@rest)
+                                    `(and ,@(mapcar #'rewrite rest)))
+                                  (`(exists ,more-args ,body)
+                                    `(exists ,more-args ,(rewrite body)))
+                                  (`(not ,l)
+                                    `(not ,(rewrite l)))
+                                  (`(,predicate ,@args)
+                                    `(,predicate ,@(mapcar (lambda (arg)
+                                                             (or (cdr (assoc arg aliases))
+                                                                 ;; when not found
+                                                                 arg))
+                                                           args))))))
+                       (appendf args-acc (mapcar #'cdr aliases))
+                       (rec (rewrite body)))))
+                 
+                 ((list* (or 'when 'increase) _)
+                  (error "removing exist from conditional effects / fluents not allowed here"))
+
+                 (_
+                  (push condition body-acc)))))
+      (rec condition)
+      `(exists ,args-acc (and ,@body-acc)))))
+
+
+(progn
+  (print (move-exists/condition `(exists (a b c) (three a b c))))
+  (print (move-exists/condition `(and
+                                    (p1)
+                                    (exists (a) (p2 a))
+                                    (exists (a) (p3 a)))))
+  (print (move-exists/condition `(and
+                                    (p1)
+                                    (exists (a)
+                                            (and (and (p3 a)
+                                                      (p4 a))
+                                                 (exists (b) (p2 a b))))))))
+
+(defun move-exists/effect (condition)
+  "move existential quantifier as well as flattening an AND tree"
+  (let (conjunction)
+    (labels ((rec (condition)
+               (ematch condition
+                 (`(and ,@conditions)
+                   (map nil #'rec conditions))
+                 (`(when ,condition ,body)
+                   ;; rewrite according to:
+                   ;; (when (exists (?x) condition) effect) == (forall (?x) (when condition effect))
+                   (let ((condition (move-exists/condition condition)))
+                     (push
+                      (match condition
+                        (`(exists ,args ,condition)
+                          `(forall ,args
+                                   (when ,condition
+                                     ,(move-exists/effect body))))
+                        (_
+                         `(when ,condition
+                            ,(move-exists/effect body))))
+                      conjunction)))
+                 (`(forall ,args ,body)
+                   (push
+                    `(forall ,args ,(move-exists/effect body))
+                    conjunction))
+                 (`(exists ,@_)
+                   (error "exists should not appear in the effects"))
+                 (_
+                  ;; not and predicates
+                  (push condition conjunction)))))
+      (rec condition)
+      `(and ,@conjunction))))
+
+(progn
+  (print (move-exists/effect `(and (p1)
+                                     (and (p1) (p1))
+                                     (when (exists (a) (clear a))
+                                       (and (p2) (and (p2) (and (p2) (p2)))))))))
+
+(defun move-exists-actions ()
+  (dolist (it *actions5*)
+    (ematch it
+      ((list :action name :parameters params :precondition pre :effects eff)
+       (push 
+        (match (move-exists/condition pre)
+          (`(exists ,args ,condition)
+            (list :action name
+                  :parameters (append params args)
+                  :original-parameters params
+                  :precondition condition
+                  :effects (move-exists/effect eff)))
+          (condition
+           (list :action name
+                 :parameters params
+                 :original-parameters params
+                 :precondition condition
+                 :effects (move-exists/effect eff))))
+        *actions6*)))))
+
+(defun move-exists-axioms ()
+  (dolist (it *axioms5*)
+    (ematch it
+      ((list :derived result condition)
+       (push (list :derived result
+                   (match (move-exists/condition condition)
+                     (`(exists ,_ ,condition) condition)
+                     (condition condition)))
+             *axioms6*)))))
+
