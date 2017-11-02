@@ -20,7 +20,8 @@
 
 (test strips
   (finishes
-    (parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))))
+    (let ((*package* (find-package :cl-user)))
+      (parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl")))))
 
 
 

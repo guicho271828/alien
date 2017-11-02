@@ -10,10 +10,12 @@
 
 (defun parse0 (domain problem)
   (parse1
-   (with-open-file (s domain)
-     (read s))
-   (with-open-file (s problem)
-     (read s))))
+   (let ((*package* (find-package :pddl)))
+     (with-open-file (s domain)
+       (read s)))
+   (let ((*package* (find-package :pddl)))
+     (with-open-file (s problem)
+       (read s)))))
 
 ;;; parse1
 
