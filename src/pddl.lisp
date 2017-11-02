@@ -4,8 +4,8 @@
 
 (defun parse (problem &optional (domain (find-domain problem)))
   (parse0 domain problem))
-  
-  
+
+
 ;;; parse0
 
 (defun parse0 (domain problem)
@@ -180,11 +180,11 @@
 (defun to-nnf (condition)
   (ematch condition
     (`(imply ,a ,b)
-     `(or ,(to-nnf `(not ,a))
-          ,(to-nnf b)))
+      `(or ,(to-nnf `(not ,a))
+           ,(to-nnf b)))
     (`(not (imply ,a ,b))
-     `(and ,(to-nnf a)
-           ,(to-nnf `(not ,b))))
+      `(and ,(to-nnf a)
+            ,(to-nnf `(not ,b))))
     
     ((list* (and kind (or 'and 'or)) rest)
      `(,kind ,@(mapcar #'to-nnf rest)))
@@ -560,15 +560,15 @@
 (progn
   (print (move-exists/condition `(exists (a b c) (three a b c))))
   (print (move-exists/condition `(and
-                                    (p1)
-                                    (exists (a) (p2 a))
-                                    (exists (a) (p3 a)))))
+                                  (p1)
+                                  (exists (a) (p2 a))
+                                  (exists (a) (p3 a)))))
   (print (move-exists/condition `(and
-                                    (p1)
-                                    (exists (a)
-                                            (and (and (p3 a)
-                                                      (p4 a))
-                                                 (exists (b) (p2 a b))))))))
+                                  (p1)
+                                  (exists (a)
+                                          (and (and (p3 a)
+                                                    (p4 a))
+                                               (exists (b) (p2 a b))))))))
 
 (defun move-exists/effect (condition)
   "move existential quantifier as well as flattening an AND tree"
@@ -605,9 +605,9 @@
 
 (progn
   (print (move-exists/effect `(and (p1)
-                                     (and (p1) (p1))
-                                     (when (exists (a) (clear a))
-                                       (and (p2) (and (p2) (and (p2) (p2)))))))))
+                                   (and (p1) (p1))
+                                   (when (exists (a) (clear a))
+                                     (and (p2) (and (p2) (and (p2) (p2)))))))))
 
 (defun move-exists-actions ()
   (dolist (it *actions5*)
@@ -686,7 +686,7 @@
                          (rec
                           `(forall ,args ,result))
                          (push effect acc))))))
-                 
+             
              (rec2 (effect)
                (ematch effect
                  ;; demote WHEN
@@ -703,7 +703,7 @@
                            t))
                  (`(when ,_ ,_)
                    effect)))
-
+             
              (rec3 (condition)
                ;; simplify AND in the condition of WHEN
                (let (acc)
