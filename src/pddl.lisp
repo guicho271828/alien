@@ -260,6 +260,8 @@
 
 (defun free (formula)
   (ematch formula
+    ((list 'not pred)
+     (free pred))
     ((list* (or 'and 'or) rest)
      (reduce #'union rest :key #'free))
     ((list (or 'forall 'exists) args body)
