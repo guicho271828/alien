@@ -111,11 +111,13 @@
          ((list* '= _)
           (format t "~&; skipping ~a" condition))
          (_
-          (setf *predicates* (flatten-types condition))))))))
+          ;; init is type-less from the beginning
+          (push condition *init*)))))))
 
 (defun grovel-goal (problem)
   (ematch problem
     ((assoc :goal condition)
+     ;; goal may contain forall etc. so it needs flattening
      (setf *goal* (flatten-types condition)))))
 
 (defun grovel-actions (domain)
