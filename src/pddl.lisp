@@ -96,7 +96,7 @@
     ((assoc :predicates predicates)
      (dolist (predicate predicates)
        (match predicate
-         (`(,name ,typed-def)
+         (`(,name ,@typed-def)
            (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def typed-def)
              (push `(,name ,@w/o-type) *predicates*)
              (dolist (condition type-conditions)
