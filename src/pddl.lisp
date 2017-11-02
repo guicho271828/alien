@@ -173,7 +173,7 @@
      `(and ,@(mapcar #'negate rest)))
     ((list 'forall args body)
      `(exists ,args ,(negate body)))
-    ((list 'exist args body)
+    ((list 'exists args body)
      `(forall ,args ,(negate body)))
     ((list* (or 'when 'increase) _)
      (error "negating conditional effects / fluents not allowed"))
@@ -236,7 +236,7 @@
    (to-nnf *goal*)))
 
 
-;;; parse4 --- forall x y -> ( not exist not axiom, where y -> axiom )
+;;; parse4 --- forall x y -> ( not exists not axiom, where y -> axiom )
 
 (defvar *actions4*)
 (defvar *axioms4*)
@@ -292,8 +292,8 @@
          (push `(:derived ,a ,e) *axioms4*)
          `(not ,a))))
     
-    ((list 'exist args body)
-     `(exist ,args ,(remove-forall/condition body)))
+    ((list 'exists args body)
+     `(exists ,args ,(remove-forall/condition body)))
     
     ((list* (or 'when 'increase) _)
      (error "removing forall from conditional effects / fluents not allowed here"))
@@ -555,7 +555,7 @@
                        (rec (rewrite body)))))
                  
                  ((list* (or 'when 'increase) _)
-                  (error "removing exist from conditional effects / fluents not allowed here"))
+                  (error "removing exists from conditional effects / fluents not allowed here"))
 
                  (_
                   (push condition body-acc)))))
