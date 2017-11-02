@@ -7,7 +7,8 @@
 
 (defpackage pddl
   (:import-from :cl :and :or :not :when :-
-                := :> :< :>= :<= :/ :* :+)
+                := :> :< :>= :<= :/ :* :+
+                :nil)
   (:export :define
            :domain
            :object
