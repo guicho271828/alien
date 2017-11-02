@@ -633,7 +633,6 @@
 
 
 (defvar *actions7*)
-(defvar *axioms7*)
 
 (defun parse7 ()
   (let (*actions7*)
@@ -712,3 +711,15 @@
 (print (simplify-effect `(when (and) (and (a) (b)))))
 
 (print (simplify-effect `(when (and) (forall () (and (a) (b))))))
+
+;;; parse8 --- output
+
+(defun parse8 ()
+  (list *types*
+        *objects*
+        *predicates*
+        *init4*
+        *goal4*
+        *axioms6*
+        *actions7*))
+
