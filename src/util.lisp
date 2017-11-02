@@ -69,9 +69,8 @@ the untyped version of L and a list of literals converted from the types of the 
  (flatten-types `(forall (?u - unit) (and (clean)))))
 
 (defun find-domain (problem-path)
-  (format t "~&finding the domain file...")
-  (print
-   (block nil
+  (format t "~&finding the domain file...~%")
+  (block nil
      (let ((dpath (make-pathname :defaults problem-path :name "domain")))
        (when (probe-file dpath) (return dpath)))
      (let ((dpath (make-pathname :defaults problem-path :name
@@ -80,4 +79,4 @@ the untyped version of L and a list of literals converted from the types of the 
      (error "~& Failed to infer the domain pathname from problem pathname!~%Problem: ~a~%Candidate: ~a~%Candidate: ~a"
             problem-path
             (make-pathname :defaults problem-path :name "domain")
-            (make-pathname :defaults problem-path :name (format nil "~a-domain" (pathname-name problem-path)))))))
+            (make-pathname :defaults problem-path :name (format nil "~a-domain" (pathname-name problem-path))))))
