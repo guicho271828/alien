@@ -45,12 +45,15 @@
             (w/o-type (mapcar #'car parsed))
             (type-conditions (mapcar (lambda-match ((cons arg type) `(,type ,arg))) parsed)))
        `(,kind ,w/o-type
-               (and ,type-conditions
-                    ,@(flatten-types condition)))))
+               (and ,@type-conditions
+                    ,(flatten-types condition)))))
     ((list* (and kind (or 'and 'or))
             conditions)
      `(,kind ,@(mapcar #'flatten-types conditions)))
     (_ condition)))
+
+(print
+ (flatten-types `(forall (?u - unit) (and (clean)))))
 
 (defun find-domain (problem-path)
   (format t "~&finding the domain file...")
