@@ -62,7 +62,7 @@
        (appendf *types* parsed)
        (appendf *predicates*
                 (mapcar (lambda-ematch
-                          ((cons type _) `(,type o)))
+                          ((cons type _) `(,type ?o)))
                         parsed))
        (dolist (p parsed)
          (match p
