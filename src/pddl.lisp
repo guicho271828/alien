@@ -324,7 +324,7 @@
      *actions4*)))
 
 (defun remove-universal-axioms ()
-  (dolist (it *axioms*)
+  (dolist (it *axioms3*)
     (push 
      (ematch it
        ((list :derived derived condition)
@@ -332,7 +332,7 @@
      *axioms4*)))
 
 (defun remove-universal-init ()
-  (dolist (it *init*)
+  (dolist (it *init3*)
     (push
      (remove-forall/condition it)
      *init4*)))
@@ -342,7 +342,7 @@
    *goal4*
    (with-gensyms (goal-axiom)
      (push `(,goal-axiom) *predicates*)
-     (push `(:derived (,goal-axiom) ,(remove-forall/condition *goal*)) *axioms4*)
+     (push `(:derived (,goal-axiom) ,(remove-forall/condition *goal3*)) *axioms4*)
      `(,goal-axiom))))
 
 
