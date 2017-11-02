@@ -603,6 +603,7 @@
       ((list :action name :parameters params :precondition pre :effects eff)
        (push 
         (match (move-exists/condition pre)
+          ;; remove exists
           (`(exists ,args ,condition)
             (list :action name
                   :parameters (append params args)
@@ -623,7 +624,91 @@
       ((list :derived result condition)
        (push (list :derived result
                    (match (move-exists/condition condition)
+                     ;; remove exists
                      (`(exists ,_ ,condition) condition)
                      (condition condition)))
              *axioms6*)))))
 
+;;; parse7 --- simplify effects
+
+
+(defvar *actions7*)
+(defvar *axioms7*)
+
+(defun parse7 ()
+  (let (*actions7*)
+    (simplify-effects-actions)
+    (parse8)))
+
+(defun simplify-effects-actions ()
+  (dolist (it *actions6*)
+    (ematch it
+      ((list :action name :parameters params :original-parameters oparams :precondition pre :effects eff)
+       (push
+        (list :action name :parameters params :original-parameters oparams :precondition pre :effects (simplify-effect eff))
+        *actions7*)))))
+
+(defmacro foreach (list &body body)
+  `(mapcar (lambda (_) ,@body) ,list))
+
+(defun simplify-effect (effect)
+  (let (acc)
+    (labels ((rec (effect)
+               ;; and -> forall -> when -> simple
+               (ematch effect
+                 ;; simplify AND
+                 (`(and ,@rest)
+                   (dolist (r rest)
+                     (rec r)))
+                 
+                 ;; demote FORALL
+                 (`(forall ,args (and ,@body))
+                   (rec
+                    `(and ,@(foreach body `(forall ,args ,_)))))
+                 ;; combine FORALL
+                 (`(forall ,args (forall ,args2 ,body))
+                   (rec
+                    `(forall (,@args ,@args2) ,body)))
+                 (`(forall ,args ,body)
+                   (multiple-value-bind (result expanded) (rec2 body)
+                     (if expanded
+                         (rec
+                          `(forall ,args ,result))
+                         (push effect acc))))))
+                 
+             (rec2 (effect)
+               (ematch effect
+                 ;; demote WHEN
+                 (`(when ,condition (and ,@body))
+                   (values `(and ,@(foreach body `(forall () (when ,condition ,_))))
+                           t))
+                 ;; demote WHEN
+                 (`(when ,condition (forall ,args ,body))
+                   (values `(forall ,args (when ,condition ,body))
+                           t))
+                 ;; combine WHEN
+                 (`(when ,condition (when ,condition2 ,body))
+                   (values `(forall () (when ,(rec3 `(and ,condition ,condition2)) ,body))
+                           t))
+                 (`(when ,_ ,_)
+                   effect)))
+
+             (rec3 (condition)
+               ;; simplify AND in the condition of WHEN
+               (let (acc)
+                 (labels ((rec4 (condition)
+                            (match condition
+                              (`(and ,@rest)
+                                (map nil #'rec4 rest))
+                              (_
+                               (push condition acc)))))
+                   (rec4 condition))
+                 `(and ,@acc))))
+      (rec `(forall () (when (and) ,effect)))
+      `(and ,@acc))))
+
+(print (simplify-effect `(clear)))
+
+(print (simplify-effect `(when (and) (and (a) (b)))))
+
+(print (simplify-effect `(when (and) (forall () (and (a) (b))))))
