@@ -1,3 +1,6 @@
 [submodule "ipc2014-agl"]
 	path = ipc2014-agl
 	url = git@github.com:guicho271828/ipc2014-agl.git
+[submodule "axiom-domains"]
+	path = axiom-domains
+	url = git@github.com:guicho271828/axiom-domains.git
