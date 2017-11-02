@@ -67,7 +67,7 @@
        (dolist (p parsed)
          (match p
            ((cons self (and parent (not 'object)))
-            (push `((,parent ?o) (,self ?o)) *axioms*))))))))
+            (push `(:derived (,parent ?o) (,self ?o)) *axioms*))))))))
 
 (defun grovel-constants (domain)
   (match domain
@@ -101,7 +101,7 @@
             (dolist (pair parsed)
               (match pair
                 ((cons arg (and type (not 'object)))
-                 (push `((,type ,arg) ,w/o-type) *axioms*)))))))))))
+                 (push `(:derived (,type ,arg) ,w/o-type) *axioms*)))))))))))
 
 (defun grovel-init (problem)
   (ematch problem
@@ -284,7 +284,7 @@
                                    (negate body)))))
               (p (free e))
               (a `(,forall-axiom ,@p)))
-         (push `(,a ,e) *axioms4*)
+         (push `(:derived ,a ,e) *axioms4*)
          `(not ,a))))
     
     ((list 'exist args body)
@@ -336,7 +336,7 @@
   (setf
    *goal4*
    (with-gensyms (goal-axiom)
-     (push `((,goal-axiom) ,(remove-forall/condition *goal*)) *axioms4*)
+     (push `(:derived (,goal-axiom) ,(remove-forall/condition *goal*)) *axioms4*)
      `(,goal-axiom))))
 
 
