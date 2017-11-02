@@ -119,7 +119,7 @@
      (setf *goal* (flatten-types condition)))))
 
 (defun grovel-actions (domain)
-  (dolist (it (find :action domain :key #'first))
+  (dolist (it (remove-if-not (lambda-match ((list* :action _) t)) domain))
     (ematch it
       ((list :action name :parameters params
              :precondition pre :effects eff)
@@ -135,7 +135,7 @@
                *actions*))))))
 
 (defun grovel-axioms (domain)
-  (dolist (it (find :derived domain :key #'first))
+  (dolist (it (remove-if-not (lambda-match ((list* (or :derived :axiom) _) t)) domain))
     (push 
      (ematch it
        ((list :derived derived condition)
