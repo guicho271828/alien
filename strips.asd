@@ -18,6 +18,6 @@
  :serial t
  :components ((:file "package")
               (:file "util")
-              (:file "pddl"))
+              (:file "translate"))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))
