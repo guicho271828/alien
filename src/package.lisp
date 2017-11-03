@@ -24,6 +24,8 @@
 (defpackage strips
   (:use :cl :iterate :alexandria :trivia :pddl)
   (:export
-   #:parse))
+   #:parse
+   #:variablep
+   #:free))
 
 (setf trivia:*arity-check-by-test-call* nil)
