@@ -7,6 +7,7 @@
 
 (cl:in-package :strips)
 
+(named-readtables:in-readtable :fare-quasiquote)
 
 (defun parse-typed-def (list)
   "Parse [objs* - type]* list. Does not handle the type inheritance.
@@ -71,7 +72,7 @@ the untyped version of L and a list of literals converted from the types of the 
     (_ condition)))
 
 (print
- (flatten-types `(forall (?u - unit) (and (clean)))))
+ (flatten-types/condition `(forall (?u - unit) (and (clean)))))
 
 (defun flatten-types/effect (effect)
   (ematch effect
