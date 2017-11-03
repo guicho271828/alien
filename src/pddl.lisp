@@ -1,4 +1,6 @@
-;;; parser
+;;; parser : implementation of PDDL normalization
+;; Malte Helmert. Concise finite-domain representations for PDDL planning tasks, JAIR, 2009
+;; See Section 4
 
 (in-package :strips)
 
