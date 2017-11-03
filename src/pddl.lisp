@@ -191,7 +191,7 @@
     
     ((list* (and kind (or 'and 'or)) rest)
      `(,kind ,@(mapcar #'to-nnf rest)))
-    ((list (and kind (or 'forall 'exist)) args body)
+    ((list (and kind (or 'forall 'exists)) args body)
      `(,kind ,args ,(to-nnf body)))
     ((list 'when condition body)
      `(when ,(to-nnf condition)
@@ -306,7 +306,7 @@
     ((list* (and kind (or 'and 'or)) rest)
      `(,kind ,@(mapcar #'remove-forall/effect rest)))
     
-    ((list (and kind (or 'forall 'exist)) args body)
+    ((list (and kind (or 'forall 'exists)) args body)
      `(,kind ,args ,(remove-forall/effect body)))
     
     ((list 'when condition body)
@@ -360,7 +360,7 @@
     (parse6)))
 
 (defun &nnf-dnf (condition)
-  ;; now we have only and, or, exist, not, predicates.
+  ;; now we have only and, or, exists, not, predicates.
   ;; OR clause is converted into an iterator.
   (ematch condition
     (`(or ,@conditions)
@@ -422,7 +422,7 @@
               (not (clear ?y))))))
 
 (defun &nnf-dnf/effect (condition)
-  ;; now we have only and, or, exist, not, predicates.
+  ;; now we have only and, or, exists, not, predicates.
   ;; OR clause is converted into an iterator.
   (ematch condition
     (`(or ,@conditions)
