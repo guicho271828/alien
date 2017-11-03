@@ -107,4 +107,12 @@
                    (_ (let ((*package* (find-package :pddl)))
                         (fail "Effect does not follow the expected form: ~%~s" a))))))
              (_ (let ((*package* (find-package :pddl)))
-                  (fail "Action does not follow the expected form: ~%~s" a))))))))))
+                  (fail "Action does not follow the expected form: ~%~s" a)))))
+         (dolist (a axioms)
+           (match a
+             (`(:derived ,p (and ,@conditions))
+               (is-false (member '- p))
+               (dolist (c conditions)
+                 (test-condition c objects predicates)))
+             (_ (let ((*package* (find-package :pddl)))
+                  (fail "Axiom does not follow the expected form: ~%~s" a))))))))))
