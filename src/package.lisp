@@ -15,7 +15,7 @@
            :problem
            :increase
            :total-cost
-           :?o
+           :?o :?o1 :?o2
            :exists
            :forall
            :imply

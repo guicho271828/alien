@@ -42,7 +42,7 @@
 (defun parse2 (domain problem)
   (let (*types*
         *objects*
-        *predicates*
+        (*predicates* `((= ?o1 ?o2)))
         *actions*
         *axioms*
         *init*
