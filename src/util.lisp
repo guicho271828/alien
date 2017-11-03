@@ -53,20 +53,43 @@ the untyped version of L and a list of literals converted from the types of the 
                   (collect `(,type ,arg))))))
     (values w/o-type type-conditions)))
 
-(defun flatten-types (condition)
+(defun flatten-types/condition (condition)
   (ematch condition
-    ((list (and kind (or 'exists 'forall)) params condition)
+    ((list 'exists params condition)
      (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
-       `(,kind ,w/o-type
+       `(exists ,w/o-type
                (and ,@type-conditions
-                    ,(flatten-types condition)))))
+                    ,(flatten-types/condition condition)))))
+    ((list 'forall params condition)
+     (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
+       `(forall ,w/o-type
+                (imply (and ,@type-conditions)
+                       ,(flatten-types/condition condition)))))
     ((list* (and kind (or 'and 'or))
             conditions)
-     `(,kind ,@(mapcar #'flatten-types conditions)))
+     `(,kind ,@(mapcar #'flatten-types/condition conditions)))
     (_ condition)))
 
 (print
  (flatten-types `(forall (?u - unit) (and (clean)))))
+
+(defun flatten-types/effect (effect)
+  (ematch effect
+    ((list* (and kind (or 'or 'exists)) _)
+     (error "~a should not appear in the effects: ~a" kind effect))
+    (`(forall ,params ,effect)
+     (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
+       `(forall ,w/o-type
+                (when (and ,@type-conditions)
+                  ,(flatten-types/effect effect)))))
+    (`(when ,condition ,body)
+      `(when ,(flatten-types/condition condition)
+         ,(flatten-types/effect body)))
+    (`(and ,@conditions)
+     `(and ,@(mapcar #'flatten-types/effect conditions)))
+    (_ effect)))
+
+
 
 (defun find-domain (problem-path)
   (format t "~&finding the domain file...~%")

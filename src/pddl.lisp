@@ -117,7 +117,7 @@
   (ematch problem
     ((assoc :goal (list condition))
      ;; goal may contain forall etc. so it needs flattening
-     (setf *goal* (flatten-types condition)))))
+     (setf *goal* (flatten-types/condition condition)))))
 
 (defun grovel-actions (domain)
   (dolist (it (remove-if-not (lambda-match ((list* :action _) t)) domain))
@@ -129,8 +129,8 @@
                          :parameters ,w/o-type
                          :precondition
                          (and ,@type-conditions
-                              ,(flatten-types pre))
-                         :effect ,eff)
+                              ,(flatten-types/condition pre))
+                         :effect ,(flatten-types/effect eff))
                *actions*))))))
 
 (defun grovel-axioms (domain)
@@ -142,7 +142,7 @@
           (list :derived
                 `(,predicate ,@w/o-type)
                 `(and ,@type-conditions
-                      ,(flatten-types condition))))))
+                      ,(flatten-types/condition condition))))))
      *axioms*)))
 
 ;;; parse3 --- convert conditions to NNF, compiling IMPLY away
