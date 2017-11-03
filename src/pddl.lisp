@@ -58,7 +58,7 @@
     (parse3)))
 
 (defun grovel-types (domain)
-  (ematch domain
+  (match domain
     ((assoc :types typed-def)
      (let ((parsed (parse-typed-def typed-def)))
        (appendf *types* parsed)
