@@ -82,7 +82,7 @@
             (push `(,type ,o) *init*))))))))
 
 (defun grovel-objects (problem)
-  (ematch problem
+  (match problem
     ((assoc :objects typed-def)
      (let ((parsed (parse-typed-def typed-def)))
        (appendf *objects* parsed)
@@ -92,7 +92,7 @@
             (push `(,type ,o) *init*))))))))
 
 (defun grovel-predicates (domain)
-  (ematch domain
+  (match domain
     ((assoc :predicates predicates)
      (dolist (predicate predicates)
        (match predicate
