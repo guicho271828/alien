@@ -4,7 +4,7 @@
 exec ros -Q -- $0 "$@"
 |#
 
-(ql:quickload :fiveam)
+(ql:quickload :strips.test)
 
 (defun main (&rest argv)
   (declare (ignorable argv))
@@ -12,9 +12,8 @@ exec ros -Q -- $0 "$@"
                      (progn
                        (asdf:load-system :strips.test)
                        (eval
- (read-from-string
-  "(5am:run! :strips)"))
-)
+                        (read-from-string
+                         "(5am:run! :strips)")))
                    (serious-condition (c)
                      (describe c)
                      (uiop:quit 2)))
