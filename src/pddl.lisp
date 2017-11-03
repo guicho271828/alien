@@ -289,6 +289,7 @@
                                    (negate body)))))
               (p (free e))
               (a `(,forall-axiom ,@p)))
+         (push a *predicates*)
          (push `(:derived ,a ,e) *axioms4*)
          `(not ,a))))
     
