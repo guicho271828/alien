@@ -99,7 +99,7 @@ nonexistent element consume no resource in ZDD.
 
 
 
-#|
+|#
 
 #| Generating FDR.
 

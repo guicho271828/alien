@@ -18,6 +18,8 @@
  :serial t
  :components ((:file "package")
               (:file "util")
-              (:file "translate"))
+              (:file "2-translate")
+              (:file "3-preprocess-note")
+              (:file "4-invariant"))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))
