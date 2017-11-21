@@ -19,7 +19,8 @@
            :exists
            :forall
            :imply
-           ))
+           )
+  (:documentation "The package for loading the symbols in the input"))
 
 (defpackage strips
   (:use :cl :iterate :alexandria :trivia :pddl)
