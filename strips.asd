@@ -13,7 +13,8 @@
  :depends-on (:iterate
               :alexandria
               :trivia
-              :trivia.quasiquote)
+              :trivia.quasiquote
+              :arrow-macros)
  :pathname "src"
  :serial t
  :components ((:file "package")

@@ -9,7 +9,9 @@ I want to solve this step using an external solver (SAT, Prolog).
 I briefly summarize the invariant synthesis/grounding module in Fast Downward below.
 |#
 
-#|    Invariant Synthesis
+;;; Invariant Synthesis
+
+#|
 
 FD uses finite-domain representation (SAS).
 To generate SAS, FD requires mutex invariants.
@@ -42,9 +44,11 @@ The weight shuold be constant or decreasing on any states.
 *** 2. ignore derived predicates.                                  --- Invariants in derived predicates are rare. 
 *** 3. picks the candidates with one counted-var and one atom.     --- 2+ counted-var is rare.
 Examples:
-  ((?x) (at ?x ?l))
-  ((?l) (at ?x ?l))
-  (()   (at ?x ?l))
+  ((?x)    (at ?x ?l))
+  ((?l)    (at ?x ?l))
+  ((?x ?l) (at ?x ?l)) 
+  (()   (at ?x ?l)) XXX two counted variables.
+
   ((?y) (in ?y ?v))
   ((?v) (in ?y ?v))
   (()   (in ?y ?v))
@@ -64,6 +68,41 @@ Add effects: at(x, l3)  and  at(x, l4)
 Delete effects: at(x, l1)  and  at(x, l2)
       --- This maintains the weight=2, but we don't care the invariance with weight>=2 (we care mutex only: weight=1)
 
+
+So, taking the heaviness test for example,
+
+- initially
+
+operator params: ?z
+operator precond: (baz ?z)
+e: (forall (?x) (when (foo ?x ?y) (bar ?x ?z)))
+e.cond: (foo ?x ?y)
+e.atom: (bar ?x ?z) - (atomic formula, not lisp/prolog-type atom=symbol)
+
+- quantified var ?x is assigned a unique name, the effect is duplicated
+
+e:  (forall (?a) (when (foo ?a ?y) (bar ?a ?z)))
+e': (forall (?b) (when (foo ?b ?y) (bar ?b ?z)))
+
+phi1: (bar ?x ?l), counted: ?l
+phi2: (bar ?x ?l), counted: ?x
+phi3: (bar ?x ?l), counted: none
+phi4: (bar ?x ?l), counted: ?l, ?x -- >2 counted vars, not included
+
+- now cover phy for e.atom:
+
+bound symbols: ?x, ?a and ?z, which are all universally quantified (p22, Even if ... overly conservative)
+
+There are no bar instance in precond nor e.cond, so they can be ignored
+
+phi1: ?x cannot be aliased to ?a because ?x is already bound
+phi2: ?l cannot be aliased to ?z because ?l is already bound
+phi3: Unification {?x = ?a, ?l = ?z} exists
+
+
+
+
+
 Note: does weight=2 invariant reduces the state encoding?
 
 one-hot vector of length N -> log_2 N bit
@@ -78,7 +117,9 @@ Inbalanced: -> add a new atom from the delete effects.
 Do not consider when there are multiple counted variables.
 |#
 
-#| Grounding.
+;;; Grounding.
+
+#| 
 
 Section 6.1.1, 6.1.2, 6.1.3 describes the previous work.
 The actual grounding is performed by solving a Datalog program.
