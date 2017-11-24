@@ -90,25 +90,18 @@
   (match effect
     (`(forall ,_ (when ,_ (not ,_))) t)))
 
-#|
-
-Now, this part is extremely unbiguous in the original document
-as well as in the source code of translate.py.
-
-The crucial problem in the AIJ09 paper is that "satisfiable" and "renamed" is not defined.
-
-First, "renamed": I assume this means that 
-
-|#
-
-
-(defun too-heavy-p (action parameters atoms)
+(defun too-heavy-p (action i-params i-atoms)
+  ;; terminology:
+  ;; i-params : parameters of an invarinat candidate
+  ;; i-atoms    : atomic formulas in an invarinat candidate
+  ;; a-params : action parameters
+  ;; q-params : quantified parameters in the effects
   (ematch action
     ((plist :parameters a-params :preconditions `(and ,@precond) :effects `(and ,@effects))
-     (let ((names (mapcar #'first atoms))
-           (add (remove-if #'delete-effect-p effects)))
-       ;; duplicate and assign unique params to non-trivially quantified effects
-       (let ((add+ (iter (for e in add)
+     (let* ((names (mapcar #'first i-atoms))
+            (add   (remove-if #'delete-effect-p effects))
+            ;; duplicate and assign unique params to non-trivially quantified effects
+            (add+  (iter (for e in add)
                          (match e
                            (`(forall () (when ,_ (,name ,@_)))
                              (when (member name names)
@@ -127,40 +120,80 @@ First, "renamed": I assume this means that
                                  ;; duplicate
                                  (collecting (rename (make-gensym-list (length params) "?")))
                                  (collecting (rename (make-gensym-list (length params) "?"))))))))))
-         ;; 
-         ;; note that the precondition could contain negative ones
-         ;; there is no universal preconditions (they are moved to derived predicates)
-         ;; 
-         (iter (for (e1 . rest) on add+)
-               (iter (for e2 in rest)
-                     (match* (e1 e2)
-                       ((`(forall ,_ (when (and ,@conditions1) ,atom1))
-                         `(forall ,_ (when (and ,@conditions2) ,atom2)))
-                        (when (and (covers parameters atoms atom1)
-                                   (covers parameters atoms atom2)
-                                   precond
-                                   condition1
-                                   condition2)
-                          (return-from too-heavy-p t)))))))))))
+       (map-combinations (lambda (effects-pair)
+                           (when (unify i-params i-atoms a-params precond effects-pair)
+                             (return-from too-heavy-p t)))
+                         add+ :length 2))
+     nil)))
 
+(defun ignore-negation (atom)
+  (match atom
+    (`(not ,x) x)
+    (_ atom)))
 
-(defun covers (parameters atoms atom)
-  
-                                   
-                        
-                     
-          
+(defun unify (i-params a-params i-atoms precond effects-pair)
+  (match effects-pair
+    ((list `(forall ,q-params1 (when (and ,@conditions1) ,atom1))
+           `(forall ,q-params2 (when (and ,@conditions2) ,atom2)))
+     (let ((atom1 (ignore-negation atom1))
+           (atom2 (ignore-negation atom2))
+           (bound (append q-params1 q-params2 a-params i-params))
+           ;; 
+           ;; note: there should be a sinlge free variable and other atoms in
+           ;;       the invariants should share it
+           (free (set-difference (rest (first i-atoms)) i-params))
 
-(defun unbalanced-p (candidate parameters atoms)
-  (ematch candidate
-    ((candidate parameters atoms)
-     (iter (for a in *actions*)
-           (ematch a
-             ((plist :parameters action-params :effect `(and ,@effects))
-              (iter (for e in effects)
-                    (match e
-                      (`(forall ,_ (when ,_ (,(eq name) ,@_)))
-                        
-                        (return-from unbalanced-p t))
-                      (`(forall ,_ (when ,_ (not (,(eq name) ,@_))))
-                        (return-from unbalanced-p t))))))))))
+           ;; assignments = conjunctions of equality.
+           ;; (x1 = y1 and x2 = y2 and ... )
+           ;; originally called Assignment in the python code.
+           ;; we follow the unification/prolog term, aliasing.
+           ;; alias-list is an alist.
+           (aliases nil)
+           ;;
+           ;; inequality constraints: disallowed assignments.
+           ;; disjunctions of inequality = negation of aliases.
+           ;; (x1 != y1 or x2 != y2 ...) = not (x1 = y1 and x2 = y2 ...)
+           ;; originally NegativeClause in constraints.py.
+           ;; it is no longer associative.
+           ;; thus this is a list of alists.
+           (inequality nil))
+       (assert (= 1 (length free)))
+       ;; 
+       ;; ensure_inequality in python code
+       (match* (atom1 atom2)
+         ((`(,head1 ,@args1) `(,(eq head1) ,@args2))
+          ;; when two heads are the same, the corresponding arguments should be all different
+          (appendf inequality (mapcar #'cons args1 args2))))
+
+       ;; ensure_cover 1
+       (iter (for atom in i-atoms)
+             
+             )
+       
+       ;; ensure_cover 2
+       (iter (for var in bound)
+             (push (cons var free) inequality))
+       
+       (when (and (covers i-params atoms atom1)
+                  (covers i-params atoms atom2)
+                  precond
+                  condition1
+                  condition2)
+         (return-from too-heavy-p t))))))
+
+;; (defun covers (parameters atoms atom)
+;;   )
+;; 
+;; (defun unbalanced-p (candidate parameters atoms)
+;;   (ematch candidate
+;;     ((candidate parameters atoms)
+;;      (iter (for a in *actions*)
+;;            (ematch a
+;;              ((plist :parameters action-params :effect `(and ,@effects))
+;;               (iter (for e in effects)
+;;                     (match e
+;;                       (`(forall ,_ (when ,_ (,(eq name) ,@_)))
+;;                         
+;;                         (return-from unbalanced-p t))
+;;                       (`(forall ,_ (when ,_ (not (,(eq name) ,@_))))
+;;                         (return-from unbalanced-p t))))))))))
