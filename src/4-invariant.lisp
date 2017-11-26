@@ -65,14 +65,17 @@
   (iter outer
         (for p in (modifiable-fluent-predicates))
         (ematch p
-          ((list* _ parameters)
-           (collecting (candidate parameters (list p)))
-           (iter (with parameters = (copy-list parameters))
-                 (repeat (length parameters))
-                 (in outer 
-                     (collecting (candidate (copy-list (rest parameters)) (list p))))
-                 ;; caution: destructively modifies PARAMETERS
-                 (setf parameters (rotate parameters)))))))
+          ((list* name parameters)
+           (let ((parameters (make-gensym-list (length parameters) "?v")))
+             ;; without counted variable
+             (collecting (candidate parameters (list `(,name ,@parameters))))
+             ;; with a single counted variable
+             (iter (with parameters = (copy-list parameters))
+                   (repeat (length parameters))
+                   (in outer 
+                       (collecting (candidate (copy-list (rest parameters)) (list p))))
+                   ;; caution: destructively modifies PARAMETERS
+                   (setf parameters (rotate parameters))))))))
 
 ;;; proving invariance
 
