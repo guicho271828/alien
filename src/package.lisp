@@ -28,6 +28,14 @@
   (:export
    #:parse
    #:variablep
-   #:free))
+   #:free
+   #:with-parsed-information
+   #:*types*
+   #:*objects*
+   #:*predicates*
+   #:*init*
+   #:*goal*
+   #:*axioms*
+   #:*actions*))
 
 (setf trivia:*arity-check-by-test-call* nil)
