@@ -61,6 +61,12 @@
   
 ;;; initial candidates
 
+(define-constant +counted-variable+ :?counted
+  :documentation "
+All candidates are supposed to have a single counted variable.
+Thus it is ok to assume a specific name for the variable.
+Equality-wise, it never conflicts normal variables because they are always interned in package PDDL.")
+
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defstruct (candidate (:constructor candidate (parameters atoms)))
     parameters
@@ -71,16 +77,30 @@
         (for p in (modifiable-fluent-predicates))
         (ematch p
           ((list* name parameters)
-           (let ((parameters (make-gensym-list (length parameters) "?v")))
+           (let ((parameters (make-gensym-list (length parameters) "?V")))
              ;; without counted variable
              (collecting (candidate parameters (list `(,name ,@parameters))))
              ;; with a single counted variable
-             (iter (with parameters = (copy-list parameters))
-                   (repeat (length parameters))
+             (iter (for i below (length parameters))
+                   (for i-params =
+                        (iter (for var in parameters)
+                              (for j below (length parameters))
+                              (when (/= i j)
+                                (collect var))))
+                   (for args =
+                        (iter (for var in parameters)
+                              (for j below (length parameters))
+                              (collect
+                                  (if (= i j)
+                                      +counted-variable+
+                                      var))))
                    (in outer 
-                       (collecting (candidate (copy-list (rest parameters)) (list p))))
-                   ;; caution: destructively modifies PARAMETERS
-                   (setf parameters (rotate parameters))))))))
+                       (collecting (candidate i-params
+                                              `((,name ,@args)))))))))))
+
+#+(or)
+(strips:with-parsed-information (strips:parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))
+  (strips::initial-candidates))
 
 ;;; proving invariance
 
