@@ -17,6 +17,11 @@
             :actions *actions*)
       ,@body)))
 
+;; Usage:
+#+(or)
+(strips:with-parsed-information (strips:parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))
+  strips:*types*)
+
 (defun preprocess (info)
   (with-parsed-information info
     (list* :invarinants (find-invariants)
