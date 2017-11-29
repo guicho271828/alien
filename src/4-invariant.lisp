@@ -106,7 +106,7 @@ Equality-wise, it never conflicts normal variables because they are always inter
 
 (define-condition new-candidate ()
   ((candidates :reader new-candidate-candidates
-               :initarg :candidate)))
+               :initarg :candidates)))
 
 (defun find-invariants ()
   (let ((open (initial-candidates))
@@ -133,6 +133,11 @@ Equality-wise, it never conflicts normal variables because they are always inter
      t)))
 
 ;;; too-heavy-p
+;; terminology:
+;; i-params : parameters of an invarinat candidate
+;; i-atoms    : atomic formulas in an invarinat candidate
+;; a-params : action parameters
+;; q-params : quantified parameters in the effects
 
 (defun delete-effect-p (effect)
   (match effect
@@ -156,11 +161,6 @@ Equality-wise, it never conflicts normal variables because they are always inter
                   (collecting (rename (make-gensym-list (length params) "?"))))))))))
 
 (defun too-heavy-p (action i-atoms)
-  ;; terminology:
-  ;; i-params : parameters of an invarinat candidate
-  ;; i-atoms    : atomic formulas in an invarinat candidate
-  ;; a-params : action parameters
-  ;; q-params : quantified parameters in the effects
   (ematch action
     ((plist :preconditions `(and ,@precond) :effects `(and ,@effects))
      (let* ((names (mapcar #'first i-atoms))
