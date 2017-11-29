@@ -102,6 +102,25 @@ Equality-wise, it never conflicts normal variables because they are always inter
 (strips:with-parsed-information (strips:parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))
   (strips::initial-candidates))
 
+;;; finding invariance
+
+(define-condition new-candidate ()
+  ((candidates :reader new-candidate-candidates
+               :initarg :candidate)))
+
+(defun find-invariants ()
+  (let ((open (initial-candidates))
+        invariants)
+    (handler-bind
+        ((new-candidate
+          (lambda (c)
+            (appendf open (new-candidate-candidates c)))))
+      (iter (for candidate = (pop open))
+            (while candidate)
+            (when (prove-invariant candidate)
+              (push candidate invariants))))
+    invariants))
+
 ;;; proving invariance
 
 (defun prove-invariant (candidate)
