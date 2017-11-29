@@ -131,13 +131,8 @@ Equality-wise, it never conflicts normal variables because they are always inter
             ;; duplicate and assign unique params to non-trivially quantified effects
             (add+  (iter (for e in add)
                          (match e
-                           (`(forall () (when ,_ (,name ,@_)))
-                             (when (member name names)
-                               ;; 'NOT is not part of NAMES; should be ok.
-                               (collecting e)))
                            (`(forall ,params ,(and body `(when ,_ (,name ,@_))))
                              (when (member name names)
-                               ;; 'NOT is not part of NAMES; should be ok.
                                (flet ((rename (unique)
                                         `(forall ,unique
                                                  ,(iter (with body = body)
@@ -147,9 +142,12 @@ Equality-wise, it never conflicts normal variables because they are always inter
                                                         (finally (return body))))))
                                  ;; duplicate
                                  (collecting (rename (make-gensym-list (length params) "?")))
-                                 (collecting (rename (make-gensym-list (length params) "?"))))))))))
+                                 (when params
+                                   (collecting (rename (make-gensym-list (length params) "?")))))))))))
        (map-combinations (lambda (effects-pair)
-                           (when (unify i-params i-atoms a-params precond effects-pair)
+                           (when (multiple-value-call
+                                     #'satisfiable
+                                   (too-heavy-pair-p i-params i-atoms a-params precond effects-pair))
                              (return-from too-heavy-p t)))
                          add+ :length 2))
      nil)))
@@ -159,59 +157,65 @@ Equality-wise, it never conflicts normal variables because they are always inter
     (`(not ,x) x)
     (_ atom)))
 
-(defun unify (i-params a-params i-atoms precond effects-pair)
+(defun too-heavy-constraints (i-params i-atoms a-params precond effects-pair)
   (match effects-pair
     ((list `(forall ,q-params1 (when (and ,@conditions1) ,atom1))
            `(forall ,q-params2 (when (and ,@conditions2) ,atom2)))
-     (let ((atom1 (ignore-negation atom1))
-           (atom2 (ignore-negation atom2))
-           (bound (append q-params1 q-params2 a-params i-params))
+     (let ((atom1+ (ignore-negation atom1))
+           (atom2+ (ignore-negation atom2))
+           ;; Aliases = conjunctions of equality. (x1 = y1 and x2 = y2 ... )
+           ;; originally called Assignment in the python code. (We follow the
+           ;; unification/prolog terminology.)
            ;; 
-           ;; note: there should be a sinlge free variable and other atoms in
-           ;;       the invariants should share it
-           (free (set-difference (rest (first i-atoms)) i-params))
-
-           ;; assignments = conjunctions of equality.
-           ;; (x1 = y1 and x2 = y2 and ... )
-           ;; originally called Assignment in the python code.
-           ;; we follow the unification/prolog term, aliasing.
-           ;; alias-list is an alist.
-           (aliases nil)
-           ;;
-           ;; inequality constraints: disallowed assignments.
-           ;; disjunctions of inequality = negation of aliases.
-           ;; (x1 != y1 or x2 != y2 ...) = not (x1 = y1 and x2 = y2 ...)
+           ;; Inequality = disjunctions of inequality. (x1 != y1 or x2 != y2 ...)
            ;; originally NegativeClause in constraints.py.
-           ;; it is no longer associative.
-           ;; thus this is a list of alists.
+           ;;
+           ;; Now what is more complicated is "combinatorial_assignments" in the python code.
+           ;; This is a conjunctions of disjunctions of conjunctions of equality.
+           ;; Thus when computing the correct aliases, we should enumerate all combinations.
+           (aliases nil)
            (inequality nil))
-       (assert (= 1 (length free)))
        ;; 
-       ;; ensure_inequality in python code
-       (match* (atom1 atom2)
-         ((`(,head1 ,@args1) `(,(eq head1) ,@args2))
-          ;; when two heads are the same, the corresponding arguments should be all different
-          (appendf inequality (mapcar #'cons args1 args2))))
+       (ematch* (atom1+ atom2+)
+         ((`(,head1 ,@args1) `(,head2 ,@args2))
+          
+          ;; ensure_inequality
+          (when (eq head1 head2)
+            (appendf inequality (mapcar #'cons args1 args2)))
 
-       ;; ensure_cover 1
-       (iter (for atom in i-atoms)
-             
-             )
-       
-       ;; ensure_cover 2
-       (iter (for var in bound)
-             (push (cons var free) inequality))
-       
-       (when (and (covers i-params atoms atom1)
-                  (covers i-params atoms atom2)
-                  precond
-                  condition1
-                  condition2)
-         (return-from too-heavy-p t))))))
+          ;; ensure_cover
+          (let ((covered (find head1 i-atoms :key #'first)))
+            ;; this assumes all atoms in an invariant have the different names
+            (appendf aliases (mapcar #'cons args1 (cdr covered))))
+          
+          ;; ensure_cover
+          (let ((covered (find head2 i-atoms :key #'first)))
+            ;; this assumes all atoms in an invariant have the different names
+            (appendf aliases (mapcar #'cons args2 (cdr covered))))
 
-;; (defun covers (parameters atoms atom)
-;;   )
-;; 
+          ;; ensure_conjunction_sat
+          (let (pos neg)
+            (iter (for condition in (append precond conditions1 conditions2
+                                            (list (negate atom1) (negate atom2))))
+                  (match condition
+                    (`(not (= ,x ,y)) (push (cons x y) inequality))
+                    (`(= ,x ,y)       (push (cons x y) aliases))
+                    (`(not ,x)        (push x neg))
+                    (_                (push condition pos))))
+            (iter (for p in pos)
+                  (iter (for n in neg)
+                        (ematch* (p n)
+                          ((`(,head1 ,@args1) `(,head2 ,@args2))
+                           (when (eq head1 head2)
+                             (appendf inequality (mapcar #'cons args1 args2))))))))
+          (values aliases inequality)))))))
+
+(defun satisfiable (aliases inequality)
+  ;; inequality, aliases: list of alists.
+  
+
+  
+  
 ;; (defun unbalanced-p (candidate parameters atoms)
 ;;   (ematch candidate
 ;;     ((candidate parameters atoms)
