@@ -113,6 +113,8 @@ Equality-wise, it never conflicts normal variables because they are always inter
              (return-from prove-invariant nil)))
      t)))
 
+;;; too-heavy-p
+
 (defun delete-effect-p (effect)
   (match effect
     (`(forall ,_ (when ,_ (not ,_))) t)))
@@ -211,6 +213,8 @@ Equality-wise, it never conflicts normal variables because they are always inter
                              (push (mapcar #'cons args1 args2) inequality)))))))
           (values aliases inequality)))))))
 
+;;; satisfiability
+
 (defun satisfiable (aliases inequality)
   (apply #'map-product
          (lambda (&rest single-aliases)
@@ -263,6 +267,8 @@ Equality-wise, it never conflicts normal variables because they are always inter
                                (getf mapping y)))))
                    disjunction))
            inequality)))
+
+;;; unbalanced-p
 
 ;; (defun unbalanced-p (candidate parameters atoms)
 ;;   (ematch candidate
