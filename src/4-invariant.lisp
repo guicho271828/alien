@@ -117,6 +117,23 @@ Equality-wise, it never conflicts normal variables because they are always inter
   (match effect
     (`(forall ,_ (when ,_ (not ,_))) t)))
 
+(defun duplicate-quantified-effect (names add)
+  (iter (for e in add)
+        (match e
+          (`(forall ,params ,(and body `(when ,_ (,name ,@_))))
+            (when (member name names)
+              (flet ((rename (unique)
+                       `(forall ,unique
+                                ,(iter (with body = body)
+                                       (for p in params)
+                                       (for u in unique)
+                                       (setf body (subst u p body))
+                                       (finally (return body))))))
+                ;; duplicate
+                (collecting (rename (make-gensym-list (length params) "?")))
+                (when params
+                  (collecting (rename (make-gensym-list (length params) "?"))))))))))
+
 (defun too-heavy-p (action i-atoms)
   ;; terminology:
   ;; i-params : parameters of an invarinat candidate
@@ -128,21 +145,7 @@ Equality-wise, it never conflicts normal variables because they are always inter
      (let* ((names (mapcar #'first i-atoms))
             (add   (remove-if #'delete-effect-p effects))
             ;; duplicate and assign unique params to non-trivially quantified effects
-            (add+  (iter (for e in add)
-                         (match e
-                           (`(forall ,params ,(and body `(when ,_ (,name ,@_))))
-                             (when (member name names)
-                               (flet ((rename (unique)
-                                        `(forall ,unique
-                                                 ,(iter (with body = body)
-                                                        (for p in params)
-                                                        (for u in unique)
-                                                        (setf body (subst u p body))
-                                                        (finally (return body))))))
-                                 ;; duplicate
-                                 (collecting (rename (make-gensym-list (length params) "?")))
-                                 (when params
-                                   (collecting (rename (make-gensym-list (length params) "?")))))))))))
+            (add+  (duplicate-quantified-effect names add)))
        (map-combinations (lambda (effects-pair)
                            (when (multiple-value-call
                                      #'satisfiable
@@ -211,31 +214,56 @@ Equality-wise, it never conflicts normal variables because they are always inter
 (defun satisfiable (aliases inequality)
   (apply #'map-product
          (lambda (&rest single-aliases)
-           (let* ((aliases (reduce #'append single-aliases))
-                  (equivalence-class
-                   (iter (with elem-class = nil)
-                         (with class-elems = nil)
-                         (for (x . y) in aliases)
-                         (when (string> x y) ; ?b ?a
-                           (rotatef x y))    ; ?a ?b
-                         (match class-elems
-                           ((and (assoc x (place cx))
-                                 (assoc y (place cy)))
-                            ))))
-                           
-                         
-                  (mapping ))
-             (every (lambda (disjunction)
-                      (some (lambda-ematch
-                              ((cons x y)
-                               (not (eq (cdr (assoc x mapping))
-                                        (cdr (assoc y mapping))))))))
-                    inequality)))
+           (when (test-aliases (reduce #'append single-aliases) inequality)
+             (return-from satisfiable t)))
          aliases))
 
+(defun test-aliases (aliases inequality)
+  (let* ((elems nil)
+         (elem-class nil)
+         (class-elems nil)
+         (mapping nil))
+    ;; the implementation here is entirely based on a list and slow
+    ;; should use a more efficient datastructure
+    (iter (for (x . y) in aliases)
+          (pushnew x elems)
+          (pushnew y elems))
+    (iter (for e in elems)
+          (for i from 0)
+          (setf (getf elem-class e) i)
+          (setf (getf class-elems i) (list e)))
+    ;; merge the classes
+    (iter (for (x . y) in aliases)
+          (for xc = (getf elem-class x))
+          (for yc = (getf elem-class y))
+          (when (> xc yc)
+            (rotatef x y)
+            (rotatef xc yc))
+          ;; now xc < yc
+          (setf (getf elem-class y) xc)
+          (appendf (getf class-elems xc) (getf class-elems yc))
+          (remf class-elems yc))
+    ;; find the representative
+    (iter (for (class elems . rest) on class-elems)
+          (for constant = nil)
+          (for variables = nil)
+          (dolist (e elems)
+            (if (variablep e)
+                (push e variables)
+                (if constant ;; binding the same variable to two constants
+                    (return-from test-aliases nil)
+                    (setf constant e))))
+          (dolist (v variables)
+            (setf (getf mapping v) constant)))
+    ;; check if for all disjunctions, at least one clause is satisfied
+    (every (lambda (disjunction)
+             (some (lambda-ematch
+                     ((cons x y)
+                      (not (eq (getf mapping x)
+                               (getf mapping y)))))
+                   disjunction))
+           inequality)))
 
-  
-  
 ;; (defun unbalanced-p (candidate parameters atoms)
 ;;   (ematch candidate
 ;;     ((candidate parameters atoms)
