@@ -24,7 +24,7 @@
 
 (defpackage strips
   (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros)
-  (:shadowing-import-from :arrow-macros :<>)
+  (:shadowing-import-from :trivia :<>)
   (:export
    #:parse
    #:variablep
