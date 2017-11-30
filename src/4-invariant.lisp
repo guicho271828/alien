@@ -241,6 +241,7 @@ Equality-wise, it never conflicts normal variables because they are always inter
              (return-from satisfiable t)))
          aliases))
 
+
 (defun test-aliases (aliases inequality)
   (let* ((elems nil)
          (elem-class nil)
@@ -289,16 +290,35 @@ Equality-wise, it never conflicts normal variables because they are always inter
 
 ;;; unbalanced-p
 
-;; (defun unbalanced-p (candidate parameters atoms)
-;;   (ematch candidate
-;;     ((candidate parameters atoms)
-;;      (iter (for a in *actions*)
-;;            (ematch a
-;;              ((plist :parameters action-params :effect `(and ,@effects))
-;;               (iter (for e in effects)
-;;                     (match e
-;;                       (`(forall ,_ (when ,_ (,(eq name) ,@_)))
-;;                         
-;;                         (return-from unbalanced-p t))
-;;                       (`(forall ,_ (when ,_ (not (,(eq name) ,@_))))
-;;                         (return-from unbalanced-p t))))))))))
+(defun unbalanced-p (action i-atoms)
+  (ematch action
+    ((plist :preconditions `(and ,@precond) :effects `(and ,@effects))
+     (let* ((names (mapcar #'first i-atoms))
+            (rels (iter (for e in effects)
+                       (match e
+                         (`(forall ,_ (when ,_ (,name ,@_)))
+                           (when (member name names)
+                             (colllecting e))))))
+            (adds   (remove-if #'delete-effect-p rels))
+            (dels   (remove-if-not #'delete-effect-p rels)))
+       (iter (for add in adds)
+             (when (unbalanced-add-effect-p i-atoms action add dels)
+               (return-from unbalanced-p t)))
+       nil))))
+
+(defun unbalanced-add-effect-p (i-atoms action add dels)
+  (let (aliases inequality)
+    
+  (let ((minimal-renamings
+         (minimal-renamings action add)))
+    ))
+
+(defun minimal-renamings (i-atoms action add)
+  (let (aliases inequality)
+    (match add
+      (`(,head1 ,@args1)
+        (let ((covered (find head1 i-atoms :key #'first)))
+          (push (list (mapcar #'cons args1 (cdr covered))) aliases))
+    
+    
+  
