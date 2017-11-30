@@ -19,5 +19,7 @@ $ update-asdf
 
 ((:package)
  (:util)
+ (:dir :lib
+       (:rest))
  (:rest))
 

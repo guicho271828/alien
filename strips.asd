@@ -15,10 +15,12 @@
               :trivia
               :trivia.quasiquote
               :arrow-macros)
- :pathname "src"
  :serial t
+ :pathname "src"
  :components ((:file "package")
               (:file "util")
+              (:module "lib"
+               :components ((:file "equivalence")))
               (:file "2-translate")
               (:file "3-preprocess-note")
               (:file "4-invariant"))
