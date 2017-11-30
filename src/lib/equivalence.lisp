@@ -47,4 +47,21 @@
        (delete-class ec yc)))))
 
 
-
+(defun compute-mapping (ec)
+  (declare (equivalence ec))
+  (ematch ec
+    ((equivalence hash :obsolete (place obsolete) :groups groups)
+     (let ((mapping nil))
+       ;; find the representative
+       (iter (for elems in-vector groups with-index class)
+             (for constant = nil)
+             (for variables = nil)
+             (dolist (e elems)
+               (if (variablep e)
+                   (push e variables)
+                   (if constant ;; binding the same variable to two constants
+                       (return-from compute-mapping (values nil nil))
+                       (setf constant e))))
+             (dolist (v variables)
+               (setf (getf mapping v) constant)))
+       (values mapping t)))))

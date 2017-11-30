@@ -289,30 +289,20 @@ Equality-wise, it never conflicts normal variables because they are always inter
            inequality)))
 
 (defun test-aliases (aliases inequality)
-  (let* ((ec (make-equivalence))
-         (mapping nil))
+  (let ((ec (make-equivalence)))
     (iter (for (x . y) in aliases)
           (add-relation ec x y))
-    ;; find the representative
-    (iter (for elems in-vector (equivalence-groups ec) with-index class)
-          (for constant = nil)
-          (for variables = nil)
-          (dolist (e elems)
-            (if (variablep e)
-                (push e variables)
-                (if constant ;; binding the same variable to two constants
-                    (return-from test-aliases nil)
-                    (setf constant e))))
-          (dolist (v variables)
-            (setf (getf mapping v) constant)))
-    ;; check if for all disjunctions, at least one clause is satisfied
-    (every (lambda (disjunction)
-             (some (lambda-ematch
-                     ((cons x y)
-                      (not (eq (getf mapping x)
-                               (getf mapping y)))))
-                   disjunction))
-           inequality)))
+    (multiple-value-bind (mapping consistent-p) (compute-mapping ec)
+      (unless consistent-p
+        (return-from test-aliases nil))
+      ;; check if for all disjunctions, at least one clause is satisfied
+      (every (lambda (disjunction)
+               (some (lambda-ematch
+                      ((cons x y)
+                       (not (eq (getf mapping x)
+                                (getf mapping y)))))
+                     disjunction))
+             inequality))))
 
 ;;; unbalanced-p
 
