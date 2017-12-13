@@ -83,9 +83,9 @@ Equality-wise, it never conflicts normal variables because they are always inter
      t)))
 
 #+(or)
-(strips:with-parsed-information (strips:parse (strips:%rel "ipc2011-opt/transport-opt11/p01.pddl"))
-  (remove-if #'strips::prove-invariant
-             (strips::initial-candidates)))
+(strips::with-parsed-information (strips:parse (strips:%rel "ipc2011-opt/transport-opt11/p01.pddl"))
+  (remove-if-not #'strips::prove-invariant
+                 (strips::initial-candidates)))
 
 ;;; too-heavy-p
 ;; terminology:
