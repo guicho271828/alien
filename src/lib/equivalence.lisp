@@ -28,7 +28,7 @@
      (or (gethash x hash)
          (let ((class (incf total)))
            (setf (gethash x hash) class)
-           (vector-push-extend (list x) groups class)
+           (vector-push-extend (list x) groups (1+ class))
            class)))))
 
 (defun add-relation (ec x y)
