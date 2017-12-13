@@ -197,6 +197,55 @@ Equality-wise, it never conflicts normal variables because they are always inter
                         (forall () (when (and) (not (at ?x ?l2))))))
              '((at ?thing :?counted)))
 
+;; trying to make too-heavy-constraints more understantable
+
+(defun too-heavy-constraints-sexp (i-atoms precond effects-pair)
+  "When these constrants are satisfied, 
+the effect may increase the number of true atom in i-atoms by more than two"
+  (match effects-pair
+    ((list `(forall ,_ (when (and ,@conditions1) ,atom1))
+           `(forall ,_ (when (and ,@conditions2) ,atom2)))
+     (ematch* ((ignore-negation atom1) (ignore-negation atom2))
+       ((`(,head1 ,@args1) `(,head2 ,@args2))
+        (flet ((==  (x y) `(== ,x ,y)) ; names chosen because they don't conflict CL symbols
+               (!= (x y) `(!= ,x ,y)))
+          `(and
+            ;; ensure_inequality
+            ,@(when (eq head1 head2)
+                `((or ,@(mapcar #'!= args1 args2))))
+
+            ;; ensure_cover: this assumes all atoms in an invariant have the different names
+            ,@(let ((covered (find head1 i-atoms :key #'first)))
+                (mapcar #'== args1 (cdr covered)))
+            ,@(let ((covered (find head2 i-atoms :key #'first)))
+                (mapcar #'== args2 (cdr covered)))
+            
+            ;; ensure_conjunction_sat
+            ,@(let (pos neg acc)
+                (iter (for condition in (append precond conditions1 conditions2
+                                                (list (negate atom1) (negate atom2))))
+                      (match condition
+                        (`(not (= ,x ,y)) (push (!= x y) acc))
+                        (`(= ,x ,y)       (push (== x y) acc))
+                        (`(not ,x)        (push x neg))
+                        (_                (push condition pos))))
+                
+                (iter (for p in pos)
+                      (iter (for n in neg)
+                            (ematch* (p n)
+                              ((`(,head1 ,@args1) `(,head2 ,@args2))
+                               (when (eq head1 head2)
+                                 (push
+                                  `(or ,@(mapcar #'!= args1 args2)) acc))))))
+                acc))))))))
+
+#+(or)
+(too-heavy-constraints-sexp '((at ?thing :?counted))
+                            '((at ?x ?l1) (at ?x ?l2))
+                            '((forall nil (when (and) (at ?x ?l3)))
+                              (forall nil (when (and) (at ?x ?l4)))))
+
+
 ;;; satisfiability
 
 (defun satisfiable (aliases inequality)
