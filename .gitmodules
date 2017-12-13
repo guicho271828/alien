@@ -4,3 +4,6 @@
 [submodule "axiom-domains"]
 	path = axiom-domains
 	url = https://github.com/guicho271828/axiom-domains.git
+[submodule "ipc2011-opt"]
+	path = ipc2011-opt
+	url = https://github.com/guicho271828/ipc2011-opt.git
