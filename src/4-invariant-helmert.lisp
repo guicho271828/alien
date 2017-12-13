@@ -366,7 +366,7 @@ the effect may increase the number of true atom in i-atoms by more than two"
                        (match e
                          (`(forall ,_ (when ,_ (,name ,@_)))
                            (when (member name names)
-                             (colllecting e))))))
+                             (collecting e))))))
             (adds   (remove-if #'delete-effect-p rels))
             (dels   (remove-if-not #'delete-effect-p rels)))
        (iter (for add in adds)
