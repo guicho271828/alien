@@ -77,9 +77,15 @@ Equality-wise, it never conflicts normal variables because they are always inter
     ((candidate atoms)
      (iter (for a in *actions*)
            (when (or (too-heavy-p a atoms)
+                     #+(or)
                      (unbalanced-p a atoms))
              (return-from prove-invariant nil)))
      t)))
+
+#+(or)
+(strips:with-parsed-information (strips:parse (strips:%rel "ipc2011-opt/transport-opt11/p01.pddl"))
+  (remove-if #'strips::prove-invariant
+             (strips::initial-candidates)))
 
 ;;; too-heavy-p
 ;; terminology:
@@ -111,17 +117,18 @@ Equality-wise, it never conflicts normal variables because they are always inter
 
 (defun too-heavy-p (action i-atoms)
   (ematch action
-    ((plist :preconditions `(and ,@precond) :effects `(and ,@effects))
+    ((plist :precondition `(and ,@precond) :effect `(and ,@effects))
      (let* ((names (mapcar #'first i-atoms))
             (add   (remove-if #'delete-effect-p effects))
             ;; duplicate and assign unique params to non-trivially quantified effects
             (add+  (duplicate-quantified-effect names add)))
-       (map-combinations (lambda (effects-pair)
-                           (when (multiple-value-call
-                                     #'satisfiable
-                                   (too-heavy-constraints i-atoms precond effects-pair))
-                             (return-from too-heavy-p t)))
-                         add+ :length 2))
+       (when (>= (length add+) 2)
+         (map-combinations (lambda (effects-pair)
+                             (when (multiple-value-call
+                                       #'satisfiable
+                                     (too-heavy-constraints i-atoms precond effects-pair))
+                               (return-from too-heavy-p t)))
+                           add+ :length 2)))
      nil)))
 
 (defun ignore-negation (atom)
@@ -190,6 +197,7 @@ Equality-wise, it never conflicts normal variables because they are always inter
              (return-from satisfiable t)))
          aliases))
 
+;; list-only version
 #+(or)
 (defun test-aliases (aliases inequality)
   (let* ((elems nil)
