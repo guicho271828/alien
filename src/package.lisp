@@ -36,6 +36,7 @@
    #:*init*
    #:*goal*
    #:*axioms*
-   #:*actions*))
+   #:*actions*
+   #:%rel))
 
 (setf trivia:*arity-check-by-test-call* nil)

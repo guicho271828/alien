@@ -46,3 +46,5 @@
   (defun* (fn list) ((a fixnum) b c &rest rest)
     (list (+ a b c) rest)))
 
+(defun %rel (pathname)
+  (asdf:system-relative-pathname :strips pathname))

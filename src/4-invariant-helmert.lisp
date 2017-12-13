@@ -44,7 +44,11 @@ Equality-wise, it never conflicts normal variables because they are always inter
                                               `((,name ,@args)))))))))))
 
 #+(or)
-(strips:with-parsed-information (strips:parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))
+(strips:with-parsed-information (strips:parse (strips:%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
+  (strips::initial-candidates))
+
+#+(or)
+(strips:with-parsed-information (strips:parse (strips:%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (strips::initial-candidates))
 
 ;;; finding invariance
