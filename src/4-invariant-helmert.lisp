@@ -98,38 +98,38 @@ Equality-wise, it never conflicts normal variables because they are always inter
   (match effect
     (`(forall ,_ (when ,_ (not ,_))) t)))
 
-(defun duplicate-quantified-effect (names add)
-  (iter (for e in add)
-        (match e
-          (`(forall ,params ,(and body `(when ,_ (,name ,@_))))
-            (when (member name names)
-              (flet ((rename (unique)
-                       `(forall ,unique
-                                ,(iter (with body = body)
-                                       (for p in params)
-                                       (for u in unique)
-                                       (setf body (subst u p body))
-                                       (finally (return body))))))
-                ;; duplicate
-                (collecting (rename (make-gensym-list (length params) "?")))
-                (when params
-                  (collecting (rename (make-gensym-list (length params) "?"))))))))))
-
 (defun too-heavy-p (action i-atoms)
-  (ematch action
-    ((plist :precondition `(and ,@precond) :effect `(and ,@effects))
-     (let* ((names (mapcar #'first i-atoms))
-            (add   (remove-if #'delete-effect-p effects))
-            ;; duplicate and assign unique params to non-trivially quantified effects
-            (add+  (duplicate-quantified-effect names add)))
-       (when (>= (length add+) 2)
-         (map-combinations (lambda (effects-pair)
-                             (when (multiple-value-call
-                                       #'satisfiable
-                                     (too-heavy-constraints i-atoms precond effects-pair))
-                               (return-from too-heavy-p t)))
-                           add+ :length 2)))
-     nil)))
+  (labels ((duplicate-quantified-effect (names add)
+           "duplicate and assign unique params to non-trivially quantified effects"
+           (iter (for e in add)
+                 (match e
+                   (`(forall ,params ,(and body `(when ,_ (,name ,@_))))
+                     (when (member name names)
+                       (flet ((rename (unique)
+                                `(forall ,unique
+                                         ,(iter (with body = body)
+                                                (for p in params)
+                                                (for u in unique)
+                                                (setf body (subst u p body))
+                                                (finally (return body))))))
+                         ;; duplicate
+                         (collecting (rename (make-gensym-list (length params) "?")))
+                         (when params
+                           (collecting (rename (make-gensym-list (length params) "?")))))))))))
+    ;; main body
+    (ematch action
+      ((plist :precondition `(and ,@precond) :effect `(and ,@effects))
+       (let* ((names (mapcar #'first i-atoms))
+              (add   (remove-if #'delete-effect-p effects))
+              (add+  (duplicate-quantified-effect names add)))
+         (when (>= (length add+) 2)
+           (map-combinations (lambda (effects-pair)
+                               (when (multiple-value-call
+                                         #'satisfiable
+                                       (too-heavy-constraints i-atoms precond effects-pair))
+                                 (return-from too-heavy-p t)))
+                             add+ :length 2)))
+       nil))))
 
 (defun ignore-negation (atom)
   (match atom
