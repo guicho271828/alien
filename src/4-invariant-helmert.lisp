@@ -188,6 +188,15 @@ Equality-wise, it never conflicts normal variables because they are always inter
                              (push (mapcar #'cons args1 args2) inequality)))))))
           (values aliases inequality)))))))
 
+#+(or)
+(too-heavy-p '(:precondition (and (at ?x ?l1) (at ?x ?l2))
+               :effect (and
+                        (forall () (when (and) (at ?x ?l3)))
+                        (forall () (when (and) (at ?x ?l4)))
+                        (forall () (when (and) (not (at ?x ?l1))))
+                        (forall () (when (and) (not (at ?x ?l2))))))
+             '((at ?thing :?counted)))
+
 ;;; satisfiability
 
 (defun satisfiable (aliases inequality)
