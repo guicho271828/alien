@@ -215,10 +215,16 @@ the effect may increase the number of true atom in i-atoms by more than two"
                 `((or ,@(mapcar #'!= args1 args2))))
 
             ;; ensure_cover: this assumes all atoms in an invariant have the different names
-            ,@(let ((covered (find head1 i-atoms :key #'first)))
-                (mapcar #'== args1 (cdr covered)))
-            ,@(let ((covered (find head2 i-atoms :key #'first)))
-                (mapcar #'== args2 (cdr covered)))
+            ,@(iter (with covered = (find head1 i-atoms :key #'first))
+                    (for x in args1)
+                    (for y in (cdr covered))
+                    (unless (eq y +counted-variable+)
+                      (collect (== x y))))
+            ,@(iter (with covered = (find head2 i-atoms :key #'first))
+                    (for x in args2)
+                    (for y in (cdr covered))
+                    (unless (eq y +counted-variable+)
+                      (collect (== x y))))
             
             ;; ensure_conjunction_sat
             ,@(let (pos neg acc)
@@ -239,11 +245,40 @@ the effect may increase the number of true atom in i-atoms by more than two"
                                   `(or ,@(mapcar #'!= args1 args2)) acc))))))
                 acc))))))))
 
+;; considering the second case below
+
+#+(or)
+#S(CANDIDATE :PARAMETERS (#:?V1532) :ATOMS ((PDDL::AT :?COUNTED #:?V1532)))
+#+(or)
+#S(CANDIDATE :PARAMETERS (#:?V1531) :ATOMS ((PDDL::AT #:?V1531 :?COUNTED)))
+
 #+(or)
 (too-heavy-constraints-sexp '((at ?thing :?counted))
                             '((at ?x ?l1) (at ?x ?l2))
-                            '((forall nil (when (and) (at ?x ?l3)))
-                              (forall nil (when (and) (at ?x ?l4)))))
+                            '((forall nil (when (and) (at ?x ?l3)))   ; implies (not (at ?x ?l3)) before application
+                              (forall nil (when (and) (at ?x ?l4))))) ; implies (not (at ?x ?l4)) before application
+
+#+(or)
+(AND (OR (!= ?X ?X) (!= ?L3 ?L4))
+     (== ?L3 :?COUNTED)
+     (== ?L4 :?COUNTED)
+     (OR (!= ?X ?X) (!= ?L1 ?L3))
+     (OR (!= ?X ?X) (!= ?L1 ?L4))
+     (OR (!= ?X ?X) (!= ?L2 ?L3))
+     (OR (!= ?X ?X) (!= ?L2 ?L4)))
+
+;; if we ignore the obvious and the duplicates
+#+(or)
+(AND (!= ?L3 ?L4)
+     (== ?X ?THING)
+     (== ?L3 :?COUNTED)
+     (== ?L4 :?COUNTED)
+     (!= ?L1 ?L3)
+     (!= ?L1 ?L4)
+     (!= ?L2 ?L3)
+     (!= ?L2 ?L4))
+
+;; (!= ?L3 ?L4) and (== ?L3 :?COUNTED) and (== ?L4 :?COUNTED) is a contradiction.
 
 
 ;;; satisfiability
