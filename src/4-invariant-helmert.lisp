@@ -142,55 +142,53 @@ Equality-wise, it never conflicts normal variables because they are always inter
            `(forall ,_ (when (and ,@conditions2) ,atom2)))
      (let ((atom1+ (ignore-negation atom1))
            (atom2+ (ignore-negation atom2))
-           ;; Aliases = conjunctions of equality. (x1 = y1 and x2 = y2 ... )
-           ;; originally called Assignment in the python code. (We follow the
-           ;; unification/prolog terminology.)
+           ;;  Aliases = conjunctions of equality. (x1 = y1 and x2 = y2 ... )
+           ;; originally called Assignment in the python code.
            ;; 
-           ;; Inequality = disjunctions of inequality. (x1 != y1 or x2 != y2 ...)
+           ;;  Inequality = disjunctions of inequality. (x1 != y1 or x2 != y2 ...)
            ;; originally NegativeClause in constraints.py.
            ;;
-           ;; Now what is more complicated is "combinatorial_assignments" in the python code.
+           ;;  Now what is more complicated is "combinatorial_assignments" in the python code.
            ;; This is a conjunctions of disjunctions of conjunctions of equality.
            ;; Thus when computing the correct aliases, we should enumerate all combinations.
            ;; 
-           ;; Aliases is thus a list of lists of alists.
+           ;;  Aliases is thus a list of lists of alists.
            ;; Inequality is a list of alists (conjunctions of equalities).
            (aliases nil)
            (inequality nil))
-       ;; 
-       (ematch* (atom1+ atom2+)
-         ((`(,head1 ,@args1) `(,head2 ,@args2))
-          
-          ;; ensure_inequality
-          (when (eq head1 head2)
-            (push (mapcar #'cons args1 args2) inequality))
-
-          ;; ensure_cover: this assumes all atoms in an invariant have the different names
-          (flet ((fn (head args)
-                   (iter (with covered = (find head i-atoms :key #'first))
-                         (for x in args)
-                         (for y in (cdr covered))
-                         (unless (eq y +counted-variable+)
-                           (collecting (cons x y))))))
-            (push (fn head1 args1) aliases)
-            (push (fn head2 args2) aliases))
-
-          ;; ensure_conjunction_sat
-          (let (pos neg)
-            (iter (for condition in (append precond conditions1 conditions2
-                                            (list (negate atom1) (negate atom2))))
-                  (match condition
-                    (`(not (= ,x ,y)) (push (list (cons x y))         inequality))
-                    (`(= ,x ,y)       (push (list (list (cons x y))) aliases))
-                    (`(not ,x)        (push x neg))
-                    (_                (push condition pos))))
-            (iter (for p in pos)
-                  (iter (for n in neg)
-                        (ematch* (p n)
-                          ((`(,head1 ,@args1) `(,head2 ,@args2))
-                           (when (eq head1 head2)
-                             (push (mapcar #'cons args1 args2) inequality)))))))
-          (values aliases inequality)))))))
+       (flet ((not-equal (atom1 atom2)
+                (ematch* (atom1 atom2)
+                  ((`(,head1 ,@args1) `(,head2 ,@args2))
+                   (when (eq head1 head2)
+                     (remove-if (lambda-match ((cons x (eq x)) t))
+                                (mapcar #'cons args1 args2))))))
+              (cover (atom)
+                (ematch atom
+                  (`(,head ,@args)
+                    (list ; there is no disjunction
+                     (iter (with covered = (find head i-atoms :key #'first))
+                           (for x in args)
+                           (for y in (cdr covered))
+                           (unless (eq y +counted-variable+)
+                             (collecting (cons x y)))))))))
+         ;; ensure_inequality
+         (push (not-equal atom1+ atom2+) inequality)
+         ;; ensure_cover: this assumes all atoms in an invariant have the different names
+         (push (cover atom1+) aliases)
+         (push (cover atom2+) aliases)
+         ;; ensure_conjunction_sat
+         (let (pos neg)
+           (iter (for condition in (append precond conditions1 conditions2
+                                           (list (negate atom1) (negate atom2))))
+                 (match condition
+                   (`(not (= ,x ,y)) (push (list (cons x y))        inequality))
+                   (`(= ,x ,y)       (push (list (list (cons x y))) aliases))
+                   (`(not ,x)        (push x neg))
+                   (_                (push condition pos))))
+           (iter (for p in pos)
+                 (iter (for n in neg)
+                       (push (not-equal p n) inequality)))
+           (values aliases inequality)))))))
 
 #+(or)
 (too-heavy-p '(:precondition (and (at ?x ?l1) (at ?x ?l2))
