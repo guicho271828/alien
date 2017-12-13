@@ -21,6 +21,12 @@
 #+(or)
 (strips:with-parsed-information (strips:parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))
   strips:*types*)
+#+(or)
+(strips:with-parsed-information (strips:parse (asdf:system-relative-pathname :strips "ipc2014-agl/transport-agl14/p01.pddl"))
+  strips:*types*)
+#+(or)
+(strips:with-parsed-information (strips:parse (asdf:system-relative-pathname :strips "ipc2011-opt/transport-opt11/p01.pddl"))
+  strips:*types*)
 
 (defun preprocess (info)
   (with-parsed-information info
