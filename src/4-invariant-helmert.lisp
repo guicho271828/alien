@@ -154,7 +154,7 @@ Equality-wise, it never conflicts normal variables because they are always inter
            ;; Thus when computing the correct aliases, we should enumerate all combinations.
            ;; 
            ;; Aliases is thus a list of lists of alists.
-           ;; Inequality is a list of alists.
+           ;; Inequality is a list of alists (conjunctions of equalities).
            (aliases nil)
            (inequality nil))
        ;; 
@@ -166,10 +166,14 @@ Equality-wise, it never conflicts normal variables because they are always inter
             (push (mapcar #'cons args1 args2) inequality))
 
           ;; ensure_cover: this assumes all atoms in an invariant have the different names
-          (let ((covered (find head1 i-atoms :key #'first)))
-            (push (list (mapcar #'cons args1 (cdr covered))) aliases))
-          (let ((covered (find head2 i-atoms :key #'first)))
-            (push (list (mapcar #'cons args2 (cdr covered))) aliases))
+          (flet ((fn (head args)
+                   (iter (with covered = (find head i-atoms :key #'first))
+                         (for x in args)
+                         (for y in (cdr covered))
+                         (unless (eq y +counted-variable+)
+                           (collecting (cons x y))))))
+            (push (fn head1 args1) aliases)
+            (push (fn head2 args2) aliases))
 
           ;; ensure_conjunction_sat
           (let (pos neg)
