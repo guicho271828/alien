@@ -334,8 +334,9 @@ the effect may increase the number of true atom in i-atoms by more than two"
              (for add in adds)
              (for (values aliases inequality) = (minimal-renamings i-atoms action add))
              (when (iter (for del in dels)
-                         (always (unbalanced-effects-p add del)))
-               (refine-candidate)))))))
+                         (always (unbalanced-effects-p aliases inequality precond add del i-atoms)))
+               (refine-candidate add dels)
+               (return-from unbalanced-p t)))))))
 
 (defun minimal-renamings (i-atoms action add)
   (let (aliases inequality)
@@ -373,10 +374,65 @@ the effect may increase the number of true atom in i-atoms by more than two"
                                 (forall () (when (and) (not (at ?x ?l1))))))
                      '((at ?thing :?counted))))
 
-(defun unbalanced-renamings ()
-  )
+(defun unbalanced-effects-p (aliases1 inequality1 precond add del i-atoms)
+  (ematch* (add del)
+    ((`(forall ,_ (when (and ,@conditions1) ,pos))
+      `(forall ,_ (when (and ,@conditions2) (not ,neg))))
+     (let ((aliases2 (list (cover neg i-atoms)))    ; e.atom /= e′.atom
+           (inequality2 (list (not-equal add del))) ; covers(V , Φ, e′ .atom)
+           )
+       ;; aliases1/inequality1 are from the operator params and the add effect
+       ;;
+       ;; "the quantified variables of e′ can be renamed so that"....
+       (iter (with check-constants = nil)
+             (with aliases3 = nil)
+             (with inequality3 = nil)
+             ;; --> From python comment: "Since we may only rename the quantified
+             ;; variables of the delete effect we need to check that "renamings" of
+             ;; constants are already implied by the unbalanced_renaming (of the of
+             ;; the operator parameters). The following system is used as a helper
+             ;; for this. It builds a conjunction that formulates that the constants
+             ;; are NOT renamed accordingly. We below check that this is impossible
+             ;; with each unbalanced renaming."
+             (for (x y . rest) on (compute-mapping (make-equivalence aliases2)))
+             (when (not (variablep y)) ; constant
+               (setf check-constants t)
+               (push (list (cons x y)) inequality3))
+             (finally                   ; not necessarily the FINALLY clause, but this makes the connection clear
+              (when check-constants
+                (when (satisfiable (append aliases1 aliases3) (append inequality1 inequality3))
+                  ;; From python comment: "it is possible that the operator arguments
+                  ;; are not mapped to constants as required for covering the delete
+                  ;; effect"
+                  (return-from unbalanced-effects-p (values aliases1 inequality1))))))
+       (let (;; new_sys in python
+             (aliases4 (append aliases1 aliases2))
+             (inequality4 (append inequality1 inequality2)))
+         ;; (o′.precond ∧ e.cond ∧ ¬e.atom) |= (e′.cond ∧ e′ .atom)  (f**king operator precedence!)
+         (multiple-value-bind (lhs-aliases lhs-inequality)
+             (conjunction (append precond conditions1 (list (negate pos)))) ; (o′.precond ∧ e.cond ∧ ¬e.atom)
+           (when (satisfiable (append aliases1 lhs-aliases)
+                              (append inequality1 lhs-inequality))
+             ;; implies_del_effect in python, (e′.cond ∧ e′ .atom)
+             (iter (for c1 in (list* neg conditions2))
+                   (for possible-assignments =
+                        (iter (for c2 in (append precond conditions1 (list (negate pos))))
+                              (match* (c1 c2)
+                                ((`(not (,name ,@args1))
+                                  `(not (,(eq name) ,@args2)))
+                                 (collecting (mapcar #'cons args1 args2)))
+                                ((`(,(and name (not 'not)) ,args1)
+                                  `(,(eq name) ,args2))
+                                 (collecting (mapcar #'cons args1 args2))))))
+                   (when (null possible-assignments)
+                     (return-from unbalanced-effects-p (values aliases1 inequality1)))
+                   (collecting possible-assignments into aliases5)
+                   (finally
+                    (appendf aliases4 aliases5)))))
+         (unless (satisfiable aliases4 inequality4)
+           (return-from unbalanced-effects-p (values aliases1 inequality1))))))))
 
-(defun unbalanced-effects-p ()
+(defun refine-candidates ()
   )
-
+         
 ;; couldnt understand what they are doing!
