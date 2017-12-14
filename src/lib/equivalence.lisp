@@ -5,7 +5,7 @@
 ;; classid -> [X]
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (defstruct equivalence
+  (defstruct (equivalence (:constructor %make-equivalence))
     (total    -1 :type fixnum)
     (obsolete -1 :type fixnum)
     (groups (make-array 32 :element-type 'list :initial-element nil :adjustable t :fill-pointer 0)
@@ -66,6 +66,11 @@
                (setf (getf mapping v) constant)))
        (values mapping t)))))
 
+(defun make-equivalence (&optional aliases)
+  (let ((ec (%make-equivalence)))
+    (iter (for (x . y) in aliases)
+          (add-relation ec x y))
+    ec))
 
 
 ;;; satisfiability
@@ -126,9 +131,7 @@
            inequality)))
 
 (defun test-aliases (aliases inequality)
-  (let ((ec (make-equivalence)))
-    (iter (for (x . y) in aliases)
-          (add-relation ec x y))
+  (let ((ec (make-equivalence aliases)))
     (multiple-value-bind (mapping consistent-p) (compute-mapping ec)
       (unless consistent-p
         (return-from test-aliases nil))
