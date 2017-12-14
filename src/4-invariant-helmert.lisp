@@ -192,12 +192,11 @@ Equality-wise, it never conflicts normal variables because they are always inter
                      (push (not-equal p n) inequality)))
          (values aliases inequality))))))
 
-
-(print (multiple-value-list
-        (too-heavy-constraints '((at ?thing :?counted))
-                               '((at ?x ?l1) (at ?x ?l2))
-                               '((forall () (when (and) (at ?x ?l3)))
-                                 (forall () (when (and) (at ?x ?l4)))))))
+(print-values
+  (too-heavy-constraints '((at ?thing :?counted))
+                         '((at ?x ?l1) (at ?x ?l2))
+                         '((forall () (when (and) (at ?x ?l3)))
+                           (forall () (when (and) (at ?x ?l4))))))
 
 (print (too-heavy-p '(:precondition (and (at ?x ?l1) (at ?x ?l2))
                       :effect (and

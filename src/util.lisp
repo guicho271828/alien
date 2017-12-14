@@ -48,3 +48,7 @@
 
 (defun %rel (pathname)
   (asdf:system-relative-pathname :strips pathname))
+
+(defmacro print-values (&body form)
+  `(multiple-value-call (lambda (&rest args) (mapcar #'print args))
+     ,@form))
