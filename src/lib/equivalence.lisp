@@ -84,7 +84,8 @@
          (lambda (&rest single-aliases)
            (when (test-aliases (reduce #'append single-aliases) inequality)
              (return-from satisfiable t)))
-         aliases))
+         aliases)
+  nil)
 
 ;; list-only version
 #+(or)
