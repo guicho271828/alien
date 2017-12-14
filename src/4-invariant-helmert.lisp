@@ -206,6 +206,20 @@ Equality-wise, it never conflicts normal variables because they are always inter
                                (forall () (when (and) (not (at ?x ?l2))))))
                     '((at ?thing :?counted))))
 
+(print-values
+  (too-heavy-constraints '((at ?thing :?counted))
+                         '((at ?x ?l1) (at ?x ?l2) (not (= ?l1 ?l2)))
+                         '((forall () (when (and) (at ?x ?l3)))
+                           (forall () (when (and) (at ?x ?l4))))))
+
+(print (too-heavy-p '(:precondition (and (at ?x ?l1) (at ?x ?l2) (not (= ?l1 ?l2)))
+                      :effect (and
+                               (forall () (when (and) (at ?x ?l3)))
+                               (forall () (when (and) (at ?x ?l4)))
+                               (forall () (when (and) (not (at ?x ?l1))))
+                               (forall () (when (and) (not (at ?x ?l2))))))
+                    '((at ?thing :?counted))))
+
 (progn ;; for hideshow minor mode
   #+(or)
   (too-heavy-p '(:precondition (and (at ?x ?l1) (at ?x ?l2))
