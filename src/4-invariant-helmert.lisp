@@ -304,37 +304,21 @@ the effect may increase the number of true atom in i-atoms by more than two"
                (return-from unbalanced-p t)))
        nil))))
 
-;; (defun unbalanced-add-effect-p (i-atoms action add dels)
-;;   (let (aliases inequality)
-;;     
-;;   (let ((minimal-renamings
-;;          (minimal-renamings action add)))
-;;     ))
-;; 
-
 (defun minimal-renamings (i-atoms action add)
   (let (aliases inequality)
-    ;; since the renaming should be minimal,
-    ;; disallow aliasing each parameter to a single group.
-    ;; without this constraint, every parameter can be aliased to a single entity.
-    (ematch action
-      ((plist :parameters params)
-       (push (iter outer
-                   (for (p1 . rest) on params)
-                   (iter (for p2 in rest)
-                         (collecting (cons p1 p2))))
-             inequality)))
-    ;; and the add effect should cover one of the invariant atoms.
     (match add
-      (`(,head1 ,@args1)
-        (let ((covered (find head1 i-atoms :key #'first)))
-          (push (list (mapcar #'cons args1 (cdr covered))) aliases))))
-    (iter (for (x . y) in aliases)
-          (add-relation ec x y))
-    (multiple-value-bind (mapping consistent-p) (compute-mapping ec)
-      (unless consistent-p
-        (return-from test-aliases nil)))))
+      (`(forall ,_ (when (and ,@_) ,atom))
+        ;; since the renaming should be minimal,
+        ;; disallow aliasing each parameter to a single group.
+        ;; without this constraint, every parameter can be aliased to a single entity.
+        (push (cover atom i-atoms) aliases)
+        (let ((ec (make-equivalence aliases)))
+          (ematch action
+            ((plist :parameters params)
+             (iter (for (p1 . rest) on params)
+                   (iter (for p2 in rest)
+                         (when (/= (class-id ec p1) (class-id ec p2))
+                           (push (cons p1 p2) inequality))))))
+          (values aliases inequality))))))
 
-
-  
 ;; couldnt understand what they are doing!
