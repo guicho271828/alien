@@ -53,17 +53,13 @@ Equality-wise, it never conflicts normal variables because they are always inter
 
 ;;; finding invariance
 
-(define-condition new-candidate ()
-  ((candidates :reader new-candidate-candidates
-               :initarg :candidates)))
-
 (defun find-invariants ()
   (let ((open (initial-candidates))
         invariants)
-    (handler-bind
+    (restart-bind
         ((new-candidate
-          (lambda (c)
-            (appendf open (new-candidate-candidates c)))))
+          (lambda (candidates)
+            (appendf open candidates))))
       (iter (for candidate = (pop open))
             (while candidate)
             (when (prove-invariant candidate)
