@@ -149,6 +149,19 @@ Equality-wise, it never conflicts normal variables because they are always inter
              (unless (eq y +counted-variable+)
                (collecting (cons x y))))))))
 
+(defun conjunction (conditions)
+  (let (pos neg aliases inequality)
+    (iter (for condition in conditions)
+          (match condition
+            (`(not (= ,x ,y)) (push (list (cons x y))        inequality))
+            (`(= ,x ,y)       (push (list (list (cons x y))) aliases))
+            (`(not ,x)        (push x neg))
+            (_                (push condition pos))))
+    (iter (for p in pos)
+          (iter (for n in neg)
+                (push (not-equal p n) inequality)))
+    (values aliases inequality)))
+
 (defun too-heavy-constraints (i-atoms precond effects-pair)
   (match effects-pair
     ((list `(forall ,_ (when (and ,@conditions1) ,atom1))
@@ -175,17 +188,11 @@ Equality-wise, it never conflicts normal variables because they are always inter
        (push (cover atom1+ i-atoms) aliases)
        (push (cover atom2+ i-atoms) aliases)
        ;; ensure_conjunction_sat
-       (let (pos neg)
-         (iter (for condition in (append precond conditions1 conditions2
-                                         (list (negate atom1) (negate atom2))))
-               (match condition
-                      (`(not (= ,x ,y)) (push (list (cons x y))        inequality))
-                      (`(= ,x ,y)       (push (list (list (cons x y))) aliases))
-                      (`(not ,x)        (push x neg))
-                      (_                (push condition pos))))
-         (iter (for p in pos)
-               (iter (for n in neg)
-                     (push (not-equal p n) inequality))))
+       (multiple-value-bind (more-aliases more-inequality)
+           (conjunction (append precond conditions1 conditions2
+                                (list (negate atom1) (negate atom2))))
+         (appendf aliases more-aliases)
+         (appendf inequality more-inequality))
        (values aliases inequality)))))
 
 (print-values
