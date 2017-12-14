@@ -321,16 +321,18 @@ the effect may increase the number of true atom in i-atoms by more than two"
     ((plist :preconditions `(and ,@precond) :effects `(and ,@effects))
      (let* ((names (mapcar #'first i-atoms))
             (rels (iter (for e in effects)
-                       (match e
-                         (`(forall ,_ (when ,_ (,name ,@_)))
-                           (when (member name names)
-                             (collecting e))))))
+                        (match e
+                          (`(forall ,_ (when ,_ (,name ,@_)))
+                            (when (member name names)
+                              (collecting e))))))
             (adds   (remove-if #'delete-effect-p rels))
             (dels   (remove-if-not #'delete-effect-p rels)))
-       (iter (for add in adds)
-             (when (unbalanced-add-effect-p i-atoms action add dels)
-               (return-from unbalanced-p t)))
-       nil))))
+       (iter outer
+             (for add in adds)
+             (for (values aliases inequality) = (minimal-renamings i-atoms action add))
+             (when (iter (for del in dels)
+                         (always (unbalanced-effects-p add del)))
+               (refine-candidate)))))))
 
 (defun minimal-renamings (i-atoms action add)
   (let (aliases inequality)
@@ -348,7 +350,6 @@ the effect may increase the number of true atom in i-atoms by more than two"
                          (when (/= (class-id ec p1) (class-id ec p2))
                            (push (cons p1 p2) inequality))))))
           (values aliases inequality))))))
-
 
 (print-values
   (minimal-renamings '((at ?thing :?counted))
@@ -368,5 +369,11 @@ the effect may increase the number of true atom in i-atoms by more than two"
                                 (forall () (when (and) (at ?x ?l2)))
                                 (forall () (when (and) (not (at ?x ?l1))))))
                      '((at ?thing :?counted))))
+
+(defun unbalanced-renamings ()
+  )
+
+(defun unbalanced-effects-p ()
+  )
 
 ;; couldnt understand what they are doing!
