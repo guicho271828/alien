@@ -143,7 +143,7 @@ Equality-wise, it never conflicts normal variables because they are always inter
        (remove-if (lambda-match ((cons x (eq x)) t))
                   (mapcar #'cons args1 args2))))))
 
-(defun cover (atom)
+(defun cover (atom i-atoms)
   (ematch atom
     (`(,head ,@args)
       (list ; there is no disjunction
@@ -176,8 +176,8 @@ Equality-wise, it never conflicts normal variables because they are always inter
        ;; ensure_inequality
        (push (not-equal atom1+ atom2+) inequality)
        ;; ensure_cover: this assumes all atoms in an invariant have the different names
-       (push (cover atom1+) aliases)
-       (push (cover atom2+) aliases)
+       (push (cover atom1+ i-atoms) aliases)
+       (push (cover atom2+ i-atoms) aliases)
        ;; ensure_conjunction_sat
        (let (pos neg)
          (iter (for condition in (append precond conditions1 conditions2
