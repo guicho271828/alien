@@ -192,97 +192,99 @@ Equality-wise, it never conflicts normal variables because they are always inter
                      (push (not-equal p n) inequality)))
          (values aliases inequality))))))
 
-#+(or)
-(too-heavy-p '(:precondition (and (at ?x ?l1) (at ?x ?l2))
-               :effect (and
-                        (forall () (when (and) (at ?x ?l3)))
-                        (forall () (when (and) (at ?x ?l4)))
-                        (forall () (when (and) (not (at ?x ?l1))))
-                        (forall () (when (and) (not (at ?x ?l2))))))
-             '((at ?thing :?counted)))
+(progn ;; for hideshow minor mode
+  #+(or)
+  (too-heavy-p '(:precondition (and (at ?x ?l1) (at ?x ?l2))
+                 :effect (and
+                          (forall () (when (and) (at ?x ?l3)))
+                          (forall () (when (and) (at ?x ?l4)))
+                          (forall () (when (and) (not (at ?x ?l1))))
+                          (forall () (when (and) (not (at ?x ?l2))))))
+               '((at ?thing :?counted)))
 
-;; trying to make too-heavy-constraints more understantable
+  ;; trying to make too-heavy-constraints more understantable
 
-(defun too-heavy-constraints-sexp (i-atoms precond effects-pair)
-  "When these constrants are satisfied, 
+  (defun too-heavy-constraints-sexp (i-atoms precond effects-pair)
+    "When these constrants are satisfied, 
 the effect may increase the number of true atom in i-atoms by more than two"
-  (match effects-pair
-    ((list `(forall ,_ (when (and ,@conditions1) ,atom1))
-           `(forall ,_ (when (and ,@conditions2) ,atom2)))
-     (ematch* ((ignore-negation atom1) (ignore-negation atom2))
-       ((`(,head1 ,@args1) `(,head2 ,@args2))
-        (flet ((==  (x y) `(== ,x ,y)) ; names chosen because they don't conflict CL symbols
-               (!= (x y) `(!= ,x ,y)))
-          `(and
-            ;; ensure_inequality
-            ,@(when (eq head1 head2)
-                `((or ,@(mapcar #'!= args1 args2))))
+    (match effects-pair
+           ((list `(forall ,_ (when (and ,@conditions1) ,atom1))
+                  `(forall ,_ (when (and ,@conditions2) ,atom2)))
+            (ematch* ((ignore-negation atom1) (ignore-negation atom2))
+                     ((`(,head1 ,@args1) `(,head2 ,@args2))
+                      (flet ((==  (x y) `(== ,x ,y)) ; names chosen because they don't conflict CL symbols
+                             (!= (x y) `(!= ,x ,y)))
+                        `(and
+                          ;; ensure_inequality
+                          ,@(when (eq head1 head2)
+                              `((or ,@(mapcar #'!= args1 args2))))
 
-            ;; ensure_cover: this assumes all atoms in an invariant have the different names
-            ,@(iter (with covered = (find head1 i-atoms :key #'first))
-                    (for x in args1)
-                    (for y in (cdr covered))
-                    (unless (eq y +counted-variable+)
-                      (collect (== x y))))
-            ,@(iter (with covered = (find head2 i-atoms :key #'first))
-                    (for x in args2)
-                    (for y in (cdr covered))
-                    (unless (eq y +counted-variable+)
-                      (collect (== x y))))
-            
-            ;; ensure_conjunction_sat
-            ,@(let (pos neg acc)
-                (iter (for condition in (append precond conditions1 conditions2
-                                                (list (negate atom1) (negate atom2))))
-                      (match condition
-                        (`(not (= ,x ,y)) (push (!= x y) acc))
-                        (`(= ,x ,y)       (push (== x y) acc))
-                        (`(not ,x)        (push x neg))
-                        (_                (push condition pos))))
-                
-                (iter (for p in pos)
-                      (iter (for n in neg)
-                            (ematch* (p n)
-                              ((`(,head1 ,@args1) `(,head2 ,@args2))
-                               (when (eq head1 head2)
-                                 (push
-                                  `(or ,@(mapcar #'!= args1 args2)) acc))))))
-                acc))))))))
+                          ;; ensure_cover: this assumes all atoms in an invariant have the different names
+                          ,@(iter (with covered = (find head1 i-atoms :key #'first))
+                                  (for x in args1)
+                                  (for y in (cdr covered))
+                                  (unless (eq y +counted-variable+)
+                                    (collect (== x y))))
+                          ,@(iter (with covered = (find head2 i-atoms :key #'first))
+                                  (for x in args2)
+                                  (for y in (cdr covered))
+                                  (unless (eq y +counted-variable+)
+                                    (collect (== x y))))
+                          
+                          ;; ensure_conjunction_sat
+                          ,@(let (pos neg acc)
+                              (iter (for condition in (append precond conditions1 conditions2
+                                                              (list (negate atom1) (negate atom2))))
+                                    (match condition
+                                           (`(not (= ,x ,y)) (push (!= x y) acc))
+                                           (`(= ,x ,y)       (push (== x y) acc))
+                                           (`(not ,x)        (push x neg))
+                                           (_                (push condition pos))))
+                              
+                              (iter (for p in pos)
+                                    (iter (for n in neg)
+                                          (ematch* (p n)
+                                                   ((`(,head1 ,@args1) `(,head2 ,@args2))
+                                                    (when (eq head1 head2)
+                                                      (push
+                                                       `(or ,@(mapcar #'!= args1 args2)) acc))))))
+                              acc))))))))
 
-;; considering the second case below
+  ;; considering the second case below
 
-#+(or)
-#S(CANDIDATE :PARAMETERS (#:?V1532) :ATOMS ((PDDL::AT :?COUNTED #:?V1532)))
-#+(or)
-#S(CANDIDATE :PARAMETERS (#:?V1531) :ATOMS ((PDDL::AT #:?V1531 :?COUNTED)))
+  #+(or)
+  #S(CANDIDATE :PARAMETERS (#:?V1532) :ATOMS ((PDDL::AT :?COUNTED #:?V1532)))
+  #+(or)
+  #S(CANDIDATE :PARAMETERS (#:?V1531) :ATOMS ((PDDL::AT #:?V1531 :?COUNTED)))
 
-#+(or)
-(too-heavy-constraints-sexp '((at ?thing :?counted))
-                            '((at ?x ?l1) (at ?x ?l2))
-                            '((forall nil (when (and) (at ?x ?l3)))   ; implies (not (at ?x ?l3)) before application
-                              (forall nil (when (and) (at ?x ?l4))))) ; implies (not (at ?x ?l4)) before application
+  #+(or)
+  (too-heavy-constraints-sexp '((at ?thing :?counted))
+                              '((at ?x ?l1) (at ?x ?l2))
+                              '((forall nil (when (and) (at ?x ?l3)))   ; implies (not (at ?x ?l3)) before application
+                                (forall nil (when (and) (at ?x ?l4))))) ; implies (not (at ?x ?l4)) before application
 
-#+(or)
-(AND (OR (!= ?X ?X) (!= ?L3 ?L4))
-     (== ?L3 :?COUNTED)
-     (== ?L4 :?COUNTED)
-     (OR (!= ?X ?X) (!= ?L1 ?L3))
-     (OR (!= ?X ?X) (!= ?L1 ?L4))
-     (OR (!= ?X ?X) (!= ?L2 ?L3))
-     (OR (!= ?X ?X) (!= ?L2 ?L4)))
+  #+(or)
+  (AND (OR (!= ?X ?X) (!= ?L3 ?L4))
+       (== ?L3 :?COUNTED)
+       (== ?L4 :?COUNTED)
+       (OR (!= ?X ?X) (!= ?L1 ?L3))
+       (OR (!= ?X ?X) (!= ?L1 ?L4))
+       (OR (!= ?X ?X) (!= ?L2 ?L3))
+       (OR (!= ?X ?X) (!= ?L2 ?L4)))
 
-;; if we ignore the obvious and the duplicates
-#+(or)
-(AND (!= ?L3 ?L4)
-     (== ?X ?THING)
-     (== ?L3 :?COUNTED)
-     (== ?L4 :?COUNTED)
-     (!= ?L1 ?L3)
-     (!= ?L1 ?L4)
-     (!= ?L2 ?L3)
-     (!= ?L2 ?L4))
+  ;; if we ignore the obvious and the duplicates
+  #+(or)
+  (AND (!= ?L3 ?L4)
+       (== ?X ?THING)
+       (== ?L3 :?COUNTED)
+       (== ?L4 :?COUNTED)
+       (!= ?L1 ?L3)
+       (!= ?L1 ?L4)
+       (!= ?L2 ?L3)
+       (!= ?L2 ?L4))
 
-;; (!= ?L3 ?L4) and (== ?L3 :?COUNTED) and (== ?L4 :?COUNTED) is a contradiction.
+  ;; (!= ?L3 ?L4) and (== ?L3 :?COUNTED) and (== ?L4 :?COUNTED) is a contradiction.
+  )
 
 ;;; unbalanced-p
 
