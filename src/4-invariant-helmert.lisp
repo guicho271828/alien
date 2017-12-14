@@ -335,4 +335,24 @@ the effect may increase the number of true atom in i-atoms by more than two"
                            (push (cons p1 p2) inequality))))))
           (values aliases inequality))))))
 
+
+(print-values
+  (minimal-renamings '((at ?thing :?counted))
+                     '(:action move
+                       :parameters (?x ?l1 ?l2)
+                       :precondition (and (at ?x ?l1))
+                       :effect (and
+                                (forall () (when (and) (at ?x ?l2)))
+                                (forall () (when (and) (not (at ?x ?l1))))))
+                     '(forall () (when (and) (at ?x ?l2)))))
+
+#+(or)
+(print (unbalanced-p '(:action move
+                       :parameters (?x ?l1 ?l2)
+                       :precondition (and (at ?x ?l1))
+                       :effect (and
+                                (forall () (when (and) (at ?x ?l2)))
+                                (forall () (when (and) (not (at ?x ?l1))))))
+                     '((at ?thing :?counted))))
+
 ;; couldnt understand what they are doing!
