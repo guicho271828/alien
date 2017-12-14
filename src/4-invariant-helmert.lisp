@@ -185,8 +185,8 @@ Equality-wise, it never conflicts normal variables because they are always inter
                       (_                (push condition pos))))
          (iter (for p in pos)
                (iter (for n in neg)
-                     (push (not-equal p n) inequality)))
-         (values aliases inequality))))))
+                     (push (not-equal p n) inequality))))
+       (values aliases inequality)))))
 
 (print-values
   (too-heavy-constraints '((at ?thing :?counted))
