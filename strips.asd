@@ -19,9 +19,10 @@
  :pathname "src"
  :components ((:file "package")
               (:file "util")
+              (:file "2-translate")
               (:module "lib"
                :components ((:file "equivalence")))
-              (:file "2-translate")
-              (:file "4-invariant"))
+              (:file "4-invariant")
+              (:file "4-invariant-helmert"))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))
