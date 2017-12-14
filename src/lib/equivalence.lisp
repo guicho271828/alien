@@ -28,7 +28,7 @@
      (or (gethash x hash)
          (let ((class (incf total)))
            (setf (gethash x hash) class)
-           (vector-push-extend (list x) groups (1+ class))
+           (vector-push-extend (list x) groups (array-total-size groups))
            class)))))
 
 (defun add-relation (ec x y)
@@ -41,13 +41,13 @@
          (rotatef x y)
          (rotatef xc yc))
        (dolist (y (aref groups yc))
-         (setf (gethash y hash) yc))
+         (setf (gethash y hash) xc))
        (nconcf (aref groups xc)
                (aref groups yc))
        (delete-class ec yc)))))
 
-
 (defun compute-mapping (ec)
+  "Returns a plist from each variable to a constant"
   (declare (equivalence ec))
   (ematch ec
     ((equivalence hash :obsolete (place obsolete) :groups groups)
@@ -72,6 +72,10 @@
           (add-relation ec x y))
     ec))
 
+(print (make-equivalence '((?x . ?y) (?y . ?z) (?z .  one) (?w . ?v))))
+
+(print (compute-mapping
+        (make-equivalence '((?x . ?y) (?y . ?z) (?z .  one) (?w . ?v)))))
 
 ;;; satisfiability
 
