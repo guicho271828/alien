@@ -330,12 +330,20 @@ the effect may increase the number of true atom in i-atoms by more than two"
                               (collecting e))))))
             (adds   (remove-if #'delete-effect-p rels))
             (dels   (remove-if-not #'delete-effect-p rels)))
-       (iter outer
-             (for add in adds)
+       (iter (for add in adds)
              (for (values aliases inequality) = (minimal-renamings i-atoms action add))
-             (when (iter (for del in dels)
-                         (always (unbalanced-effects-p aliases inequality precond add del i-atoms)))
-               (refine-candidate add dels)
+             (iter (for del in dels)
+                   (multiple-value-setq (aliases inequality)
+                     (unbalanced-effects-p aliases inequality precond add del i-atoms)))
+             (when (or aliases inequality)
+               (let ((matched (find (car add) i-atoms :key #'first)))
+                 (iter (for e in effects)
+                     (match e
+                       (`(forall ,_ (when ,_ (not (,name ,@_))))
+                         (when (not (member name names))
+                           ;; unlerated delete effect
+                           ;; TBP
+                           )))))
                (return-from unbalanced-p t)))))))
 
 (defun minimal-renamings (i-atoms action add)
@@ -432,7 +440,4 @@ the effect may increase the number of true atom in i-atoms by more than two"
          (unless (satisfiable aliases4 inequality4)
            (return-from unbalanced-effects-p (values aliases1 inequality1))))))))
 
-(defun refine-candidates ()
-  )
-         
 ;; couldnt understand what they are doing!
