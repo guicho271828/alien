@@ -16,46 +16,54 @@
              :transitions transitions
              info))))
 
-(defparameter *interpreter-class* 'cl-prolog.swi:swi-prolog)
-
-(defmacro with-impl ((var) &body body)
-  `(let ((,var (make-instance *interpreter-class*)))
-     (unwind-protect
-          (progn ,@body)
-       (cl-prolog:terminate ,var))))
-
 (defun %ground ()
-  (with-impl (p)
-    (send-rules p (iter (for proposition in *init*)
-                        (collect `(relaxed-reachable-fact ,@proposition))))
-    (send-rules p (iter (for a in *actions*)
-                        (ematch a
-                          ((plist :action name
-                                  :parameters params
-                                  :precondition `(and ,@precond)
-                                  :effect effects)
-                           (collecting
-                            `(:- (relaxed-reachable-op ,name ,@params)
-                                 (and ,@(iter (for pre in precond)
-                                              (collect `(relaxed-reachable-fact ,@pre))))))
-                           (dolist (e effects)
-                             (match e
-                               (`(forall ,_ (when (and ,conditions) ,atom))
-                                 (unless (or (eq 'not (car atom))
-                                             (eq 'increase (car atom)))
-                                   ;; relaxed-reachable
-                                   (collecting
-                                    `(:- (relaxed-reachable-fact ,@atom)
-                                         (and ,@(iter (for c in conditions)
-                                                      (collect `(relaxed-reachable-fact ,@c)))
-                                              (relaxed-reachable-op ,name ,@params))))))))))))
-    (iter (for predicate in *predicates*)
-          (send-query p `(relaxed-reachable-fact ,@predicate)
-                      (lambda (output)
-                        (print (read-line output)))))))
+  (run-prolog
+   (append `((:- (use_module (library tabling)))
+             ,@(iter (for predicate in *predicates*)
+                     (collecting
+                      `(:- table fib/2))))
+           (iter (for proposition in *init*)
+                 (collect `(,@proposition)))
+           (iter (for a in *actions*)
+                 (ematch a
+                   ((plist :action name
+                           :parameters params
+                           :precondition `(and ,@precond)
+                           :effect effects)
+                    (collecting
+                     `(:- (,name ,@params)
+                          (and ,@(iter (for pre in precond)
+                                       (collect `(,@pre))))))
+                    (dolist (e effects)
+                      (match e
+                        (`(forall ,_ (when (and ,@conditions) ,atom))
+                          (unless (or (eq 'not (car atom))
+                                      (eq 'increase (car atom)))
+                            ;; relaxed-reachable
+                            (collecting
+                             `(:- (,@atom)
+                                  (and ,@(iter (for c in conditions)
+                                               (collect `(,@c)))
+                                       (,name ,@params)))))))))))
+           `((:- main
+                 (write "aaa\\n")))
+           (iter (for predicate in *predicates*)
+                 (collecting
+                  `(:- main
+                       (,@predicate)
+                       (write "(")
+                       ,@(iter (for e in predicate)
+                               (unless (first-iteration-p)
+                                 (collect `(write " ")))
+                               (collect `(write ,e)))
+                       (write ")\\n")
+                       fail)))
+           `((:- (initialization main))))
+   :swi :debug t))
 
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
-  (%ground))
+  (print *actions*)
+  (print (%ground)))
 
 ;; (send-rules p (iter (for p in *predicates*)
 ;;                     (collecting
