@@ -14,7 +14,8 @@
               :alexandria
               :trivia
               :trivia.quasiquote
-              :arrow-macros)
+              :arrow-macros
+              :cl-prolog.swi)
  :serial t
  :pathname "src"
  :components ((:file "package")
