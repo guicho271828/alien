@@ -20,8 +20,10 @@
   (run-prolog
    (append `((:- (use_module (library tabling)))
              ,@(iter (for predicate in *predicates*)
-                     (collecting
-                      `(:- table fib/2))))
+                     (ematch predicate
+                       ((list* (symbol name) args)
+                        (collecting
+                         `(:- (table ,(format nil "~a/~a" name (length args)))))))))
            (iter (for proposition in *init*)
                  (collect `(,@proposition)))
            (iter (for a in *actions*)
@@ -46,7 +48,8 @@
                                                (collect `(,@c)))
                                        (,name ,@params)))))))))))
            `((:- main
-                 (write "aaa\\n")))
+                 (write "aaa\\n")
+                 fail))
            (iter (for predicate in *predicates*)
                  (collecting
                   `(:- main
@@ -57,9 +60,8 @@
                                  (collect `(write " ")))
                                (collect `(write ,e)))
                        (write ")\\n")
-                       fail)))
-           `((:- (initialization main))))
-   :bprolog :debug t))
+                       fail))))
+   :bprolog :debug t :args '("-g" "main")))
 
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print *actions*)
