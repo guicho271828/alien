@@ -25,6 +25,7 @@
               (:module "lib"
                :components ((:file "equivalence")))
               (:file "4-invariant")
-              (:file "4-invariant-helmert"))
+              (:file "4-invariant-helmert")
+              (:file "5-grounding-prolog"))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))
