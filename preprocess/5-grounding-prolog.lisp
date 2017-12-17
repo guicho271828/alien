@@ -101,8 +101,7 @@
             `((:- main
                   (write "))")
                   halt)))
-    :bprolog :debug t :args '("-g" "main"))))
+    :bprolog :args '("-g" "main"))))
 
-#+(or)
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print (%ground)))
