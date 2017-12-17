@@ -15,7 +15,8 @@
               :trivia
               :trivia.quasiquote
               :arrow-macros
-              :cl-prolog.swi)
+              :cl-prolog.swi
+              :cl-prolog.bprolog)
  :serial t
  :pathname "src"
  :components ((:file "package")

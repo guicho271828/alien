@@ -59,7 +59,7 @@
                        (write ")\\n")
                        fail)))
            `((:- (initialization main))))
-   :swi :debug t))
+   :bprolog :debug t))
 
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print *actions*)
