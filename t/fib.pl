@@ -1,10 +1,11 @@
 % -*- mode : prolog -*-
 
 %% for yap?
-:- use_module(library(pl/tabling)).
+%% :- use_module(library(pl/tabling)).
 %% for swipl?
-:- use_module(library(tabling)).
-:- table fib/2.
+%% :- use_module(library(tabling)).
+%% :- set_prolog_flag(redefined,off).
+:-table(fib/2).
 
 fib(0, 1) :- !.
 fib(1, 1) :- !.
@@ -16,5 +17,6 @@ fib(N, F) :-
         fib(N2, F2),
         F is F1+F2.
 
-main :- time(fib(30, X)).
-:- initialization(main).
+main :- time(fib(30, X)), write(X), halt.
+
+%% usage: ../../cl-prolog/bprolog/BProlog/bp -i fib.pl -g main
