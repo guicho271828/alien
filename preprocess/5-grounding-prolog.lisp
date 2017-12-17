@@ -106,3 +106,45 @@
 
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print (%ground)))
+
+(defun subst-by-alist (alist tree)
+  (setf tree (copy-tree tree))
+  (iter (for (new . old) in alist)
+        (setf tree (nsubst new old tree)))
+  tree)
+
+(defun instantiate-action-body (info)
+  (with-parsed-information info
+    (match info
+      ((plist :facts facts :ops ops)
+       (list*
+        :ground-actions
+        (iter (for (name . args) in ops)
+              (for a = (find name *actions* :key #'second))
+              (assert a)
+              (ematch a
+                ((plist :parameters params
+                        :precondition precond
+                        :effect effects)
+                 (let ((alist (mapcar #'cons args params)))
+                   (collecting
+                    (list :action name
+                          :parameters args
+                          :precondition (subst-by-alist alist precond)
+                          :effect (subst-by-alist alist effects)))))))
+        :ground-axioms
+        (iter (for (name . args) in facts)
+              (for a = (find name *axioms* :key #'caadr))
+              (ematch a
+                (nil nil)
+                ((list :derived (list* _ params) condition)
+                 (let ((alist (mapcar #'cons args params)))
+                   (collecting
+                    (list :derived (list* name args) (subst-by-alist alist condition)))))))
+        info)))))
+
+(print (-> "ipc2011-opt/transport-opt11/p01.pddl"
+         (%rel)
+         (parse)
+         (ground)
+         (instantiate-action-body)))
