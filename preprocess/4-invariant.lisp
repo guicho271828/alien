@@ -8,13 +8,13 @@
   "Binds the special variables using INFO, which is a parsed & flattened result of pddl files (see 2-translate.lisp).
    *types* *objects* *predicates* *init* *goal* *axioms* *actions* "
   `(match ,info
-     ((list :type *types*
-            :objects *objects*
-            :predicates *predicates*
-            :init *init*
-            :goal *goal*
-            :axioms *axioms*
-            :actions *actions*)
+     ((plist :type *types*
+             :objects *objects*
+             :predicates *predicates*
+             :init *init*
+             :goal *goal*
+             :axioms *axioms*
+             :actions *actions*)
       ,@body)))
 
 ;; Usage:
