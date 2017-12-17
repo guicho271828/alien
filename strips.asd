@@ -18,14 +18,16 @@
               :cl-prolog.swi
               :cl-prolog.bprolog)
  :serial t
- :pathname "src"
- :components ((:file "package")
-              (:file "util")
-              (:file "2-translate")
-              (:module "lib"
-               :components ((:file "equivalence")))
-              (:file "4-invariant")
-              (:file "4-invariant-helmert")
-              (:file "5-grounding-prolog"))
+ :components ((:module "preprocess"
+                       :components ((:file "package")
+                                    (:file "util")
+                                    (:file "2-translate")
+                                    (:module "lib"
+                                             :components ((:file "equivalence")))
+                                    (:file "4-invariant")
+                                    (:file "4-invariant-helmert")
+                                    (:file "5-grounding-prolog")))
+              (:module "search"
+                       :components ((:file "util"))))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))
