@@ -73,7 +73,7 @@
 
 (defun parse-typed-def (list)
   "Parse [objs* - type]* list. Does not handle the type inheritance.
- Returns an alist of parameters and their types.
+ Returns an alist of (parameter . type).
  Untyped parameters are given the type OBJECT."
   (let (db
         buffer)
