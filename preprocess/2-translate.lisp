@@ -81,6 +81,9 @@
                (push (cons s type) db))
              (rec (list)
                (match list
+                 ((list* '- (list* 'either _) _)
+                  (error "EITHER type not currently supported"))
+                 
                  ((list* '- type rest)
                   (dolist (s (nreverse buffer))
                     (add s type))

@@ -19,7 +19,7 @@
            :exists
            :forall
            :imply
-           )
+           :either)
   (:documentation "The package for loading the symbols in the input"))
 
 (defpackage strips
