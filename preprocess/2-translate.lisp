@@ -48,6 +48,7 @@
 (defvar *types*)
 (defvar *objects*)
 (defvar *predicates*)
+(defvar *predicate-types*)
 (defvar *actions*)
 (defvar *axioms*)
 (defvar *init*)
@@ -57,6 +58,7 @@
   (let (*types*
         *objects*
         (*predicates* `((= ?o1 ?o2)))
+        (*predicate-types* `((= object object)))
         *actions*
         *axioms*
         *init*
@@ -107,18 +109,108 @@
                     ingredient cocktail - beverage
                     shot shaker - container)))
 
+(defun grovel-types (domain)
+  (match domain
+    ((assoc :types typed-def)
+     (let ((parsed (parse-typed-def typed-def)))
+       (appendf *types* parsed)
+       (iter (for pair in *types*)
+             ;; to check for disconnected type as early as possible
+             (flatten-type (car pair)))
+       (appendf *predicates*
+                (mapcar (lambda-ematch
+                          ((cons type _) `(,type ?o)))
+                        parsed))
+       (appendf *predicate-types*
+                (iter (for (current . parent) in parsed)
+                      (collecting
+                       `(,current ,parent))))))))
+
+(defun flatten-type (type)
+  "Returns the list of all parent types (including itself and OBJECT), handling the infinite loop.
+Signals an error when the type is not connected to the root OBJECT type."
+  (let (acc connected-to-object-p)
+    (labels ((rec (type)
+               (when (eq 'object type)
+                 (setf connected-to-object-p t))
+               (unless (member type acc)
+                 (push type acc)
+                 (iter (for (current . parent) in *types*)
+                       (when (eq current type)
+                         (rec parent))))))
+      (rec type)
+      (assert connected-to-object-p
+              nil
+              "Type ~a is disconnected from the root OBJECT type!"
+              type)
+      acc)))
+
+(print
+ (let ((*types* '((truck . location)
+                  (location . truck)
+                  (truck . object))))
+   (flatten-type 'truck)))
+
+(errors
+  (let (*types*)
+    (grovel-types '((:types truck - location location - truck)))))
+
+(defun flatten-types/argument (arg type)
+  "Returns a list of type predicates for each parent type of TYPE, with ARG as the argument."
+  (iter (for parent in (flatten-type type))
+        (unless (eq parent 'object)
+          (collecting `(,parent ,arg)))))
+
+(print
+ (let ((*types* '((truck . location)
+                  (location . object))))
+   (flatten-types/argument '?truck 'truck)))
+
+(defun flatten-types/predicate (predicate)
+  "Look up the *predicate-types* and returns a list of type predicates and the original predicate."
+  (ematch predicate
+    ((list* name args)
+     (list* predicate
+            (mappend #'flatten-types/argument
+                     args
+                     (cdr (or (assoc name *predicate-types*)
+                              (error "Predicate type for ~a is missing!" name))))))))
+
+(print
+ (let ((*types* '((truck . location)
+                  (location . object)))
+       (*predicate-types* '((truck location)
+                            (location object)
+                            (in truck object))))
+   (flatten-types/predicate `(in ?truck ?thing))))
+
+(errors
+  (let ((*types* '((truck . location)
+                   (location . object)))
+        (*predicate-types* '()))
+    (flatten-types/predicate `(in ?truck ?thing))))
+
 (defun flatten-typed-def (typed-def)
-  "Take a single typed predicate literal L and returns two values:
-the untyped version of L and a list of literals converted from the types of the parameters.
+  "Take a typed-def L and return two values:
+1. the untyped version of L
+2. a list of literals converted from the types of the parameters, including the parent types
+3. alist of (arg . type)
 
  Example: (?x - table) -> (?x), ((table ?x)) "
   (let* ((parsed (parse-typed-def typed-def))
          (w/o-type (mapcar #'car parsed))
          (type-conditions
           (iter (for (arg . type) in parsed)
-                (unless (eq type 'object)
-                  (collect `(,type ,arg))))))
-    (values w/o-type type-conditions)))
+                (appending (flatten-types/argument arg type)))))
+    (values w/o-type type-conditions parsed)))
+
+(print-values
+ (let ((*types* '((truck . location)
+                  (location . object)))
+       (*predicate-types* '((truck location)
+                            (location object)
+                            (in truck object))))
+   (flatten-typed-def `(?truck - truck ?thing - object))))
 
 (defun flatten-types/condition (condition)
   (ematch condition
@@ -135,10 +227,14 @@ the untyped version of L and a list of literals converted from the types of the 
     ((list* (and kind (or 'and 'or))
             conditions)
      `(,kind ,@(mapcar #'flatten-types/condition conditions)))
-    (_ condition)))
+    (_
+     `(and ,@(flatten-types/predicate condition)))))
 
 (print
- (flatten-types/condition `(forall (?u - unit) (and (clean)))))
+ (let ((*types* '((agent . object)
+                  (unit . object)))
+       (*predicate-types* '((clean agent object))))
+   (flatten-types/condition `(forall (?u - unit) (and (clean ?v ?u))))))
 
 (defun flatten-types/effect (effect)
   (ematch effect
@@ -156,21 +252,6 @@ the untyped version of L and a list of literals converted from the types of the 
      `(and ,@(mapcar #'flatten-types/effect conditions)))
     (_ effect)))
 
-
-(defun grovel-types (domain)
-  (match domain
-    ((assoc :types typed-def)
-     (let ((parsed (parse-typed-def typed-def)))
-       (appendf *types* parsed)
-       (appendf *predicates*
-                (mapcar (lambda-ematch
-                          ((cons type _) `(,type ?o)))
-                        parsed))
-       (dolist (p parsed)
-         (match p
-           ((cons self (and parent (not 'object)))
-            (push `(:derived (,parent ?o) (,self ?o)) *axioms*))))))))
-
 (defun grovel-constants (domain)
   (match domain
     ((assoc :constants typed-def)
@@ -178,18 +259,19 @@ the untyped version of L and a list of literals converted from the types of the 
        (appendf *objects* parsed)
        (dolist (pair parsed)
          (match pair
-           ((cons o (and type (not 'object)))
-            (push `(,type ,o) *init*))))))))
+           ((cons o type)
+            (appendf *init* (flatten-types/argument o type)))))))))
 
 (defun grovel-objects (problem)
+  ;; almost the same as grovel-constants
   (match problem
     ((assoc :objects typed-def)
      (let ((parsed (parse-typed-def typed-def)))
        (appendf *objects* parsed)
        (dolist (pair parsed)
          (match pair
-           ((cons o (and type (not 'object)))
-            (push `(,type ,o) *init*))))))))
+           ((cons o type)
+            (appendf *init* (flatten-types/argument o type)))))))))
 
 (defun grovel-predicates (domain)
   (match domain
@@ -197,10 +279,16 @@ the untyped version of L and a list of literals converted from the types of the 
      (dolist (predicate predicates)
        (match predicate
          (`(,name ,@typed-def)
-           (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def typed-def)
+           (multiple-value-bind (w/o-type type-conditions parsed) (flatten-typed-def typed-def)
+             (declare (ignore type-conditions))
              (push `(,name ,@w/o-type) *predicates*)
-             (dolist (condition type-conditions)
-               (push `(:derived ,condition (,name ,@w/o-type)) *axioms*)))))))))
+             (push `(,name ,@(mapcar #'cdr parsed)) *predicate-types*))))))))
+
+(let ((*types* '((a . object) (b . object)))
+      *predicate-types* *predicates*)
+  (grovel-predicates `((:predicates (pred ?x - a ?y - b))))
+  (print *predicates*)
+  (print *predicate-types*))
 
 (defun grovel-init (problem)
   (ematch problem
@@ -209,9 +297,15 @@ the untyped version of L and a list of literals converted from the types of the 
        (ematch condition
          ((list* '= _)
           (format t "~&; skipping ~a" condition))
-         (_
+         ((list* name args)
           ;; init is type-less from the beginning
-          (push condition *init*)))))))
+          (push condition *init*)
+          ;; but we also ensure the types are added
+          (appendf *init*
+                   (mappend #'flatten-types/argument
+                            args
+                            (cdr (or (assoc name *predicate-types*)
+                                     (error "Predicate type for ~a is missing!" name)))))))))))
 
 (defun grovel-goal (problem)
   (ematch problem
@@ -837,6 +931,7 @@ the untyped version of L and a list of literals converted from the types of the 
   (list :type *types*
         :objects *objects*
         :predicates *predicates*
+        :predicate-types *predicate-types*
         :init *init4*
         :goal *goal4*
         :axioms *axioms6*
