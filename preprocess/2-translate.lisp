@@ -100,6 +100,8 @@
                   (rec rest)))))
       (rec list))))
 
+;; TODO: replace PRINT with ASSERT
+
 (print
  (parse-typed-def '(hand level beverage dispenser container - object
                     ingredient cocktail - beverage
