@@ -535,11 +535,12 @@ Signals an error when the type is not connected to the root OBJECT type."
 (defun remove-universal-goal ()
   (setf
    *goal4*
+   ;; note: original FastDownward parser checks if this contains disjunctions/existential quantifier.
+   ;; I neglect doing this.
    (with-gensyms (goal-axiom)
      (push `(,goal-axiom) *predicates*)
      (push `(:derived (,goal-axiom) ,(remove-forall/condition *goal3*)) *axioms4*)
      `(,goal-axiom))))
-
 
 ;;; parse5 --- eliminate disjunctions
 
