@@ -477,6 +477,7 @@ Signals an error when the type is not connected to the root OBJECT type."
     ((list 'forall args body)
      ;; BODY is an NNF 
      (with-gensyms (forall-axiom)
+       (import forall-axiom :pddl)
        (let* ((e `(exists ,args ,(remove-forall/condition
                                   (to-nnf
                                    ;; negated body is not an NNF
@@ -538,6 +539,7 @@ Signals an error when the type is not connected to the root OBJECT type."
    ;; note: original FastDownward parser checks if this contains disjunctions/existential quantifier.
    ;; I neglect doing this.
    (with-gensyms (goal-axiom)
+     (import goal-axiom :pddl)
      (push `(,goal-axiom) *predicates*)
      (push `(:derived (,goal-axiom) ,(remove-forall/condition *goal3*)) *axioms4*)
      `(,goal-axiom))))
