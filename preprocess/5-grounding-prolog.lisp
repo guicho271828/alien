@@ -172,3 +172,41 @@
          (parse)
          (ground)
          (instantiate-action-body)))
+
+(defun axiom-layers ()
+  (append
+   (iter (for len in (remove-duplicates (mapcar (compose #'length #'second) *axioms*)))
+         (collecting
+          `(:- (table (/ axiom-layer ,(1+ len))))))
+   (iter (for p in *init*)
+         (collecting
+          `(axiom-layer 0 ,@p)))
+   (iter (for a in *axioms*)
+         (ematch a
+           ((list :derived predicate `(and ,@body))
+            (collecting
+             `(:- (axiom-layer ?n ,@predicate)
+                  (not (axiom-layer (- ?n 1) ,@predicate))
+                  ,@(iter (for c in body)
+                          (for i from 0)
+                          (for ?n = (symbolicate '?n (princ-to-string i)))
+                          (collecting
+                           `(axiom-layer ,?n ,@c))
+                          (collecting
+                           `(< ,?n ?n))))))))
+   (iter (for len in (remove-duplicates (mapcar (compose #'length #'second) *axioms*)))
+         (for args = (make-gensym-list len "?"))
+         (collecting
+          `(:- axiom-layers-aux
+               (reachable-op ,@args)
+               (write "(")
+               ,@(iter (for e in args)
+                       (unless (first-iteration-p)
+                         (collect `(write " ")))
+                       (collect `(write ,e)))
+               (write ")\\n")
+               fail)))
+   `((:- relaxed-reachability
+         (write ":axiom-layer (")
+         (or axiom-layers-aux true)
+         (write ")\\n")))))
