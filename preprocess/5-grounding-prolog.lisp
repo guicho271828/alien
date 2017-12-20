@@ -69,11 +69,57 @@
              (write ":ops\\n")
              relaxed-reachability-op))))))
 
+(defun fluent-facts ()
+  (let (arities)
+    (let ((results
+           (iter (for a in *actions*)
+                 (ematch a
+                   ((plist :action name
+                           :parameters params
+                           :effect effects)
+                    (dolist (e effects)
+                      (match e
+                        (`(forall ,_ (when ,_ (increase ,@_)))
+                          nil)
+                        (`(forall ,_ (when (and ,@conditions) (not ,atom)))
+                          (pushnew (length atom) arities)
+                          (collecting
+                           `(:- (fluent-fact ,@atom)
+                                ,@(iter (for c in conditions)
+                                        (collect `(reachable-fact ,@c)))
+                                (reachable-op ,name ,@params))))
+                        (`(forall ,_ (when (and ,@conditions) ,atom))
+                          (pushnew (length atom) arities)
+                          (collecting
+                           `(:- (fluent-fact ,@atom)
+                                ,@(iter (for c in conditions)
+                                        (collect `(reachable-fact ,@c)))
+                                (reachable-op ,name ,@params)))))))))))
+      (append (iter (for len in arities)
+                    (for args = (make-gensym-list len "?"))
+                    (appending
+                     `((:- (table (/ fluent-fact ,len)))
+                       (:- (table (/ static-fact ,len)))
+                       (:- (static-fact ,@args)
+                           (reachable-fact ,@args)
+                           (not (fluent-fact ,@args))))))
+              results
+              `((:- fluent-facts-aux
+                    (findall ?term (functor ?term fluent-fact _) ?l)
+                    (print-sexp ?l))
+                (:- fluent-facts
+                    (write ":fluents (\\n")
+                    (or fluent-facts-aux true)
+                    (write ")\\n")))))))
+
+
+
 (defun %ground ()
   (let ((*package* (find-package :pddl)))
     (read-from-string
      (run-prolog
-      (append (relaxed-reachability))
+      (append (relaxed-reachability)
+              (fluent-facts))
       :bprolog :args '("-g" "main")))))
 
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
