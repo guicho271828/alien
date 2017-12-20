@@ -4,10 +4,14 @@
 
 (defun ground (info)
   (with-parsed-information info
-    (destructuring-bind (facts ops) (%ground)
-      (list* :facts facts
-             :ops ops
-             info))))
+    (let ((result (%ground)))
+      (destructuring-bind (&key facts ops fluents)
+          (let ((*package* (find-package :pddl)))
+            (read-from-string result))
+        (list* :facts facts
+               :ops ops
+               :fluents fluents
+               info)))))
 
 
 (defun relaxed-reachability ()
@@ -112,15 +116,17 @@
                     (or fluent-facts-aux true)
                     (write ")\\n")))))))
 
-
-
 (defun %ground ()
-  (let ((*package* (find-package :pddl)))
-    (read-from-string
-     (run-prolog
-      (append (relaxed-reachability)
-              (fluent-facts))
-      :bprolog :args '("-g" "main")))))
+  (run-prolog
+   (append (relaxed-reachability)
+           (fluent-facts)
+           `((:- main
+                 (write "(")
+                 relaxed-reachability
+                 fluent-facts
+                 (write ")")
+                 halt)))
+   :bprolog :args '("-g" "main") :debug t))
 
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print (%ground)))
