@@ -10,92 +10,70 @@
              info))))
 
 
+(defun relaxed-reachability ()
+  (let (arities)
+    (let ((results
+           (sort-clauses
+            (append
+             (iter (for proposition in *init*)
+                   (pushnew (length proposition) arities)
+                   (collect `(reachable-fact ,@proposition)))
+             (iter (for a in *actions*)
+                   (ematch a
+                     ((plist :action name
+                             :parameters params
+                             :precondition `(and ,@precond)
+                             :effect effects)
+                      (collecting
+                       `(:- (reachable-op ,name ,@params)
+                            ,@(iter (for pre in precond)
+                                    (collect `(reachable-fact ,@pre)))))
+                      (dolist (e effects)
+                        (match e
+                          (`(forall ,_ (when ,_ (not ,_)))       nil)
+                          (`(forall ,_ (when ,_ (increase ,@_))) nil)
+                          (`(forall ,_ (when (and ,@conditions) ,atom))
+                            (pushnew (length atom) arities)
+                            (collecting
+                             `(:- (reachable-fact ,@atom)
+                                  ,@(iter (for c in conditions)
+                                          (collect `(reachable-fact ,@c)))
+                                  (reachable-op ,name ,@params)))))))))
+             (iter (for a in *axioms*)
+                   (ematch a
+                     ((list :derived predicate `(and ,@body))
+                      (pushnew (length predicate) arities)
+                      (collecting
+                       `(:- (reachable-fact ,@predicate)
+                            ,@(iter (for c in body)
+                                    (collecting
+                                     `(reachable-fact ,@c))))))))))))
+      (append
+       (iter (for len in arities)
+             (collecting
+              `(:- (table (/ reachable-fact ,len)))))
+       (iter (for len in (remove-duplicates (mapcar (lambda (a) (length (getf a :parameters))) *actions*)))
+             (collecting
+              `(:- (table (/ reachable-op ,(1+ len))))))
+       results
+       ;; output facts/ops
+       `((:- relaxed-reachability-fact
+             (findall ?term (functor ?term reachable-fact _) ?l)
+             (print-sexp ?l))
+         (:- relaxed-reachability-op
+             (findall ?term (functor ?term reachable-op _) ?l)
+             (print-sexp ?l))
+         (:- relaxed-reachability
+             (write ":facts\\n")
+             relaxed-reachability-fact
+             (write ":ops\\n")
+             relaxed-reachability-op))))))
+
 (defun %ground ()
   (let ((*package* (find-package :pddl)))
     (read-from-string
      (run-prolog
-      (append `((:- (set_prolog_flag warning off))
-                (:- (set_prolog_flag contiguous_warning off)))
-              (iter (for len in (remove-duplicates (mapcar #'length *predicates*)))
-                    (collecting
-                     `(:- (table (/ reachable-fact ,len)))))
-              (iter (for len in (remove-duplicates (mapcar (lambda (a) (1+ (length (getf a :parameters))))
-                                                           *actions*)))
-                    (collecting
-                     `(:- (table (/ reachable-op ,len)))))
-              (sort-clauses
-               (append
-                (iter (for proposition in *init*)
-                      (collect `(reachable-fact ,@proposition)))
-                (iter (for a in *actions*)
-                      (ematch a
-                        ((plist :action name
-                                :parameters params
-                                :effect effects)
-                         (dolist (e effects)
-                           (match e
-                             (`(forall ,_ (when (and ,@conditions) ,atom))
-                               (unless (or (eq 'not (car atom))
-                                           (eq 'increase (car atom)))
-                                 ;; relaxed-reachable
-                                 (collecting
-                                  `(:- (reachable-fact ,@atom)
-                                       (and ,@(iter (for c in conditions)
-                                                    (collect `(reachable-fact ,@c)))
-                                            (reachable-op ,name ,@params)))))))))))
-                (iter (for a in *axioms*)
-                      (ematch a
-                        ((list :derived predicate `(and ,@body))
-                         (collecting
-                          `(:- (reachable-fact ,@predicate)
-                               (and ,@(iter (for c in body)
-                                            (collecting
-                                             `(reachable-fact ,@c)))))))))))
-              (sort-clauses
-               (iter (for a in *actions*)
-                     (ematch a
-                       ((plist :action name
-                               :parameters params
-                               :precondition `(and ,@precond))
-                        (collecting
-                         `(:- (reachable-op ,name ,@params)
-                              (and ,@(iter (for pre in precond)
-                                           (collect `(reachable-fact ,@pre))))))))))
-              `((:- main
-                    (write "((")
-                    fail))
-              ;; output facts
-              (iter (for predicate in *predicates*)
-                    (collecting
-                     `(:- main
-                          (reachable-fact ,@predicate)
-                          (write "(")
-                          ,@(iter (for e in predicate)
-                                  (unless (first-iteration-p)
-                                    (collect `(write " ")))
-                                  (collect `(write ,e)))
-                          (write ")\\n")
-                          fail)))
-              `((:- main
-                    (write ")\\n(")
-                    fail))
-              ;; output ops
-              (iter (for a in *actions*)
-                    (ematch a
-                      ((plist :action name :parameters params)
-                       (collecting
-                        `(:- main
-                             (reachable-op ,name ,@params)
-                             (write "(")
-                             (write ,name)
-                             ,@(iter (for p in params)
-                                     (collect `(write " "))
-                                     (collect `(write ,p)))
-                             (write ")\\n")
-                             fail)))))
-              `((:- main
-                    (write "))")
-                    halt)))
+      (append (relaxed-reachability))
       :bprolog :args '("-g" "main")))))
 
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
