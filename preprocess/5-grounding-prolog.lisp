@@ -9,12 +9,6 @@
              :ops ops
              info))))
 
-(defun sort-clauses (rules)
-  (sort rules #'< :key
-        (lambda (rule)
-          (ematch rule
-            (`(:- ,target ,_) (length target))
-            (_ (length rule))))))
 
 (defun %ground ()
   (let ((*package* (find-package :pddl)))
