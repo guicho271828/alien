@@ -147,12 +147,6 @@
             (iter (for a in *axioms*)
              (ematch a
                ((list :derived predicate `(and ,@body))
-                ;; (collecting
-                ;;  `(:- (static-fact ,@predicate)
-                ;;       (reachable-fact ,@predicate)
-                ;;       ,@(iter (for c in body)
-                ;;               (collecting
-                ;;                `(static-fact ,@c)))))
                 (collecting
                  `(:- (fluent-fact ,@predicate)
                       (reachable-fact ,@predicate)
