@@ -42,9 +42,12 @@
              (pushnew (length predicate) arities))))
     arities))
 
+(defun reachable-op-arities ()
+  (remove-duplicates (mapcar (lambda (a) (length (getf a :parameters))) *actions*)))
+
 (defun relaxed-reachability ()
   (let ((arities (reachable-fact-arities))
-        (op-arities (remove-duplicates (mapcar (lambda (a) (length (getf a :parameters))) *actions*))))
+        (op-arities (reachable-op-arities)))
     (append
      (iter (for len in arities)    (collecting `(:- (table (/ reachable-fact ,len)))))
      (iter (for len in op-arities) (collecting `(:- (table (/ reachable-op ,(1+ len))))))
@@ -145,15 +148,15 @@
                                          (collect `(reachable-fact ,@c)))
                                  (reachable-op ,name ,@params)))))))))
             (iter (for a in *axioms*)
-             (ematch a
-               ((list :derived predicate `(and ,@body))
-                (collecting
-                 `(:- (fluent-fact ,@predicate)
-                      (reachable-fact ,@predicate)
-                      (or ,@(iter (for c in body)
-                                  (when (member (length c) arities) ; otherwise it is not a fluent
-                                    (collecting
-                                     `(fluent-fact ,@c))))))))))
+                  (ematch a
+                    ((list :derived predicate `(and ,@body))
+                     (collecting
+                      `(:- (fluent-fact ,@predicate)
+                           (reachable-fact ,@predicate)
+                           (or ,@(iter (for c in body)
+                                       (when (member (length c) arities) ; otherwise it is not a fluent
+                                         (collecting
+                                          `(fluent-fact ,@c))))))))))
             `((:- fluent-facts
                   (write ":fluents\\n")
                   (all-terms (list ,@(iter (for len in arities)
