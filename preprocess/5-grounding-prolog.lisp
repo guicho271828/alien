@@ -218,34 +218,26 @@
              ((list :derived predicate `(and ,@body))
               (collecting
                `(:- (axiom-layer ?n ,@predicate)
-                    (print-sexp (axiom-layer ?n ,@predicate)) nl
                     (> ?n 0)
-                    (print-sexp (axiom-layer ?n ,@predicate)) nl
                     !
                     (is ?n1 (- ?n 1))
-                    (print-sexp (axiom-layer ?n ,@predicate)) nl
                     (not (axiom-layer ?n1 ,@predicate))
-                    (print-sexp (axiom-layer ?n ,@predicate)) nl
                     (iota ?n ?list)
-                    (print-sexp ?list) nl
                     ,@(iter (for c in body)
                             (for i from 0)
                             (for ?n = (symbolicate '?n (princ-to-string i)))
                             (appending
-                             `((print-sexp (,@c)) nl
-                               (or (and (static-fact ,@c)
-                                        (print-sexp (static-fact ,@c)))
+                             `((or (and (static-fact ,@c))
                                    (and (member ,?n ?list)
-                                        (axiom-layer ,?n ,@c)
-                                        (print-sexp (axiom-layer ,?n ,@c))))
-                               nl))))))))
+                                        (axiom-layer ,?n ,@c)))))))))))
      (iter (for len in axiom-arities)
            (for args = (make-gensym-list len "?"))
            (collecting
             `(:- (axiom-layers-aux ?n)
-                 (print-sexp (axiom-layer-aux ?n))
                  nl
-                 (findall (list ,@args) (and (axiom-layer ?n ,@args) (print-sexp (list ,@args))) ?result)
+                 (findall (list ,@args) (and (axiom-layer ?n ,@args)
+                                             (print-sexp (axiom-layer ?n ,@args)))
+                          ?result)
                  (or (-> (\= ?result (list))
                        (and (is ?n1 (+ ?n 1))
                             (axiom-layers-aux ?n1)))
@@ -259,14 +251,14 @@
   (run-prolog
    (append (relaxed-reachability)
            (fluent-facts)
-           ;; (axiom-layers)
+           (axiom-layers)
            (print-sexp)
            (all-terms)
            `((:- main
                  (write "(") 
                  relaxed-reachability
                  fluent-facts
-                 ;; axiom-layers
+                 axiom-layers
                  (write ")")
                  halt)))
    :bprolog :args '("-g" "main") :debug t))
