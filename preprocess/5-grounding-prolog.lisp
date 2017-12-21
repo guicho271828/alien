@@ -13,6 +13,15 @@
                :fluents fluents
                info)))))
 
+(defun all-terms ()
+  `((:- (all-terms (/ ?head ?arity) ?list)
+        (functor ?term ?head ?arity)
+        (findall ?term ?term ?list))
+    (all-terms (list) (list))
+    (:- (all-terms (list* ?first ?rest) ?list)
+        (all-terms ?first ?list2)
+        (all-terms ?rest ?list3)
+        (append ?list2 ?list3 ?list))))
 
 (defun relaxed-reachability ()
   (let (arities
@@ -128,6 +137,7 @@
    (append (relaxed-reachability)
            (fluent-facts)
            (print-sexp)
+           (all-terms)
            `((:- main
                  (write "(") 
                  relaxed-reachability
