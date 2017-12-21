@@ -120,15 +120,14 @@
                            (reachable-fact ,@args)
                            (not (fluent-fact ,@args))))))
               results
-              `((:- fluent-facts-aux
-                    ,@(iter (for len in arities)
-                            (collecting
-                             `(and (findall ?term (functor ?term fluent-fact ,len) ?l)
-                                   (print-sexp ?l)))))
-                (:- fluent-facts
-                    (write ":fluents (\\n")
-                    (or fluent-facts-aux true)
-                    (write ")\\n")))))))
+              `((:- fluent-facts
+                    (write ":fluents\\n")
+                    (all-terms (list ,@(iter (for len in arities)
+                                             (collecting
+                                              `(/ fluent-fact ,len))))
+                               ?list)
+                    (print-sexp ?list)
+                    (write "\\n")))))))
 
 (defun %ground ()
   (run-prolog
