@@ -262,6 +262,9 @@
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print (%ground)))
 
+(with-parsed-information (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
+  (print (%ground)))
+
 
 
 ;; (print (-> "ipc2011-opt/transport-opt11/p01.pddl"
