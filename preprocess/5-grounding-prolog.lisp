@@ -23,122 +23,250 @@
         (all-terms ?rest ?list3)
         (append ?list2 ?list3 ?list))))
 
+(defun reachable-fact-arities ()
+  (let (arities)
+    (iter (for proposition in *init*)
+          (pushnew (length proposition) arities))
+    (iter (for a in *actions*)
+          (ematch a
+            ((plist :effect effects)
+             (dolist (e effects)
+               (match e
+                 (`(forall ,_ (when ,_ (not ,_)))       nil)
+                 (`(forall ,_ (when ,_ (increase ,@_))) nil)
+                 (`(forall ,_ (when ,_ ,atom))
+                   (pushnew (length atom) arities)))))))
+    (iter (for a in *axioms*)
+          (ematch a
+            ((list :derived predicate _)
+             (pushnew (length predicate) arities))))
+    arities))
+
 (defun relaxed-reachability ()
-  (let (arities
+  (let ((arities (reachable-fact-arities))
         (op-arities (remove-duplicates (mapcar (lambda (a) (length (getf a :parameters))) *actions*))))
-    (let ((results
-           (sort-clauses
-            (append
-             (iter (for proposition in *init*)
-                   (pushnew (length proposition) arities)
-                   (collect `(reachable-fact ,@proposition)))
-             (iter (for a in *actions*)
-                   (ematch a
-                     ((plist :action name
-                             :parameters params
-                             :precondition `(and ,@precond)
-                             :effect effects)
-                      (collecting
-                       `(:- (reachable-op ,name ,@params)
-                            ,@(iter (for pre in precond)
-                                    (collect `(reachable-fact ,@pre)))))
-                      (dolist (e effects)
-                        (match e
-                          (`(forall ,_ (when ,_ (not ,_)))       nil)
-                          (`(forall ,_ (when ,_ (increase ,@_))) nil)
-                          (`(forall ,_ (when (and ,@conditions) ,atom))
-                            (pushnew (length atom) arities)
-                            (collecting
-                             `(:- (reachable-fact ,@atom)
-                                  ,@(iter (for c in conditions)
-                                          (collect `(reachable-fact ,@c)))
-                                  (reachable-op ,name ,@params)))))))))
-             (iter (for a in *axioms*)
-                   (ematch a
-                     ((list :derived predicate `(and ,@body))
-                      (pushnew (length predicate) arities)
-                      (collecting
-                       `(:- (reachable-fact ,@predicate)
-                            ,@(iter (for c in body)
-                                    (collecting
-                                     `(reachable-fact ,@c))))))))))))
+    (append
+     (iter (for len in arities)    (collecting `(:- (table (/ reachable-fact ,len)))))
+     (iter (for len in op-arities) (collecting `(:- (table (/ reachable-op ,(1+ len))))))
+     (sort-clauses
       (append
-       (iter (for len in arities)
-             (collecting
-              `(:- (table (/ reachable-fact ,len)))))
-       (iter (for len in op-arities)
-             (collecting
-              `(:- (table (/ reachable-op ,(1+ len))))))
-       results
-       ;; output facts/ops
-       `((:- relaxed-reachability
-             (write ":facts\\n")
-             (all-terms (list ,@(iter (for len in arities)
-                                      (collecting
-                                       `(/ reachable-fact ,len))))
-                        ?list)
-             (print-sexp ?list)
-             (write ":ops\\n")
-             (all-terms (list ,@(iter (for len in op-arities)
-                                      (collecting
-                                       `(/ reachable-op ,(1+ len)))))
-                        ?list2)
-             (print-sexp ?list2)))))))
+       (iter (for proposition in *init*) (collecting `(reachable-fact ,@proposition)))
+       (iter (for a in *actions*)
+             (ematch a
+               ((plist :action name
+                       :parameters params
+                       :precondition `(and ,@precond)
+                       :effect effects)
+                (collecting
+                 `(:- (reachable-op ,name ,@params)
+                      ,@(iter (for pre in precond)
+                              (collecting `(reachable-fact ,@pre)))))
+                (dolist (e effects)
+                  (match e
+                    (`(forall ,_ (when ,_ (not ,_)))       nil)
+                    (`(forall ,_ (when ,_ (increase ,@_))) nil)
+                    (`(forall ,_ (when (and ,@conditions) ,atom))
+                      (collecting
+                       `(:- (reachable-fact ,@atom)
+                            ,@(iter (for c in conditions)
+                                    (collect `(reachable-fact ,@c)))
+                            (reachable-op ,name ,@params)))))))))
+       (iter (for a in *axioms*)
+             (ematch a
+               ((list :derived predicate `(and ,@body))
+                (collecting
+                 `(:- (reachable-fact ,@predicate)
+                      ,@(iter (for c in body)
+                              (collecting
+                               `(reachable-fact ,@c))))))))))
+     ;; output facts/ops
+     `((:- relaxed-reachability
+           (write ":facts\\n")
+           (all-terms (list ,@(iter (for len in arities) (collecting `(/ reachable-fact ,len)))) ?list)
+           (print-sexp ?list)
+           (write ":ops\\n")
+           (all-terms (list ,@(iter (for len in op-arities) (collecting `(/ reachable-op ,(1+ len))))) ?list2)
+           (print-sexp ?list2))))))
+
+(defun fluent-fact-arities ()
+  (let (arities)
+    (iter (for a in *actions*)
+          (ematch a
+            ((plist :effect effects)
+             (dolist (e effects)
+               (match e
+                 (`(forall ,_ (when ,_ (increase ,@_)))
+                   nil)
+                 (`(forall ,_ (when ,_ (not ,atom)))
+                   (pushnew (length atom) arities))
+                 (`(forall ,_ (when ,_ ,atom))
+                   (pushnew (length atom) arities)))))))
+    (iter (for a in *axioms*)
+          (ematch a
+            ((list :derived predicate _)
+             (pushnew (length predicate) arities))))
+    arities))
 
 (defun fluent-facts ()
-  (let (arities)
-    (let ((results
-           (iter (for a in *actions*)
-                 (ematch a
-                   ((plist :action name
-                           :parameters params
-                           :effect effects)
-                    (dolist (e effects)
-                      (match e
-                        (`(forall ,_ (when ,_ (increase ,@_)))
-                          nil)
-                        (`(forall ,_ (when (and ,@conditions) (not ,atom)))
-                          (pushnew (length atom) arities)
-                          (collecting
-                           `(:- (fluent-fact ,@atom)
-                                ,@(iter (for c in conditions)
-                                        (collect `(reachable-fact ,@c)))
-                                (reachable-op ,name ,@params))))
-                        (`(forall ,_ (when (and ,@conditions) ,atom))
-                          (pushnew (length atom) arities)
-                          (collecting
-                           `(:- (fluent-fact ,@atom)
-                                ,@(iter (for c in conditions)
-                                        (collect `(reachable-fact ,@c)))
-                                (reachable-op ,name ,@params)))))))))))
-      (append (iter (for len in arities)
-                    (for args = (make-gensym-list len "?"))
-                    (appending
-                     `((:- (table (/ fluent-fact ,len)))
-                       (:- (table (/ static-fact ,len)))
-                       (:- (static-fact ,@args)
-                           (reachable-fact ,@args)
-                           (not (fluent-fact ,@args))))))
-              results
-              `((:- fluent-facts
-                    (write ":fluents\\n")
-                    (all-terms (list ,@(iter (for len in arities)
-                                             (collecting
-                                              `(/ fluent-fact ,len))))
-                               ?list)
-                    (print-sexp ?list)
-                    (write "\\n")))))))
+  (let ((arities (fluent-fact-arities)))
+    (append (iter (for len in arities)
+                  (for args = (make-gensym-list len "?"))
+                  (appending
+                   `((:- (table (/ fluent-fact ,len)))
+                     (:- (table (/ static-fact ,len)))
+                     (:- (static-fact ,@args)
+                         (reachable-fact ,@args)
+                         (not (fluent-fact ,@args))))))
+            (iter (for len in (set-difference (reachable-fact-arities) arities))
+                  (for args = (make-gensym-list len "?"))
+                  (appending
+                   `((:- (table (/ static-fact ,len)))
+                     (:- (static-fact ,@args)
+                         (reachable-fact ,@args)))))
+            (iter (for a in *actions*)
+                  (ematch a
+                    ((plist :action name
+                            :parameters params
+                            :effect effects)
+                     (dolist (e effects)
+                       (match e
+                         (`(forall ,_ (when ,_ (increase ,@_)))
+                           nil)
+                         (`(forall ,_ (when (and ,@conditions) (not ,atom)))
+                           (collecting
+                            `(:- (fluent-fact ,@atom)
+                                 ,@(iter (for c in conditions)
+                                         (collect `(reachable-fact ,@c)))
+                                 (reachable-op ,name ,@params))))
+                         (`(forall ,_ (when (and ,@conditions) ,atom))
+                           (collecting
+                            `(:- (fluent-fact ,@atom)
+                                 ,@(iter (for c in conditions)
+                                         (collect `(reachable-fact ,@c)))
+                                 (reachable-op ,name ,@params)))))))))
+            (iter (for a in *axioms*)
+             (ematch a
+               ((list :derived predicate `(and ,@body))
+                ;; (collecting
+                ;;  `(:- (static-fact ,@predicate)
+                ;;       (reachable-fact ,@predicate)
+                ;;       ,@(iter (for c in body)
+                ;;               (collecting
+                ;;                `(static-fact ,@c)))))
+                (collecting
+                 `(:- (fluent-fact ,@predicate)
+                      (reachable-fact ,@predicate)
+                      (or ,@(iter (for c in body)
+                                  (when (member (length c) arities) ; otherwise it is not a fluent
+                                    (collecting
+                                     `(fluent-fact ,@c))))))))))
+            `((:- fluent-facts
+                  (write ":fluents\\n")
+                  (all-terms (list ,@(iter (for len in arities)
+                                           (collecting
+                                            `(/ fluent-fact ,len))))
+                             ?list)
+                  (print-sexp ?list)
+                  (write "\\n")
+                  (write ":static\\n")
+                  (all-terms (list ,@(iter (for len in (reachable-fact-arities))
+                                           (collecting
+                                            `(/ static-fact ,len))))
+                             ?list2)
+                  (print-sexp ?list2)
+                  (write "\\n"))))))
+
+(defun axiom-layer-arities ()
+  (remove-duplicates (mapcar (compose #'length #'second) *axioms*)))
+
+(defun iota-program ()
+  `((:- (iota 0 (list))
+        !)
+    (:- (iota ?n ?list)
+        (< ?n 0)
+        !
+        fail)
+    (:- (iota ?n (list* ?n1 ?list2))
+        (> ?n 0)
+        !
+        (is ?n1 (- ?n 1))
+        (iota ?n1 ?list2))))
+
+(defun axiom-layers ()
+  (let ((axiom-arities (axiom-layer-arities))
+        (fluent-arities (fluent-fact-arities)))
+    (append
+     (iter (for len in (union axiom-arities fluent-arities))
+           (collecting
+            `(:- (table (/ axiom-layer ,(1+ len))))))
+     (iter (for len in (union axiom-arities fluent-arities))
+           (for args = (make-gensym-list len "?"))
+           (collecting
+            `(:- (axiom-layer ?n ,@args)
+                 (< ?n 0)
+                 !
+                 fail)))
+     (iter (for len in fluent-arities)
+           (for args = (make-gensym-list len "?"))
+           (collecting
+            `(:- (axiom-layer 0 ,@args)
+                 !
+                 (fluent-fact ,@args))))
+     (iota-program)
+     (iter (for a in *axioms*)
+           (ematch a
+             ((list :derived predicate `(and ,@body))
+              (collecting
+               `(:- (axiom-layer ?n ,@predicate)
+                    (print-sexp (axiom-layer ?n ,@predicate)) nl
+                    (> ?n 0)
+                    (print-sexp (axiom-layer ?n ,@predicate)) nl
+                    !
+                    (is ?n1 (- ?n 1))
+                    (print-sexp (axiom-layer ?n ,@predicate)) nl
+                    (not (axiom-layer ?n1 ,@predicate))
+                    (print-sexp (axiom-layer ?n ,@predicate)) nl
+                    (iota ?n ?list)
+                    (print-sexp ?list) nl
+                    ,@(iter (for c in body)
+                            (for i from 0)
+                            (for ?n = (symbolicate '?n (princ-to-string i)))
+                            (appending
+                             `((print-sexp (,@c)) nl
+                               (or (and (static-fact ,@c)
+                                        (print-sexp (static-fact ,@c)))
+                                   (and (member ,?n ?list)
+                                        (axiom-layer ,?n ,@c)
+                                        (print-sexp (axiom-layer ,?n ,@c))))
+                               nl))))))))
+     (iter (for len in axiom-arities)
+           (for args = (make-gensym-list len "?"))
+           (collecting
+            `(:- (axiom-layers-aux ?n)
+                 (print-sexp (axiom-layer-aux ?n))
+                 nl
+                 (findall (list ,@args) (and (axiom-layer ?n ,@args) (print-sexp (list ,@args))) ?result)
+                 (or (-> (\= ?result (list))
+                       (and (is ?n1 (+ ?n 1))
+                            (axiom-layers-aux ?n1)))
+                     true))))
+     `((:- axiom-layers
+           (write ":axiom-layer (")
+           (axiom-layers-aux 0)
+           (write ")\\n"))))))
 
 (defun %ground ()
   (run-prolog
    (append (relaxed-reachability)
            (fluent-facts)
+           ;; (axiom-layers)
            (print-sexp)
            (all-terms)
            `((:- main
                  (write "(") 
                  relaxed-reachability
                  fluent-facts
+                 ;; axiom-layers
                  (write ")")
                  halt)))
    :bprolog :args '("-g" "main") :debug t))
@@ -146,95 +274,10 @@
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print (%ground)))
 
-(defun subst-by-alist (alist tree)
-  (setf tree (copy-tree tree))
-  (iter (for (new . old) in alist)
-        (setf tree (nsubst new old tree)))
-  tree)
 
-(defun instantiate-action-body (info)
-  (with-parsed-information info
-    (match info
-      ((plist :facts facts :ops ops)
-       (list*
-        :ground-actions
-        (iter (for (name . args) in ops)
-              (for a = (find name *actions* :key #'second))
-              (assert a)
-              (ematch a
-                ((plist :parameters params
-                        :precondition precond
-                        :effect effects)
-                 (let ((alist (mapcar #'cons args params)))
-                   (collecting
-                    (list :action name
-                          :parameters args
-                          :precondition (subst-by-alist alist precond)
-                          :effect (subst-by-alist alist effects)))))))
-        :ground-axioms
-        (iter (for (name . args) in facts)
-              (for a = (find name *axioms* :key #'caadr))
-              (ematch a
-                (nil nil)
-                ((list :derived (list* _ params) condition)
-                 (let ((alist (mapcar #'cons args params)))
-                   (collecting
-                    (list :derived (list* name args) (subst-by-alist alist condition)))))))
-        info)))))
 
 ;; (print (-> "ipc2011-opt/transport-opt11/p01.pddl"
 ;;          (%rel)
 ;;          (parse)
 ;;          (ground)
 ;;          (instantiate-action-body)))
-
-;; (defun axiom-layers ()
-;;   (let ((arities (remove-duplicates (mapcar (compose #'length #'second) *axioms*))))
-;;     (append
-;;      (iter (for len in arities)
-;;            (collecting
-;;             `(:- (table (/ axiom-layer ,(1+ len))))))
-;;      (iter (for len in arities)
-;;            (for args = (make-gensym-list len "?"))
-;;            (collecting
-;;             `(:- (axiom-layer 0 ,@args)
-;;                  (fluent-fact ,@args))))
-;;      (iter (for a in *axioms*)
-;;            (ematch a
-;;              ((list :derived predicate `(and ,@body))
-;;               (collecting
-;;                `(:- (axiom-layer ?n ,@predicate)
-;;                     (>= ?n 1)
-;;                     (not (axiom-layer (- ?n 1) ,@predicate))
-;;                     ,@(iter (for c in body)
-;;                             (for i from 0)
-;;                             (for ?n = (symbolicate '?n (princ-to-string i)))
-;;                             (collecting
-;;                              `(axiom-layer ,?n ,@c))
-;;                             (collecting
-;;                              `(< ,?n ?n))))))))
-;;      (iter (for len in arities)
-;;            (for args = (make-gensym-list len "?"))
-;;            (collecting
-;;             `(:- (axiom-layers-aux ?n)
-;;                  (findall (list ,@args) (axiom-layer ?n ,@args) ?l)
-;;                  (-> (!= ?l (list))
-;;                    (and (print-list ?l)
-;;                         )))
-;;      `((:- fluent-facts-aux
-;;                     ,@(iter (for len in arities)
-;;                             (collecting
-;;                              `(and (findall ?term (functor ?term fluent-fact ,len) ?l)
-;;                                    (print-sexp ?l)))))
-;;        (:- axiom-layers
-;;            (write ":axiom-layer (")
-;;            axiom-layers-aux
-;;            (write ")\\n"))))))
-
-
-;; (write "(")
-;; ,@(iter (for e in (list* '?n args))
-;;         (unless (first-iteration-p)
-;;           (collect `(write " ")))
-;;         (collect `(write ,e)))
-;; (write ")\\n")
