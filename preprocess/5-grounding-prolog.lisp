@@ -71,21 +71,19 @@
               `(:- (table (/ reachable-op ,(1+ len))))))
        results
        ;; output facts/ops
-       `((:- relaxed-reachability-fact
-             ,@(iter (for len in arities)
-                     (collecting
-                      `(and (findall ?term (functor ?term reachable-fact ,len) ?l)
-                            (print-sexp ?l)))))
-         (:- relaxed-reachability-op
-             ,@(iter (for len in op-arities)
-                     (collecting
-                      `(and (findall ?term (functor ?term reachable-op ,(1+ len)) ?l)
-                            (print-sexp ?l)))))
-         (:- relaxed-reachability
+       `((:- relaxed-reachability
              (write ":facts\\n")
-             relaxed-reachability-fact
+             (all-terms (list ,@(iter (for len in arities)
+                                      (collecting
+                                       `(/ reachable-fact ,len))))
+                        ?list)
+             (print-sexp ?list)
              (write ":ops\\n")
-             relaxed-reachability-op))))))
+             (all-terms (list ,@(iter (for len in op-arities)
+                                      (collecting
+                                       `(/ reachable-op ,(1+ len)))))
+                        ?list2)
+             (print-sexp ?list2)))))))
 
 (defun fluent-facts ()
   (let (arities)
