@@ -112,20 +112,19 @@
 
 (defun fluent-facts ()
   (let ((arities (fluent-fact-arities)))
-    (append (iter (for len in arities)
+    (append (iter (for len in (reachable-fact-arities))
                   (for args = (make-gensym-list len "?"))
                   (appending
-                   `((:- (table (/ fluent-fact ,len)))
-                     (:- (table (/ static-fact ,len)))
-                     (:- (static-fact ,@args)
-                         (reachable-fact ,@args)
-                         (not (fluent-fact ,@args))))))
-            (iter (for len in (set-difference (reachable-fact-arities) arities))
-                  (for args = (make-gensym-list len "?"))
-                  (appending
-                   `((:- (table (/ static-fact ,len)))
-                     (:- (static-fact ,@args)
-                         (reachable-fact ,@args)))))
+                   (if (member len arities)
+                       `((:- (table (/ fluent-fact ,len)))
+                         (:- (table (/ static-fact ,len)))
+                         (:- (static-fact ,@args)
+                             (reachable-fact ,@args)
+                             (not (fluent-fact ,@args))))
+                       
+                       `((:- (table (/ static-fact ,len)))
+                         (:- (static-fact ,@args)
+                             (reachable-fact ,@args))))))
             (iter (for a in *actions*)
                   (ematch a
                     ((plist :action name
