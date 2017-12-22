@@ -125,37 +125,39 @@
                        `((:- (table (/ static-fact ,len)))
                          (:- (static-fact ,@args)
                              (reachable-fact ,@args))))))
-            (iter (for a in *actions*)
-                  (ematch a
-                    ((plist :action name
-                            :parameters params
-                            :effect effects)
-                     (dolist (e effects)
-                       (match e
-                         (`(forall ,_ (when ,_ (increase ,@_)))
-                           nil)
-                         (`(forall ,_ (when (and ,@conditions) (not ,atom)))
-                           (collecting
-                            `(:- (fluent-fact ,@atom)
-                                 ,@(iter (for c in conditions)
-                                         (collect `(reachable-fact ,@c)))
-                                 (reachable-op ,name ,@params))))
-                         (`(forall ,_ (when (and ,@conditions) ,atom))
-                           (collecting
-                            `(:- (fluent-fact ,@atom)
-                                 ,@(iter (for c in conditions)
-                                         (collect `(reachable-fact ,@c)))
-                                 (reachable-op ,name ,@params)))))))))
-            (iter (for a in *axioms*)
-                  (ematch a
-                    ((list :derived predicate `(and ,@body))
-                     (collecting
-                      `(:- (fluent-fact ,@predicate)
-                           (reachable-fact ,@predicate)
-                           (or ,@(iter (for c in body)
-                                       (when (member (length c) arities) ; otherwise it is not a fluent
-                                         (collecting
-                                          `(fluent-fact ,@c))))))))))
+            (sort-clauses
+             (append
+              (iter (for a in *actions*)
+                    (ematch a
+                      ((plist :action name
+                              :parameters params
+                              :effect effects)
+                       (dolist (e effects)
+                         (match e
+                           (`(forall ,_ (when ,_ (increase ,@_)))
+                             nil)
+                           (`(forall ,_ (when (and ,@conditions) (not ,atom)))
+                             (collecting
+                              `(:- (fluent-fact ,@atom)
+                                   ,@(iter (for c in conditions)
+                                           (collect `(reachable-fact ,@c)))
+                                   (reachable-op ,name ,@params))))
+                           (`(forall ,_ (when (and ,@conditions) ,atom))
+                             (collecting
+                              `(:- (fluent-fact ,@atom)
+                                   ,@(iter (for c in conditions)
+                                           (collect `(reachable-fact ,@c)))
+                                   (reachable-op ,name ,@params)))))))))
+              (iter (for a in *axioms*)
+                    (ematch a
+                      ((list :derived predicate `(and ,@body))
+                       (collecting
+                        `(:- (fluent-fact ,@predicate)
+                             (reachable-fact ,@predicate)
+                             (or ,@(iter (for c in body)
+                                         (when (member (length c) arities) ; otherwise it is not a fluent
+                                           (collecting
+                                            `(fluent-fact ,@c))))))))))))
             `((:- fluent-facts
                   (write ":fluents\\n")
                   (all-terms (list ,@(iter (for len in arities)
@@ -192,40 +194,42 @@
   (let ((axiom-arities (axiom-layer-arities))
         (fluent-arities (fluent-fact-arities)))
     (append
+     (iota-program)
      (iter (for len in (union axiom-arities fluent-arities))
            (collecting
             `(:- (table (/ axiom-layer ,(1+ len))))))
-     (iter (for len in (union axiom-arities fluent-arities))
-           (for args = (make-gensym-list len "?"))
-           (collecting
-            `(:- (axiom-layer ?n ,@args)
-                 (< ?n 0)
-                 !
-                 fail)))
-     (iter (for len in fluent-arities)
-           (for args = (make-gensym-list len "?"))
-           (collecting
-            `(:- (axiom-layer 0 ,@args)
-                 !
-                 (fluent-fact ,@args))))
-     (iota-program)
-     (iter (for a in *axioms*)
-           (ematch a
-             ((list :derived predicate `(and ,@body))
-              (collecting
-               `(:- (axiom-layer ?n ,@predicate)
-                    (> ?n 0)
-                    !
-                    (is ?n1 (- ?n 1))
-                    (not (axiom-layer ?n1 ,@predicate))
-                    (iota ?n ?list)
-                    ,@(iter (for c in body)
-                            (for i from 0)
-                            (for ?n = (symbolicate '?n (princ-to-string i)))
-                            (appending
-                             `((or (and (static-fact ,@c))
-                                   (and (member ,?n ?list)
-                                        (axiom-layer ,?n ,@c)))))))))))
+     (sort-clauses
+      (append
+       (iter (for len in (union axiom-arities fluent-arities))
+             (for args = (make-gensym-list len "?"))
+             (collecting
+              `(:- (axiom-layer ?n ,@args)
+                   (< ?n 0)
+                   !
+                   fail)))
+       (iter (for len in fluent-arities)
+             (for args = (make-gensym-list len "?"))
+             (collecting
+              `(:- (axiom-layer 0 ,@args)
+                   !
+                   (fluent-fact ,@args))))
+       (iter (for a in *axioms*)
+             (ematch a
+               ((list :derived predicate `(and ,@body))
+                (collecting
+                 `(:- (axiom-layer ?n ,@predicate)
+                      (> ?n 0)
+                      !
+                      (is ?n1 (- ?n 1))
+                      (not (axiom-layer ?n1 ,@predicate))
+                      (iota ?n ?list)
+                      ,@(iter (for c in body)
+                              (for i from 0)
+                              (for ?n = (symbolicate '?n (princ-to-string i)))
+                              (appending
+                               `((or (and (static-fact ,@c))
+                                     (and (member ,?n ?list)
+                                          (axiom-layer ,?n ,@c)))))))))))))
      (iter (for len in axiom-arities)
            (for args = (make-gensym-list len "?"))
            (collecting
