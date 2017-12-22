@@ -230,8 +230,6 @@ Signals an error when the type is not connected to the root OBJECT type."
     (_
      `(and ,@(flatten-types/predicate condition)))))
 
-
-
 (print
  (let ((*types* '((agent . object)
                   (unit . object)))
@@ -347,7 +345,7 @@ Signals an error when the type is not connected to the root OBJECT type."
                       ,(flatten-types/condition condition))))))
      *axioms*)))
 
-;;; parse3 --- convert conditions to NNF, compiling IMPLY away
+;;; parse3 --- convert conditions to NNF (i.e. NOT appears on leafs only), compiling IMPLY away
 
 (defvar *actions3*)
 (defvar *axioms3*)
@@ -425,7 +423,6 @@ Signals an error when the type is not connected to the root OBJECT type."
         (list :derived derived (to-nnf condition))))
      *axioms3*)))
 
-
 (defun nnf-init ()
   (dolist (it *init*)
     (push
@@ -437,8 +434,7 @@ Signals an error when the type is not connected to the root OBJECT type."
    *goal3*
    (to-nnf *goal*)))
 
-
-;;; parse4 --- forall x y -> ( not exists not axiom, where y -> axiom )
+;;; parse4 --- (forall x y) -> (not (exists x (not y))) -> (not axiom), where axiom = (exists x (not y))
 
 (defvar *actions4*)
 (defvar *axioms4*)
@@ -464,6 +460,7 @@ Signals an error when the type is not connected to the root OBJECT type."
      nil)))
 
 (defun free (formula)
+  "Returns a list of free variables in FORMULA"
   (ematch formula
     ((list 'not pred)
      (free pred))
@@ -670,7 +667,6 @@ Signals an error when the type is not connected to the root OBJECT type."
     (_
      (lambda (k) (funcall k condition)))))
 
-
 (defun nnf-dnf/effect (condition)
   (collect-results (&nnf-dnf/effect condition)))
 
@@ -732,7 +728,6 @@ Signals an error when the type is not connected to the root OBJECT type."
     (move-exists-axioms)
     (parse7)))
 
-
 (defun move-exists/condition (condition)
   "move existential quantifier as well as flattening an AND tree"
   (let (args-acc body-acc)
@@ -767,7 +762,6 @@ Signals an error when the type is not connected to the root OBJECT type."
                   (push condition body-acc)))))
       (rec condition)
       `(exists ,args-acc (and ,@body-acc)))))
-
 
 (progn
   (print (move-exists/condition `(exists (a b c) (three a b c))))
@@ -854,7 +848,6 @@ Signals an error when the type is not connected to the root OBJECT type."
              *axioms6*)))))
 
 ;;; parse7 --- simplify effects
-
 
 (defvar *actions7*)
 
