@@ -224,17 +224,25 @@ Signals an error when the type is not connected to the root OBJECT type."
        `(forall ,w/o-type
                 (imply (and ,@type-conditions)
                        ,(flatten-types/condition condition)))))
-    ((list* (and kind (or 'and 'or))
+    ((list* (and kind (or 'and 'or 'not))
             conditions)
      `(,kind ,@(mapcar #'flatten-types/condition conditions)))
     (_
      `(and ,@(flatten-types/predicate condition)))))
+
+
 
 (print
  (let ((*types* '((agent . object)
                   (unit . object)))
        (*predicate-types* '((clean agent object))))
    (flatten-types/condition `(forall (?u - unit) (and (clean ?v ?u))))))
+
+(print
+ (let ((*types* '((agent . object)
+                  (unit . object)))
+       (*predicate-types* '((clean agent object))))
+   (flatten-types/condition `(not (clean ?v ?u)))))
 
 (defun flatten-types/effect (effect)
   (ematch effect
