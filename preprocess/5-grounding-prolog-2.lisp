@@ -28,82 +28,86 @@ When CONDITION is negative (i.e. of the form (NOT (PRED ARGS...))), then polarit
   `(or (and (list 'not ,condition) (<> ,polarity 'neg))
        (and ,condition  (<> ,polarity 'pos))))
 
+(defun %condition-list (conditions)
+  "Returns a prolog list for conditions"
+  `(list ,@(remove-duplicates ; because the same type predicate may be added many times
+            (iter (for c in conditions)
+                  (ematch c
+                    ((polarity c p)
+                     (collecting
+                      `(,p (,@c))))))
+            :test 'equal)))
+
+(progn ;; dummy functions for eldoc
+  (defun precondition (?action ?condition-list)
+    "dummy function for eldoc"
+    nil)
+  (defun effect (?action ?effect-list)
+    "dummy function for eldoc"
+    nil)
+  (defun axiom-body (?head ?condition-list)
+    "dummy function for eldoc"
+    nil))
+
+
 (defun setup-domain ()
   (append
    (iter (for a in *actions*)
          (ematch a
            ((plist :action name
                    :parameters params
-                   :precondition `(and ,@precond))
-            (dolist (c precond)
-              (ematch c
-                ((polarity c p)
-                 (collecting
-                  `(precondition (action ,name ,@params) (,p (predicate ,@c))))))))))
-   (iter (for a in *actions*)
-         (ematch a
-           ((plist :action name
-                   :parameters params
+                   :precondition `(and ,@precond)
                    :effect `(and ,@effects))
-            (dolist (e effects)
-              ;; in Prolog sense, parameters are universally quantified
-              (ematch e
-                (`(forall ,_ (when (and ,@conditions) ,(polarity atom p)))
-                  (collecting
-                   `(effect (action ,name ,@params)
-                            (list ,@(iter (for c in conditions)
-                                          (ematch c
-                                            ((polarity c p)
-                                             (collecting `(,p (predicate ,@c)))))))
-                            (,p (predicate ,@atom))))))))))
+            (collecting
+             `(action-spec
+               (action ,name ,@params)
+               ,(%condition-list precond)
+               (list ,@(iter (for e in effects)
+                             ;; in Prolog sense, parameters are universally quantified
+                             (ematch e
+                               (`(forall ,_ (when ,_ (increase ,@_))) nil)
+                               (`(forall ,_ (when (and ,@conditions) ,(polarity atom p)))
+                                 (collecting
+                                  `(when ,(%condition-list conditions)
+                                     (,p (,@atom)))))))))))))
    (iter (for a in *axioms*)
          (ematch a
            ((list :derived predicate `(and ,@body))
-            (dolist (c body)
-              (ematch c
-                ((polarity c p)
-                 (collecting
-                  `(axiom-body ,predicate (,p (predicate ,@c))))))))))
+            (collecting
+             `(axiom-body
+               ,predicate
+               ,(%condition-list body))))))
    (iter (for proposition in *init*)
          (collecting `(init ,proposition)))))
 
 (defun relaxed-reachability ()
   (append
-   `((:- (table (/ reachable-fact 1)))
-     (:- (table (/ reachable-action 1)))
-     (:- (reachable-action ?a)
-         (forall (precondition ?a (pos ?precondition))
-                 (reachable-fact (pos ?precondition)))
-         (forall (precondition ?a (neg ?precondition))
-                 (reachable-fact (neg ?precondition))))
-     (:- (reachable-fact (pos ?f))
+   `((:- (table (/ relaxed-reachable-fact 1)))
+     (:- (table (/ relaxed-reachable-action 1)))
+     (:- (relaxed-reachable-action ?a)
+         (action-spec ?a ?precond ?)
+         (forall (member (pos ?p) ?precond)
+                 (and (print-sexp ?p)
+                      (relaxed-reachable-fact ?p))))
+     (:- (relaxed-reachable-fact ?f)
          (init ?f))
-     (:- (reachable-fact (neg ?f))
-         (not (init ?f)))
-     (:- (reachable-fact (pos ?f))
-         (reachable-action ?a)
-         (effect ?a ?effect-conditions (pos ?f))
-         (forall (member (pos ?ec) ?effect-conditions)
-                 (reachable-fact (pos ?ec)))
-         (forall (member (neg ?ec) ?effect-conditions)
-                 (reachable-fact (neg ?ec))))
-     (:- (reachable-fact (neg ?f))
-         (reachable-action ?a)
-         (effect ?a ?effect-conditions (neg ?f))
-         (forall (member (pos ?ec) ?effect-conditions)
-                 (reachable-fact (pos ?ec)))
-         (forall (member (neg ?ec) ?effect-conditions)
-                 (reachable-fact (neg ?ec))))
-     (:- (reachable-fact ?f)
-         (forall (axiom-body ?f ?body)
-                 (reachable-fact ?body)))
+     (:- (relaxed-reachable-fact ?e)
+         (relaxed-reachable-action ?a)
+         (action-spec ?a ? ?effects)
+         (member (when ?conditions ?e) ?effects)
+         (forall (member (pos ?c) ?conditions)
+                 (relaxed-reachable-fact ?c)))
+     (:- (relaxed-reachable-fact ?f)
+         (axiom-body ?f ?body)
+         (forall (member (pos ?c) ?body)
+                 (relaxed-reachable-fact ?c)))
      ;; output facts/ops
      (:- relaxed-reachability
          (write ":facts\\n")
-         (findall ?f (reachable-fact (pos ?f)) ?list)
+         (findall ?f (relaxed-reachable-fact ?f) ?list)
          (print-sexp ?list)
          (write ":ops\\n")
-         (findall ?a (reachable-action ?a) ?list2)
+         (findall ?a (relaxed-reachable-action ?a) ?list2)
          (print-sexp ?list2)))))
 
 ;; (defun fluent-facts ()
