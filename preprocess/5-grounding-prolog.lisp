@@ -249,7 +249,9 @@
 
 (defun %ground ()
   (run-prolog
-   (append (relaxed-reachability)
+   (append `((:- (use_module (library tabling))) ; swi specific
+             (:- (style_check -singleton)))
+           (relaxed-reachability)
            (fluent-facts)
            (axiom-layers)
            (print-sexp)
@@ -261,7 +263,7 @@
                  axiom-layers
                  (write ")")
                  halt)))
-   :bprolog :args '("-g" "main") :debug t))
+   :swi :args '("-g" "main") :debug t))
 
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print (%ground)))
