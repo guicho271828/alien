@@ -42,18 +42,42 @@
              (pushnew (length predicate) arities))))
     arities))
 
+(defun unreachable-fact-arities ()
+  (let (arities)
+    (iter (for a in *actions*)
+          (ematch a
+            ((plist :effect effects)
+             (dolist (e effects)
+               (match e
+                 (`(forall ,_ (when ,_ (not ,atom)))
+                   (pushnew (length atom) arities)))))))
+    arities))
+
 (defun reachable-op-arities ()
   (remove-duplicates (mapcar (lambda (a) (length (getf a :parameters))) *actions*)))
 
 (defun relaxed-reachability ()
   (let ((arities (reachable-fact-arities))
+        (un-arities (unreachable-fact-arities))
         (op-arities (reachable-op-arities)))
     (append
      (iter (for len in arities)    (collecting `(:- (table (/ reachable-fact ,len)))))
+     (iter (for len in un-arities) (collecting `(:- (table (/ unreachable-fact ,len)))))
      (iter (for len in op-arities) (collecting `(:- (table (/ reachable-op ,(1+ len))))))
      (sort-clauses
       (append
-       (iter (for proposition in *init*) (collecting `(reachable-fact ,@proposition)))
+       (iter (for proposition in *init*)
+             (collecting `(initially-true ,@proposition)))
+       (iter (for len in arities)
+             (for args = (make-gensym-list len "?"))
+             (collecting
+              `(:- (reachable-fact ,@args)
+                   (initially-true ,@args))))
+       (iter (for len in un-arities)
+             (for args = (make-gensym-list len "?"))
+             (collecting
+              `(:- (unreachable-fact ,@args)
+                   (not (initially-true ,@args)))))
        (iter (for a in *actions*)
              (ematch a
                ((plist :action name
@@ -63,16 +87,33 @@
                 (collecting
                  `(:- (reachable-op ,name ,@params)
                       ,@(iter (for pre in precond)
-                              (collecting `(reachable-fact ,@pre)))))
+                              (match pre
+                                ((list 'not pre)
+                                 (collecting `(unreachable-fact ,@pre)))
+                                (_
+                                 (collecting `(reachable-fact ,@pre)))))))
                 (dolist (e effects)
                   (match e
-                    (`(forall ,_ (when ,_ (not ,_)))       nil)
                     (`(forall ,_ (when ,_ (increase ,@_))) nil)
+                    (`(forall ,_ (when (and ,@conditions) (not ,atom)))
+                      (collecting
+                       `(:- (unreachable-fact ,@atom)
+                            ,@(iter (for c in conditions)
+                                    (match c
+                                      ((list 'not c)
+                                       (collecting `(unreachable-fact ,@c)))
+                                      (_
+                                       (collecting `(reachable-fact ,@c)))))
+                            (reachable-op ,name ,@params))))
                     (`(forall ,_ (when (and ,@conditions) ,atom))
                       (collecting
                        `(:- (reachable-fact ,@atom)
                             ,@(iter (for c in conditions)
-                                    (collect `(reachable-fact ,@c)))
+                                    (match c
+                                      ((list 'not c)
+                                       (collecting `(unreachable-fact ,@c)))
+                                      (_
+                                       (collecting `(reachable-fact ,@c)))))
                             (reachable-op ,name ,@params)))))))))
        (iter (for a in *axioms*)
              (ematch a
@@ -80,8 +121,11 @@
                 (collecting
                  `(:- (reachable-fact ,@predicate)
                       ,@(iter (for c in body)
-                              (collecting
-                               `(reachable-fact ,@c))))))))))
+                              (match c
+                                ((list 'not c)
+                                 (collecting `(unreachable-fact ,@c)))
+                                (_
+                                 (collecting `(reachable-fact ,@c))))))))))))
      ;; output facts/ops
      `((:- relaxed-reachability
            (write ":facts\\n")
