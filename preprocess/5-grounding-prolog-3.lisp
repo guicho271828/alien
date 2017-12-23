@@ -110,11 +110,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     (in-city ?l2 ?c)
     (at ?t ?l1))))
 
-(defun unreferenced-parameters (params predicates)
-  (reduce #'set-difference predicates
-          :initial-value params
-          :key #'cdr))
-
 (defun relaxed-reachability ()
   (append
    `((:- (table (/ reachable-fact 1)))
@@ -136,7 +131,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                 (collecting
                  `(:- (reachable-op (,name ,@params))
                       ,@decomposed
-                      ,@(iter (for p in (unreferenced-parameters params precond))
+                      ,@(iter (for p in params)
                               (collecting `(object ,p))))))
               (dolist (e effects)
                 (match e
@@ -146,6 +141,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                        `(:- (reachable-effect ,atom)
                             (reachable-op (,name ,@params))
                             ,@(all-relaxed-reachable conditions)
+                            ,@(iter (for p in params)
+                                    (collecting `(object ,p)))
                             ,@(iter (for p in vars)
                                     (collecting `(object ,p))))))))))))
      `((:- (reachable-fact ?f)
@@ -161,7 +158,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                 (collecting
                  `(:- (reachable-axiom ,predicate)
                       ,@decomposed
-                      ,@(iter (for p in (unreferenced-parameters (cdr predicate) body))
+                      ,@(iter (for p in (cdr predicate))
                               ;; parameters not referenced in the condition
                               (collecting `(object ,p)))))))))
      (all-relaxed-reachable *init*)))
