@@ -46,6 +46,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
   (append
    `((:- (table (/ reachable-fact 1)))
      (:- (table (/ reachable-op 1))))
+   (iter (for (o . _) in *objects*)
+         (collecting `(object ,o)))
    (sort-clauses
     (append
      (iter (for a in *actions*)
@@ -56,7 +58,9 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                      :effect `(and ,@effects))
               (collecting
                `(:- (reachable-op (,name ,@params))
-                    ,@(all-relaxed-reachable precond)))
+                    ,@(all-relaxed-reachable precond)
+                    ;; the ordering here is quite important; being an object is a bottom line, should be checked last
+                    ,@(iter (for p in params) (collecting `(object ,p)))))
               (dolist (e effects)
                 (match e
                   (`(forall ,_ (when (and ,@conditions) ,atom))
@@ -70,7 +74,9 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
              ((list :derived predicate `(and ,@body))
               (collecting
                `(:- (reachable-fact ,predicate)
-                    ,@(all-relaxed-reachable body))))))
+                    ,@(all-relaxed-reachable body)
+                    ;; the ordering here is quite important; being an object is a bottom line, should be checked last
+                    ,@(iter (for p in (cdr predicate)) (collecting `(object ,p))))))))
      (all-relaxed-reachable *init*)))
    ;; output facts/ops
    `((:- relaxed-reachability
@@ -97,13 +103,23 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print (%ground)))
 
+(let ((*package* (find-package :pddl)))
+  (print (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))))
+
 (with-parsed-information (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
   (print (%ground)))
 
+(with-parsed-information (parse1 '(define (domain d)
+                                   (:requirements :strips :typing)
+                                   (:predicates (p ?x) (goal))
+                                   (:action A
+                                    :parameters (?x)
+                                    :precondition (not (p ?x))
+                                    :effect (goal)))
+                                 '(define (problem p)
+                                   (:domain d)
+                                   (:objects o1 o2)
+                                   (:init )
+                                   (:goal (goal))))
+  (print (%ground)))
 
-
-;; (print (-> "ipc2011-opt/transport-opt11/p01.pddl"
-;;          (%rel)
-;;          (parse)
-;;          (ground)
-;;          (instantiate-action-body)))
