@@ -1,4 +1,11 @@
 
+#|
+
+An old attempt which does not use first-order predicates in the variables.
+Heavily relies on arities and not really good.
+
+|#
+
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
