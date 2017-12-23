@@ -58,9 +58,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                      :effect `(and ,@effects))
               (collecting
                `(:- (reachable-op (,name ,@params))
-                    ,@(all-relaxed-reachable precond)
-                    ;; the ordering here is quite important; being an object is a bottom line, should be checked last
-                    ,@(iter (for p in params) (collecting `(object ,p)))))
+                    ,@(all-relaxed-reachable precond)))
               (dolist (e effects)
                 (match e
                   (`(forall ,_ (when (and ,@conditions) ,atom))
