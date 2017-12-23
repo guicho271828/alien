@@ -209,7 +209,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                  relaxed-reachability
                  (write ")")
                  halt)))
-   :swi :args '("-g" "main") :debug t))
+   :swi :args '("-g" "main")))
 
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print (%ground)))
@@ -223,7 +223,13 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (with-parsed-information (time (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl")))
   (time (%ground)))
 
-(with-parsed-information (parse (%rel "axiom-domains/opttel-adl-derived/p30.pddl"))
+(with-parsed-information (time (parse (%rel "axiom-domains/opttel-adl-derived/p48.pddl")))
+  (time (%ground)))
+
+(with-parsed-information (time (parse (%rel "axiom-domains/psr-middle-strips-derived/p01.pddl")))
+  (time (%ground)))
+
+(with-parsed-information (time (parse (%rel "axiom-domains/psr-middle-strips-derived/p50.pddl")))
   (time (%ground)))
 
 (with-parsed-information (parse1 '(define (domain d)
