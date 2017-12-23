@@ -191,6 +191,12 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (with-parsed-information (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
   (print (%ground)))
 
+(with-parsed-information (time (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl")))
+  (time (%ground)))
+
+;; (with-parsed-information (parse (%rel "axiom-domains/opttel-adl-derived/p30.pddl"))
+;;   (time (%ground)))
+
 (with-parsed-information (parse1 '(define (domain d)
                                    (:requirements :strips :typing)
                                    (:predicates (p ?x) (goal))
@@ -271,7 +277,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (defun call-test-ground (info fn)
   (with-parsed-information info
     (let ((result (%ground)))
-      (print result)
+      ;; (print result)
       (destructuring-bind (&key facts ops fluents)
           (read-from-string result)
         (funcall fn facts ops fluents)))))
@@ -355,3 +361,9 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
   (assert (not (mem '(d) facts)))
   (assert (mem '(a o1) ops))
   (assert (mem '(a o2) ops)))
+
+(with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
+  (assert (= 286 (length ops))))
+
+(with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
+  (assert (= 616 (length ops))))
