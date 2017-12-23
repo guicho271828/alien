@@ -33,21 +33,11 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     (_
      t)))
 
-(defun all-relaxed-reachable (conditions)
-  (iter (for c in (remove-duplicates conditions :test 'equal))
-        (when (positive c)
-          (collecting `(reachable-fact ,c)))))
-
-(defparameter *use-join-ordering* nil)
-(defparameter *use-join-ordering* t)
-
 (defun all-relaxed-reachable2 (conditions)
-  (if *use-join-ordering*
-      (-<> conditions
-        (remove-if-not #'positive arrow-macros:<>)
-        (remove-duplicates :test 'equal)
-        (join-ordering nil))
-      (all-relaxed-reachable conditions)))
+  (-<> conditions
+    (remove-if-not #'positive arrow-macros:<>)
+    (remove-duplicates :test 'equal)
+    (join-ordering nil)))
 
 (defun tmp-p (condition)
   (match condition
@@ -185,7 +175,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                       ,@(iter (for p in (cdr predicate))
                               ;; parameters not referenced in the condition
                               (collecting `(object ,p)))))))))
-     (all-relaxed-reachable *init*)))
+     (iter (for i in *init*)
+           (collect `(reachable-fact ,i)))))
    ;; output facts/ops
    `((:- relaxed-reachability
          (write ":facts\\n")
@@ -397,7 +388,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
   (assert (= 286 (length ops))))
-
 
 (dotimes (i 30)
   (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
