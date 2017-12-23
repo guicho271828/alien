@@ -11,13 +11,9 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (defun ground (info)
   (with-parsed-information info
     (let ((result (%ground)))
-      (destructuring-bind (&key facts ops fluents)
-          (let ((*package* (find-package :pddl)))
-            (read-from-string result))
-        (list* :facts facts
-               :ops ops
-               :fluents fluents
-               info)))))
+      (append (let ((*package* (find-package :pddl)))
+                (read-from-string result))
+              info))))
 
 (progn ;; dummy functions for eldoc
   (defun precondition (?action ?condition-list)
@@ -150,6 +146,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                        `(:- (reachable-fact ,atom)
                             (reachable-op (,name ,@params))
                             ,@(all-relaxed-reachable conditions))))))))))
+     `((:- (reachable-fact ?f)
+           (reachable-axiom ?f)))
      (iter (for a in *axioms*)
            (ematch a
              ((list :derived predicate `(and ,@body))
@@ -157,7 +155,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                   (all-relaxed-reachable2 body)
                 (appending temporary-rules)
                 (collecting
-                 `(:- (reachable-fact ,predicate)
+                 `(:- (reachable-axiom ,predicate)
                       ,@decomposed
                       ,@(iter (for p in (unreferenced-parameters (cdr predicate) body))
                               ;; parameters not referenced in the condition
@@ -170,7 +168,10 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
          (print-sexp ?list)
          (write ":ops\\n")
          (findall ?a (reachable-op ?a) ?list2)
-         (print-sexp ?list2)))))
+         (print-sexp ?list2)
+         (write ":axioms\\n")
+         (findall ?f (reachable-axiom ?f) ?list3)
+         (print-sexp ?list3)))))
 
 (defun %ground ()
   (run-prolog
@@ -281,14 +282,12 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
   (with-parsed-information info
     (let ((result (%ground)))
       ;; (print result)
-      (destructuring-bind (&key facts ops fluents)
-          (read-from-string result)
-        (funcall fn facts ops fluents)))))
+      (apply fn (read-from-string result)))))
 
 (defmacro with-test-ground (info &body body)
   `(call-test-ground ,info
-                     (lambda (facts ops fluents)
-                       (declare (ignorable facts ops fluents))
+                     (lambda (&key facts ops fluents axioms)
+                       (declare (ignorable facts ops fluents axioms))
                        ,@body)))
 
 (defun mem (elem list)
