@@ -131,7 +131,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                      :precondition `(and ,@precond)
                      :effect `(and ,@effects))
               (multiple-value-bind (decomposed temporary-rules)
-                  (all-relaxed-reachable2 precond)
+                  (all-relaxed-reachable2 (shuffle (copy-list precond)))
                 (appending temporary-rules)
                 (collecting
                  `(:- (reachable-op (,name ,@params))
@@ -152,7 +152,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
            (ematch a
              ((list :derived predicate `(and ,@body))
               (multiple-value-bind (decomposed temporary-rules)
-                  (all-relaxed-reachable2 body)
+                  (all-relaxed-reachable2 (shuffle (copy-list body)))
                 (appending temporary-rules)
                 (collecting
                  `(:- (reachable-axiom ,predicate)
