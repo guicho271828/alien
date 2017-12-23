@@ -196,7 +196,7 @@ Signals an error when the type is not connected to the root OBJECT type."
 2. a list of literals converted from the types of the parameters, including the parent types
 3. alist of (arg . type)
 
- Example: (?x - table) -> (?x), ((table ?x)) "
+ Example: (?x - table) -> (?x), ((table ?x)), ((?x . table)) "
   (let* ((parsed (parse-typed-def typed-def))
          (w/o-type (mapcar #'car parsed))
          (type-conditions
