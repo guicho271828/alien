@@ -47,7 +47,10 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 (defun all-relaxed-reachable2 (conditions)
   (if *use-join-ordering*
-      (join-ordering (remove-if-not #'positive conditions) nil)
+      (-<> conditions
+        (remove-if-not #'positive arrow-macros:<>)
+        (remove-duplicates :test 'equal)
+        (join-ordering nil))
       (all-relaxed-reachable conditions)))
 
 (defun tmp-p (condition)
