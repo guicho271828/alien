@@ -133,74 +133,72 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                    (push 1 a)
                    '(2 3)))))
 
-
 (defun relaxed-reachability ()
-  (let ((tables
-         `((:- (table (/ reachable-fact 1)))
-           (:- (table (/ reachable-op 1)))
-           (:- (table (/ temporary-reachable 1))))))
-    (reverse-call append
-      tables
-      (iter (for (o . _) in *objects*)
-            (collecting `(object ,o)))
-      (sort-clauses
-       (append
-        (iter (for a in *actions*)
-              (ematch a
-                ((plist :action name
-                        :parameters params
-                        :precondition `(and ,@precond)
-                        :effect `(and ,@effects))
-                 (multiple-value-bind (decomposed temporary-rules)
-                     (all-relaxed-reachable2 (shuffle (copy-list precond)))
-                   (appending temporary-rules)
-                   (collecting
-                    `(:- (reachable-op (,name ,@params))
-                         ,@decomposed
-                         ,@(iter (for p in params)
-                                 (collecting `(object ,p))))))
-                 (dolist (e effects)
-                   (match e
-                     (`(forall ,vars (when (and ,@conditions) ,atom))
-                       (when (positive atom)
-                         (with-gensyms (reachable-effect)
-                           (push `(:- (table (/ ,reachable-effect 1))) tables)
-                           (appending
-                            `((:- (reachable-fact ?f)
-                                  (,reachable-effect ?f))
-                              (:- (,reachable-effect ,atom)
-                                  (reachable-op (,name ,@params))
-                                  ,@(all-relaxed-reachable conditions)
-                                  ,@(iter (for p in params)
-                                          (collecting `(object ,p)))
-                                  ,@(iter (for p in vars)
-                                          (collecting `(object ,p))))))))))))))
-        `((:- (reachable-fact ?f)
-              (reachable-axiom ?f)))
-        (iter (for a in *axioms*)
-              (ematch a
-                ((list :derived predicate `(and ,@body))
-                 (multiple-value-bind (decomposed temporary-rules)
-                     (all-relaxed-reachable2 (shuffle (copy-list body)))
-                   (appending temporary-rules)
-                   (collecting
-                    `(:- (reachable-axiom ,predicate)
-                         ,@decomposed
-                         ,@(iter (for p in (cdr predicate))
-                                 ;; parameters not referenced in the condition
-                                 (collecting `(object ,p)))))))))
-        (all-relaxed-reachable *init*)))
-      ;; output facts/ops
-      `((:- relaxed-reachability
-            (write ":facts\\n")
-            (findall ?f (reachable-fact ?f) ?list)
-            (print-sexp ?list)
-            (write ":ops\\n")
-            (findall ?a (reachable-op ?a) ?list2)
-            (print-sexp ?list2)
-            (write ":axioms\\n")
-            (findall ?f (reachable-axiom ?f) ?list3)
-            (print-sexp ?list3))))))
+  (append
+   `((:- (table (/ reachable-fact 1)))
+     (:- (table (/ reachable-op 1)))
+     (:- (table (/ temporary-reachable 1))))
+   (iter (for (o . _) in *objects*)
+         (collecting `(object ,o)))
+   (sort-clauses
+    (append
+     `((:- (reachable-fact ?f)
+           (reachable-axiom ?f))
+       (:- (reachable-fact ?f)
+           (reachable-effect ?f)))
+     (iter (for a in *actions*)
+           (ematch a
+             ((plist :action name
+                     :parameters params
+                     :precondition `(and ,@precond)
+                     :effect `(and ,@effects))
+              (multiple-value-bind (decomposed temporary-rules)
+                  (all-relaxed-reachable2 precond)
+                (appending temporary-rules)
+                (collecting
+                 `(:- (reachable-op (,name ,@params))
+                      ,@decomposed
+                      ,@(iter (for p in params)
+                              (collecting `(object ,p))))))
+              (dolist (e effects)
+                (match e
+                  (`(forall ,vars (when (and ,@conditions) ,atom))
+                    (when (positive atom)
+                      (multiple-value-bind (decomposed temporary-rules)
+                          (all-relaxed-reachable2 conditions)
+                        (appending temporary-rules)
+                        (collecting
+                         `(:- (reachable-effect ,atom)
+                              (reachable-op (,name ,@params))
+                              ,@decomposed
+                              ,@(iter (for p in params)
+                                      (collecting `(object ,p)))
+                              ,@(iter (for p in vars)
+                                      (collecting `(object ,p)))))))))))))
+     (iter (for a in *axioms*)
+           (ematch a
+             ((list :derived predicate `(and ,@body))
+              (multiple-value-bind (decomposed temporary-rules)
+                  (all-relaxed-reachable2 body)
+                (appending temporary-rules)
+                (collecting
+                 `(:- (reachable-axiom ,predicate)
+                      ,@decomposed
+                      ,@(iter (for p in (cdr predicate))
+                              ;; parameters not referenced in the condition
+                              (collecting `(object ,p)))))))))
+     (all-relaxed-reachable *init*)))
+   ;; output facts/ops
+   `((:- relaxed-reachability
+         (write ":facts\\n")
+         (findall ?f (reachable-fact ?f) ?list)
+         (print-sexp ?list)
+         (write ":ops\\n")
+         (findall ?a (reachable-op ?a) ?list2)
+         (print-sexp ?list2)
+         (write ":axioms\\n")
+         (findall ?f (reachable-axiom ?f) ?list3)
+         (print-sexp ?list3)))))
 
 (defun %ground ()
   (run-prolog
@@ -227,8 +225,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (with-parsed-information (time (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl")))
   (time (%ground)))
 
-;; (with-parsed-information (parse (%rel "axiom-domains/opttel-adl-derived/p30.pddl"))
-;;   (time (%ground)))
+(with-parsed-information (parse (%rel "axiom-domains/opttel-adl-derived/p30.pddl"))
+  (time (%ground)))
 
 (with-parsed-information (parse1 '(define (domain d)
                                    (:requirements :strips :typing)
