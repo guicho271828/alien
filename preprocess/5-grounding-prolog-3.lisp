@@ -70,7 +70,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
             min-key1
             min-key2
             min-key3)
-        (iter (for (c1 . rest) on (sort conditions #'> :key #'length))
+        (iter (for (c1 . rest) on (sort (copy-list conditions) #'> :key #'length))
               (for (_ . args1) = c1)
               (for l1 = (length args1))
               (iter (for c2 in rest)
@@ -105,10 +105,20 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                    acc)))))))
 
 (print-values
- (all-relaxed-reachable2
-  '((in-city ?l1 ?c)
-    (in-city ?l2 ?c)
-    (at ?t ?l1))))
+  (all-relaxed-reachable2
+   (shuffle
+    (copy-list
+     '((in-city ?l1 ?c)
+       (in-city ?l2 ?c)
+       (at ?t ?l1))))))
+
+(multiple-value-bind (decomposed temporary)
+    (all-relaxed-reachable2
+     (shuffle
+      (copy-list
+       '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2)))))
+  (assert (= 2 (length decomposed)))
+  (assert (< 3 (length temporary) 7)))
 
 (defmacro reverse-call (head &body args)
   (let ((syms (make-gensym-list (length args))))
@@ -386,5 +396,13 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
   (assert (= 286 (length ops))))
 
-(with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
-  (assert (= 616 (length ops))))
+
+(dotimes (i 30)
+  (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
+    (print (length facts))
+    (print (length ops))
+    (print (length axioms))
+    (assert (= 616 (length ops)))))
+
+(print (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl")))
+
