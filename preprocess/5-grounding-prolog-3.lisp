@@ -42,6 +42,11 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
         (when (positive c)
           (collecting `(reachable-fact ,c)))))
 
+(defun unreferenced-parameters (params predicates)
+  (reduce #'set-difference predicates
+          :initial-value params
+          :key #'cdr))
+
 (defun relaxed-reachability ()
   (append
    `((:- (table (/ reachable-fact 1)))
@@ -58,23 +63,26 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                      :effect `(and ,@effects))
               (collecting
                `(:- (reachable-op (,name ,@params))
-                    ,@(all-relaxed-reachable precond)))
+                    ,@(all-relaxed-reachable precond)
+                    ,@(iter (for p in (unreferenced-parameters params precond))
+                            (collecting `(object ,p)))))
               (dolist (e effects)
                 (match e
                   (`(forall ,_ (when (and ,@conditions) ,atom))
                     (when (positive atom)
                       (collecting
                        `(:- (reachable-fact ,atom)
-                            ,@(all-relaxed-reachable conditions)
-                            (reachable-op (,name ,@params)))))))))))
+                            (reachable-op (,name ,@params))
+                            ,@(all-relaxed-reachable conditions))))))))))
      (iter (for a in *axioms*)
            (ematch a
              ((list :derived predicate `(and ,@body))
               (collecting
                `(:- (reachable-fact ,predicate)
                     ,@(all-relaxed-reachable body)
-                    ;; the ordering here is quite important; being an object is a bottom line, should be checked last
-                    ,@(iter (for p in (cdr predicate)) (collecting `(object ,p))))))))
+                    ,@(iter (for p in (unreferenced-parameters (cdr predicate) body))
+                            ;; parameters not referenced in the condition
+                            (collecting `(object ,p))))))))
      (all-relaxed-reachable *init*)))
    ;; output facts/ops
    `((:- relaxed-reachability
