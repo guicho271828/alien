@@ -42,6 +42,75 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
         (when (positive c)
           (collecting `(reachable-fact ,c)))))
 
+(defparameter *use-join-ordering* nil)
+(defparameter *use-join-ordering* t)
+
+(defun all-relaxed-reachable2 (conditions)
+  (if *use-join-ordering*
+      (join-ordering (remove-if-not #'positive conditions) nil)
+      (all-relaxed-reachable conditions)))
+
+(defun tmp-p (condition)
+  (match condition
+    ((list* (symbol :name (string* #\T #\M #\P _)) _)
+     t)))
+
+(assert (tmp-p '(tmp111)))
+(assert (not (tmp-p '(a))))
+
+(defun tmp/relaxed-reachable (condition)
+  `(,(if (tmp-p condition) 'temporary-reachable 'reachable-fact) ,condition))
+
+(defun join-ordering (conditions acc)
+  "Helmert09, p40"
+  (if (<= (length conditions) 2)
+      (values (mapcar #'tmp/relaxed-reachable conditions) acc)
+      (let (min-u
+            min-c1
+            min-c2
+            min-key1
+            min-key2
+            min-key3)
+        (iter (for (c1 . rest) on (sort conditions #'> :key #'length))
+              (for (_ . args1) = c1)
+              (for l1 = (length args1))
+              (iter (for c2 in rest)
+                    (for (_ . args2) = c2)
+                    (for l2 = (length args2))
+                    (for u  = (union args1 args2))
+                    (for key3 = (length u))
+                    (for key1 = (- key3 l1))
+                    (for key2 = (- key3 l2))
+                    (when (or (null min-u)
+                              (or (< key1 min-key1)
+                                  (when (= key1 min-key1)
+                                    (or (< key2 min-key2)
+                                        (when (= key2 min-key2)
+                                          (< key3 min-key3))))))
+                      (setf min-u u
+                            min-c1 c1
+                            min-c2 c2
+                            min-key1 key1
+                            min-key2 key2
+                            min-key3 key3))))
+        (with-gensyms (tmp)
+          (let ((new `(,tmp ,@min-u)))
+            (join-ordering
+             (-<>> conditions
+               (remove min-c1 arrow-macros:<> :test #'equal)
+               (remove min-c2 arrow-macros:<> :test #'equal)
+               (cons new))
+             (cons `(:- (temporary-reachable ,new)
+                        ,(tmp/relaxed-reachable min-c1)
+                        ,(tmp/relaxed-reachable min-c2))
+                   acc)))))))
+
+(print-values
+ (all-relaxed-reachable2
+  '((in-city ?l1 ?c)
+    (in-city ?l2 ?c)
+    (at ?t ?l1))))
+
 (defun unreferenced-parameters (params predicates)
   (reduce #'set-difference predicates
           :initial-value params
@@ -50,7 +119,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (defun relaxed-reachability ()
   (append
    `((:- (table (/ reachable-fact 1)))
-     (:- (table (/ reachable-op 1))))
+     (:- (table (/ reachable-op 1)))
+     (:- (table (/ temporary-reachable 1))))
    (iter (for (o . _) in *objects*)
          (collecting `(object ,o)))
    (sort-clauses
@@ -61,11 +131,14 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                      :parameters params
                      :precondition `(and ,@precond)
                      :effect `(and ,@effects))
-              (collecting
-               `(:- (reachable-op (,name ,@params))
-                    ,@(all-relaxed-reachable precond)
-                    ,@(iter (for p in (unreferenced-parameters params precond))
-                            (collecting `(object ,p)))))
+              (multiple-value-bind (decomposed temporary-rules)
+                  (all-relaxed-reachable2 precond)
+                (appending temporary-rules)
+                (collecting
+                 `(:- (reachable-op (,name ,@params))
+                      ,@decomposed
+                      ,@(iter (for p in (unreferenced-parameters params precond))
+                              (collecting `(object ,p))))))
               (dolist (e effects)
                 (match e
                   (`(forall ,_ (when (and ,@conditions) ,atom))
@@ -77,12 +150,15 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
      (iter (for a in *axioms*)
            (ematch a
              ((list :derived predicate `(and ,@body))
-              (collecting
-               `(:- (reachable-fact ,predicate)
-                    ,@(all-relaxed-reachable body)
-                    ,@(iter (for p in (unreferenced-parameters (cdr predicate) body))
-                            ;; parameters not referenced in the condition
-                            (collecting `(object ,p))))))))
+              (multiple-value-bind (decomposed temporary-rules)
+                  (all-relaxed-reachable2 body)
+                (appending temporary-rules)
+                (collecting
+                 `(:- (reachable-fact ,predicate)
+                      ,@decomposed
+                      ,@(iter (for p in (unreferenced-parameters (cdr predicate) body))
+                              ;; parameters not referenced in the condition
+                              (collecting `(object ,p)))))))))
      (all-relaxed-reachable *init*)))
    ;; output facts/ops
    `((:- relaxed-reachability
