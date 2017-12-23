@@ -48,8 +48,14 @@ can be deleted).
         (match c
           (`(increase ,@_) nil)
           (`(not ,c)
+            ;; instantiate objects incrementally
+            (dolist (p (cdr c))
+              (collecting `(object ,p)))
             (collecting `(unreachable-fact ,c)))
           (_
+           ;; instantiate objects incrementally
+           (dolist (p (cdr c))
+             (collecting `(object ,p)))
            (collecting `(reachable-fact ,c))))))
 
 (defun relaxed-reachability ()
@@ -97,9 +103,7 @@ can be deleted).
                      :effect `(and ,@effects))
               (collecting
                `(:- (reachable-op (,name ,@params))
-                    ,@(condition-satisfied precond)
-                    ;; the ordering here is quite important; being an object is a bottom line, should be checked last
-                    ,@(iter (for p in params) (collecting `(object ,p)))))
+                    ,@(condition-satisfied precond)))
               (dolist (e effects)
                 (match e
                   (`(forall ,_ (when ,_ (increase ,@_))))
@@ -176,6 +180,6 @@ can be deleted).
                                  '(define (problem p)
                                    (:domain d)
                                    (:objects o1 o2)
-                                   (:init)
+                                   (:init (goal))
                                    (:goal (goal))))
   (print (%ground)))
