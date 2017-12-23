@@ -38,7 +38,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
      t)))
 
 (defun all-relaxed-reachable (conditions)
-  (iter (for c in conditions)
+  (iter (for c in (remove-duplicates conditions :test 'equal))
         (when (positive c)
           (collecting `(reachable-fact ,c)))))
 
