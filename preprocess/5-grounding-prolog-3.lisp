@@ -171,8 +171,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                          `(:- (reachable-effect ,atom)
                               (reachable-op (,name ,@params))
                               ,@decomposed
-                              ,@(iter (for p in params)
-                                      (collecting `(object ,p)))
                               ,@(iter (for p in vars)
                                       (collecting `(object ,p)))))))))))))
      (iter (for a in *axioms*)
