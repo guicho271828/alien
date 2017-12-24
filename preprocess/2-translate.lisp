@@ -102,13 +102,6 @@
                   (rec rest)))))
       (rec list))))
 
-;; TODO: replace PRINT with ASSERT
-
-(print
- (parse-typed-def '(hand level beverage dispenser container - object
-                    ingredient cocktail - beverage
-                    shot shaker - container)))
-
 (defun grovel-types (domain)
   (match domain
     ((assoc :types typed-def)
@@ -145,26 +138,11 @@ Signals an error when the type is not connected to the root OBJECT type."
               type)
       acc)))
 
-(print
- (let ((*types* '((truck . location)
-                  (location . truck)
-                  (truck . object))))
-   (flatten-type 'truck)))
-
-(errors
-  (let (*types*)
-    (grovel-types '((:types truck - location location - truck)))))
-
 (defun flatten-types/argument (arg type)
   "Returns a list of type predicates for each parent type of TYPE, with ARG as the argument."
   (iter (for parent in (flatten-type type))
         (unless (eq parent 'object)
           (collecting `(,parent ,arg)))))
-
-(print
- (let ((*types* '((truck . location)
-                  (location . object))))
-   (flatten-types/argument '?truck 'truck)))
 
 (defun flatten-types/predicate (predicate)
   "Look up the *predicate-types* and returns a list of type predicates and the original predicate."
@@ -175,20 +153,6 @@ Signals an error when the type is not connected to the root OBJECT type."
                      args
                      (cdr (or (assoc name *predicate-types*)
                               (error "Predicate type for ~a is missing!" name))))))))
-
-(print
- (let ((*types* '((truck . location)
-                  (location . object)))
-       (*predicate-types* '((truck location)
-                            (location object)
-                            (in truck object))))
-   (flatten-types/predicate `(in ?truck ?thing))))
-
-(errors
-  (let ((*types* '((truck . location)
-                   (location . object)))
-        (*predicate-types* '()))
-    (flatten-types/predicate `(in ?truck ?thing))))
 
 (defun flatten-typed-def (typed-def)
   "Take a typed-def L and return two values:
@@ -203,14 +167,6 @@ Signals an error when the type is not connected to the root OBJECT type."
           (iter (for (arg . type) in parsed)
                 (appending (flatten-types/argument arg type)))))
     (values w/o-type type-conditions parsed)))
-
-(print-values
- (let ((*types* '((truck . location)
-                  (location . object)))
-       (*predicate-types* '((truck location)
-                            (location object)
-                            (in truck object))))
-   (flatten-typed-def `(?truck - truck ?thing - object))))
 
 (defun flatten-types/condition (condition)
   (ematch condition
@@ -229,18 +185,6 @@ Signals an error when the type is not connected to the root OBJECT type."
      `(,kind ,@(mapcar #'flatten-types/condition conditions)))
     (_
      `(and ,@(flatten-types/predicate condition)))))
-
-(print
- (let ((*types* '((agent . object)
-                  (unit . object)))
-       (*predicate-types* '((clean agent object))))
-   (flatten-types/condition `(forall (?u - unit) (and (clean ?v ?u))))))
-
-(print
- (let ((*types* '((agent . object)
-                  (unit . object)))
-       (*predicate-types* '((clean agent object))))
-   (flatten-types/condition `(not (clean ?v ?u)))))
 
 (defun flatten-types/effect (effect)
   (ematch effect
@@ -289,12 +233,6 @@ Signals an error when the type is not connected to the root OBJECT type."
              (declare (ignore type-conditions))
              (push `(,name ,@w/o-type) *predicates*)
              (push `(,name ,@(mapcar #'cdr parsed)) *predicate-types*))))))))
-
-(let ((*types* '((a . object) (b . object)))
-      *predicate-types* *predicates*)
-  (grovel-predicates `((:predicates (pred ?x - a ?y - b))))
-  (print *predicates*)
-  (print *predicate-types*))
 
 (defun grovel-init (problem)
   (ematch problem
@@ -595,34 +533,6 @@ Signals an error when the type is not connected to the root OBJECT type."
     (_
      (lambda (k) (funcall k condition)))))
 
-(defun collect-results (cps)
-  (let (acc)
-    (funcall cps
-             (lambda (result)
-               (push result acc)))
-    (print acc)))
-
-(defun nnf-dnf (condition)
-  (collect-results (&nnf-dnf condition)))
-
-(progn
-  (nnf-dnf 'a)
-  (nnf-dnf '(or a b))
-  (nnf-dnf '(or a b c (or d e)))
-  (nnf-dnf '(and x (or a b)))
-  (nnf-dnf '(and (or x y) (or a b)))
-  (nnf-dnf '(and (or x y) c (or a b)))
-  (nnf-dnf '(and (or (and x z) y) c (or a b)))
-  (nnf-dnf '(or (and x (or w z)) y))
-
-  (nnf-dnf '(and (clear ?x)
-             (or (clear ?w)
-              (not (clear ?z)))))
-
-  (nnf-dnf '(exists (?x ?y)
-             (or (clear ?x)
-              (not (clear ?y))))))
-
 (defun &nnf-dnf/effect (condition)
   ;; now we have only and, or, exists, not, predicates.
   ;; OR clause is converted into an iterator.
@@ -666,30 +576,6 @@ Signals an error when the type is not connected to the root OBJECT type."
     
     (_
      (lambda (k) (funcall k condition)))))
-
-(defun nnf-dnf/effect (condition)
-  (collect-results (&nnf-dnf/effect condition)))
-
-(progn
-  (nnf-dnf/effect 'a)
-  (nnf-dnf/effect '(or a b))
-  (nnf-dnf/effect '(or a b c (or d e)))
-  (nnf-dnf/effect '(and x (or a b)))
-  (nnf-dnf/effect '(and (or x y) (or a b)))
-  (nnf-dnf/effect '(and (or x y) c (or a b)))
-  (nnf-dnf/effect '(and (or (and x z) y) c (or a b)))
-  (nnf-dnf/effect '(or (and x (or w z)) y))
-
-  (nnf-dnf/effect '(and (clear ?x)
-                    (or (clear ?w)
-                     (not (clear ?z)))))
-
-  (nnf-dnf/effect '(exists (?x ?y)
-                    (or (clear ?x)
-                     (not (clear ?y)))))
-
-  (nnf-dnf/effect `(when (or a b)
-                     (and c d (or e f)))))
 
 (defun remove-disjunction-actions ()
   (dolist (it *actions4*)
@@ -763,19 +649,6 @@ Signals an error when the type is not connected to the root OBJECT type."
       (rec condition)
       `(exists ,args-acc (and ,@body-acc)))))
 
-(progn
-  (print (move-exists/condition `(exists (a b c) (three a b c))))
-  (print (move-exists/condition `(and
-                                  (p1)
-                                  (exists (a) (p2 a))
-                                  (exists (a) (p3 a)))))
-  (print (move-exists/condition `(and
-                                  (p1)
-                                  (exists (a)
-                                          (and (and (p3 a)
-                                                    (p4 a))
-                                               (exists (b) (p2 a b))))))))
-
 (defun move-exists/effect (condition)
   "move existential quantifier as well as flattening an AND tree"
   (let (conjunction)
@@ -808,12 +681,6 @@ Signals an error when the type is not connected to the root OBJECT type."
                   (push condition conjunction)))))
       (rec condition)
       `(and ,@conjunction))))
-
-(progn
-  (print (move-exists/effect `(and (p1)
-                                   (and (p1) (p1))
-                                   (when (exists (a) (clear a))
-                                     (and (p2) (and (p2) (and (p2) (p2)))))))))
 
 (defun move-exists-actions ()
   (dolist (it *actions5*)
@@ -922,12 +789,6 @@ Signals an error when the type is not connected to the root OBJECT type."
                  `(and ,@acc))))
       (rec `(forall () (when (and) ,effect)))
       `(and ,@acc))))
-
-(print (simplify-effect `(clear)))
-
-(print (simplify-effect `(when (and) (and (a) (b)))))
-
-(print (simplify-effect `(when (and) (forall () (and (a) (b))))))
 
 ;;; parse8 --- output
 
