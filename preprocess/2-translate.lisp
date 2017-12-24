@@ -107,9 +107,6 @@
     ((assoc :types typed-def)
      (let ((parsed (parse-typed-def typed-def)))
        (appendf *types* parsed)
-       (iter (for pair in *types*)
-             ;; to check for disconnected type as early as possible
-             (flatten-type (car pair)))
        (appendf *predicates*
                 (mapcar (lambda-ematch
                           ((cons type _) `(,type ?o)))
@@ -122,20 +119,21 @@
 (defun flatten-type (type)
   "Returns the list of all parent types (including itself and OBJECT), handling the infinite loop.
 Signals an error when the type is not connected to the root OBJECT type."
-  (let (acc connected-to-object-p)
+  (let (acc)
     (labels ((rec (type)
-               (when (eq 'object type)
-                 (setf connected-to-object-p t))
                (unless (member type acc)
                  (push type acc)
                  (iter (for (current . parent) in *types*)
+                       (with parent-found = nil)
                        (when (eq current type)
-                         (rec parent))))))
+                         (setf parent-found t)
+                         (rec parent))
+                       (finally
+                        (when (not parent-found)
+                          (when (not (eq 'object type))
+                            ;; (warn "Type ~a is disconnected from the root OBJECT type!~%Inserting dependency to OBJECT" type)
+                            (pushnew 'object acc))))))))
       (rec type)
-      (assert connected-to-object-p
-              nil
-              "Type ~a is disconnected from the root OBJECT type!"
-              type)
       acc)))
 
 (defun flatten-types/argument (arg type)
