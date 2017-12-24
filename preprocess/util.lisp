@@ -58,3 +58,16 @@
        (progn ,@form)
      (error (c)
        (format t "~&this is an error:~% ~a~%" c))))
+
+(defmacro with-parsed-information (info &body body)
+  "Binds the special variables using INFO, which is a parsed & flattened result of pddl files (see 2-translate.lisp).
+   *types* *objects* *predicates* *init* *goal* *axioms* *actions* "
+  `(match ,info
+     ((plist :type *types*
+             :objects *objects*
+             :predicates *predicates*
+             :init *init*
+             :goal *goal*
+             :axioms *axioms*
+             :actions *actions*)
+      ,@body)))

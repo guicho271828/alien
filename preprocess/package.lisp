@@ -38,6 +38,7 @@
    #:*axioms*
    #:*actions*
    #:%rel
-   #:*predicate-types*))
+   #:*predicate-types*
+   #:ground))
 
 (setf trivia:*arity-check-by-test-call* nil)

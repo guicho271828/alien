@@ -16,7 +16,8 @@
   :description "Test system of strips"
   :license "LLGPL"
   :depends-on (:strips
-               :fiveam)
+               :fiveam
+               :bordeaux-threads)
   :components ((:module "t"
                 :components
                 ((:file "package"))))

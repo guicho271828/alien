@@ -279,3 +279,173 @@
                                                (and (p2) (and (p2) (and (p2) (p2))))))))
     ;; (AND (FORALL (#:A54877) (WHEN (AND (CLEAR #:A54877)) (AND (P2) (P2) (P2) (P2)))) (P1) (P1) (P1)) 
     ))
+
+(test join-ordering
+  (multiple-value-match
+      (strips::all-relaxed-reachable2
+       (shuffle
+        (copy-list
+         '((in-city ?l1 ?c)
+           (in-city ?l2 ?c)
+           (at ?t ?l1)))))
+    ((_ `(:- ,_ ,@rest))
+     (is (or (set= rest '((REACHABLE-FACT (AT ?T ?L1)) (REACHABLE-FACT (IN-CITY ?L1 ?C))))
+             (set= rest '((REACHABLE-FACT (IN-CITY ?L2 ?C)) (REACHABLE-FACT (IN-CITY ?L1 ?C))))))))
+             
+  
+  (multiple-value-bind (decomposed temporary)
+      (strips::all-relaxed-reachable2
+       (shuffle
+        (copy-list
+         '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2)))))
+    (is (= 2 (length decomposed)))
+    (is (< 3 (length temporary) 7)))
+
+  (is-true (strips::tmp-p '(tmp111)))
+  (is-false (strips::tmp-p '(a))))
+
+(defun call-test-ground (info fn)
+  (with-parsed-information info
+    (let ((result (strips::%ground)))
+      ;; (print result)
+      (apply fn (read-from-string result)))))
+
+(defmacro with-test-ground (info &body body)
+  `(call-test-ground ,info
+                     (lambda (&key facts ops fluents axioms)
+                       (declare (ignorable facts ops fluents axioms))
+                       ,@body)))
+
+(defun mem (elem list)
+  (member elem list :test 'equal))
+
+(test relaxed-reachability
+  (with-test-ground (strips::parse1 '(define (domain d)
+                              (:requirements :strips :typing)
+                              (:predicates (d ?x) (p ?x) (goal))
+                              (:action a :parameters (?x) :precondition (and) :effect (p ?x))
+                              (:derived (d ?x) (p ?x)))
+                            '(define (problem p)
+                              (:domain d)
+                              (:objects o1 o2)
+                              (:init )
+                              (:goal (goal))))
+    (is-true (mem '(d o1) facts))
+    (is-true (mem '(p o1) facts))
+    (is-true (mem '(d o2) facts))
+    (is-true (mem '(p o2) facts))
+    (is-true (mem '(a o1) ops))
+    (is-true (mem '(a o2) ops)))
+
+  ;; parameter ?x is not referenced in the axiom body
+  (with-test-ground (strips::parse1 '(define (domain d)
+                              (:requirements :strips :typing)
+                              (:predicates (d ?x) (p) (goal))
+                              (:action a :parameters (?x) :precondition (and) :effect (p))
+                              (:derived (d ?x) (p)))
+                            '(define (problem p)
+                              (:domain d)
+                              (:objects o1 o2)
+                              (:init )
+                              (:goal (goal))))
+    (is-true (mem '(p) facts))
+    (is-true (mem '(d o1) facts))
+    (is-true (mem '(d o2) facts))
+    (is-true (mem '(a o1) ops))
+    (is-true (mem '(a o2) ops)))
+
+  ;; parameter ?x is a free variable in the axiom body
+  (with-test-ground (strips::parse1 '(define (domain d)
+                              (:requirements :strips :typing)
+                              (:predicates (d ?x) (p ?x) (goal))
+                              (:action a :parameters (?x) :precondition (and) :effect (p ?x))
+                              (:derived (d) (p ?x)))
+                            '(define (problem p)
+                              (:domain d)
+                              (:objects o1 o2)
+                              (:init )
+                              (:goal (goal))))
+    (is-true (mem '(p o1) facts))
+    (is-true (mem '(p o2) facts))
+    (is-true (mem '(d) facts))
+    (is-true (= 1 (count '(d) facts :test 'equal)))
+    (is-true (mem '(a o1) ops))
+    (is-true (mem '(a o2) ops)))
+
+  (with-test-ground (strips::parse1 '(define (domain d)
+                              (:requirements :strips :typing)
+                              (:predicates (d ?x) (p ?x) (p2 ?x) (goal))
+                              (:action a :parameters (?x) :precondition (and) :effect (p ?x))
+                              (:derived (d) (p2 ?x)))
+                            '(define (problem p)
+                              (:domain d)
+                              (:objects o1 o2)
+                              (:init )
+                              (:goal (goal))))
+    (is-true (mem '(p o1) facts))
+    (is-true (mem '(p o2) facts))
+    (is-true (not (mem '(p2 o1) facts)))
+    (is-true (not (mem '(p2 o2) facts)))
+    (is-true (not (mem '(d) facts)))
+    (is-true (mem '(a o1) ops))
+    (is-true (mem '(a o2) ops)))
+
+  (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
+    (assert (= 286 (length ops))))
+
+  (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
+    (print (length facts))
+    (print (length ops))
+    (print (length axioms))
+    (assert (= 616 (length ops)))))
+
+(defparameter *large-files*
+  '("axiom-domains/opttel-adl-derived/p48.pddl"
+    "axiom-domains/opttel-strips-derived/p19.pddl"
+    "axiom-domains/philosophers-adl-derived/p48.pddl"
+    "axiom-domains/philosophers-strips-derived/p48.pddl"
+    "axiom-domains/psr-middle-adl-derived/p50.pddl"
+    "axiom-domains/psr-middle-strips-derived/p50.pddl"
+    "ipc2011-opt/barman-opt11/p20.pddl"
+    "ipc2011-opt/elevators-opt11/p20.pddl"
+    "ipc2011-opt/floortile-opt11/p20.pddl"
+    "ipc2011-opt/nomystery-opt11/p20.pddl"
+    "ipc2011-opt/openstacks-opt11/p20.pddl"
+    "ipc2011-opt/parcprinter-opt11/p20.pddl"
+    "ipc2011-opt/parking-opt11/p20.pddl"
+    "ipc2011-opt/pegsol-opt11/p20.pddl"
+    "ipc2011-opt/scanalyzer-opt11/p20.pddl"
+    "ipc2011-opt/sokoban-opt11/p20.pddl"
+    "ipc2011-opt/tidybot-opt11/p20.pddl"
+    "ipc2011-opt/transport-opt11/p20.pddl"
+    "ipc2011-opt/visitall-opt11/p20.pddl"
+    "ipc2011-opt/woodworking-opt11/p20.pddl"
+    "ipc2014-agl/barman-agl14/p20.pddl"
+    "ipc2014-agl/cavediving-agl14/p20.pddl"
+    "ipc2014-agl/childsnack-agl14/p20.pddl"
+    "ipc2014-agl/citycar-agl14/p20.pddl"
+    "ipc2014-agl/floortile-agl14/p20.pddl"
+    "ipc2014-agl/ged-agl14/p20.pddl"
+    "ipc2014-agl/hiking-agl14/p20.pddl"
+    "ipc2014-agl/maintenance-agl14/p20.pddl"
+    "ipc2014-agl/openstacks-agl14/p20.pddl"
+    "ipc2014-agl/parking-agl14/p20.pddl"
+    "ipc2014-agl/tetris-agl14/p20.pddl"
+    "ipc2014-agl/thoughtful-agl14/p20.pddl"
+    "ipc2014-agl/transport-agl14/p20.pddl"
+    "ipc2014-agl/visitall-agl14/p20.pddl"))
+
+(defparameter *timeout* 10)
+
+(test can-load-large-file
+  (iter (for file in *large-files*)
+        (handler-case
+            (bt:with-timeout (*timeout*)
+              (strips::ground (strips::parse (strips::%rel file)))
+              (pass))
+          (error (c)
+            (fail "Failure while parsing ~a, Reason:~% ~a" file c))
+          (bt:timeout ()
+            (fail "Grounding/parsing ~a did not finish in ~a sec." file *timeout*)))))
+
+
