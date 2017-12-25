@@ -38,6 +38,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (defun tmp/relaxed-reachable (condition)
   `(,(if (tmp-p condition) 'temporary-reachable 'reachable-fact) ,condition))
 
+;;;; this join ordering implementation is too slow on large number of objects, e.g. visitall-agl14
+
 (defun find-best-join (conditions)
   (let (min-u
         min-c1
@@ -86,6 +88,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                         ,(tmp/relaxed-reachable min-c2)
                         ,(tmp/relaxed-reachable min-c1))
                    acc)))))))
+
+;;;; 
 
 ;;; relaxed-reachability
 
