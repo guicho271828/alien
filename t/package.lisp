@@ -400,18 +400,27 @@
     (print (length axioms))
     (assert (= 616 (length ops)))))
 
+(defun num-operator-fd (p &optional (d (strips::find-domain p)))
+  (format t "~&Testing FD grounding, without invariant synthesis")
+  (read-from-string
+   (uiop:run-program `("sh" "-c"
+                            ,(format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
+                                     (strips::%rel "downward/src/translate/translate.py") d p))
+                     :output :string)))
+
+(defun num-operator-ours (p &optional (d (strips::find-domain p)))
+  (format t "~&Testing prolog-based grounding, without invariant synthesis")
+  (with-test-ground (parse p d)
+    (length ops)))
+
 (test num-operator
   (for-all ((p (lambda () (random-elt *problems*))))
+    (format t "~&Testing ~a" p)
     (let ((d (strips::find-domain p)))
-      (is (= (time
-              (read-from-string
-               (uiop:run-program `("sh" "-c"
-                                        ,(format nil "~a ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
-                                                 (strips::%rel "downward/src/translate/translate.py") d p))
-                                 :output :string)))
-             (time
-              (with-test-ground (parse p d)
-                (length ops))))))))
+      (let ((fd (time (num-operator-fd p d)))
+            (ours (time (num-operator-ours p d))))
+        (format t "FD: ~a vs OURS: ~a" fd ours)
+        (is (<= fd ours))))))
 
 #+(or)
 (test num-operator
