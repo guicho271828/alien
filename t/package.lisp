@@ -399,6 +399,19 @@
     (print (length axioms))
     (assert (= 616 (length ops)))))
 
+(test num-operator
+  (for-all ((p (lambda () (random-elt *problems*))))
+    (let ((d (strips::find-domain p)))
+      (is (= (time
+              (read-from-string
+               (uiop:run-program `("sh" "-c"
+                                        ,(format nil "~a ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
+                                                 (strips::%rel "downward/src/translate/translate.py") d p))
+                                 :output :string)))
+             (time
+              (with-test-ground (parse p d)
+                (length ops))))))))
+
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
     "axiom-domains/opttel-strips-derived/p19.pddl"
