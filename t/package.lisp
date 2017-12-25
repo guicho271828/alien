@@ -413,30 +413,41 @@
   (with-test-ground (parse p d)
     (length ops)))
 
-(test num-operator
-  (for-all ((p (lambda () (random-elt *problems*))))
-    (format t "~&Testing ~a" p)
-    (let ((d (strips::find-domain p)))
-      (let ((fd (time (num-operator-fd p d)))
-            (ours (time (num-operator-ours p d))))
-        (format t "FD: ~a vs OURS: ~a" fd ours)
-        (is (<= fd ours))))))
+;; (test num-operator
+;;   (for-all ((p (lambda () (random-elt *problems*))))
+;;     (format t "~&Testing ~a" p)
+;;     (let ((d (strips::find-domain p)))
+;;       (let ((fd (time (num-operator-fd p d)))
+;;             (ours (time (num-operator-ours p d))))
+;;         (format t "FD: ~a vs OURS: ~a" fd ours)
+;;         (is (<= fd ours))))))
 
-#+(or)
+(defmacro with-timing (form)
+  (with-gensyms (start)
+    `(let ((,start (get-internal-real-time)))
+       (values ,form
+               (/ (float (- (get-internal-real-time) ,start))
+                  internal-time-units-per-second)))))
+
 (test num-operator
   (setf *kernel* (make-kernel 2)) ; :bindings
   (for-all ((p (lambda () (random-elt *problems*))))
+    (format t "~&Testing ~a" p)
     (let ((d (strips::find-domain p)))
-      (plet ((fd (time
+      (plet (((fd time-fd)
+              (with-timing
                   (read-from-string
                    (uiop:run-program `("sh" "-c"
                                             ,(format nil "~a ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
                                                      (strips::%rel "downward/src/translate/translate.py") d p))
                                      :output :string))))
-             (ours (time
-                    (with-test-ground (parse p d)
-                      (length ops)))))
-        (is (= fd ours))))))
+             ((ours time-ours)
+              (with-timing
+                  (with-test-ground (parse p d)
+                    (length ops)))))
+        (is (<= fd ours))
+        (format t "Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
+        (format t "Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)))))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
