@@ -16,6 +16,7 @@
               :trivia.quasiquote
               :arrow-macros
               :cl-prolog.swi
+              :cl-prolog.yap
               :cl-prolog.bprolog)
  :serial t
  :components ((:module "preprocess"
