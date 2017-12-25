@@ -300,7 +300,7 @@
         (copy-list
          '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2)))))
     (is (= 2 (length decomposed)))
-    (is (< 3 (length temporary) 7)))
+    (is (<= 8 (length temporary) 16)))
 
   (is-true (strips::tmp-p '(tmp111)))
   (is-false (strips::tmp-p '(a))))

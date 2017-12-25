@@ -22,6 +22,17 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     (_
      t)))
 
+;;; tools for reachability predicates
+
+(defun rf (name)
+  (symbolicate name '-reachable-fact))
+(defun ro (name)
+  (symbolicate name '-reachable-op))
+(defun re (name)
+  (symbolicate name '-reachable-effect))
+(defun ra (name)
+  (symbolicate name '-reachable-axiom))
+
 ;;; join ordering
 
 (defun all-relaxed-reachable2 (conditions)
@@ -36,7 +47,11 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
      t)))
 
 (defun tmp/relaxed-reachable (condition)
-  `(,(if (tmp-p condition) 'temporary-reachable 'reachable-fact) ,condition))
+  (if (tmp-p condition)
+      condition
+      (ematch condition
+        ((list* name args)
+         `(,(rf name) ,@args)))))
 
 ;;;; this join ordering implementation is too slow on large number of objects, e.g. visitall-agl14
 
@@ -97,28 +112,42 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                (remove min-c1 arrow-macros:<> :test #'equal)
                (remove min-c2 arrow-macros:<> :test #'equal)
                (cons new))
-             (cons `(:- (temporary-reachable ,new)
-                        ;; min-c1 has larger arity; put min-c2 first
-                        ,(tmp/relaxed-reachable min-c2)
-                        ,(tmp/relaxed-reachable min-c1))
-                   acc)))))))
+             (list* `(:- (table (/ ,tmp ,(length min-u))))
+                    `(:- ,new
+                         ;; min-c1 has larger arity; put min-c2 first
+                         ,(tmp/relaxed-reachable min-c2)
+                         ,(tmp/relaxed-reachable min-c1))
+                    acc)))))))
 
 ;;; relaxed-reachability
 
+(defun tabled (rules)
+  (ematch (first rules)
+    ((or `(:- (,name ,@(and params (not nil))) ,@_)
+         `(,(and name (not :-)) ,@(and params (not nil))))
+     (cons `(:- (table (/ ,name ,(length params))))
+           (sort-clauses rules)))
+    ((or `(:- (,_) ,@_)
+         `(,(not :-)))
+     ;; We implement a custom memoization because 0-ary tabling causes error
+     (sort-clauses
+      (iter (for r in rules)
+            (collecting
+             (ematch r
+               (`(:- (,name) ,@body)
+                 `(:- (,name) ,@body (asserta (:- (,name) !))))
+               (`(,_)
+                 r))))))))
+
 (defun relaxed-reachability ()
   (append
-   `((:- (table (/ reachable-fact 1)))
-     (:- (table (/ reachable-op 1)))
-     (:- (table (/ temporary-reachable 1))))
    (iter (for (o . _) in *objects*)
          (collecting `(object ,o)))
-   (sort-clauses
-    (append
-     `((:- (reachable-fact ?f)
-           (reachable-axiom ?f))
-       (:- (reachable-fact ?f)
-           (reachable-effect ?f))
-       (reachable-fact (= ?o ?o)))
+   `((,(rf '=) ?o ?o))
+   (let (rf ro temporary)
+     (iter (for (name . params) in *init*)
+           (push `(,(rf name) ,@params)
+                 (getf rf (rf name))))
      (iter (for a in *actions*)
            (ematch a
              ((plist :action name
@@ -127,61 +156,79 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                      :effect `(and ,@effects))
               (multiple-value-bind (decomposed temporary-rules)
                   (all-relaxed-reachable2 precond)
-                (appending temporary-rules)
-                (collecting
-                 `(:- (reachable-op (,name ,@params))
+                (appendf temporary temporary-rules)
+                (push
+                 `(:- (,(ro name) ,@params)
                       ,@decomposed
                       ,@(iter (for p in params)
-                              (collecting `(object ,p))))))
+                              (collecting `(object ,p)))) ro))
               (dolist (e effects)
                 (match e
                   (`(forall ,vars (when (and ,@conditions) ,atom))
                     (when (positive atom)
                       (multiple-value-bind (decomposed temporary-rules)
                           (all-relaxed-reachable2 conditions)
-                        (appending temporary-rules)
-                        (collecting
-                         `(:- (reachable-effect ,atom)
-                              (reachable-op (,name ,@params))
+                        (appendf temporary temporary-rules)
+                        (push
+                         `(:- (,(rf (car atom)) ,@(cdr atom))
+                              (,(ro name) ,@params)
                               ,@decomposed
                               ,@(iter (for p in vars)
-                                      (collecting `(object ,p)))))))))))))
+                                      (collecting `(object ,p))))
+                         (getf rf (rf (car atom))))))))))))
      (iter (for a in *axioms*)
            (ematch a
              ((list :derived predicate `(and ,@body))
               (multiple-value-bind (decomposed temporary-rules)
                   (all-relaxed-reachable2 body)
-                (appending temporary-rules)
-                (collecting
-                 `(:- (reachable-axiom ,predicate)
+                (appendf temporary temporary-rules)
+                (push
+                 `(:- (,(rf (car predicate)) ,@(cdr predicate))
                       ,@decomposed
                       ,@(iter (for p in (cdr predicate))
                               ;; parameters not referenced in the condition
-                              (collecting `(object ,p)))))))))
-     (iter (for i in *init*)
-           (collect `(reachable-fact ,i)))))
+                              (collecting `(object ,p))))
+                 (getf rf (rf (car predicate))))))))
+     (iter (for (name . params) in *predicates*)
+           (unless (eq name '=)
+             ;; to address unreferenced predicates/axioms
+             (push `(:- (,(rf name) ,@params) ! fail)
+                   (getf rf (rf name)))))
+     (append
+      (mappend (lambda (ro) (tabled (list ro))) ro)
+      (mappend (lambda (rf) (tabled (nreverse (cdr rf)))) (plist-alist rf))
+      temporary))
    ;; output facts/ops
    `((:- relaxed-reachability
          (write ":facts\\n")
-         (findall ?f (reachable-fact ?f) ?list)
-         (print-sexp ?list)
+         (wrap
+          (and ,@(iter (for (name . params) in *predicates*)
+                       (unless (eq name '=)
+                         (collecting
+                          `(forall (,(rf name) ,@params)
+                                   (print-sexp (,name ,@params))))))))
          (write ":ops\\n")
-         (findall ?a (reachable-op ?a) ?list2)
-         (print-sexp ?list2)
-         (write ":axioms\\n")
-         (findall ?f (reachable-axiom ?f) ?list3)
-         (print-sexp ?list3)))))
+         (wrap
+          (and ,@(iter (for a in *actions*)
+                       (ematch a
+                         ((plist :action name
+                                 :parameters params)
+                          (collecting
+                           `(forall (,(ro name) ,@params)
+                                    (print-sexp (,name ,@params)))))))))))))
 
 (defun %ground (&optional debug)
   (run-prolog
    (append `((:- (use_module (library tabling))) ; swi specific
              (:- (style_check (- singleton))))
-           (relaxed-reachability)
            (print-sexp :swi t)
-           `((:- main
-                 (write "(") 
-                 relaxed-reachability
-                 (write ")")
-                 halt)))
+           `((:- (wrap ?goal)
+                 (write "(")
+                 (call ?goal)
+                 (write ")"))
+             (:- main
+                 (wrap relaxed-reachability)
+                 halt))
+           (relaxed-reachability))
    :swi :args '("-g" "main") :debug debug))
 
