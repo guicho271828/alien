@@ -9,17 +9,6 @@ Prolog does not try to search/backtrack the predicate names, unfortunately.
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defun ground (info)
-  (with-parsed-information info
-    (let ((result (%ground)))
-      (destructuring-bind (&key facts ops fluents)
-          (let ((*package* (find-package :pddl)))
-            (read-from-string result))
-        (list* :facts facts
-               :ops ops
-               :fluents fluents
-               info)))))
-
 (defpattern polarity (condition polarity)
   "Pattern for matching against a single positive or negative condition.
 When CONDITION is positive, then polarity is bound to 'POS.
@@ -38,18 +27,6 @@ When CONDITION is negative (i.e. of the form (NOT (PRED ARGS...))), then polarit
                       `(,p (,@c))))))
             :test 'equal)))
 
-(progn ;; dummy functions for eldoc
-  (defun precondition (?action ?condition-list)
-    "dummy function for eldoc"
-    nil)
-  (defun effect (?action ?effect-list)
-    "dummy function for eldoc"
-    nil)
-  (defun axiom-body (?head ?condition-list)
-    "dummy function for eldoc"
-    nil))
-
-
 (defun setup-domain ()
   (append
    (iter (for a in *actions*)
@@ -60,47 +37,61 @@ When CONDITION is negative (i.e. of the form (NOT (PRED ARGS...))), then polarit
                    :effect `(and ,@effects))
             (collecting
              `(action-spec
-               (action ,name ,@params)
+               (,name ,@params)
                ,(%condition-list precond)
                (list ,@(iter (for e in effects)
                              ;; in Prolog sense, parameters are universally quantified
                              (ematch e
                                (`(forall ,_ (when ,_ (increase ,@_))) nil)
-                               (`(forall ,_ (when (and ,@conditions) ,(polarity atom p)))
+                               (`(forall ,vars (when (and ,@conditions) ,(polarity atom p)))
                                  (collecting
-                                  `(when ,(%condition-list conditions)
-                                     (,p (,@atom)))))))))))))
+                                  `(forall (list ,@vars)
+                                           (when ,(%condition-list conditions)
+                                             (,p (,@atom))))))))))))))
    (iter (for a in *axioms*)
          (ematch a
-           ((list :derived predicate `(and ,@body))
+           ((list :derived `(,name ,@params) `(and ,@body))
             (collecting
              `(axiom-body
-               ,predicate
+               (,name ,@params)
                ,(%condition-list body))))))
    (iter (for proposition in *init*)
-         (collecting `(init ,proposition)))))
+         (collecting `(init ,proposition)))
+   (iter (for pair in *objects*)
+         (collecting `(object ,(car pair))))))
 
 (defun relaxed-reachability ()
   (append
    `((:- (table (/ relaxed-reachable-fact 1)))
      (:- (table (/ relaxed-reachable-action 1)))
+     (objects (list))
+     (:- (objects (list* ?x ?rest))
+         (object ?x)
+         (objects ?rest))
+     (relaxed-reachable-facts (list))
+     (:- (relaxed-reachable-facts (list* (pos ?x) ?rest))
+         (relaxed-reachable-fact ?x)
+         (relaxed-reachable-facts ?rest))
+     (:- (relaxed-reachable-facts (list* (neg ?) ?rest))
+         (relaxed-reachable-facts ?rest))
      (:- (relaxed-reachable-action ?a)
          (action-spec ?a ?precond ?)
-         (forall (member (pos ?p) ?precond)
-                 (and (print-sexp ?p)
-                      (relaxed-reachable-fact ?p))))
+         (relaxed-reachable-facts ?precond)
+         (compound_name_arguments ?a ? ?params)
+         (objects ?params))
      (:- (relaxed-reachable-fact ?f)
          (init ?f))
      (:- (relaxed-reachable-fact ?e)
          (relaxed-reachable-action ?a)
          (action-spec ?a ? ?effects)
-         (member (when ?conditions ?e) ?effects)
-         (forall (member (pos ?c) ?conditions)
-                 (relaxed-reachable-fact ?c)))
+         (member (forall ?vars (when ?conditions (pos ?e))) ?effects)
+         (relaxed-reachable-facts ?conditions)
+         (objects ?vars))
      (:- (relaxed-reachable-fact ?f)
          (axiom-body ?f ?body)
-         (forall (member (pos ?c) ?body)
-                 (relaxed-reachable-fact ?c)))
+         (compound_name_arguments ?f ? ?params)
+         (objects ?params)
+         (relaxed-reachable-facts ?body))
      ;; output facts/ops
      (:- relaxed-reachability
          (write ":facts\\n")
@@ -250,7 +241,7 @@ When CONDITION is negative (i.e. of the form (NOT (PRED ARGS...))), then polarit
              (:- (style_check (- singleton))))
            (setup-domain)
            (relaxed-reachability)
-           (print-sexp)
+           (print-sexp :swi t)
            `((:- main
                  (write "(") 
                  relaxed-reachability
