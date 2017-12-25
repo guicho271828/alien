@@ -37,6 +37,8 @@
    #:*goal*
    #:*axioms*
    #:*actions*
-   #:%rel))
+   #:%rel
+   #:*predicate-types*
+   #:ground))
 
 (setf trivia:*arity-check-by-test-call* nil)

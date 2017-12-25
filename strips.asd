@@ -24,8 +24,6 @@
                                     (:file "2-translate")
                                     (:module "lib"
                                              :components ((:file "equivalence")))
-                                    (:file "4-invariant")
-                                    (:file "4-invariant-helmert")
                                     (:file "5-grounding-prolog-3")))
               (:module "search"
                        :components ((:file "util"))))

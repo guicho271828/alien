@@ -15,23 +15,14 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                 (read-from-string result))
               info))))
 
-(progn ;; dummy functions for eldoc
-  (defun precondition (?action ?condition-list)
-    "dummy function for eldoc"
-    nil)
-  (defun effect (?action ?effect-list)
-    "dummy function for eldoc"
-    nil)
-  (defun axiom-body (?head ?condition-list)
-    "dummy function for eldoc"
-    nil))
-
 (defun positive (form)
   (match form
     ((list* (or 'not 'increase) _)
      nil)
     (_
      t)))
+
+;;; join ordering
 
 (defun all-relaxed-reachable2 (conditions)
   (-<> conditions
@@ -44,44 +35,45 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     ((list* (symbol :name (string* #\T #\M #\P _)) _)
      t)))
 
-(assert (tmp-p '(tmp111)))
-(assert (not (tmp-p '(a))))
-
 (defun tmp/relaxed-reachable (condition)
   `(,(if (tmp-p condition) 'temporary-reachable 'reachable-fact) ,condition))
 
+(defun find-best-join (conditions)
+  (let (min-u
+        min-c1
+        min-c2
+        min-key1
+        min-key2
+        min-key3)
+    (iter (for (c1 . rest) on (sort (copy-list conditions) #'> :key #'length))
+          (for (_ . args1) = c1)
+          (for l1 = (length args1))
+          (iter (for c2 in rest)
+                (for (_ . args2) = c2)
+                (for l2 = (length args2))
+                (for u  = (union args1 args2))
+                (for key3 = (length u))
+                (for key1 = (- key3 l1))
+                (for key2 = (- key3 l2))
+                (when (or (null min-u)
+                          (or (< key1 min-key1)
+                              (when (= key1 min-key1)
+                                (or (< key2 min-key2)
+                                    (when (= key2 min-key2)
+                                      (< key3 min-key3))))))
+                  (setf min-u u
+                        min-c1 c1
+                        min-c2 c2
+                        min-key1 key1
+                        min-key2 key2
+                        min-key3 key3))))
+    (values min-u min-c1 min-c2)))
+    
 (defun join-ordering (conditions acc)
   "Helmert09, p40"
   (if (<= (length conditions) 2)
       (values (mapcar #'tmp/relaxed-reachable conditions) acc)
-      (let (min-u
-            min-c1
-            min-c2
-            min-key1
-            min-key2
-            min-key3)
-        (iter (for (c1 . rest) on (sort (copy-list conditions) #'> :key #'length))
-              (for (_ . args1) = c1)
-              (for l1 = (length args1))
-              (iter (for c2 in rest)
-                    (for (_ . args2) = c2)
-                    (for l2 = (length args2))
-                    (for u  = (union args1 args2))
-                    (for key3 = (length u))
-                    (for key1 = (- key3 l1))
-                    (for key2 = (- key3 l2))
-                    (when (or (null min-u)
-                              (or (< key1 min-key1)
-                                  (when (= key1 min-key1)
-                                    (or (< key2 min-key2)
-                                        (when (= key2 min-key2)
-                                          (< key3 min-key3))))))
-                      (setf min-u u
-                            min-c1 c1
-                            min-c2 c2
-                            min-key1 key1
-                            min-key2 key2
-                            min-key3 key3))))
+      (multiple-value-bind (min-u min-c1 min-c2) (find-best-join conditions)
         (with-gensyms (tmp)
           (let ((new `(,tmp ,@min-u)))
             (join-ordering
@@ -94,34 +86,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                         ,(tmp/relaxed-reachable min-c2))
                    acc)))))))
 
-(print-values
-  (all-relaxed-reachable2
-   (shuffle
-    (copy-list
-     '((in-city ?l1 ?c)
-       (in-city ?l2 ?c)
-       (at ?t ?l1))))))
-
-(multiple-value-bind (decomposed temporary)
-    (all-relaxed-reachable2
-     (shuffle
-      (copy-list
-       '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2)))))
-  (assert (= 2 (length decomposed)))
-  (assert (< 3 (length temporary) 7)))
-
-(defmacro reverse-call (head &body args)
-  (let ((syms (make-gensym-list (length args))))
-    `(let ,(mapcar #'list syms (reverse args))
-       (,head ,@(reverse syms)))))
-
-(let ((a '()))
-  (print
-   (reverse-call append
-                 a
-                 (progn
-                   (push 1 a)
-                   '(2 3)))))
+;;; relaxed-reachability
 
 (defun relaxed-reachability ()
   (append
@@ -201,200 +166,4 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                  (write ")")
                  halt)))
    :swi :args '("-g" "main")))
-
-(with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
-  (print (%ground)))
-
-(let ((*package* (find-package :pddl)))
-  (print (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))))
-
-(with-parsed-information (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
-  (print (%ground)))
-
-(with-parsed-information (time (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl")))
-  (time (%ground)))
-
-(with-parsed-information (time (parse (%rel "axiom-domains/opttel-adl-derived/p48.pddl")))
-  (time (%ground)))
-
-(with-parsed-information (time (parse (%rel "axiom-domains/psr-middle-strips-derived/p01.pddl")))
-  (time (%ground)))
-
-(with-parsed-information (time (parse (%rel "axiom-domains/psr-middle-strips-derived/p50.pddl")))
-  (time (%ground)))
-
-(with-parsed-information (parse1 '(define (domain d)
-                                   (:requirements :strips :typing)
-                                   (:predicates (p ?x) (goal))
-                                   (:action A
-                                    :parameters (?x)
-                                    :precondition (not (p ?x))
-                                    :effect (goal)))
-                                 '(define (problem p)
-                                   (:domain d)
-                                   (:objects o1 o2)
-                                   (:init )
-                                   (:goal (goal))))
-  (print (%ground)))
-
-(with-parsed-information (parse1 '(define (domain d)
-                                   (:requirements :strips :typing)
-                                   (:predicates (p ?x) (goal))
-                                   (:action A
-                                    :parameters (?x)
-                                    :precondition (p ?x)
-                                    :effect (goal)))
-                                 '(define (problem p)
-                                   (:domain d)
-                                   (:objects o1 o2)
-                                   (:init )
-                                   (:goal (goal))))
-  (print (%ground)))
-
-(with-parsed-information (parse1 '(define (domain d)
-                                   (:requirements :strips :typing)
-                                   (:predicates (p ?x) (goal))
-                                   (:action A
-                                    :parameters (?x)
-                                    :precondition (p ?x)
-                                    :effect (goal)))
-                                 '(define (problem p)
-                                   (:domain d)
-                                   (:objects o1 o2)
-                                   (:init (p o1))
-                                   (:goal (goal))))
-  (print (%ground)))
-
-(with-parsed-information (parse1 '(define (domain d)
-                                   (:requirements :strips :typing)
-                                   (:types a b)
-                                   (:predicates (p ?x) (goal))
-                                   (:action A
-                                    :parameters (?x - a)
-                                    :precondition (p ?x)
-                                    :effect (goal)))
-                                 '(define (problem p)
-                                   (:domain d)
-                                   (:objects o1 - a o2 - b)
-                                   (:init (p o1) (p o2))
-                                   (:goal (goal))))
-  (print (%ground)))
-
-(with-parsed-information (parse1 '(define (domain d)
-                                   (:requirements :strips :typing)
-                                   (:predicates (p1) (p2) (goal))
-                                   (:action A
-                                    :parameters ()
-                                    :precondition (p1)
-                                    :effect (p2))
-                                   (:action B
-                                    :parameters ()
-                                    :precondition (p2)
-                                    :effect (goal)))
-                                 '(define (problem p)
-                                   (:domain d)
-                                   (:objects)
-                                   (:init (p1))
-                                   (:goal (goal))))
-  (print (%ground)))
-
-;; axiom
-
-(defun call-test-ground (info fn)
-  (with-parsed-information info
-    (let ((result (%ground)))
-      ;; (print result)
-      (apply fn (read-from-string result)))))
-
-(defmacro with-test-ground (info &body body)
-  `(call-test-ground ,info
-                     (lambda (&key facts ops fluents axioms)
-                       (declare (ignorable facts ops fluents axioms))
-                       ,@body)))
-
-(defun mem (elem list)
-  (member elem list :test 'equal))
-
-;; parameter ?x is not referenced in the precondition
-(with-test-ground (parse1 '(define (domain d)
-                            (:requirements :strips :typing)
-                            (:predicates (d ?x) (p ?x) (goal))
-                            (:action a :parameters (?x) :precondition (and) :effect (p ?x))
-                            (:derived (d ?x) (p ?x)))
-                          '(define (problem p)
-                            (:domain d)
-                            (:objects o1 o2)
-                            (:init )
-                            (:goal (goal))))
-  (assert (mem '(d o1) facts))
-  (assert (mem '(p o1) facts))
-  (assert (mem '(d o2) facts))
-  (assert (mem '(p o2) facts))
-  (assert (mem '(a o1) ops))
-  (assert (mem '(a o2) ops)))
-
-;; parameter ?x is not referenced in the axiom body
-(with-test-ground (parse1 '(define (domain d)
-                            (:requirements :strips :typing)
-                            (:predicates (d ?x) (p) (goal))
-                            (:action a :parameters (?x) :precondition (and) :effect (p))
-                            (:derived (d ?x) (p)))
-                          '(define (problem p)
-                            (:domain d)
-                            (:objects o1 o2)
-                            (:init )
-                            (:goal (goal))))
-  (assert (mem '(p) facts))
-  (assert (mem '(d o1) facts))
-  (assert (mem '(d o2) facts))
-  (assert (mem '(a o1) ops))
-  (assert (mem '(a o2) ops)))
-
-;; parameter ?x is a free variable in the axiom body
-(with-test-ground (parse1 '(define (domain d)
-                            (:requirements :strips :typing)
-                            (:predicates (d ?x) (p ?x) (goal))
-                            (:action a :parameters (?x) :precondition (and) :effect (p ?x))
-                            (:derived (d) (p ?x)))
-                          '(define (problem p)
-                            (:domain d)
-                            (:objects o1 o2)
-                            (:init )
-                            (:goal (goal))))
-  (assert (mem '(p o1) facts))
-  (assert (mem '(p o2) facts))
-  (assert (mem '(d) facts))
-  (assert (= 1 (count '(d) facts :test 'equal)))
-  (assert (mem '(a o1) ops))
-  (assert (mem '(a o2) ops)))
-
-(with-test-ground (parse1 '(define (domain d)
-                            (:requirements :strips :typing)
-                            (:predicates (d ?x) (p ?x) (p2 ?x) (goal))
-                            (:action a :parameters (?x) :precondition (and) :effect (p ?x))
-                            (:derived (d) (p2 ?x)))
-                          '(define (problem p)
-                            (:domain d)
-                            (:objects o1 o2)
-                            (:init )
-                            (:goal (goal))))
-  (assert (mem '(p o1) facts))
-  (assert (mem '(p o2) facts))
-  (assert (not (mem '(p2 o1) facts)))
-  (assert (not (mem '(p2 o2) facts)))
-  (assert (not (mem '(d) facts)))
-  (assert (mem '(a o1) ops))
-  (assert (mem '(a o2) ops)))
-
-(with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
-  (assert (= 286 (length ops))))
-
-(dotimes (i 30)
-  (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
-    (print (length facts))
-    (print (length ops))
-    (print (length axioms))
-    (assert (= 616 (length ops)))))
-
-(print (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl")))
 
