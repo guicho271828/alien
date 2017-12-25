@@ -17,7 +17,8 @@
   :license "LLGPL"
   :depends-on (:strips
                :fiveam
-               :bordeaux-threads)
+               :bordeaux-threads
+               :lparallel)
   :components ((:module "t"
                 :components
                 ((:file "package"))))

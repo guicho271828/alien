@@ -5,13 +5,13 @@
 (in-package :strips)
 
 (defun find-domain (problem-path)
-  (format t "~&finding the domain file...~%")
+  (format t "~&finding the domain file...")
   (block nil
      (let ((dpath (make-pathname :defaults problem-path :name "domain")))
-       (when (probe-file dpath) (return dpath)))
+       (when (probe-file dpath) (format t "found! ~a~%" dpath) (return dpath)))
      (let ((dpath (make-pathname :defaults problem-path :name
                                  (format nil "~a-domain" (pathname-name problem-path)))))
-       (when (probe-file dpath) (return dpath)))
+       (when (probe-file dpath) (format t "found! ~a~%" dpath) (return dpath)))
      (error "~& Failed to infer the domain pathname from problem pathname!~%Problem: ~a~%Candidate: ~a~%Candidate: ~a"
             problem-path
             (make-pathname :defaults problem-path :name "domain")
@@ -197,7 +197,10 @@ Signals an error when the type is not connected to the root OBJECT type."
       `(when ,(flatten-types/condition condition)
          ,(flatten-types/effect body)))
     (`(and ,@conditions)
-     `(and ,@(mapcar #'flatten-types/effect conditions)))
+      `(and ,@(mapcar #'flatten-types/effect conditions)))
+    (`(increase ,@_)
+      ;; (format t "~&; skipping ~a" effect)
+      `(and))
     (_ effect)))
 
 (defun grovel-constants (domain)
@@ -238,7 +241,8 @@ Signals an error when the type is not connected to the root OBJECT type."
      (dolist (condition predicates)
        (ematch condition
          ((list* '= _)
-          (format t "~&; skipping ~a" condition))
+          ;; (format t "~&; skipping ~a" condition)
+          )
          ((list* name args)
           ;; init is type-less from the beginning
           (push condition *init*)

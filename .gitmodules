@@ -7,3 +7,8 @@
 [submodule "ipc2011-opt"]
 	path = ipc2011-opt
 	url = https://github.com/guicho271828/ipc2011-opt.git
+[submodule "downward"]
+	path = downward
+	url = https://github.com/guicho271828/FastDownward.git
+	branch = master
+        update = rebase
