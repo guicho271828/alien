@@ -55,7 +55,7 @@
         ((list :type types
                :objects objects
                :predicates predicates
-               :init init
+               :init _
                :goal goal
                :axioms axioms
                :actions actions)
@@ -82,7 +82,7 @@
            (is-false (member '- list)))
          (dolist (a actions)
            (match a
-             (`(:action ,name
+             (`(:action ,_
                         :parameters ,p
                         :original-parameters ,op
                         :precondition (and ,@conditions)
