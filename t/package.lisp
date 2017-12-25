@@ -435,7 +435,7 @@
     "ipc2014-agl/transport-agl14/p20.pddl"
     "ipc2014-agl/visitall-agl14/p20.pddl"))
 
-(defparameter *timeout* 10)
+(defparameter *timeout* 60)
 
 (test can-load-large-file
   (iter (for file in *large-files*)
