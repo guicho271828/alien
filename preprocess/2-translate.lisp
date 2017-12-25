@@ -197,7 +197,10 @@ Signals an error when the type is not connected to the root OBJECT type."
       `(when ,(flatten-types/condition condition)
          ,(flatten-types/effect body)))
     (`(and ,@conditions)
-     `(and ,@(mapcar #'flatten-types/effect conditions)))
+      `(and ,@(mapcar #'flatten-types/effect conditions)))
+    (`(increase ,@_)
+      (format t "~&; skipping ~a" effect)
+      `(and))
     (_ effect)))
 
 (defun grovel-constants (domain)
