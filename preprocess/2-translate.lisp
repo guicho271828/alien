@@ -199,7 +199,7 @@ Signals an error when the type is not connected to the root OBJECT type."
     (`(and ,@conditions)
       `(and ,@(mapcar #'flatten-types/effect conditions)))
     (`(increase ,@_)
-      (format t "~&; skipping ~a" effect)
+      ;; (format t "~&; skipping ~a" effect)
       `(and))
     (_ effect)))
 
@@ -241,7 +241,8 @@ Signals an error when the type is not connected to the root OBJECT type."
      (dolist (condition predicates)
        (ematch condition
          ((list* '= _)
-          (format t "~&; skipping ~a" condition))
+          ;; (format t "~&; skipping ~a" condition)
+          )
          ((list* name args)
           ;; init is type-less from the beginning
           (push condition *init*)
