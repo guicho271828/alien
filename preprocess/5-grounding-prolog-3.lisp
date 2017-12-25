@@ -101,7 +101,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
      `((:- (reachable-fact ?f)
            (reachable-axiom ?f))
        (:- (reachable-fact ?f)
-           (reachable-effect ?f)))
+           (reachable-effect ?f))
+       (reachable-fact (= ?o ?o)))
      (iter (for a in *actions*)
            (ematch a
              ((plist :action name
