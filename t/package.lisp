@@ -404,8 +404,8 @@
   (format t "~&Testing FD grounding, without invariant synthesis")
   (read-from-string
    (uiop:run-program `("sh" "-c"
-                            ,(format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
-                                     (strips::%rel "downward/src/translate/translate.py") d p))
+                            ,(print (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
+                                            (strips::%rel "downward/src/translate/translate.py") d p)))
                      :output :string)))
 
 (defun num-operator-ours (p &optional (d (strips::find-domain p)))
