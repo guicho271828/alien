@@ -82,8 +82,9 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                (remove min-c2 arrow-macros:<> :test #'equal)
                (cons new))
              (cons `(:- (temporary-reachable ,new)
-                        ,(tmp/relaxed-reachable min-c1)
-                        ,(tmp/relaxed-reachable min-c2))
+                        ;; min-c1 has larger arity; put min-c2 first
+                        ,(tmp/relaxed-reachable min-c2)
+                        ,(tmp/relaxed-reachable min-c1))
                    acc)))))))
 
 ;;; relaxed-reachability
