@@ -8,7 +8,8 @@
   (:use :cl
         :strips :pddl
         :fiveam
-        :iterate :alexandria :trivia))
+        :iterate :alexandria :trivia
+        :lparallel))
 (in-package :strips.test)
 
 (named-readtables:in-readtable :fare-quasiquote)
@@ -411,6 +412,22 @@
              (time
               (with-test-ground (parse p d)
                 (length ops))))))))
+
+#+(or)
+(test num-operator
+  (setf *kernel* (make-kernel 2)) ; :bindings
+  (for-all ((p (lambda () (random-elt *problems*))))
+    (let ((d (strips::find-domain p)))
+      (plet ((fd (time
+                  (read-from-string
+                   (uiop:run-program `("sh" "-c"
+                                            ,(format nil "~a ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
+                                                     (strips::%rel "downward/src/translate/translate.py") d p))
+                                     :output :string))))
+             (ours (time
+                    (with-test-ground (parse p d)
+                      (length ops)))))
+        (is (= fd ours))))))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
