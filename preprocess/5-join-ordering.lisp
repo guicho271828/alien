@@ -1141,3 +1141,101 @@ This file contains various reimplementations of join-ordering in 5-grounding-pro
 ;;                     (in-city ?l2 ?c)
 ;;                     (at ?t ?l1))))
 
+;;;; low-level optimization? ~6.2 sec. Further speedup will be achieved by a better priority queue
+
+(deftype int ()
+  `(unsigned-byte 32))
+
+(defun join-ordering8 (conditions)
+  "Helmert09, p40"
+  (declare (optimize (speed 3) (debug 0) (safety 0)))
+  (declare (list conditions))
+  (let* ((pq (pqueue:make-pqueue #'key-=<
+                                 :key-type '(tuple fixnum 3)
+                                 :value-type '(tuple fixnum 2)))
+         (l (length conditions))
+         (a (make-array (* 2 l) :element-type 'list :initial-element nil))
+         (closed (make-hash-table :test 'eql))
+         acc)
+    (declare (int l))
+    (time
+     (map-into a #'identity conditions))
+    (time
+     (loop for i below l
+        for c1 = (aref a i)
+        do (loop
+              for j from (1+ i) below l
+              do (let* ((c2 (aref a j))
+                        (only1 0)
+                        (intersec 0))
+                   (declare (int only1 intersec)
+                            (list c2))
+                   (dolist (v1 (cdr c1))
+                     (declare (symbol v1))
+                     (if (member v1 (cdr c2))
+                         (incf intersec)
+                         (incf only1)))
+                   ;; (assert (<= 0 (- (length c2) 1 intersec)))
+                   (let* ((only2 (- (length c2) 1 intersec))
+                          (both (+ only1 only2 intersec)))
+                     (declare (int only2 both))
+                     (pqueue:pqueue-push (tuple 'fixnum i j)
+                                         (tuple 'fixnum
+                                                (min only1 only2)
+                                                (max only1 only2)
+                                                both)
+                                         pq))))))
+    (time
+      (tagbody
+       :start
+         (when (pqueue:pqueue-empty-p pq) (go :end))
+         (ematch (the (tuple fixnum 2) (pqueue:pqueue-pop pq))
+           ((vector i1 i2)
+            (declare (fixnum i1 i2))
+            (when (gethash i1 closed) (go :start))
+            (when (gethash i2 closed) (go :start))
+            (setf (gethash i1 closed) t)
+            (setf (gethash i2 closed) t)
+            (with-gensyms (tmp)
+              (let* ((c1 (aref a i1))
+                     (c2 (aref a i2))
+                     (new-args (union (cdr c1) (cdr c2)))
+                     (new `(,tmp ,@new-args)))
+                (declare (list c1 c2 new-args new))
+                (loop
+                   for i below l
+                   unless (gethash i closed)
+                   do (let* ((other (aref a i))
+                             (only1 0)
+                             (intersec 0))
+                        (declare (int only1 intersec)
+                                 (list other))
+                        (dolist (v1 new-args)
+                          (declare (symbol v1))
+                          (if (member v1 (cdr other))
+                              (incf intersec)
+                              (incf only1)))
+                        (let* ((only2 (- (length other) 1 intersec))
+                               (both (+ only1 only2 intersec)))
+                          (declare (int only2 both))
+                          (pqueue:pqueue-push (tuple 'fixnum i l)
+                                              (tuple 'fixnum
+                                                     (min only1 only2)
+                                                     (max only1 only2)
+                                                     both)
+                                              pq))))
+                (setf (aref a l) new)
+                (incf l)
+                (push `(:- (table (/ ,tmp ,(length new-args)))) acc)
+                (push `(:- ,new
+                           ,(tmp/relaxed-reachable c1)
+                           ,(tmp/relaxed-reachable c2)) acc)))
+            (go :start)))
+       :end))
+    (values (list (tmp/relaxed-reachable (aref a (1- l))))
+            acc)))
+
+;; (print-values
+;;   (join-ordering8 '((in-city ?l1 ?c)
+;;                     (in-city ?l2 ?c)
+;;                     (at ?t ?l1))))
