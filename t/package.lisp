@@ -446,8 +446,8 @@
                   (with-test-ground (parse p d)
                     (length ops)))))
         (is (<= fd ours))
-        (format t "Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
-        (format t "Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)))))
+        (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
+        (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)))))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
