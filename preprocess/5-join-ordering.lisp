@@ -1239,3 +1239,116 @@ This file contains various reimplementations of join-ordering in 5-grounding-pro
 ;;   (join-ordering8 '((in-city ?l1 ?c)
 ;;                     (in-city ?l2 ?c)
 ;;                     (at ?t ?l1))))
+
+;;; combine keys into a single integer --- slower. 7.9sec
+
+(defun join-ordering9 (conditions)
+  "Helmert09, p40"
+  (let* ((maximum-arg-length (time (length (reduce #'union conditions :key #'cdr))))
+         (ilen (integer-length maximum-arg-length)))
+    (if (<= ilen (/ (integer-length most-positive-fixnum) 3))
+        (progn
+          (format t "~&packed integer ~a ~%" ilen)
+          (join-ordering9-aux conditions ilen))
+        (join-ordering8 conditions))))
+
+(deftype fixnum/3 ()
+  `(unsigned-byte ,(floor (/ (integer-length most-positive-fixnum) 3))))
+
+(defun join-ordering9-aux (conditions ilen)
+  (declare (optimize (speed 3) (debug 0) (safety 0)))
+  (declare (list conditions)
+           ((integer 0 #.(floor (/ (integer-length most-positive-fixnum) 3))) ilen))
+  (let* ((l (length conditions))
+         (pq (pqueue:make-pqueue #'<
+                                 :key-type 'fixnum
+                                 :value-type '(tuple fixnum 2)))
+         (a (make-array (* 2 l) :element-type 'list :initial-element nil))
+         (closed (make-hash-table :test 'eql))
+         acc)
+    (declare (int l))
+    (progn
+     (map-into a #'identity conditions))
+    (progn
+     (loop for i below l
+        for c1 = (aref a i)
+        do (loop
+              for j from (1+ i) below l
+              do (let* ((c2 (aref a j))
+                        (only1 0)
+                        (intersec 0))
+                   (declare (fixnum/3 only1 intersec)
+                            (list c2))
+                   (dolist (v1 (cdr c1))
+                     (declare (symbol v1))
+                     (if (member v1 (cdr c2))
+                         (incf intersec)
+                         (incf only1)))
+                   (let* ((only2 (- (length c2) 1 intersec))
+                          (both (+ only1 only2 intersec)))
+                     (declare (fixnum/3 only2 both))
+                     (pqueue:pqueue-push (tuple 'fixnum i j)
+                                         ;; 2532
+                                         ;; (+ (ash (min only1 only2) (* 2 ilen))
+                                         ;;    (ash (max only1 only2) ilen)
+                                         ;;    both)
+                                         ;; 2520
+                                         (+ (ash (+ (ash (min only1 only2)
+                                                         ilen)
+                                                    (max only1 only2))
+                                                 ilen)
+                                            both)
+                                         pq))))))
+    (progn
+      (tagbody
+       :start
+         (when (pqueue:pqueue-empty-p pq) (go :end))
+         (ematch (the (tuple fixnum 2) (pqueue:pqueue-pop pq))
+           ((vector i1 i2)
+            (declare (fixnum i1 i2))
+            (when (gethash i1 closed) (go :start))
+            (when (gethash i2 closed) (go :start))
+            (setf (gethash i1 closed) t)
+            (setf (gethash i2 closed) t)
+            (with-gensyms (tmp)
+              (let* ((c1 (aref a i1))
+                     (c2 (aref a i2))
+                     (new-args (union (cdr c1) (cdr c2)))
+                     (new `(,tmp ,@new-args)))
+                (declare (list c1 c2 new-args new))
+                (loop
+                   for i below l
+                   unless (gethash i closed)
+                   do (let* ((other (aref a i))
+                             (only1 0)
+                             (intersec 0))
+                        (declare (fixnum/3 only1 intersec)
+                                 (list other))
+                        (dolist (v1 new-args)
+                          (declare (symbol v1))
+                          (if (member v1 (cdr other))
+                              (incf intersec)
+                              (incf only1)))
+                        (let* ((only2 (- (length other) 1 intersec))
+                               (both (+ only1 only2 intersec)))
+                          (declare (fixnum/3 only2 both))
+                          (pqueue:pqueue-push (tuple 'fixnum i l)
+                                              ;; (+ (ash (min only1 only2) (* 2 ilen))
+                                              ;;    (ash (max only1 only2) ilen)
+                                              ;;    both)
+                                              (+ (ash (+ (ash (min only1 only2)
+                                                              ilen)
+                                                         (max only1 only2))
+                                                      ilen)
+                                                 both)
+                                              pq))))
+                (setf (aref a l) new)
+                (incf l)
+                (push `(:- (table (/ ,tmp ,(length new-args)))) acc)
+                (push `(:- ,new
+                           ,(tmp/relaxed-reachable c1)
+                           ,(tmp/relaxed-reachable c2)) acc)))
+            (go :start)))
+       :end))
+    (values (list (tmp/relaxed-reachable (aref a (1- l))))
+            acc)))
