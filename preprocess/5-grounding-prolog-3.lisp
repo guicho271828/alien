@@ -28,7 +28,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
   (-<> conditions
     (remove-if-not #'positive arrow-macros:<>)
     (remove-duplicates :test 'equal)
-    (join-ordering nil)))
+    (join-ordering)))
 
 (defun tmp-p (condition)
   (match condition
@@ -71,14 +71,17 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                         min-key3 key3))))
     (values min-u min-c1 min-c2)))
     
-(defun join-ordering (conditions acc)
-  "Helmert09, p40"
+(defun join-ordering (conditions)
+  "Helmert09, p40. This impl takes O(N^2)"
+  (join-ordering-aux conditions nil))
+
+(defun join-ordering-aux (conditions acc)
   (if (<= (length conditions) 2)
       (values (mapcar #'tmp/relaxed-reachable conditions) acc)
       (multiple-value-bind (min-u min-c1 min-c2) (find-best-join conditions)
         (with-gensyms (tmp)
           (let ((new `(,tmp ,@min-u)))
-            (join-ordering
+            (join-ordering-aux
              (-<>> conditions
                (remove min-c1 arrow-macros:<> :test #'equal)
                (remove min-c2 arrow-macros:<> :test #'equal)
@@ -88,8 +91,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                         ,(tmp/relaxed-reachable min-c2)
                         ,(tmp/relaxed-reachable min-c1))
                    acc)))))))
-
-;;;; 
 
 ;;; relaxed-reachability
 
