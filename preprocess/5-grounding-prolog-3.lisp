@@ -156,7 +156,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
          (findall ?f (reachable-axiom ?f) ?list3)
          (print-sexp ?list3)))))
 
-(defun %ground ()
+(defun %ground (&optional debug)
   (run-prolog
    (append `((:- (use_module (library tabling))) ; swi specific
              (:- (style_check (- singleton))))
@@ -167,5 +167,5 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                  relaxed-reachability
                  (write ")")
                  halt)))
-   :swi :args '("-g" "main")))
+   :swi :args '("-g" "main") :debug debug))
 
