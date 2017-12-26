@@ -49,11 +49,13 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
         min-key3)
     (iter (for (c1 . rest) on (sort (copy-list conditions) #'> :key #'length))
           (for (_ . args1) = c1)
-          (for l1 = (length args1))
+          (for vars1 = (remove-if-not #'variablep args1))
+          (for l1 = (length vars1))
           (iter (for c2 in rest)
                 (for (_ . args2) = c2)
-                (for l2 = (length args2))
-                (for u  = (union args1 args2))
+                (for vars2 = (remove-if-not #'variablep args2))
+                (for l2 = (length vars2))
+                (for u  = (union vars1 vars2))
                 (for key3 = (length u))
                 (for key1 = (- key3 l1))
                 (for key2 = (- key3 l2))
@@ -73,7 +75,16 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     
 (defun join-ordering (conditions)
   "Helmert09, p40. This impl takes O(N^2)"
-  (join-ordering-aux conditions nil))
+  (iter (for c in conditions)
+        (if (some #'variablep (cdr c))
+            (collect c into lifted)
+            (collect (tmp/relaxed-reachable c) into grounded))
+        (finally
+         (return
+          (multiple-value-bind (decomposed temporary-rules)
+              (join-ordering-aux lifted nil)
+            (values (append grounded decomposed)
+                    temporary-rules))))))
 
 (defun join-ordering-aux (conditions acc)
   (if (<= (length conditions) 2)
