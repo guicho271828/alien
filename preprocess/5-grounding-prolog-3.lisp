@@ -227,6 +227,10 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                         ,@(iter (for p in (cdr predicate))
                                 ;; parameters not referenced in the condition
                                 (collecting `(object ,p)))))))))
+       (iter (for p in *predicates*)
+             ;; to address predicates that are never achievable
+             (when (not (eq (car p) '=))
+               (register `(:- ,p ! fail))))
        (append
         (mappend (lambda (ro) (tabled (nreverse (cdr ro)))) (plist-alist ro))
         (mappend (lambda (rf) (tabled (nreverse (cdr rf)))) (plist-alist rf))
@@ -234,12 +238,10 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
         `((:- relaxed-reachability
               (write ":facts\\n")
               (wrap
-               (and ,@(iter (for p-orig in *predicates*)
-                            (for p = (normalize-fact-term p-orig))
-                            (for (name . params) = p)
-                            (when (and (not (eq name '=)) (getf rf name))
+               (and ,@(iter (for p in *predicates*)
+                            (when (not (eq (car p) '=))
                               (collecting
-                               `(forall ,p (print-sexp ,p-orig)))))))
+                               `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
               (write ":ops\\n")
               (wrap
                (and ,@(iter (for a in *actions*)
