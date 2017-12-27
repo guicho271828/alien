@@ -25,13 +25,13 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 ;;; tools for reachability predicates
 
 (defun rf (name)
-  (symbolicate name '-reachable-fact))
+  (symbolicate name '-f))
 (defun ro (name)
-  (symbolicate name '-reachable-op))
+  (symbolicate name '-o))
 (defun re (name)
-  (symbolicate name '-reachable-effect))
+  (symbolicate name '-e))
 (defun ra (name)
-  (symbolicate name '-reachable-axiom))
+  (symbolicate name '-a))
 
 ;;; join ordering
 
