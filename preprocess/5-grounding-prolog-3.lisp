@@ -189,33 +189,28 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                               ;; parameters not referenced in the condition
                               (collecting `(object ,p))))
                  (getf rf (rf (car predicate))))))))
-     (iter (for (name . params) in *predicates*)
-           (unless (eq name '=)
-             ;; to address unreferenced predicates/axioms
-             (push `(:- (,(rf name) ,@params) ! fail)
-                   (getf rf (rf name)))))
      (append
       (mappend (lambda (ro) (tabled (list ro))) ro)
       (mappend (lambda (rf) (tabled (nreverse (cdr rf)))) (plist-alist rf))
-      temporary))
-   ;; output facts/ops
-   `((:- relaxed-reachability
-         (write ":facts\\n")
-         (wrap
-          (and ,@(iter (for (name . params) in *predicates*)
-                       (unless (eq name '=)
-                         (collecting
-                          `(forall (,(rf name) ,@params)
-                                   (print-sexp (,name ,@params))))))))
-         (write ":ops\\n")
-         (wrap
-          (and ,@(iter (for a in *actions*)
-                       (ematch a
-                         ((plist :action name
-                                 :parameters params)
-                          (collecting
-                           `(forall (,(ro name) ,@params)
-                                    (print-sexp (,name ,@params)))))))))))))
+      temporary
+      ;; output facts/ops
+      `((:- relaxed-reachability
+            (write ":facts\\n")
+            (wrap
+             (and ,@(iter (for (name . params) in *predicates*)
+                          (when (and (not (eq name '=)) (getf rf (rf name)))
+                            (collecting
+                             `(forall (,(rf name) ,@params)
+                                      (print-sexp (,name ,@params))))))))
+            (write ":ops\\n")
+            (wrap
+             (and ,@(iter (for a in *actions*)
+                          (ematch a
+                            ((plist :action name
+                                    :parameters params)
+                             (collecting
+                              `(forall (,(ro name) ,@params)
+                                       (print-sexp (,name ,@params)))))))))))))))
 
 (defun %ground (&optional debug)
   (run-prolog
