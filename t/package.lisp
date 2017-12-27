@@ -429,6 +429,42 @@
                (/ (float (- (get-internal-real-time) ,start))
                   internal-time-units-per-second)))))
 
+(defparameter *small-files*
+  '("axiom-domains/opttel-adl-derived/p01.pddl"
+    "axiom-domains/opttel-strips-derived/p01.pddl"
+    "axiom-domains/philosophers-adl-derived/p01.pddl"
+    "axiom-domains/philosophers-strips-derived/p01.pddl"
+    "axiom-domains/psr-middle-adl-derived/p01.pddl"
+    "axiom-domains/psr-middle-strips-derived/p01.pddl"
+    "ipc2011-opt/barman-opt11/p01.pddl"
+    "ipc2011-opt/elevators-opt11/p01.pddl"
+    "ipc2011-opt/floortile-opt11/p01.pddl"
+    "ipc2011-opt/nomystery-opt11/p01.pddl"
+    "ipc2011-opt/openstacks-opt11/p01.pddl"
+    "ipc2011-opt/parcprinter-opt11/p01.pddl"
+    "ipc2011-opt/parking-opt11/p01.pddl"
+    "ipc2011-opt/pegsol-opt11/p01.pddl"
+    "ipc2011-opt/scanalyzer-opt11/p01.pddl"
+    "ipc2011-opt/sokoban-opt11/p01.pddl"
+    "ipc2011-opt/tidybot-opt11/p01.pddl"
+    "ipc2011-opt/transport-opt11/p01.pddl"
+    "ipc2011-opt/visitall-opt11/p01.pddl"
+    "ipc2011-opt/woodworking-opt11/p01.pddl"
+    "ipc2014-agl/barman-agl14/p01.pddl"
+    "ipc2014-agl/cavediving-agl14/p01.pddl"
+    "ipc2014-agl/childsnack-agl14/p01.pddl"
+    "ipc2014-agl/citycar-agl14/p01.pddl"
+    "ipc2014-agl/floortile-agl14/p01.pddl"
+    "ipc2014-agl/ged-agl14/p01.pddl"
+    "ipc2014-agl/hiking-agl14/p01.pddl"
+    "ipc2014-agl/maintenance-agl14/p01.pddl"
+    "ipc2014-agl/openstacks-agl14/p01.pddl"
+    "ipc2014-agl/parking-agl14/p01.pddl"
+    "ipc2014-agl/tetris-agl14/p01.pddl"
+    "ipc2014-agl/thoughtful-agl14/p01.pddl"
+    "ipc2014-agl/transport-agl14/p01.pddl"
+    "ipc2014-agl/visitall-agl14/p01.pddl"))
+
 (test num-operator
   (setf *kernel* (make-kernel 2)) ; :bindings
   (let ((op=-time< 0)
@@ -437,7 +473,7 @@
         (op<-time> 0)
         (fd-total 0)
         (ours-total 0))
-    (for-all ((p (lambda () (random-elt *problems*))))
+    (for-all ((p (lambda () (random-elt *small-files*))))
       (format t "~&Testing ~a" p)
       (let ((d (strips::find-domain p)))
         (plet (((fd time-fd)
