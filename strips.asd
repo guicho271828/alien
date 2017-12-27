@@ -17,7 +17,8 @@
               :arrow-macros
               :cl-prolog.swi
               :cl-prolog.yap
-              :cl-prolog.bprolog)
+              :cl-prolog.bprolog
+              :priority-queue)
  :serial t
  :components ((:module "preprocess"
                        :components ((:file "package")
@@ -25,7 +26,9 @@
                                     (:file "2-translate")
                                     (:module "lib"
                                              :components ((:file "equivalence")))
-                                    (:file "5-grounding-prolog-3")))
+                                    (:file "5-grounding-prolog-3")
+                                    (:file "5-join-ordering"))
+                       :serial t)
               (:module "search"
                        :components ((:file "util"))))
  :description "A STRIPS planner"
