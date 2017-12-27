@@ -305,9 +305,11 @@
   (is-true (strips::tmp-p '(tmp111)))
   (is-false (strips::tmp-p '(a))))
 
+(defparameter *debug* t)
+
 (defun call-test-ground (info fn)
   (with-parsed-information info
-    (let ((result (strips::%ground)))
+    (let ((result (strips::%ground *debug*)))
       ;; (print result)
       (apply fn (read-from-string result)))))
 
