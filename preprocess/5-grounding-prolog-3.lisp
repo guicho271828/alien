@@ -170,6 +170,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                                     (collecting `(new-fact ,p))))
                             `((new-fact (,dummy))))))))))
 
+   `((:- (dynamic (/ triggered-effect 2))))
    (iter outer
          (for a in *actions*)
          (ematch a
@@ -188,6 +189,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                                               (when (positive p)
                                                 (collecting `(new-fact ,p)))))))))))))))
 
+   `((:- (dynamic (/ fact-triggered-axiom 1))))
    (iter (for a in *axioms*)
          (ematch a
            ((list :derived predicate `(and ,@body))
@@ -199,6 +201,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                                     (collecting `(new-fact ,p))))
                             `((new-fact (,dummy))))))))))
 
+   `((:- (dynamic (/ axiom-triggered-axiom 1))))
    (iter (for a in *axioms*)
          (ematch a
            ((list :derived predicate `(and ,@body))
@@ -247,6 +250,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                              into main))))))))
          (finally (return-from outer (append main others))))
 
+   `((:- (dynamic (/ applicable-axiom 1))))
    (iter (for a in *axioms*)
          (ematch a
            ((list :derived predicate `(and ,@body))
@@ -279,6 +283,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                                 (assertz (reachable ,atom))
                                 (assertz (new-fact ,atom)))))))))))
 
+   `((:- (dynamic (/ apply-axiom 1))))
    (iter (for a in *axioms*)
          (ematch a
            ((list :derived predicate _)
@@ -328,6 +333,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
          apply-ops))
    
    ;; output facts/ops
+   `((:- (dynamic (/ reachable-op 1))))
    `((:- relaxed-reachability
          expand
          (write ":facts\\n")
