@@ -28,23 +28,26 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 ;;; relaxed-reachability
 
-(defun relaxed-reachability ()
+(defun relaxed-reachability (&aux (dummy (gensym)))
   (append
    (iter (for (o . _) in *objects*)
          ;; these are static, so they do not trigger anything
          (collecting `(object ,o)))
    
-   `((reachable (= ?o ?o))
-     (new-fact (= ?o ?o))
-     (:- (dynamic (/ new-axiom 1))))
+   (sort-clauses
+    `((reachable (= ?o ?o))
+      (new-fact (= ?o ?o))
+      (new-fact (,dummy))               ; dummy fact for triggering null-preconditioned action
+      (new-axiom (,dummy))
+      ;; initial state
+      ,@(iter (for p in *init*)
+              (collecting
+               `(new-fact ,p)))
+      ,@(iter (for p in *init*)
+              (collecting
+               `(reachable ,p)))))
    
-   ;; initial state
-   (iter (for p in *init*)
-         (collecting
-          `(new-fact ,p)))
-   (iter (for p in *init*)
-         (collecting
-          `(reachable ,p)))
+   
 
    ;; trigger rules
    (iter (for a in *actions*)
@@ -54,9 +57,11 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                    :precondition `(and ,@precond))
             (collecting
              `(:- (triggered-op (,name ,@params))
-                  (or ,@(iter (for p in precond)
-                              (when (positive p)
-                                (collecting `(new-fact ,p))))))))))
+                  (or ,@(if precond
+                            (iter (for p in precond)
+                                  (when (positive p)
+                                    (collecting `(new-fact ,p))))
+                            `((new-fact (,dummy))))))))))
 
    (iter outer
          (for a in *actions*)
@@ -68,30 +73,34 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                   (for i from 0)
                   (match e
                     (`(forall ,_ (when (and ,@conditions) ,(satisfies positive)))
-                      (in outer
-                          (collecting
-                           `(:- (triggered-effect (,name ,@params) ,i)
-                                (or ,@(iter (for p in conditions)
-                                            (when (positive p)
-                                              (collecting `(new-fact ,p))))))))))))))
+                      (when conditions
+                        (in outer
+                            (collecting
+                             `(:- (triggered-effect (,name ,@params) ,i)
+                                  (or ,@(iter (for p in conditions)
+                                              (when (positive p)
+                                                (collecting `(new-fact ,p)))))))))))))))
 
    (iter (for a in *axioms*)
          (ematch a
            ((list :derived predicate `(and ,@body))
             (collecting
              `(:- (fact-triggered-axiom ,predicate)
-                  (or ,@(iter (for p in body)
-                              (when (positive p)
-                                (collecting `(new-fact ,p))))))))))
+                  (or ,@(if body
+                            (iter (for p in body)
+                                  (when (positive p)
+                                    (collecting `(new-fact ,p))))
+                            `((new-fact (,dummy))))))))))
 
    (iter (for a in *axioms*)
          (ematch a
            ((list :derived predicate `(and ,@body))
-            (collecting
-             `(:- (axiom-triggered-axiom ,predicate)
-                  (or ,@(iter (for p in body)
-                              (when (positive p)
-                                (collecting `(new-axiom ,p))))))))))
+            (when body
+              (collecting
+               `(:- (axiom-triggered-axiom ,predicate)
+                    (or ,@(iter (for p in body)
+                                (when (positive p)
+                                  (collecting `(new-axiom ,p)))))))))))
    
    ;; applicability rules
    (iter (for a in *actions*)
