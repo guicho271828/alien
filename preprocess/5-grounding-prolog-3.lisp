@@ -205,12 +205,11 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                         (collecting
                          `(forall (and ,@decomposed
                                        ,@(iter (for p in params)
-                                               (collecting `(object ,p))))
-                                  (or (-> ,(normalize-op-term `(,name ,@params))
-                                        true)
-                                      (and ;; (print-sexp ,(normalize-op-term `(,name ,@params)))
-                                           (assertz ,(normalize-op-term `(,name ,@params)))
-                                           fail))))
+                                               (collecting `(object ,p)))
+                                       (not ,(normalize-op-term `(,name ,@params))))
+                                  (and ;; (print-sexp ,(normalize-op-term `(,name ,@params)))
+                                   (assertz ,(normalize-op-term `(,name ,@params)))
+                                   fail)))
                         (dolist (e effects)
                           (match e
                             (`(forall ,vars (when (and ,@conditions) ,atom))
@@ -222,11 +221,11 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                                    `(forall (and ,(normalize-op-term `(,name ,@params))
                                                  ,@decomposed
                                                  ,@(iter (for p in vars)
-                                                         (collecting `(object ,p))))
-                                            (or (-> ,(normalize-fact-term atom) true)
-                                                (and ;; (print-sexp ,(normalize-fact-term atom))
-                                                     (assertz ,(normalize-fact-term atom))
-                                                     fail)))))))))))))
+                                                         (collecting `(object ,p)))
+                                                 (not ,(normalize-fact-term atom)))
+                                            (and ;; (print-sexp ,(normalize-fact-term atom))
+                                             (assertz ,(normalize-fact-term atom))
+                                             fail))))))))))))
            ,@(iter (for a in *axioms*)
                    (ematch a
                      ((list :derived predicate `(and ,@body))
@@ -237,11 +236,11 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                          `(forall (and ,@decomposed
                                        ,@(iter (for p in (cdr predicate))
                                                ;; parameters not referenced in the condition
-                                               (collecting `(object ,p))))
-                                  (or (-> ,(normalize-fact-term predicate) true)
-                                      (and ;; (print-sexp ,(normalize-fact-term predicate))
-                                           (assertz ,(normalize-fact-term predicate))
-                                           fail)))))))))
+                                               (collecting `(object ,p)))
+                                       (not ,(normalize-fact-term predicate)))
+                                  (and ;; (print-sexp ,(normalize-fact-term predicate))
+                                   (assertz ,(normalize-fact-term predicate))
+                                   fail))))))))
        ,@others))
 
    `((:- expand-all
