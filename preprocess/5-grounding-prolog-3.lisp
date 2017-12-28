@@ -22,10 +22,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     (_
      t)))
 
-(defpattern positive (atom)
-  `(and (list* (not (or 'not 'increase)) _)
-        ,atom))
-
 ;;; relaxed-reachability
 
 (defun relaxed-reachability (&aux (dummy (gensym)))
