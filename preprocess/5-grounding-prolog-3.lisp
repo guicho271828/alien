@@ -49,6 +49,79 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (defun new-fact          (condition) (suffix condition '-nf))
 (defun new-axiom         (condition) (suffix condition '-na))
 
+;;; join ordering
+
+(defun all-relaxed-reachable2 (conditions)
+  (-<> conditions
+    (remove-if-not #'positive arrow-macros:<>)
+    (remove-duplicates :test 'equal)
+    (join-ordering)))
+
+;;;; this join ordering implementation is too slow on large number of objects, e.g. visitall-agl14
+
+(defun find-best-join (conditions)
+  (let (min-u
+        min-c1
+        min-c2
+        min-key1
+        min-key2
+        min-key3)
+    (iter (for (c1 . rest) on (sort (copy-list conditions) #'> :key #'length))
+          (for (_ . args1) = c1)
+          (for vars1 = (remove-if-not #'variablep args1))
+          (for l1 = (length vars1))
+          (iter (for c2 in rest)
+                (for (_ . args2) = c2)
+                (for vars2 = (remove-if-not #'variablep args2))
+                (for l2 = (length vars2))
+                (for u  = (union vars1 vars2))
+                (for key3 = (length u))
+                (for key1 = (- key3 l1))
+                (for key2 = (- key3 l2))
+                (when (or (null min-u)
+                          (or (< key1 min-key1)
+                              (when (= key1 min-key1)
+                                (or (< key2 min-key2)
+                                    (when (= key2 min-key2)
+                                      (< key3 min-key3))))))
+                  (setf min-u u
+                        min-c1 c1
+                        min-c2 c2
+                        min-key1 key1
+                        min-key2 key2
+                        min-key3 key3))))
+    (values min-u min-c1 min-c2)))
+    
+(defun join-ordering (conditions)
+  "Helmert09, p40. This impl takes O(N^2)"
+  (iter (for c in conditions)
+        (if (some #'variablep (cdr c))
+            (collect c into lifted)
+            (collect c into grounded))
+        (finally
+         (return
+          (multiple-value-bind (decomposed temporary-rules)
+              (join-ordering-aux lifted nil)
+            (values (append grounded decomposed)
+                    temporary-rules))))))
+
+(defun join-ordering-aux (conditions acc)
+  (if (<= (length conditions) 2)
+      (values (mapcar (lambda (x) `(reachable ,x)) conditions) acc)
+      (multiple-value-bind (min-u min-c1 min-c2) (find-best-join conditions)
+        (with-gensyms (tmp)
+          (let ((new `(,tmp ,@min-u)))
+            (join-ordering-aux
+             (-<>> conditions
+               (remove min-c1 arrow-macros:<> :test #'equal)
+               (remove min-c2 arrow-macros:<> :test #'equal)
+               (cons new))
+             (list* `(:- ,new
+                         ;; min-c1 has larger arity; put min-c2 first
+                         (reachable ,min-c2)
+                         (reachable ,min-c1))
+                    acc)))))))
+
 ;;; relaxed-reachability
 
 (defun relaxed-reachability (&aux (dummy (gensym)))
