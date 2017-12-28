@@ -22,6 +22,33 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     (_
      t)))
 
+;;; grounding utility
+
+(defun suffix (condition &rest suffixes)
+  (match condition
+    (`(,name ,@args)
+      `(,(apply #'symbolicate name suffixes) ,@args))))
+
+(defun reachable         (condition) (suffix condition '-rf))
+(defun reachable-op      (condition) (suffix condition '-ro))
+(defun reachable-effect  (condition i) (suffix condition '-re (princ-to-string i)))
+(defun reachable-axiom   (condition) (suffix condition '-re))
+
+(defun applicable-op     (condition) (suffix condition '-ao))
+(defun applicable-effect (condition i) (suffix condition '-ae) (princ-to-string i))
+(defun applicable-axiom  (condition) (suffix condition '-aa))
+
+(defun apply-effect (condition i) (suffix condition '-ape) (princ-to-string i))
+(defun apply-axiom  (condition) (suffix condition '-apa))
+
+(defun triggered-op      (condition) (suffix condition '-to))
+(defun triggered-effect  (condition i) (suffix condition '-te) (princ-to-string i))
+(defun fact-triggered-axiom    (condition) (suffix condition '-fta))
+(defun axiom-triggered-axiom   (condition) (suffix condition '-ata))
+
+(defun new-fact          (condition) (suffix condition '-nf))
+(defun new-axiom         (condition) (suffix condition '-na))
+
 ;;; relaxed-reachability
 
 (defun relaxed-reachability (&aux (dummy (gensym)))
