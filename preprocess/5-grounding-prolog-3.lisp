@@ -205,13 +205,21 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
          ;; no new-axiom at the moment
          (forall (and (fact-triggered-axiom ?op) (applicable-axiom ?op))
                  (apply-axiom ?op))
+         ;; new-axiom added
          repeat
          (findall ?op (and (axiom-triggered-axiom ?op) (applicable-axiom ?op)) ?list)
+         ;; axiom triggering was computed, previous new-axioms are no longer necessary
+         (retractall (new-axiom ?x))
+         ;; now no new-axiom at the moment
          (or (== (list) ?list)
-             (and (retractall new-axiom)
-                  (forall (member ?op ?list)
+             (and (forall (member ?op ?list)
                           (apply-axiom ?op))
-                  fail)))
+                  ;; new-axiom added
+                  fail)) ; goto repeat
+         ;; new-facts:
+         ;; new-facts in the previous action layer and
+         ;; new-facts in this axiom layer
+         )
      (:- apply-ops
          (findall (applicable-effect ?op ?i)
                   (and (or (triggered-op ?op)
@@ -219,11 +227,13 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                        (applicable-op ?op)
                        (applicable-effect ?op ?i))
                   ?list)
+         (retractall (new-fact ?x)) ; clear new-facts
          (or (== (list) ?list)
-             (and (retractall new-fact)
-                  (forall (member (applicable-effect ?op ?i) ?list)
+             (and (forall (member (applicable-effect ?op ?i) ?list)
                           (apply-effect ?op ?i))
-                  fail)))
+                  fail))
+         ;; new-facts produced in this layer
+         )
      (:- expand
          repeat
          apply-axioms
