@@ -294,18 +294,25 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                        (assertz (reachable ,predicate))))))))
 
    ;; exploration
-   `((:- apply-axioms
+   `((:- (find-applicable-axiom1 ?op)
+         (fact-triggered-axiom ?op)
+         (applicable-axiom ?op))
+     (:- (find-applicable-axiom2 ?op)
+         (axiom-triggered-axiom ?op)
+         (applicable-axiom ?op))
+                 
+     (:- apply-axioms
          ;; no new-axiom at the moment
-         (forall (and (fact-triggered-axiom ?op) (applicable-axiom ?op))
-                 (apply-axiom ?op))
+         (forall (find-applicable-axiom1 ?op) (apply-axiom ?op))
          ;; new-axiom added
          repeat
-         (findall ?op (and (axiom-triggered-axiom ?op) (applicable-axiom ?op)) ?list)
+         (findall ?op (find-applicable-axiom2 ?op) ?list)
          ;; axiom triggering was computed, previous new-axioms are no longer necessary
          (retractall (new-axiom ?x))
          ;; now no new-axiom at the moment
          (or (== (list) ?list)
-             (and (forall (member ?op ?list)
+             (and (sort ?list ?list2)
+                  (forall (member ?op ?list2)
                           (apply-axiom ?op))
                   ;; new-axiom added
                   fail)) ; goto repeat
@@ -313,16 +320,19 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
          ;; new-facts in the previous action layer and
          ;; new-facts in this axiom layer
          )
+     (:- (find-applicable-effect ?op ?i)
+         (and (or (triggered-op ?op)
+                  (triggered-effect ?op ?i))
+              (applicable-op ?op)
+              (applicable-effect ?op ?i)))
      (:- apply-ops
          (findall (applicable-effect ?op ?i)
-                  (and (or (triggered-op ?op)
-                           (triggered-effect ?op ?i))
-                       (applicable-op ?op)
-                       (applicable-effect ?op ?i))
+                  (find-applicable-effect ?op ?i)
                   ?list)
          (retractall (new-fact ?x)) ; clear new-facts
          (or (== (list) ?list)
-             (and (forall (member (applicable-effect ?op ?i) ?list)
+             (and (sort ?list ?list2)
+                  (forall (member (applicable-effect ?op ?i) ?list2)
                           (apply-effect ?op ?i))
                   fail))
          ;; new-facts produced in this layer
