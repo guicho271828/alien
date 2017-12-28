@@ -92,12 +92,21 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                         min-key3 key3))))
     (values min-u min-c1 min-c2)))
     
+(defun tmp-p (condition)
+  (match condition
+    ((list* (symbol :name (string* #\T #\M #\P _)) _) t)))
+
+(defun tmp/reachable (condition)
+  (if (tmp-p condition)
+      condition
+      `(reachable ,condition)))
+
 (defun join-ordering (conditions)
   "Helmert09, p40. This impl takes O(N^2)"
   (iter (for c in conditions)
         (if (some #'variablep (cdr c))
             (collect c into lifted)
-            (collect c into grounded))
+            (collect (tmp/reachable c) into grounded))
         (finally
          (return
           (multiple-value-bind (decomposed temporary-rules)
@@ -107,7 +116,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 (defun join-ordering-aux (conditions acc)
   (if (<= (length conditions) 2)
-      (values (mapcar (lambda (x) `(reachable ,x)) conditions) acc)
+      (values (mapcar #'tmp/reachable conditions) acc)
       (multiple-value-bind (min-u min-c1 min-c2) (find-best-join conditions)
         (with-gensyms (tmp)
           (let ((new `(,tmp ,@min-u)))
@@ -116,10 +125,10 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                (remove min-c1 arrow-macros:<> :test #'equal)
                (remove min-c2 arrow-macros:<> :test #'equal)
                (cons new))
-             (list* `(:- ,new
+             (list* `(:- ,(tmp/reachable new)
                          ;; min-c1 has larger arity; put min-c2 first
-                         (reachable ,min-c2)
-                         (reachable ,min-c1))
+                         ,(tmp/reachable min-c2)
+                         ,(tmp/reachable min-c1))
                     acc)))))))
 
 ;;; relaxed-reachability
@@ -206,13 +215,15 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
            ((plist :action name
                    :parameters params
                    :precondition `(and ,@precond))
-            (collecting
-             `(:- (applicable-op (,name ,@params))
-                  (and ,@(iter (for p in precond)
-                               (when (positive p)
-                                 (collecting `(reachable ,p))))
-                       ,@(iter (for p in params)
-                               (collecting `(object ,p)))))))))
+            (multiple-value-bind (decomposed temporary) (all-relaxed-reachable2 precond)
+              (appending temporary into others)
+              (collecting
+               `(:- (applicable-op (,name ,@params))
+                    (and ,@decomposed
+                         ,@(iter (for p in params)
+                                 (collecting `(object ,p)))))
+               into main))))
+         (finally (return (append main others))))
 
    (iter outer
          (for a in *actions*)
@@ -224,26 +235,30 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                   (for i from 0)
                   (match e
                     (`(forall ,vars (when (and ,@conditions) ,(satisfies positive)))
-                      (in outer
-                          (collecting
-                           `(:- (applicable-effect (,name ,@params) ,i)
-                                (and (applicable-op (,name ,@params))
-                                     ,@(iter (for p in conditions)
-                                             (when (positive p)
-                                               (collecting `(reachable ,p))))
-                                     ,@(iter (for p in vars)
-                                             (collecting `(object ,p)))))))))))))
+                      (multiple-value-bind (decomposed temporary) (all-relaxed-reachable2 conditions)
+                        (in outer
+                            (appending temporary into others)
+                            (collecting
+                             `(:- (applicable-effect (,name ,@params) ,i)
+                                  (and (applicable-op (,name ,@params))
+                                       ,@decomposed
+                                       ,@(iter (for p in vars)
+                                               (collecting `(object ,p)))))
+                             into main))))))))
+         (finally (return-from outer (append main others))))
 
    (iter (for a in *axioms*)
          (ematch a
            ((list :derived predicate `(and ,@body))
-            (collecting
-             `(:- (applicable-axiom ,predicate)
-                  (and ,@(iter (for p in body)
-                               (when (positive p)
-                                 (collecting `(reachable ,p))))
-                       ,@(iter (for p in (cdr predicate))
-                               (collecting `(object ,p)))))))))
+            (multiple-value-bind (decomposed temporary) (all-relaxed-reachable2 body)
+              (appending temporary into others)
+              (collecting
+               `(:- (applicable-axiom ,predicate)
+                    (and ,@decomposed
+                         ,@(iter (for p in (cdr predicate))
+                                 (collecting `(object ,p)))))
+               into main))))
+         (finally (return (append main others))))
 
    ;; apply rules
    (iter outer
