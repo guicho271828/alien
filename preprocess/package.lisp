@@ -23,7 +23,7 @@
   (:documentation "The package for loading the symbols in the input"))
 
 (defpackage strips
-  (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog)
+  (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog2)
   (:shadowing-import-from :trivia :<>)
   (:export
    #:parse
