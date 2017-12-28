@@ -56,21 +56,23 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
    (iter (for (o . _) in *objects*)
          ;; these are static, so they do not trigger anything
          (collecting `(object ,o)))
+
+   `((reachable (= ?o ?o))
+     ,@(iter (for p in *init*)
+             (collecting
+              `(reachable ,p))))
    
-   (sort-clauses
-    `((reachable (= ?o ?o))
-      (new-fact (= ?o ?o))
-      (new-fact (,dummy))               ; dummy fact for triggering null-preconditioned action
-      (new-axiom (,dummy))
-      ;; initial state
-      ,@(iter (for p in *init*)
-              (collecting
-               `(new-fact ,p)))
-      ,@(iter (for p in *init*)
-              (collecting
-               `(reachable ,p)))))
+   `((:- (dynamic (/ new-fact 1)))
+     (new-fact (= ?o ?o))
+     (new-fact (,dummy))               ; dummy fact for triggering null-preconditioned action
+     ;; initial state
+     ,@(iter (for p in *init*)
+             (collecting
+              `(new-fact ,p))))
    
-   
+   `((:- (dynamic (/ new-axiom 1)))
+     (new-axiom (= ?o ?o))
+     (new-axiom (,dummy)))
 
    ;; trigger rules
    (iter (for a in *actions*)
