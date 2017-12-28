@@ -168,6 +168,8 @@ Signals an error when the type is not connected to the root OBJECT type."
 
 (defun flatten-types/condition (condition)
   (ematch condition
+    (nil
+     `(and))
     ((list 'exists params condition)
      (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
        `(exists ,w/o-type
@@ -186,6 +188,8 @@ Signals an error when the type is not connected to the root OBJECT type."
 
 (defun flatten-types/effect (effect)
   (ematch effect
+    (nil
+     `(and))
     ((list* (and kind (or 'or 'exists)) _)
      (error "~a should not appear in the effects: ~a" kind effect))
     (`(forall ,params ,effect)
@@ -262,8 +266,8 @@ Signals an error when the type is not connected to the root OBJECT type."
 (defun grovel-actions (domain)
   (dolist (it (remove-if-not (lambda-match ((list* :action _) t)) domain))
     (ematch it
-      ((list :action name :parameters params
-             :precondition pre :effect eff)
+      ((plist :action name :parameters params
+              :precondition pre :effect eff)
        (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
          (push `(:action ,name
                          :parameters ,w/o-type
@@ -349,7 +353,7 @@ Signals an error when the type is not connected to the root OBJECT type."
   (dolist (it *actions*)
     (push 
      (ematch it
-       ((list :action name :parameters params :precondition pre :effect eff)
+       ((plist :action name :parameters params :precondition pre :effect eff)
         (list :action name :parameters params
               :precondition (to-nnf pre)
               :effect (to-nnf eff))))
@@ -458,7 +462,7 @@ Signals an error when the type is not connected to the root OBJECT type."
   (dolist (it *actions3*)
     (push 
      (ematch it
-       ((list :action name :parameters params :precondition pre :effect eff)
+       ((plist :action name :parameters params :precondition pre :effect eff)
         (list :action name :parameters params
               :precondition (remove-forall/condition pre)
               :effect (remove-forall/effect eff))))
@@ -582,7 +586,7 @@ Signals an error when the type is not connected to the root OBJECT type."
 (defun remove-disjunction-actions ()
   (dolist (it *actions4*)
     (ematch it
-      ((list :action name :parameters params :precondition pre :effect eff)
+      ((plist :action name :parameters params :precondition pre :effect eff)
        (let ((&pre (&nnf-dnf pre))
              (&eff (&nnf-dnf/effect eff)))
          (funcall &pre
@@ -687,7 +691,7 @@ Signals an error when the type is not connected to the root OBJECT type."
 (defun move-exists-actions ()
   (dolist (it *actions5*)
     (ematch it
-      ((list :action name :parameters params :precondition pre :effect eff)
+      ((plist :action name :parameters params :precondition pre :effect eff)
        (push 
         (match (move-exists/condition pre)
           ;; remove exists
@@ -728,7 +732,7 @@ Signals an error when the type is not connected to the root OBJECT type."
 (defun simplify-effects-actions ()
   (dolist (it *actions6*)
     (ematch it
-      ((list :action name :parameters params :original-parameters oparams :precondition pre :effect eff)
+      ((plist :action name :parameters params :original-parameters oparams :precondition pre :effect eff)
        (push
         (list :action name :parameters params :original-parameters oparams :precondition pre :effect (simplify-effect eff))
         *actions7*)))))
