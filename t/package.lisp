@@ -445,15 +445,6 @@
   (with-test-ground (parse p d)
     (length ops)))
 
-;; (test num-operator
-;;   (for-all ((p (lambda () (random-elt *problems*))))
-;;     (format t "~&Testing ~a" p)
-;;     (let ((d (strips::find-domain p)))
-;;       (let ((fd (time (num-operator-fd p d)))
-;;             (ours (time (num-operator-ours p d))))
-;;         (format t "FD: ~a vs OURS: ~a" fd ours)
-;;         (is (<= fd ours))))))
-
 (defmacro with-timing (form)
   (with-gensyms (start)
     `(let ((,start (get-internal-real-time)))
