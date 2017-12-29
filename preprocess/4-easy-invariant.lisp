@@ -22,30 +22,35 @@
 
 (defun predicate-monotonicity/predicate (p-name)
   (declare (symbol p-name))
-  (match* ((or (iter (for a in *actions*)
-                     (ematch a
-                       ((plist :effect `(and ,@effects))
-                        (dolist (e effects)
-                          (match e
-                            (`(forall ,_ (when ,_ ,atom))
-                              (when (positive atom)
-                                (thereis (eq p-name (car atom))))))))))
-               (iter (for a in *axioms*)
+  (let ((add (iter outer
+                   (for a in *actions*)
+                   (ematch a
+                     ((plist :effect `(and ,@effects))
+                      (dolist (e effects)
+                        (ematch e
+                          (`(forall ,_ (when ,_ ,atom))
+                            ;; because DOLIST establishes a NIL block
+                            ;; and THEREIS clause gets confused 
+                            (when (and (positive atom) (eq p-name (car atom)))
+                              (return-from outer t)))))))))
+        (axiom (iter (for a in *axioms*)
                      (ematch a
                        ((list :derived `(,name ,@_) _)
                         (thereis (eq name p-name))))))
-           (iter (for a in *actions*)
-                 (ematch a
-                   ((plist :effect `(and ,@effects))
-                    (dolist (e effects)
-                      (match e
-                        (`(forall ,_ (when ,_ ,atom))
-                          (when (negative atom)
-                            (thereis (eq p-name (caadr atom)))))))))))
-    ((t t) :generic)
-    ((t nil) :monotonic+)
-    ((nil t) :monotonic-)
-    ((nil nil) :static)))
+        (del (iter outer
+                   (for a in *actions*)
+                   (ematch a
+                     ((plist :effect `(and ,@effects))
+                      (dolist (e effects)
+                        (ematch e
+                          (`(forall ,_ (when ,_ ,atom))
+                            (when (and (negative atom) (eq p-name (caadr atom)))
+                              (return-from outer t))))))))))
+    (ematch* ((or add axiom) del)
+      ((t t) :generic)
+      ((t nil) :monotonic+)
+      ((nil t) :monotonic-)
+      ((nil nil) :static))))
 
 (defvar *monotonicity*)
 
@@ -68,5 +73,7 @@
   (ematch a
     ((list :derived _ `(and ,@body))
      (some (conjoin #'positive #'never-true-p) body))
+    ((plist :precondition nil)
+     nil)
     ((plist :precondition `(and ,@precond))
      (some (conjoin #'positive #'never-true-p) precond))))
