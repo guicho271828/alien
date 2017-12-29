@@ -306,7 +306,7 @@
   (is-false (strips::tmp-p '(a))))
 
 (defun call-test-ground (info fn)
-  (with-parsed-information info
+  (with-parsed-information2 (easy-invariant info)
     (let ((result (strips::%ground)))
       ;; (print result)
       (apply fn (read-from-string result)))))
