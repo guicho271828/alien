@@ -16,22 +16,32 @@
 
 (defun predicate-monotonicity (&aux result)
   (iter (for p in *predicates*)
-        (push (first p) (getf result (predicate-monotonicity/predicate p))))
+        (for name = (first p))
+        (push name (getf result (predicate-monotonicity/predicate name))))
   result)
 
-(defun predicate-monotonicity/predicate (p)
+(defun predicate-monotonicity/predicate (p-name)
+  (declare (symbol p-name))
   (match* ((or (iter (for a in *actions*)
                      (ematch a
                        ((plist :effect `(and ,@effects))
-                        (thereis (find p (remove-if-not #'positive effects) :key #'first)))))
+                        (dolist (e effects)
+                          (match e
+                            (`(forall ,_ (when ,_ ,atom))
+                              (when (positive atom)
+                                (thereis (eq p-name (car atom))))))))))
                (iter (for a in *axioms*)
                      (ematch a
                        ((list :derived `(,name ,@_) _)
-                        (thereis (eq name (first p)))))))
+                        (thereis (eq name p-name))))))
            (iter (for a in *actions*)
                  (ematch a
                    ((plist :effect `(and ,@effects))
-                    (thereis (find p (remove-if-not #'negative effects) :key #'first))))))
+                    (dolist (e effects)
+                      (match e
+                        (`(forall ,_ (when ,_ ,atom))
+                          (when (negative atom)
+                            (thereis (eq p-name (caadr atom)))))))))))
     ((t t) :generic)
     ((t nil) :monotonic+)
     ((nil t) :monotonic-)
