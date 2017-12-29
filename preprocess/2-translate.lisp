@@ -107,12 +107,17 @@
     ((assoc :types typed-def)
      (let ((parsed (parse-typed-def typed-def)))
        (appendf *types* parsed)
+       (iter (for (type . supertype) in parsed)
+             (when (not (or (eq supertype 'object)
+                            (assoc supertype *types*)))
+               (warn "connecting the orphan supertype ~a to object" supertype)
+               (push (cons supertype 'object) *types*)))
        (appendf *predicates*
                 (mapcar (lambda-ematch
                           ((cons type _) `(,type ?o)))
-                        parsed))
+                        *types*))
        (appendf *predicate-types*
-                (iter (for (current . parent) in parsed)
+                (iter (for (current . parent) in *types*)
                       (collecting
                        `(,current ,parent))))))))
 
@@ -131,7 +136,7 @@ Signals an error when the type is not connected to the root OBJECT type."
                        (finally
                         (when (not parent-found)
                           (when (not (eq 'object type))
-                            ;; (warn "Type ~a is disconnected from the root OBJECT type!~%Inserting dependency to OBJECT" type)
+                            (error "Type ~a is disconnected from the root OBJECT type!~%Inserting dependency to OBJECT" type)
                             (pushnew 'object acc))))))))
       (rec type)
       acc)))
