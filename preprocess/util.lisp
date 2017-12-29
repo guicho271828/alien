@@ -90,8 +90,9 @@
   (match form
     ((list* (or 'not 'increase) _)
      nil)
-    (_
-     t)))
+    (`(,name ,@_)
+      (assert (member name *predicates* :key #'first))
+      t)))
 
 (defun negative (form)
   (match form
