@@ -17,15 +17,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 ;;; tools for reachability predicates
 
-(defun rf (name)
-  (symbolicate name '-f))
-(defun ro (name)
-  (symbolicate name '-o))
-(defun re (name)
-  (symbolicate name '-e))
-(defun ra (name)
-  (symbolicate name '-a))
-
 (defun tmp-p (condition)
   (match condition
     ((list* (symbol :name (string* #\T #\M #\P _)) _)
@@ -41,7 +32,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
         ((list name)
          `(fact ,name))
         ((list* name args)
-         `(,(rf name) ,@args)))))
+         `(,(symbolicate name '-f) ,@args)))))
 
 (defun normalize-fact-rule (rule)
   "Normalize the head of the fact rule. Body should be normalized separately"
@@ -58,7 +49,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
         ((list name)
          `(op ,name))
         ((list* name args)
-         `(,(ro name) ,@args)))))
+         `(,(symbolicate name '-o) ,@args)))))
 
 (defun normalize-op-rule (rule)
   "Normalize the head of the op rule. Body should be normalized separately"
