@@ -423,14 +423,14 @@
 
 (test relaxed-reachability5
   (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
-    (assert (= 286 (length ops)))))
+    (is (= 286 (length ops)))))
 
 (test relaxed-reachability6
   (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
     (print (length facts))
     (print (length ops))
     (print (length axioms))
-    (assert (= 616 (length ops)))))
+    (is (= 616 (length ops)))))
 
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis")
