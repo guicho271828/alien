@@ -87,14 +87,16 @@
       ,@body)))
 
 (defun positive (form)
-  (match form
+  (ematch form
     ((list* (or 'not 'increase) _)
      nil)
-    (`(,name ,@_)
+    ((list* name _)
       (assert (member name *predicates* :key #'first))
       t)))
 
 (defun negative (form)
-  (match form
+  (ematch form
     ((list* 'not _)
-     t)))
+     t)
+    ((list* _)
+     nil)))

@@ -17,15 +17,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 ;;; tools for reachability predicates
 
-(defun rf (name)
-  (symbolicate name '-f))
-(defun ro (name)
-  (symbolicate name '-o))
-(defun re (name)
-  (symbolicate name '-e))
-(defun ra (name)
-  (symbolicate name '-a))
-
 (defun tmp-p (condition)
   (match condition
     ((list* (symbol :name (string* #\T #\M #\P _)) _)
@@ -41,7 +32,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
         ((list name)
          `(fact ,name))
         ((list* name args)
-         `(,(rf name) ,@args)))))
+         `(,(symbolicate name '-f) ,@args)))))
 
 (defun normalize-fact-rule (rule)
   "Normalize the head of the fact rule. Body should be normalized separately"
@@ -58,7 +49,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
         ((list name)
          `(op ,name))
         ((list* name args)
-         `(,(ro name) ,@args)))))
+         `(,(symbolicate name '-o) ,@args)))))
 
 (defun normalize-op-rule (rule)
   "Normalize the head of the op rule. Body should be normalized separately"
@@ -162,88 +153,101 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
        (cons `(:- (table (/ ,name ,(length params))))
              rules)))))
 
+(defvar *reachable-facts*)
+(defun register (rule)
+  (let ((rule (normalize-fact-rule rule)))
+    (ematch rule
+      ((or `(:- (,name ,@_) ,@_)
+           `(,name ,@_))
+       (push rule (getf *reachable-facts* name))))))
+
+(defvar *reachable-ops*)
+(defun register-op (rule)
+  (let ((rule (normalize-op-rule rule)))
+    (ematch rule
+      ((or `(:- (,name ,@_) ,@_)
+           `(,name ,@_))
+       (push rule (getf *reachable-ops* name))))))
+
 (defun relaxed-reachability ()
+  "Returns a cl-prolog2 program that prints the reachable facts/ops"
   (append
    (iter (for (o . _) in *objects*)
          (collecting `(object ,o)))
-   (let (rf ro)
-     (flet ((register (rule)
-              (let ((rule (normalize-fact-rule rule)))
-                (ematch rule
-                  ((or `(:- (,name ,@_) ,@_)
-                       `(,name ,@_))
-                   (push rule (getf rf name))))))
-            (register-op (rule)
-              (let ((rule (normalize-op-rule rule)))
-                (ematch rule
-                  ((or `(:- (,name ,@_) ,@_)
-                       `(,name ,@_))
-                   (push rule (getf ro name)))))))
-       (register `(= ?o ?o))
-       (mapcar #'register *init*)
-       (iter (for a in *actions*)
-             (ematch a
-               ((plist :action name
-                       :parameters params
-                       :precondition `(and ,@precond)
-                       :effect `(and ,@effects))
-                (multiple-value-bind (decomposed temporary-rules)
-                    (all-relaxed-reachable2 precond)
-                  (mapcar #'register temporary-rules)
-                  (register-op
-                   `(:- (,name ,@params)
-                        ,@decomposed
-                        ,@(iter (for p in params)
-                                (collecting `(object ,p))))))
-                (dolist (e effects)
-                  (match e
-                    (`(forall ,vars (when (and ,@conditions) ,atom))
-                      (when (positive atom)
-                        (multiple-value-bind (decomposed temporary-rules)
-                            (all-relaxed-reachable2 conditions)
-                          (mapcar #'register temporary-rules)
-                          (register
-                           `(:- ,atom
-                                ,(normalize-op-term `(,name ,@params))
-                                ,@decomposed
-                                ,@(iter (for p in vars)
-                                        (collecting `(object ,p)))))))))))))
-       (iter (for a in *axioms*)
-             (ematch a
-               ((list :derived predicate `(and ,@body))
-                (multiple-value-bind (decomposed temporary-rules)
-                    (all-relaxed-reachable2 body)
-                  (mapcar #'register temporary-rules)
-                  (register
-                   `(:- ,predicate
-                        ,@decomposed
-                        ,@(iter (for p in (cdr predicate))
-                                ;; parameters not referenced in the condition
-                                (collecting `(object ,p)))))))))
-       (iter (for p in *predicates*)
-             ;; to address predicates that are never achievable
-             (when (added-p p) ;; if it is never added, it is not set as a goal
-               (register `(:- ,p ! fail))))
-       (append
-        (mappend (lambda (ro) (tabled (nreverse (cdr ro)))) (plist-alist ro))
-        (mappend (lambda (rf) (tabled (nreverse (cdr rf)))) (plist-alist rf))
-        ;; output facts/ops
-        `((:- relaxed-reachability
-              (write ":facts\\n")
-              (wrap
-               (and ,@(iter (for p in *predicates*)
-                            (when (added-p p)
-                              (collecting
-                               `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
-              (write ":ops\\n")
-              (wrap
-               (and ,@(iter (for a in *actions*)
-                            (ematch a
-                              ((plist :action name
-                                      :parameters params)
-                               (collecting
-                                `(forall ,(normalize-op-term `(,name ,@params))
-                                         (print-sexp (,name ,@params))))))))))))))))
+   (let (*reachable-facts* *reachable-ops*)
+     (register `(= ?o ?o))
+     (mapcar #'register *init*)
+     (register-ops)
+     (register-axioms)
+     (iter (for p in *predicates*)
+           (when (not (eq (car p) '=))
+             (register `(:- ,p ! fail))))
+     (append
+      (mappend (lambda (ro) (tabled (nreverse (cdr ro)))) (plist-alist *reachable-ops*))
+      (mappend (lambda (rf) (tabled (nreverse (cdr rf)))) (plist-alist *reachable-facts*))
+      ;; output facts/ops
+      `((:- relaxed-reachability
+            (write ":facts\\n")
+            (wrap
+             (and ,@(iter (for p in *predicates*)
+                          (when (added-p p)
+                            (collecting
+                             `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
+            (write ":ops\\n")
+            (wrap
+             (and ,@(iter (for a in *actions*)
+                          (when (never-applicable-p a) (next-iteration))
+                          (ematch a
+                            ((plist :action name
+                                    :parameters params)
+                             (collecting
+                              `(forall ,(normalize-op-term `(,name ,@params))
+                                       (print-sexp (,name ,@params)))))))))))))))
+
+(defun register-ops ()
+  (iter (for a in *actions*)
+        (when (never-applicable-p a) (next-iteration))
+        (ematch a
+          ((plist :action name
+                  :parameters params
+                  :precondition `(and ,@precond)
+                  :effect `(and ,@effects))
+           (multiple-value-bind (decomposed temporary-rules)
+               (all-relaxed-reachable2 precond)
+             (mapcar #'register temporary-rules)
+             (register-op
+              `(:- (,name ,@params)
+                   ,@decomposed
+                   ,@(iter (for p in params)
+                           (collecting `(object ,p))))))
+           (dolist (e effects)
+             (match e
+               (`(forall ,vars (when (and ,@conditions) ,atom))
+                 (when (positive atom)
+                   (multiple-value-bind (decomposed temporary-rules)
+                       (all-relaxed-reachable2 conditions)
+                     (mapcar #'register temporary-rules)
+                     (register
+                      `(:- ,atom
+                           ,(normalize-op-term `(,name ,@params))
+                           ,@decomposed
+                           ,@(iter (for p in vars)
+                                   (collecting `(object ,p))))))))))))))
+
+(defun register-axioms ()
+  (iter (for a in *axioms*)
+        (when (never-applicable-p a) (next-iteration))
+        (ematch a
+          ((list :derived predicate `(and ,@body))
+           (multiple-value-bind (decomposed temporary-rules)
+               (all-relaxed-reachable2 body)
+             (mapcar #'register temporary-rules)
+             (register
+              `(:- ,predicate
+                   ,@decomposed
+                   ,@(iter (for p in (cdr predicate))
+                           ;; parameters not referenced in the condition
+                           (collecting `(object ,p))))))))))
 
 (defun %ground (&optional debug)
   (run-prolog

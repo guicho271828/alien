@@ -150,7 +150,7 @@
                              (location . object))))
               (strips::flatten-types/argument '?truck 'truck))))
   
-  (is (set= '((IN ?TRUCK ?THING) (LOCATION ?TRUCK) (TRUCK ?TRUCK))
+  (is (set= '((IN ?TRUCK ?THING) (TRUCK ?TRUCK))
             (let ((*types* '((truck . location)
                              (location . object)))
                   (*predicate-types* '((truck location)
@@ -172,7 +172,7 @@
     (multiple-value-bind (w/o-type predicates parsed)
         (strips::flatten-typed-def `(?truck - truck ?thing - object))
       (is (set= '(?truck ?thing) w/o-type))
-      (is (set= '((location ?truck) (truck ?truck)) predicates))
+      (is (set= '((truck ?truck)) predicates))
       (is (set= '((?truck . truck) (?thing . object)) parsed))))
 
   (let ((*types* '((agent . object)
@@ -310,9 +310,11 @@
   (is-true (strips::tmp-p '(tmp111)))
   (is-false (strips::tmp-p '(a))))
 
+(defparameter *debug* nil)
+
 (defun call-test-ground (info fn)
   (with-parsed-information2 (easy-invariant info)
-    (let ((result (strips::%ground)))
+    (let ((result (strips::%ground *debug*)))
       ;; (print result)
       (apply fn (read-from-string result)))))
 
@@ -421,14 +423,14 @@
 
 (test relaxed-reachability5
   (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
-    (assert (= 286 (length ops)))))
+    (is (= 286 (length ops)))))
 
 (test relaxed-reachability6
   (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
     (print (length facts))
     (print (length ops))
     (print (length axioms))
-    (assert (= 616 (length ops)))))
+    (is (= 616 (length ops)))))
 
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis")
@@ -442,15 +444,6 @@
   (format t "~&Testing prolog-based grounding, without invariant synthesis")
   (with-test-ground (parse p d)
     (length ops)))
-
-;; (test num-operator
-;;   (for-all ((p (lambda () (random-elt *problems*))))
-;;     (format t "~&Testing ~a" p)
-;;     (let ((d (strips::find-domain p)))
-;;       (let ((fd (time (num-operator-fd p d)))
-;;             (ours (time (num-operator-ours p d))))
-;;         (format t "FD: ~a vs OURS: ~a" fd ours)
-;;         (is (<= fd ours))))))
 
 (defmacro with-timing (form)
   (with-gensyms (start)
@@ -505,8 +498,8 @@
         (op<-time= 0)
         (fd-total 0)
         (ours-total 0))
-    (for-all ((p (lambda () (random-elt *small-files*))))
-      (format t "~&Testing ~a" p)
+    (dolist (p *small-files*)
+      (format t "~&~%##### Testing ~a" p)
       (let ((d (strips::find-domain p)))
         (plet (((fd time-fd)
                 (with-timing
