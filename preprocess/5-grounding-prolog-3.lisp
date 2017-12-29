@@ -176,45 +176,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
    (let (*reachable-facts* *reachable-ops*)
      (register `(= ?o ?o))
      (mapcar #'register *init*)
-     (iter (for a in *actions*)
-           (ematch a
-             ((plist :action name
-                     :parameters params
-                     :precondition `(and ,@precond)
-                     :effect `(and ,@effects))
-              (multiple-value-bind (decomposed temporary-rules)
-                  (all-relaxed-reachable2 precond)
-                (mapcar #'register temporary-rules)
-                (register-op
-                 `(:- (,name ,@params)
-                      ,@decomposed
-                      ,@(iter (for p in params)
-                              (collecting `(object ,p))))))
-              (dolist (e effects)
-                (match e
-                  (`(forall ,vars (when (and ,@conditions) ,atom))
-                    (when (positive atom)
-                      (multiple-value-bind (decomposed temporary-rules)
-                          (all-relaxed-reachable2 conditions)
-                        (mapcar #'register temporary-rules)
-                        (register
-                         `(:- ,atom
-                              ,(normalize-op-term `(,name ,@params))
-                              ,@decomposed
-                              ,@(iter (for p in vars)
-                                      (collecting `(object ,p)))))))))))))
-     (iter (for a in *axioms*)
-           (ematch a
-             ((list :derived predicate `(and ,@body))
-              (multiple-value-bind (decomposed temporary-rules)
-                  (all-relaxed-reachable2 body)
-                (mapcar #'register temporary-rules)
-                (register
-                 `(:- ,predicate
-                      ,@decomposed
-                      ,@(iter (for p in (cdr predicate))
-                              ;; parameters not referenced in the condition
-                              (collecting `(object ,p)))))))))
+     (register-ops)
+     (register-axioms)
      (iter (for p in *predicates*)
            (when (not (eq (car p) '=))
              (register `(:- ,p ! fail))))
@@ -238,6 +201,49 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                              (collecting
                               `(forall ,(normalize-op-term `(,name ,@params))
                                        (print-sexp (,name ,@params)))))))))))))))
+
+(defun register-ops ()
+  (iter (for a in *actions*)
+        (ematch a
+          ((plist :action name
+                  :parameters params
+                  :precondition `(and ,@precond)
+                  :effect `(and ,@effects))
+           (multiple-value-bind (decomposed temporary-rules)
+               (all-relaxed-reachable2 precond)
+             (mapcar #'register temporary-rules)
+             (register-op
+              `(:- (,name ,@params)
+                   ,@decomposed
+                   ,@(iter (for p in params)
+                           (collecting `(object ,p))))))
+           (dolist (e effects)
+             (match e
+               (`(forall ,vars (when (and ,@conditions) ,atom))
+                 (when (positive atom)
+                   (multiple-value-bind (decomposed temporary-rules)
+                       (all-relaxed-reachable2 conditions)
+                     (mapcar #'register temporary-rules)
+                     (register
+                      `(:- ,atom
+                           ,(normalize-op-term `(,name ,@params))
+                           ,@decomposed
+                           ,@(iter (for p in vars)
+                                   (collecting `(object ,p))))))))))))))
+
+(defun register-axioms ()
+  (iter (for a in *axioms*)
+        (ematch a
+          ((list :derived predicate `(and ,@body))
+           (multiple-value-bind (decomposed temporary-rules)
+               (all-relaxed-reachable2 body)
+             (mapcar #'register temporary-rules)
+             (register
+              `(:- ,predicate
+                   ,@decomposed
+                   ,@(iter (for p in (cdr predicate))
+                           ;; parameters not referenced in the condition
+                           (collecting `(object ,p))))))))))
 
 (defun %ground (&optional debug)
   (run-prolog
