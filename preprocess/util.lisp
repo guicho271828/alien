@@ -71,3 +71,11 @@
              :axioms *axioms*
              :actions *actions*)
       ,@body)))
+
+(defun positive (form)
+  (match form
+    ((list* (or 'not 'increase) _)
+     nil)
+    (_
+     t)))
+

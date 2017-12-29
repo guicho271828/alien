@@ -15,13 +15,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                 (read-from-string result))
               info))))
 
-(defun positive (form)
-  (match form
-    ((list* (or 'not 'increase) _)
-     nil)
-    (_
-     t)))
-
 ;;; tools for reachability predicates
 
 (defun rf (name)
