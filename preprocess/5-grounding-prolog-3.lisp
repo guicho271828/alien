@@ -216,8 +216,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                               ;; parameters not referenced in the condition
                               (collecting `(object ,p)))))))))
      (iter (for p in *predicates*)
-           ;; to address predicates that are never achievable
-           (when (added-p p) ;; if it is never added, it is not set as a goal
+           (when (not (eq (car p) '=))
              (register `(:- ,p ! fail))))
      (append
       (mappend (lambda (ro) (tabled (nreverse (cdr ro)))) (plist-alist *reachable-ops*))
