@@ -43,3 +43,6 @@
 (defun static-p (p) (member (first p) (getf *monotonicity* :static)))
 (defun added-p (p) (or (generic-p p) (monotonic+p p)))
 (defun deleted-p (p) (or (generic-p p) (monotonic-p p)))
+
+(defvar *monotonicity*)
+
