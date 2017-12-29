@@ -170,6 +170,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
        (push rule (getf *reachable-ops* name))))))
 
 (defun relaxed-reachability ()
+  "Returns a cl-prolog2 program that prints the reachable facts/ops"
   (append
    (iter (for (o . _) in *objects*)
          (collecting `(object ,o)))
