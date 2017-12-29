@@ -78,6 +78,22 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     (_
      (normalize-effect-term rule i))))
 
+(defun normalize-init-term (term)
+  (assert (not (tmp-p term)))
+  (ematch term
+    ((list name)
+     `(init ,name))
+    ((list* name args)
+     `(,(symbolicate name '-i) ,@args))))
+
+(defun normalize-init-rule (rule)
+  "Normalize the head of the fact rule. Body should be normalized separately"
+  (ematch rule
+    (`(:- ,head ,@body)
+      `(:- ,(normalize-init-term head) ,@body))
+    (_
+     (normalize-init-term rule))))
+
 ;; heads are normalzied in the last step
 
 ;;; join ordering
@@ -198,6 +214,14 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
       ((or `(:- (,name ,@_) ,@_)
            `(,name ,@_))
        (push rule (getf *reachable-effects* name))))))
+
+(defvar *initial-facts*)
+(defun register-init (rule)
+  (let ((rule (normalize-init-rule rule)))
+    (ematch rule
+      ((or `(:- (,name ,@_) ,@_)
+           `(,name ,@_))
+       (push rule (getf *initial-facts* name))))))
 
 (defun relaxed-reachability ()
   "Returns a cl-prolog2 program that prints the reachable facts/ops"
