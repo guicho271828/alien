@@ -147,15 +147,22 @@ Signals an error when the type is not connected to the root OBJECT type."
         (unless (eq parent 'object)
           (collecting `(,parent ,arg)))))
 
-(defun flatten-types/predicate (predicate)
+(defun flatten-types/predicate (predicate &optional include-parent-types)
   "Look up the *predicate-types* and returns a list of type predicates and the original predicate."
   (ematch predicate
     ((list* name args)
      (list* predicate
-            (mappend #'flatten-types/argument
-                     args
-                     (cdr (or (assoc name *predicate-types*)
-                              (error "Predicate type for ~a is missing!" name))))))))
+            (if include-parent-types
+                (mappend #'flatten-types/argument
+                         args
+                         (cdr (or (assoc name *predicate-types*)
+                                  (error "Predicate type for ~a is missing!" name))))
+                (remove 'object
+                        (mapcar #'list 
+                                (cdr (or (assoc name *predicate-types*)
+                                         (error "Predicate type for ~a is missing!" name)))
+                                args)
+                        :key #'first))))))
 
 (defun flatten-typed-def (typed-def)
   "Take a typed-def L and return two values:
@@ -168,7 +175,8 @@ Signals an error when the type is not connected to the root OBJECT type."
          (w/o-type (mapcar #'car parsed))
          (type-conditions
           (iter (for (arg . type) in parsed)
-                (appending (flatten-types/argument arg type)))))
+                (unless (eq type 'object)
+                  (collecting `(,type ,arg))))))
     (values w/o-type type-conditions parsed)))
 
 (defun flatten-types/condition (condition)
@@ -252,15 +260,8 @@ Signals an error when the type is not connected to the root OBJECT type."
          ((list* '= _)
           ;; (format t "~&; skipping ~a" condition)
           )
-         ((list* name args)
-          ;; init is type-less from the beginning
-          (push condition *init*)
-          ;; but we also ensure the types are added
-          (appendf *init*
-                   (mappend #'flatten-types/argument
-                            args
-                            (cdr (or (assoc name *predicate-types*)
-                                     (error "Predicate type for ~a is missing!" name)))))))))))
+         (_
+          (unionf *init* (flatten-types/predicate condition t))))))))
 
 (defun grovel-goal (problem)
   (ematch problem

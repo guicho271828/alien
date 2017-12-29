@@ -150,7 +150,7 @@
                              (location . object))))
               (strips::flatten-types/argument '?truck 'truck))))
   
-  (is (set= '((IN ?TRUCK ?THING) (LOCATION ?TRUCK) (TRUCK ?TRUCK))
+  (is (set= '((IN ?TRUCK ?THING) (TRUCK ?TRUCK))
             (let ((*types* '((truck . location)
                              (location . object)))
                   (*predicate-types* '((truck location)
@@ -172,7 +172,7 @@
     (multiple-value-bind (w/o-type predicates parsed)
         (strips::flatten-typed-def `(?truck - truck ?thing - object))
       (is (set= '(?truck ?thing) w/o-type))
-      (is (set= '((location ?truck) (truck ?truck)) predicates))
+      (is (set= '((truck ?truck)) predicates))
       (is (set= '((?truck . truck) (?thing . object)) parsed))))
 
   (let ((*types* '((agent . object)
