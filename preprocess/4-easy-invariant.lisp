@@ -51,8 +51,15 @@
 (defun monotonic+p (p) (member (first p) (getf *monotonicity* :monotonic+)))
 (defun monotonic-p (p) (member (first p) (getf *monotonicity* :monotonic-)))
 (defun static-p (p) (member (first p) (getf *monotonicity* :static)))
+
 (defun added-p (p) (or (generic-p p) (monotonic+p p)))
 (defun deleted-p (p) (or (generic-p p) (monotonic-p p)))
+
+(defun in-init-p (p) (member (first p) *init* :key #'car))
+
+(defun never-true-p (p) (and (not (in-init-p p)) (not (added-p p))))
+
+(defun could-become-true-p (p) (not (never-true-p p)))
 
 (defvar *monotonicity*)
 
