@@ -499,8 +499,10 @@
   (setf *kernel* (make-kernel 2)) ; :bindings
   (let ((op=-time< 0)
         (op=-time> 0)
+        (op=-time= 0)
         (op<-time< 0)
         (op<-time> 0)
+        (op<-time= 0)
         (fd-total 0)
         (ours-total 0))
     (for-all ((p (lambda () (random-elt *small-files*))))
@@ -521,21 +523,27 @@
           (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
           (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
           (if (= fd ours)
-              (if (< time-fd time-ours)
-                  (incf op=-time<)
-                  (incf op=-time>))
-              (if (< time-fd time-ours)
-                  (incf op<-time<)
-                  (incf op<-time>)))
+              (if (< (abs (- time-fd time-ours)) 1)
+                  (incf op=-time=)
+                  (if (< time-fd time-ours)
+                      (incf op=-time<)
+                      (incf op=-time>)))
+              (if (< (abs (- time-fd time-ours)) 1)
+                  (incf op<-time=)
+                  (if (< time-fd time-ours)
+                      (incf op<-time<)
+                      (incf op<-time>))))
           (incf fd-total time-fd)
           (incf ours-total time-ours)
           (format t "
 Runtime total: FD: ~a OURS: ~a
 Same Operator, slower than FD: ~a
 Same Operator, faster than FD: ~a
+Same Operator, insignificant: ~a
 Larger Operator, slower than FD: ~a
 Larger Operator, faster than FD: ~a
-" fd-total ours-total op=-time< op=-time> op<-time< op<-time>))))))
+Larger Operator, insignificant: ~a
+" fd-total ours-total op=-time< op=-time> op=-time= op<-time< op<-time> op<-time=))))))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
