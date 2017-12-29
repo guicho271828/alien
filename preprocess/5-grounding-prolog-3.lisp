@@ -197,9 +197,13 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
      (let ((str (symbol-name name)))
        (assert (or (ends-with-subseq "-F" str)
                    (ends-with-subseq "-E" str)
+                   (ends-with-subseq "-I" str)
+                   (ends-with-subseq "-D" str)
                    (ends-with-subseq "-O" str)
                    (member name '(op
                                   eff
+                                  init
+                                  del
                                   fact))
                    (tmp-p `(,name ,@params)))
                nil
@@ -254,18 +258,27 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
          (collecting `(object ,o)))
    (let (*reachable-facts*
          *reachable-effects*
+         *initial-facts*
+         *deletable-facts*
          *reachable-ops*)
      (register `(= ?o ?o))
+     (register-init `(= ?o ?o))
+     (register-deleted `(:- (= ? ?) ! fail))
      (mapcar #'register *init*)
+     (mapcar #'register-init *init*)
      (register-ops)
      (register-axioms)
      (iter (for p in *predicates*)
            (when (not (eq (car p) '=))
+             (register-deleted `(:- ,p ! fail))
+             (register-init `(:- ,p ! fail))
              (register `(:- ,p ! fail))))
      (append
       (mappend (lambda (rules) (tabled (nreverse (remove-duplicates (cdr rules) :test 'equal)))) (plist-alist *reachable-ops*))
       (mappend (lambda (rules) (tabled (nreverse (remove-duplicates (cdr rules) :test 'equal)))) (plist-alist *reachable-facts*))
       (mappend (lambda (rules) (tabled (nreverse (remove-duplicates (cdr rules) :test 'equal)))) (plist-alist *reachable-effects*))
+      (mappend (lambda (rules) (tabled (nreverse (remove-duplicates (cdr rules) :test 'equal)))) (plist-alist *deletable-facts*))
+      (mappend (lambda (rules) (nreverse (remove-duplicates (cdr rules) :test 'equal))) (plist-alist *initial-facts*))
       ;; output facts/ops
       `((:- relaxed-reachability
             (write ":facts\\n")
@@ -372,9 +385,12 @@ and also orders the terms by 'structure ordering' --- e.g.
                    ;; ensure all parameters are grounded
                    ,@(iter (for p in params)
                            (collecting `(object ,p)))
-                   ,@(no-op-constraints effects))))
+                   ,@(no-op-constraints effects)
+                   ,@(negative-conditions-satisfiable precond))))
            (iter (for e in effects) (for i from 0)
              (match e
+               ;; TODO: (FORALL VARS ...) is not really necessary.
+               ;; we can leave VARS as free variables.
                (`(forall ,_ (when (and ,@conditions) ,atom))
                  (when (positive atom)
                    (multiple-value-bind (decomposed temporary-rules)
@@ -389,18 +405,23 @@ and also orders the terms by 'structure ordering' --- e.g.
                            ,@decomposed
                            ;; ensure all parameters are grounded
                            ,@(iter (for p in (cdr atom))
-                                   (collecting `(object ,p)))) i)))
+                                   (collecting `(object ,p)))
+                           ,@(negative-conditions-satisfiable conditions)) i)))
                  (when (negative atom)
                    (multiple-value-bind (decomposed temporary-rules)
                        (all-relaxed-reachable2 conditions)
                      (mapcar #'register temporary-rules)
+                     (register-deleted
+                      `(:- ,(second atom)
+                           ,(normalize-effect-term `(,name ,@params) i)))
                      (register-effect
                       `(:- (,name ,@params)
                            ,(normalize-op-term `(,name ,@params))
                            ,@decomposed
                            ;; ensure all parameters are grounded
                            ,@(iter (for p in (cdr (second atom)))
-                                   (collecting `(object ,p)))) i))))))))))
+                                   (collecting `(object ,p)))
+                           ,@(negative-conditions-satisfiable conditions)) i))))))))))
 
 (defun register-axioms ()
   (iter (for a in *axioms*)
@@ -418,7 +439,27 @@ and also orders the terms by 'structure ordering' --- e.g.
                        ,@decomposed
                        ;; ensure all parameters are grounded
                        ,@(iter (for p in params)
-                               (collecting `(object ,p)))))))))))
+                               (collecting `(object ,p)))
+                       ,@(negative-conditions-satisfiable body)))))
+
+           ;; prove the negation of the body, (not (and body...)) = (or (not body)...)
+           (when body
+             (let ((neg-body (mapcar (compose #'to-nnf #'negate) body)))
+               (register-deleted
+                `(:- (,name ,@params)
+                     (or ,@(let ((disjunctions
+                                  (append (iter (for p in neg-body)
+                                                (when (positive p) (collecting (normalize-fact-term p))))
+                                          (negative-conditions-satisfiable neg-body))))
+                             (iter (for d in disjunctions)
+                                   (collecting
+                                    `(and ,@(iter (for v in (free d))
+                                                  (collecting `(object ,v)))
+                                          ,d)))))
+                     ;; ensure all parameters are grounded
+                     ,@(iter (for p in params)
+                             (collecting `(object ,p)))
+                     ,@(negative-conditions-satisfiable body)))))))))
 
 (defun negative-conditions-satisfiable (conditions)
   (iter (for p in conditions)
