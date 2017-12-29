@@ -39,6 +39,9 @@
    #:*actions*
    #:%rel
    #:*predicate-types*
-   #:ground))
+   #:ground
+   #:*monotonicity*
+   #:with-parsed-information2
+   #:easy-invariant))
 
 (setf trivia:*arity-check-by-test-call* nil)

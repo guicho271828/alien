@@ -9,7 +9,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (named-readtables:in-readtable :fare-quasiquote)
 
 (defun ground (info)
-  (with-parsed-information info
+  (with-parsed-information2 info
     (let ((result (%ground)))
       (append (let ((*package* (find-package :pddl)))
                 (read-from-string result))
@@ -222,7 +222,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                                 (collecting `(object ,p)))))))))
        (iter (for p in *predicates*)
              ;; to address predicates that are never achievable
-             (when (not (eq (car p) '=))
+             (when (added-p p) ;; if it is never added, it is not set as a goal
                (register `(:- ,p ! fail))))
        (append
         (mappend (lambda (ro) (tabled (nreverse (cdr ro)))) (plist-alist ro))
@@ -232,7 +232,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
               (write ":facts\\n")
               (wrap
                (and ,@(iter (for p in *predicates*)
-                            (when (not (eq (car p) '=))
+                            (when (added-p p)
                               (collecting
                                `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
               (write ":ops\\n")

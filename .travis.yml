@@ -1,12 +1,12 @@
 language: common-lisp
-sudo: false
+sudo: required
 
-addons:
-  apt:
-    packages:
-      - libc6-i386
-      - clisp
-      - openjdk-7-jre
+# addons:
+#   apt:
+#     packages:
+#       - libc6-i386
+#       - clisp
+#       - openjdk-7-jre
 
 env:
   global:
@@ -14,23 +14,25 @@ env:
     - ROSWELL_INSTALL_DIR=$HOME/.roswell
   matrix:
     - LISP=sbcl-bin
-    - LISP=ccl-bin
-    - LISP=abcl
-    - LISP=clisp
-    - LISP=ecl
-    - LISP=cmucl
-    - LISP=alisp
+    # - LISP=ccl-bin
+    # - LISP=abcl
+    # - LISP=clisp
+    # - LISP=ecl
+    # - LISP=cmucl
+    # - LISP=alisp
 
-matrix:
-  allow_failures:
-    - env: LISP=clisp
-    - env: LISP=abcl
-    - env: LISP=ecl
-    - env: LISP=cmucl
-    - env: LISP=alisp
+# matrix:
+#   allow_failures:
+#     - env: LISP=clisp
+#     - env: LISP=abcl
+#     - env: LISP=ecl
+#     - env: LISP=cmucl
+#     - env: LISP=alisp
 
 install:
   - curl -L https://raw.githubusercontent.com/snmsts/roswell/release/scripts/install-for-ci.sh | sh
+  - ros install guicho271828/cl-prolog2
+  - ros install guicho271828/trivial-package-manager
 
 cache:
   directories:

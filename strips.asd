@@ -25,6 +25,7 @@
                                     (:file "2-translate")
                                     (:module "lib"
                                              :components ((:file "equivalence")))
+                                    (:file "4-easy-invariant")
                                     (:file "5-grounding-prolog-3")))
               (:module "search"
                        :components ((:file "util"))))

@@ -282,31 +282,36 @@
     ))
 
 (test join-ordering
-  (multiple-value-match
-      (strips::all-relaxed-reachable2
-       (shuffle
-        (copy-list
-         '((in-city ?l1 ?c)
-           (in-city ?l2 ?c)
-           (at ?t ?l1)))))
-    ((_ `(:- ,_ ,@rest))
-     (is (or (set= rest '((REACHABLE-FACT (AT ?T ?L1)) (REACHABLE-FACT (IN-CITY ?L1 ?C))))
-             (set= rest '((REACHABLE-FACT (IN-CITY ?L2 ?C)) (REACHABLE-FACT (IN-CITY ?L1 ?C))))))))
+  (let ((*predicates* '((in-city ?l1 ?c)
+                        (in-city ?l2 ?c)
+                        (at ?t ?l1)))) 
+    (multiple-value-match
+        (strips::all-relaxed-reachable2
+         (shuffle
+          (copy-list
+           '((in-city ?l1 ?c)
+             (in-city ?l2 ?c)
+             (at ?t ?l1)))))
+      ((_ `(:- ,_ ,@rest))
+       (is (or (set= rest '((REACHABLE-FACT (AT ?T ?L1)) (REACHABLE-FACT (IN-CITY ?L1 ?C))))
+               (set= rest '((REACHABLE-FACT (IN-CITY ?L2 ?C)) (REACHABLE-FACT (IN-CITY ?L1 ?C)))))))))
              
-  
-  (multiple-value-bind (decomposed temporary)
-      (strips::all-relaxed-reachable2
-       (shuffle
-        (copy-list
-         '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2)))))
-    (is (= 2 (length decomposed)))
-    (is (<= 8 (length temporary) 16)))
+  (let ((*predicates* '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2))))
+    (multiple-value-bind (decomposed temporary)
+        (strips::all-relaxed-reachable2
+         (shuffle
+          (copy-list
+           '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2)))))
+      (print decomposed)
+      (print temporary)
+      (is (= 2 (length decomposed)))
+      (is (<= 4 (length temporary) 8))))
 
   (is-true (strips::tmp-p '(tmp111)))
   (is-false (strips::tmp-p '(a))))
 
 (defun call-test-ground (info fn)
-  (with-parsed-information info
+  (with-parsed-information2 (easy-invariant info)
     (let ((result (strips::%ground)))
       ;; (print result)
       (apply fn (read-from-string result)))))
@@ -320,7 +325,7 @@
 (defun mem (elem list)
   (member elem list :test 'equal))
 
-(test relaxed-reachability
+(test relaxed-reachability1
   (with-test-ground (strips::parse1 '(define (domain d)
                               (:requirements :strips :typing)
                               (:predicates (d ?x) (p ?x) (goal))
@@ -331,34 +336,49 @@
                               (:objects o1 o2)
                               (:init )
                               (:goal (goal))))
+    (print *monotonicity*)
+    (is-true *monotonicity*)
+    (is-true (strips::added-p '(d ?x)))
+    (is-true (strips::monotonic+p '(d ?x)))
+    (is-true (strips::added-p '(p ?x)))
+    (is-true (strips::monotonic+p '(p ?x)))
+    (is-true (strips::static-p '(goal)))
+    (print facts)
     (is-true (mem '(d o1) facts))
     (is-true (mem '(p o1) facts))
     (is-true (mem '(d o2) facts))
     (is-true (mem '(p o2) facts))
     (is-true (mem '(a o1) ops))
-    (is-true (mem '(a o2) ops)))
+    (is-true (mem '(a o2) ops))))
 
+(test relaxed-reachability2
   ;; parameter ?x is not referenced in the axiom body
   (with-test-ground (strips::parse1 '(define (domain d)
-                              (:requirements :strips :typing)
-                              (:predicates (d ?x) (p) (goal))
-                              (:action a :parameters (?x) :precondition (and) :effect (p))
-                              (:derived (d ?x) (p)))
-                            '(define (problem p)
-                              (:domain d)
-                              (:objects o1 o2)
-                              (:init )
-                              (:goal (goal))))
+                                      (:requirements :strips :typing)
+                                      (:predicates (d ?x) (p) (goal))
+                                      (:action a :parameters (?x) :precondition (and) :effect (p))
+                                      (:derived (d ?x) (p)))
+                                    '(define (problem p)
+                                      (:domain d)
+                                      (:objects o1 o2)
+                                      (:init )
+                                      (:goal (goal))))
+    (is-true (strips::added-p '(d ?x)))
+    (is-true (strips::monotonic+p '(d ?x)))
+    (is-true (strips::added-p '(p)))
+    (is-true (strips::monotonic+p '(p)))
+    (is-true (strips::static-p '(goal)))
     (is-true (mem '(p) facts))
     (is-true (mem '(d o1) facts))
     (is-true (mem '(d o2) facts))
     (is-true (mem '(a o1) ops))
-    (is-true (mem '(a o2) ops)))
+    (is-true (mem '(a o2) ops))))
 
+(test relaxed-reachability3
   ;; parameter ?x is a free variable in the axiom body
   (with-test-ground (strips::parse1 '(define (domain d)
                               (:requirements :strips :typing)
-                              (:predicates (d ?x) (p ?x) (goal))
+                              (:predicates (d) (p ?x) (goal))
                               (:action a :parameters (?x) :precondition (and) :effect (p ?x))
                               (:derived (d) (p ?x)))
                             '(define (problem p)
@@ -366,13 +386,21 @@
                               (:objects o1 o2)
                               (:init )
                               (:goal (goal))))
+    (is-true (strips::added-p '(d)))
+    (is-true (strips::monotonic+p '(d)))
+    (is-true (strips::added-p '(p ?x)))
+    (is-true (strips::monotonic+p '(p ?x)))
+    (is-true (strips::static-p '(goal)))
+    
     (is-true (mem '(p o1) facts))
     (is-true (mem '(p o2) facts))
     (is-true (mem '(d) facts))
     (is-true (= 1 (count '(d) facts :test 'equal)))
     (is-true (mem '(a o1) ops))
-    (is-true (mem '(a o2) ops)))
+    (is-true (mem '(a o2) ops))
+    (is-true (mem '(a o2) ops))))
 
+(test relaxed-reachability4
   (with-test-ground (strips::parse1 '(define (domain d)
                               (:requirements :strips :typing)
                               (:predicates (d ?x) (p ?x) (p2 ?x) (goal))
@@ -389,11 +417,13 @@
     (is-true (not (mem '(p2 o2) facts)))
     (is-true (not (mem '(d) facts)))
     (is-true (mem '(a o1) ops))
-    (is-true (mem '(a o2) ops)))
+    (is-true (mem '(a o2) ops))))
 
+(test relaxed-reachability5
   (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
-    (assert (= 286 (length ops))))
+    (assert (= 286 (length ops)))))
 
+(test relaxed-reachability6
   (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
     (print (length facts))
     (print (length ops))
@@ -469,8 +499,10 @@
   (setf *kernel* (make-kernel 2)) ; :bindings
   (let ((op=-time< 0)
         (op=-time> 0)
+        (op=-time= 0)
         (op<-time< 0)
         (op<-time> 0)
+        (op<-time= 0)
         (fd-total 0)
         (ours-total 0))
     (for-all ((p (lambda () (random-elt *small-files*))))
@@ -491,21 +523,27 @@
           (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
           (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
           (if (= fd ours)
-              (if (< time-fd time-ours)
-                  (incf op=-time<)
-                  (incf op=-time>))
-              (if (< time-fd time-ours)
-                  (incf op<-time<)
-                  (incf op<-time>)))
+              (if (< (abs (- time-fd time-ours)) 1)
+                  (incf op=-time=)
+                  (if (< time-fd time-ours)
+                      (incf op=-time<)
+                      (incf op=-time>)))
+              (if (< (abs (- time-fd time-ours)) 1)
+                  (incf op<-time=)
+                  (if (< time-fd time-ours)
+                      (incf op<-time<)
+                      (incf op<-time>))))
           (incf fd-total time-fd)
           (incf ours-total time-ours)
           (format t "
 Runtime total: FD: ~a OURS: ~a
 Same Operator, slower than FD: ~a
 Same Operator, faster than FD: ~a
+Same Operator, insignificant: ~a
 Larger Operator, slower than FD: ~a
 Larger Operator, faster than FD: ~a
-" fd-total ours-total op=-time< op=-time> op<-time< op<-time>))))))
+Larger Operator, insignificant: ~a
+" fd-total ours-total op=-time< op=-time> op=-time= op<-time< op<-time> op<-time=))))))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
@@ -549,7 +587,7 @@ Larger Operator, faster than FD: ~a
   (iter (for file in *large-files*)
         (handler-case
             (bt:with-timeout (*timeout*)
-              (strips::ground (strips::parse (strips::%rel file)))
+              (strips::ground (strips::easy-invariant (strips::parse (strips::%rel file))))
               (pass))
           (error (c)
             (fail "Failure while parsing ~a, Reason:~% ~a" file c))
