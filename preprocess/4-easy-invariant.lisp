@@ -63,3 +63,10 @@
 
 (defvar *monotonicity*)
 
+;; easy operator invariants
+(defun never-applicable-p (a)
+  (ematch a
+    ((list :derived _ `(and ,@body))
+     (some (conjoin #'positive #'never-true-p) body))
+    ((plist :precondition `(and ,@precond))
+     (some (conjoin #'positive #'never-true-p) precond))))

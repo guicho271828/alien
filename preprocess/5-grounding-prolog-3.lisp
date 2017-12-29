@@ -195,6 +195,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
             (write ":ops\\n")
             (wrap
              (and ,@(iter (for a in *actions*)
+                          (when (never-applicable-p a) (next-iteration))
                           (ematch a
                             ((plist :action name
                                     :parameters params)
@@ -204,6 +205,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 (defun register-ops ()
   (iter (for a in *actions*)
+        (when (never-applicable-p a) (next-iteration))
         (ematch a
           ((plist :action name
                   :parameters params
@@ -233,6 +235,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 (defun register-axioms ()
   (iter (for a in *axioms*)
+        (when (never-applicable-p a) (next-iteration))
         (ematch a
           ((list :derived predicate `(and ,@body))
            (multiple-value-bind (decomposed temporary-rules)
