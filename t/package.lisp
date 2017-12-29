@@ -498,7 +498,7 @@
         (op<-time= 0)
         (fd-total 0)
         (ours-total 0))
-    (for-all ((p (lambda () (random-elt *small-files*))))
+    (dolist (p *small-files*)
       (format t "~&~%##### Testing ~a" p)
       (let ((d (strips::find-domain p)))
         (plet (((fd time-fd)
