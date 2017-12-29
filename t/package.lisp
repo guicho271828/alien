@@ -579,7 +579,7 @@ Larger Operator, faster than FD: ~a
   (iter (for file in *large-files*)
         (handler-case
             (bt:with-timeout (*timeout*)
-              (strips::ground (strips::parse (strips::%rel file)))
+              (strips::ground (strips::easy-invariant (strips::parse (strips::%rel file))))
               (pass))
           (error (c)
             (fail "Failure while parsing ~a, Reason:~% ~a" file c))
