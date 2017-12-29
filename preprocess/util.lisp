@@ -79,3 +79,7 @@
     (_
      t)))
 
+(defun negative (form)
+  (match form
+    ((list* 'not _)
+     t)))
