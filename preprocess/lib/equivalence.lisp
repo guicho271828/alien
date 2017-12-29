@@ -72,10 +72,10 @@
           (add-relation ec x y))
     ec))
 
-(print (make-equivalence '((?x . ?y) (?y . ?z) (?z .  one) (?w . ?v))))
+;; (print (make-equivalence '((?x . ?y) (?y . ?z) (?z .  one) (?w . ?v))))
 
-(print (compute-mapping
-        (make-equivalence '((?x . ?y) (?y . ?z) (?z .  one) (?w . ?v)))))
+;; (print (compute-mapping
+;;         (make-equivalence '((?x . ?y) (?y . ?z) (?z .  one) (?w . ?v)))))
 
 ;;; satisfiability
 
