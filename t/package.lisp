@@ -282,25 +282,30 @@
     ))
 
 (test join-ordering
-  (multiple-value-match
-      (strips::all-relaxed-reachable2
-       (shuffle
-        (copy-list
-         '((in-city ?l1 ?c)
-           (in-city ?l2 ?c)
-           (at ?t ?l1)))))
-    ((_ `(:- ,_ ,@rest))
-     (is (or (set= rest '((REACHABLE-FACT (AT ?T ?L1)) (REACHABLE-FACT (IN-CITY ?L1 ?C))))
-             (set= rest '((REACHABLE-FACT (IN-CITY ?L2 ?C)) (REACHABLE-FACT (IN-CITY ?L1 ?C))))))))
+  (let ((*predicates* '((in-city ?l1 ?c)
+                        (in-city ?l2 ?c)
+                        (at ?t ?l1)))) 
+    (multiple-value-match
+        (strips::all-relaxed-reachable2
+         (shuffle
+          (copy-list
+           '((in-city ?l1 ?c)
+             (in-city ?l2 ?c)
+             (at ?t ?l1)))))
+      ((_ `(:- ,_ ,@rest))
+       (is (or (set= rest '((REACHABLE-FACT (AT ?T ?L1)) (REACHABLE-FACT (IN-CITY ?L1 ?C))))
+               (set= rest '((REACHABLE-FACT (IN-CITY ?L2 ?C)) (REACHABLE-FACT (IN-CITY ?L1 ?C)))))))))
              
-  
-  (multiple-value-bind (decomposed temporary)
-      (strips::all-relaxed-reachable2
-       (shuffle
-        (copy-list
-         '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2)))))
-    (is (= 2 (length decomposed)))
-    (is (<= 8 (length temporary) 16)))
+  (let ((*predicates* '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2))))
+    (multiple-value-bind (decomposed temporary)
+        (strips::all-relaxed-reachable2
+         (shuffle
+          (copy-list
+           '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2)))))
+      (print decomposed)
+      (print temporary)
+      (is (= 2 (length decomposed)))
+      (is (<= 4 (length temporary) 8))))
 
   (is-true (strips::tmp-p '(tmp111)))
   (is-false (strips::tmp-p '(a))))
