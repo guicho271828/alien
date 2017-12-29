@@ -420,6 +420,16 @@ and also orders the terms by 'structure ordering' --- e.g.
                        ,@(iter (for p in params)
                                (collecting `(object ,p)))))))))))
 
+(defun negative-conditions-satisfiable (conditions)
+  (iter (for p in conditions)
+        (when (negative p)
+          (collecting
+           (let ((atom (second p)))
+             (if (axiom-p atom)
+                 (normalize-del-term atom)
+                 `(or (not ,(normalize-init-term atom))
+                      ,(normalize-del-term atom))))))))
+
 (defun %ground (&optional debug)
   (run-prolog
    (append `((:- (use_module (library tabling))) ; swi specific
