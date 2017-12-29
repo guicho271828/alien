@@ -47,6 +47,8 @@
     ((nil t) :monotonic-)
     ((nil nil) :static)))
 
+(defvar *monotonicity*)
+
 (defun generic-p (p) (member (first p) (getf *monotonicity* :generic)))
 (defun monotonic+p (p) (member (first p) (getf *monotonicity* :monotonic+)))
 (defun monotonic-p (p) (member (first p) (getf *monotonicity* :monotonic-)))
@@ -60,8 +62,6 @@
 (defun never-true-p (p) (and (not (in-init-p p)) (not (added-p p))))
 
 (defun could-become-true-p (p) (not (never-true-p p)))
-
-(defvar *monotonicity*)
 
 ;; easy operator invariants
 (defun never-applicable-p (a)
