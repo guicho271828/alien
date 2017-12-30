@@ -205,6 +205,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
    (iter (for (o . _) in *objects*)
          (collecting `(object ,o)))
    (let (*reachable-facts*
+         *reachable-effects*
          *reachable-ops*)
      (register `(= ?o ?o))
      (mapcar #'register *init*)
@@ -216,6 +217,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
      (append
       (mappend (lambda (rules) (tabled (nreverse (remove-duplicates (cdr rules) :test 'equal)))) (plist-alist *reachable-ops*))
       (mappend (lambda (rules) (tabled (nreverse (remove-duplicates (cdr rules) :test 'equal)))) (plist-alist *reachable-facts*))
+      (mappend (lambda (rules) (tabled (nreverse (remove-duplicates (cdr rules) :test 'equal)))) (plist-alist *reachable-effects*))
       ;; output facts/ops
       `((:- relaxed-reachability
             (write ":facts\\n")
@@ -233,7 +235,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                                     :parameters params)
                              (collecting
                               `(forall ,(normalize-op-term `(,name ,@params))
-                                       (print-sexp (,name ,@params)))))))))))))))
+                                       (and (findall ?i ,(normalize-effect-term `(,name ,@params) '?i) ?list)
+                                            (print-sexp (list (,name ,@params) ?list))))))))))))))))
 
 (defun register-ops ()
   (iter (for a in *actions*)
@@ -249,21 +252,37 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
              (register-op
               `(:- (,name ,@params)
                    ,@decomposed
+                   ;; ensure all parameters are grounded
                    ,@(iter (for p in params)
                            (collecting `(object ,p))))))
-           (dolist (e effects)
+           (iter (for e in effects) (for i from 0)
              (match e
-               (`(forall ,vars (when (and ,@conditions) ,atom))
+               (`(forall ,_ (when (and ,@conditions) ,atom))
                  (when (positive atom)
                    (multiple-value-bind (decomposed temporary-rules)
                        (all-relaxed-reachable2 conditions)
                      (mapcar #'register temporary-rules)
                      (register
                       `(:- ,atom
+                           ,(normalize-effect-term `(,name ,@params) i)))
+                     (register-effect
+                      `(:- (,name ,@params)
                            ,(normalize-op-term `(,name ,@params))
                            ,@decomposed
-                           ,@(iter (for p in vars)
-                                   (collecting `(object ,p))))))))))))))
+                           ;; ensure all parameters are grounded
+                           ,@(iter (for p in (cdr atom))
+                                   (collecting `(object ,p)))) i)))
+                 (when (negative atom)
+                   (multiple-value-bind (decomposed temporary-rules)
+                       (all-relaxed-reachable2 conditions)
+                     (mapcar #'register temporary-rules)
+                     (register-effect
+                      `(:- (,name ,@params)
+                           ,(normalize-op-term `(,name ,@params))
+                           ,@decomposed
+                           ;; ensure all parameters are grounded
+                           ,@(iter (for p in (cdr (second atom)))
+                                   (collecting `(object ,p)))) i))))))))))
 
 (defun register-axioms ()
   (iter (for a in *axioms*)

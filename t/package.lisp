@@ -363,8 +363,8 @@
     (is-true (mem '(p o1) facts))
     (is-true (mem '(d o2) facts))
     (is-true (mem '(p o2) facts))
-    (is-true (mem '(a o1) ops))
-    (is-true (mem '(a o2) ops))))
+    (is-true (mem '((a o1) (0)) ops))
+    (is-true (mem '((a o2) (0)) ops))))
 
 (test relaxed-reachability2
   ;; parameter ?x is not referenced in the axiom body
@@ -386,8 +386,8 @@
     (is-true (mem '(p) facts))
     (is-true (mem '(d o1) facts))
     (is-true (mem '(d o2) facts))
-    (is-true (mem '(a o1) ops))
-    (is-true (mem '(a o2) ops))))
+    (is-true (mem '((a o1) (0)) ops))
+    (is-true (mem '((a o2) (0)) ops))))
 
 (test relaxed-reachability3
   ;; parameter ?x is a free variable in the axiom body
@@ -411,9 +411,9 @@
     (is-true (mem '(p o2) facts))
     (is-true (mem '(d) facts))
     (is-true (= 1 (count '(d) facts :test 'equal)))
-    (is-true (mem '(a o1) ops))
-    (is-true (mem '(a o2) ops))
-    (is-true (mem '(a o2) ops))))
+    (is-true (mem '((a o1) (0)) ops))
+    (is-true (mem '((a o2) (0)) ops))
+    (is-true (mem '((a o2) (0)) ops))))
 
 (test relaxed-reachability4
   (with-test-ground (strips::parse1 '(define (domain d)
@@ -431,8 +431,8 @@
     (is-true (not (mem '(p2 o1) facts)))
     (is-true (not (mem '(p2 o2) facts)))
     (is-true (not (mem '(d) facts)))
-    (is-true (mem '(a o1) ops))
-    (is-true (mem '(a o2) ops))))
+    (is-true (mem '((a o1) (0)) ops))
+    (is-true (mem '((a o2) (0)) ops))))
 
 (test relaxed-reachability5
   (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
