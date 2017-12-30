@@ -469,11 +469,11 @@
 
 (defparameter *small-files*
   '("axiom-domains/opttel-adl-derived/p01.pddl"
-    "axiom-domains/opttel-strips-derived/p01.pddl"
+    #+(or) "axiom-domains/opttel-strips-derived/p01.pddl"       ; FD is too slow
     "axiom-domains/philosophers-adl-derived/p01.pddl"
-    "axiom-domains/philosophers-strips-derived/p01.pddl"
-    "axiom-domains/psr-middle-adl-derived/p01.pddl"
-    "axiom-domains/psr-middle-strips-derived/p01.pddl"
+    #+(or) "axiom-domains/philosophers-strips-derived/p01.pddl" ; FD is too slow
+    "axiom-domains/psr-middle-adl-derived/p01.pddl"             ; ours < fd with negative preconditions
+    #+(or) "axiom-domains/psr-middle-strips-derived/p01.pddl"   ; FD is too slow
     "ipc2011-opt/barman-opt11/p01.pddl"
     "ipc2011-opt/elevators-opt11/p01.pddl"
     "ipc2011-opt/floortile-opt11/p01.pddl"
@@ -484,7 +484,7 @@
     "ipc2011-opt/pegsol-opt11/p01.pddl"
     "ipc2011-opt/scanalyzer-opt11/p01.pddl"
     "ipc2011-opt/sokoban-opt11/p01.pddl"
-    "ipc2011-opt/tidybot-opt11/p01.pddl"
+    "ipc2011-opt/tidybot-opt11/p01.pddl" ; ours < fd with negative preconditions
     "ipc2011-opt/transport-opt11/p01.pddl"
     "ipc2011-opt/visitall-opt11/p01.pddl"
     "ipc2011-opt/woodworking-opt11/p01.pddl"
