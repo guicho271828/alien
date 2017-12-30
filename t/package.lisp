@@ -623,7 +623,8 @@
              ((ours time-ours) (num-operator-ours p)))
         (match* (fd ours)
           (((number) (number))
-           (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
+           ;; Additional pruning with negative precondition
+           ;; (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
            (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
            (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
            (cond
