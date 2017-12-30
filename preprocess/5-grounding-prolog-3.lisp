@@ -48,13 +48,12 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
      (normalize-fact-term rule))))
 
 (defun normalize-op-term (term)
-  (if (tmp-p term)
-      term
-      (ematch term
-        ((list name)
-         `(op ,name))
-        ((list* name args)
-         `(,(symbolicate name '-o) ,@args)))))
+  (assert (not (tmp-p term)))
+  (ematch term
+    ((list name)
+     `(op ,name))
+    ((list* name args)
+     `(,(symbolicate name '-o) ,@args))))
 
 (defun normalize-op-rule (rule)
   "Normalize the head of the op rule. Body should be normalized separately"
