@@ -11,9 +11,14 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (defun ground (info &optional debug)
   (with-parsed-information2 info
     (let ((result (%ground debug)))
-      (append (let ((*package* (find-package :pddl)))
-                (read-from-string result))
-              info))))
+      (let ((result2 (let ((*package* (find-package :pddl)))
+                       (read-from-string result))))
+        (append (iter (for x in result2)
+                      (collecting
+                       (if (listp x)
+                           (remove-duplicates x :test 'equal)
+                           x)))
+                info)))))
 
 ;;; tools for reachability predicates
 

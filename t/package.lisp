@@ -322,7 +322,11 @@
   (with-parsed-information2 (easy-invariant info)
     (let ((result (strips::%ground *debug*)))
       ;; (print result)
-      (apply fn (read-from-string result)))))
+      (apply fn (iter (for x in (read-from-string result))
+                      (collecting
+                       (if (listp x)
+                           (remove-duplicates x :test 'equal)
+                           x)))))))
 
 (defmacro with-test-ground (info &body body)
   `(call-test-ground ,info
