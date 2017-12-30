@@ -18,6 +18,9 @@
 (def-suite :strips)
 (in-suite :strips)
 
+(def-suite translate :in :strips)
+(in-suite translate)
+
 ;; run test with (run! test-name) 
 
 (defvar *problems*
@@ -281,6 +284,9 @@
     ;; (AND (FORALL (#:A54877) (WHEN (AND (CLEAR #:A54877)) (AND (P2) (P2) (P2) (P2)))) (P1) (P1) (P1)) 
     ))
 
+(def-suite grounding :in :strips)
+(in-suite grounding)
+
 (test join-ordering
   (let ((*predicates* '((in-city ?l1 ?c)
                         (in-city ?l2 ?c)
@@ -326,6 +332,9 @@
 
 (defun mem (elem list)
   (member elem list :test 'equal))
+
+(def-suite relaxed-reachability :in grounding)
+(in-suite relaxed-reachability)
 
 (test relaxed-reachability1
   (with-test-ground (strips::parse1 '(define (domain d)
@@ -431,6 +440,8 @@
     (print (length ops))
     (print (length axioms))
     (is (= 616 (length ops)))))
+
+(in-suite grounding)
 
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis")
