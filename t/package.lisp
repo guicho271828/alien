@@ -501,12 +501,9 @@
 
 (test num-operator
   (setf *kernel* (make-kernel 2)) ; :bindings
-  (let ((op=-time< 0)
-        (op=-time> 0)
-        (op=-time= 0)
-        (op<-time< 0)
-        (op<-time> 0)
-        (op<-time= 0)
+  (let ((op=-time< 0) (op=-time> 0) (op=-time= 0)
+        (op<-time< 0) (op<-time> 0) (op<-time= 0)
+        (op>-time< 0) (op>-time> 0) (op>-time= 0)
         (fd-total 0)
         (ours-total 0))
     (dolist (p *small-files*)
@@ -523,31 +520,43 @@
                 (with-timing
                     (with-test-ground (parse p d)
                       (length ops)))))
-          (is (<= fd ours))
+          (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
           (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
           (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
-          (if (= fd ours)
-              (if (< (abs (- time-fd time-ours)) 1)
-                  (incf op=-time=)
-                  (if (< time-fd time-ours)
-                      (incf op=-time<)
-                      (incf op=-time>)))
-              (if (< (abs (- time-fd time-ours)) 1)
-                  (incf op<-time=)
-                  (if (< time-fd time-ours)
-                      (incf op<-time<)
-                      (incf op<-time>))))
+          (cond
+            ((= fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                             (incf op=-time=)
+                             (if (< time-fd time-ours)
+                                 (incf op=-time<)
+                                 (incf op=-time>))))
+            ((< fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                             (incf op<-time=)
+                             (if (< time-fd time-ours)
+                                 (incf op<-time<)
+                                 (incf op<-time>))))
+            ((> fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                             (incf op>-time=)
+                             (if (< time-fd time-ours)
+                                 (incf op>-time<)
+                                 (incf op>-time>)))))
           (incf fd-total time-fd)
           (incf ours-total time-ours)
           (format t "
 Runtime total: FD: ~a OURS: ~a
-Same Operator, slower than FD: ~a
-Same Operator, faster than FD: ~a
-Same Operator, insignificant: ~a
-Larger Operator, slower than FD: ~a
-Larger Operator, faster than FD: ~a
-Larger Operator, insignificant: ~a
-" fd-total ours-total op=-time< op=-time> op=-time= op<-time< op<-time> op<-time=))))))
+Same operator, slower than FD: ~a
+Same operator, faster than FD: ~a
+Same operator, diff < 1 : ~a
+More operator, slower than FD: ~a
+More operator, faster than FD: ~a
+More operator, diff < 1 : ~a
+Less operator, slower than FD: ~a
+Less operator, faster than FD: ~a
+Less operator, diff < 1 : ~a
+"
+                  fd-total ours-total
+                  op=-time< op=-time> op=-time=
+                  op<-time< op<-time> op<-time=
+                  op>-time< op>-time> op>-time=))))))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
