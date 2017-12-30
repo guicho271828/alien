@@ -14,6 +14,6 @@
 ;;
 ;; or is it equivalent to
 ;; 
-;; (not (and (t ?x) (p ?x)))
+;; (not (and (mytype ?x) (p ?x)))
 ;; ==
-;; (or (not (t ?x)) (not (p ?x))) ?
+;; (or (not (mytype ?x)) (not (p ?x))) ?
