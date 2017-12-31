@@ -415,7 +415,7 @@ Signals an error when the type is not connected to the root OBJECT type."
     ((list 'not pred)
      (free pred))
     ((list* (or 'and 'or) rest)
-     (reduce #'union rest :key #'free))
+     (reduce #'union rest :key #'free :initial-value nil))
     ((list (or 'forall 'exists) args body)
      (set-difference (free body) args))
     ((list 'when condition body)
