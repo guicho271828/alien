@@ -243,16 +243,19 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
   (iter (for a in *axioms*)
         (when (never-applicable-p a) (next-iteration))
         (ematch a
-          ((list :derived predicate `(and ,@body))
-           (multiple-value-bind (decomposed temporary-rules)
-               (all-relaxed-reachable2 body)
-             (mapcar #'register temporary-rules)
-             (register
-              `(:- ,predicate
-                   ,@decomposed
-                   ,@(iter (for p in (cdr predicate))
-                           ;; parameters not referenced in the condition
-                           (collecting `(object ,p))))))))))
+          ((list :derived `(,name ,@params) `(and ,@body))
+           (if (and (null body) (null params))
+               ;; when an axiom is a zero-ary axiom without body, register it as a fact
+               (register `(,name ,@params))
+               (multiple-value-bind (decomposed temporary-rules)
+                   (all-relaxed-reachable2 body)
+                 (mapcar #'register temporary-rules)
+                 (register
+                  `(:- (,name ,@params)
+                       ,@decomposed
+                       ;; ensure all parameters are grounded
+                       ,@(iter (for p in params)
+                               (collecting `(object ,p)))))))))))
 
 (defun %ground (&optional debug)
   (run-prolog
