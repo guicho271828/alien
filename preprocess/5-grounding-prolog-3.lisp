@@ -179,7 +179,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
   (append
    (iter (for (o . _) in *objects*)
          (collecting `(object ,o)))
-   (let (*reachable-facts* *reachable-ops*)
+   (let (*reachable-facts*
+         *reachable-ops*)
      (register `(= ?o ?o))
      (mapcar #'register *init*)
      (register-ops)
