@@ -549,20 +549,18 @@
           (incf ours-total time-ours)
           (format t "
 Runtime total: FD: ~a OURS: ~a
-Same operator, slower than FD: ~a
-Same operator, faster than FD: ~a
-Same operator, diff < 1 : ~a
-More operator, slower than FD: ~a
-More operator, faster than FD: ~a
-More operator, diff < 1 : ~a
-Less operator, slower than FD: ~a
-Less operator, faster than FD: ~a
-Less operator, diff < 1 : ~a
-"
+~{~{~13a~}~%~}"
                   fd-total ours-total
-                  op=-time< op=-time> op=-time=
-                  op<-time< op<-time> op<-time=
-                  op>-time< op>-time> op>-time=))))))
+                  `((------- FD-wins    ours-wins  diff<1 sum)
+                    (same-op ,op=-time< ,op=-time> ,op=-time= ,(+ op=-time< op=-time> op=-time=))
+                    (more-op ,op<-time< ,op<-time> ,op<-time= ,(+ op<-time< op<-time> op<-time=))
+                    (less-op ,op>-time< ,op>-time> ,op>-time= ,(+ op>-time< op>-time> op>-time=))
+                    (sum     ,(+ op=-time< op<-time< op>-time<)
+                             ,(+ op=-time> op<-time> op>-time>)
+                             ,(+ op=-time= op<-time= op>-time=)
+                             ,(+ (+ op=-time< op=-time> op=-time=)
+                                 (+ op<-time< op<-time> op<-time=)
+                                 (+ op>-time< op>-time> op>-time=))))))))))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
