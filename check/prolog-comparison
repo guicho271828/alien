@@ -1,0 +1,11 @@
+
+
+                =       =@=     ==
+a       A	true    false   false
+A       B       true    true    false
+x(A,A)  x(B,C)	true    false   false
+x(A,A)  x(B,B)	true    true    false
+x(A,A)  x(A,B)	true    false   false
+x(A,B)  x(C,D)	true    true    false
+x(A,B)  x(B,A)	true    true    false
+x(A,B)  x(C,A)	true    true    false

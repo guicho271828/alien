@@ -238,6 +238,75 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                                        (and (findall ?i ,(normalize-effect-term `(,name ,@params) '?i) ?list)
                                             (print-sexp (list (,name ,@params) ?list))))))))))))))))
 
+(defun no-op-constraints (effects)
+  "adding the constraint which prunes a combination of parameters when
+the effect lists are structurally equivalent"
+  (unless *enable-no-op-pruning* (return-from no-op-constraints nil))
+  (when (< (length effects) 2) (return-from no-op-constraints nil))
+
+  (let (pos neg)
+    (iter (for e in effects)
+          (ematch e
+            (`(forall ,_ (when ,_ (increase ,@_)))
+              ;; ignore
+              )
+            (`(forall ,_ (when ,_ (not ,e)))
+              (push e neg))
+            (`(forall ,_ (when ,_ ,e))
+              (push e pos))))
+    (with-gensyms (?pos1 ?neg1 ?pos2 ?neg2)
+      ;; ?pos, ?neg: unique set of add/delete effects,
+      ;; including free universally-quantified variables
+      `((remove-subsumed (list ,@pos) ,?pos1)
+        (remove-subsumed (list ,@neg) ,?neg1)
+        (predsort effect-order ,?pos1 ,?pos2)
+        (predsort effect-order ,?neg1 ,?neg2)
+        (\\=@= ,?pos2 ,?neg2)))))
+
+(defun effect-order ()
+  "ordering predicate for predsort which removes structurally equivalent terms as duplicates,
+and also orders the terms by 'structure ordering' --- e.g.
+ (X,X,Y) < (X,Y,Y) because they are reassigned to (0,0,1) < (0,1,1)
+ (X,X,Y) < (Y,X,X) because they are reassigned to (0,0,1) < (0,1,1)
+ (X,X,Y) < (A,B,C) because they are reassigned to (0,0,1) < (0,1,2)
+"
+  `((:- (effect-order = ?a ?b) (=@= ?a ?b))
+    (:- (effect-order < ?ac ?bc)
+        (copy_term ?ac ?a)
+        (copy_term ?bc ?b)
+        (numbervars ?a) (numbervars ?b)
+        ;; (if (@< ?a ?b) (= ?r true) (= ?r false))
+        ;; (write ---) (write_canonical (list ?a ?b ?r)) nl
+        (@< ?a ?b)
+        )
+    (:- (effect-order > ?ac ?bc)
+        (copy_term ?ac ?a)
+        (copy_term ?bc ?b)
+        (numbervars ?a) (numbervars ?b)
+        ;; (if (@< ?a ?b) (= ?r true) (= ?r false))
+        ;; (write ---) (write_canonical (list ?a ?b ?r)) nl
+        (@> ?a ?b))))
+
+(defun remove-subsumed ()
+  "Removes the terms that are subsumed when variables as universally quantified, e.g. a(X,Y,Z) subsumes a(X,Y,Y)."
+  `((:- (remove-subsumed (list) (list)) !)
+    (:- (remove-subsumed (list ?e) (list ?e)) !)
+    (:- (remove-subsumed (list* ?e ?rest) ?result)
+        (remove-subsumed ?rest ?result2)
+        (remove-subsumed-aux ?e ?result2 ?result2 (list) ?result))
+    
+    (remove-subsumed-aux ?e1 ? (list) ?acc (list* ?e1 ?acc))
+    
+    (:- (remove-subsumed-aux ?e1 ?orig (list* ?e2 ?) ? ?orig)
+        (subsumes_term ?e2 ?e1))
+    
+    (:- (remove-subsumed-aux ?e1 ?orig (list* ?e2 ?rest) ?acc ?result)
+        (subsumes_term ?e1 ?e2)
+        (remove-subsumed-aux ?e1 ?orig ?rest ?acc ?result))
+    
+    (:- (remove-subsumed-aux ?e1 ?orig (list* ?e2 ?rest) ?acc ?result)
+        (remove-subsumed-aux ?e1 ?orig ?rest (list* ?e2 ?acc) ?result))))
+
 (defun register-ops ()
   (iter (for a in *actions*)
         (when (never-applicable-p a) (next-iteration))
@@ -254,7 +323,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                    ,@decomposed
                    ;; ensure all parameters are grounded
                    ,@(iter (for p in params)
-                           (collecting `(object ,p))))))
+                           (collecting `(object ,p)))
+                   ,@(no-op-constraints effects))))
            (iter (for e in effects) (for i from 0)
              (match e
                (`(forall ,_ (when (and ,@conditions) ,atom))
@@ -306,11 +376,15 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
   (run-prolog
    (append `((:- (use_module (library tabling))) ; swi specific
              (:- (style_check (- singleton))))
+           (effect-order)
+           (remove-subsumed)
            (print-sexp :swi t)
            `((:- (wrap ?goal)
                  (write "(")
                  (call ?goal)
                  (write ")"))
+             (:- (if ?a ?b ?c)
+                 (or (-> ?a ?b) ?c))
              (:- main
                  (wrap relaxed-reachability)
                  halt))
