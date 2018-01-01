@@ -189,8 +189,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
            (when (not (eq (car p) '=))
              (register `(:- ,p ! fail))))
      (append
-      (mappend (lambda (ro) (tabled (nreverse (cdr ro)))) (plist-alist *reachable-ops*))
-      (mappend (lambda (rf) (tabled (nreverse (cdr rf)))) (plist-alist *reachable-facts*))
+      (mappend (lambda (rules) (tabled (nreverse (remove-duplicates (cdr rules) :test 'equal)))) (plist-alist *reachable-ops*))
+      (mappend (lambda (rules) (tabled (nreverse (remove-duplicates (cdr rules) :test 'equal)))) (plist-alist *reachable-facts*))
       ;; output facts/ops
       `((:- relaxed-reachability
             (write ":facts\\n")
