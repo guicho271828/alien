@@ -148,9 +148,10 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     ((or `(:- (,name ,@params) ,@_)
          `(,name ,@params))
      (let ((str (symbol-name name)))
-       (assert (or (search str "-F" :start1 (- (length str) 2))
-                   (search str "-O" :start1 (- (length str) 2))
-                   (member name '(op fact))
+       (assert (or (ends-with-subseq "-F" str)
+                   (ends-with-subseq "-O" str)
+                   (member name '(op
+                                  fact))
                    (tmp-p `(,name ,@params)))
                nil
                "Rule not normalized: fact symbol not ending with -F: ~a" name)
