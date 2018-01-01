@@ -63,6 +63,21 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     (_
      (normalize-op-term rule))))
 
+(defun normalize-effect-term (term i)
+  (assert (not (tmp-p term)))
+  (ematch term
+    ((list name)
+     `(eff ,name ,i))
+    ((list* name args)
+     `(,(symbolicate name '-e) ,i ,@args))))
+
+(defun normalize-effect-rule (rule i)
+  (ematch rule
+    (`(:- ,head ,@body)
+      `(:- ,(normalize-effect-term head i) ,@body))
+    (_
+     (normalize-effect-term rule i))))
+
 ;; heads are normalzied in the last step
 
 ;;; join ordering
@@ -149,8 +164,10 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
          `(,name ,@params))
      (let ((str (symbol-name name)))
        (assert (or (ends-with-subseq "-F" str)
+                   (ends-with-subseq "-E" str)
                    (ends-with-subseq "-O" str)
                    (member name '(op
+                                  eff
                                   fact))
                    (tmp-p `(,name ,@params)))
                nil
@@ -173,6 +190,14 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
       ((or `(:- (,name ,@_) ,@_)
            `(,name ,@_))
        (push rule (getf *reachable-ops* name))))))
+
+(defvar *reachable-effects*)
+(defun register-effect (rule i)
+  (let ((rule (normalize-effect-rule rule i)))
+    (ematch rule
+      ((or `(:- (,name ,@_) ,@_)
+           `(,name ,@_))
+       (push rule (getf *reachable-effects* name))))))
 
 (defun relaxed-reachability ()
   "Returns a cl-prolog2 program that prints the reachable facts/ops"
