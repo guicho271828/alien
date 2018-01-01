@@ -504,7 +504,9 @@
     "ipc2014-agl/visitall-agl14/p01.pddl"))
 
 (test num-operator
-  (setf *kernel* (make-kernel 2)) ; :bindings
+  (setf *kernel* (make-kernel 2 :bindings `((*standard-output* . ,*standard-output*)
+                                            (*error-output* . ,*error-output*)
+                                            (*trace-output* . ,*trace-output*))))
   (let ((op=-time< 0) (op=-time> 0) (op=-time= 0)
         (op<-time< 0) (op<-time> 0) (op<-time= 0)
         (op>-time< 0) (op>-time> 0) (op>-time= 0)
@@ -522,7 +524,7 @@
                                        :output :string))))
                ((ours time-ours)
                 (with-timing
-                    (with-test-ground (parse p d)
+                    (with-test-ground (time (parse p d))
                       (length ops)))))
           (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
           (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
