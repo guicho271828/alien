@@ -255,13 +255,15 @@ Signals an error when the type is not connected to the root OBJECT type."
 (defun grovel-init (problem)
   (ematch problem
     ((assoc :init predicates)
-     (dolist (condition predicates)
-       (ematch condition
-         ((list* '= _)
-          ;; (format t "~&; skipping ~a" condition)
-          )
-         (_
-          (unionf *init* (flatten-types/predicate condition t))))))))
+     (appendf *init*
+              (iter (for condition in predicates)
+                    (ematch condition
+                      ((list* '= _)
+                       ;; (format t "~&; skipping ~a" condition)
+                       )
+                      (_
+                       (appending (flatten-types/predicate condition t))))))
+     (setf *init* (remove-duplicates *init* :test 'equal)))))
 
 (defun grovel-goal (problem)
   (ematch problem
