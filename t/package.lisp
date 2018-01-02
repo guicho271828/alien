@@ -444,19 +444,21 @@
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis")
   (with-timing
-      (ignore-errors
+    (ignore-errors
+      (bt:with-timeout (120)
         (read-from-string
          (uiop:run-program `("sh" "-c"
                                   ,(print (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
                                                   (strips::%rel "downward/src/translate/translate.py") d p)))
-                           :output :string)))))
+                           :output :string))))))
 
 (defun num-operator-ours (p &optional (d (strips::find-domain p)))
   (format t "~&Testing prolog-based grounding, without invariant synthesis")
   (with-timing
-      (ignore-errors
+    (ignore-errors
+      (bt:with-timeout (120)
         (with-test-ground (parse p d)
-          (length ops)))))
+          (length ops))))))
 
 (defmacro with-timing (form)
   (with-gensyms (start)
