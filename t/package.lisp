@@ -449,16 +449,20 @@
 
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis")
-  (read-from-string
-   (uiop:run-program `("sh" "-c"
-                            ,(print (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
-                                            (strips::%rel "downward/src/translate/translate.py") d p)))
-                     :output :string)))
+  (with-timing
+      (ignore-errors
+        (read-from-string
+         (uiop:run-program `("sh" "-c"
+                                  ,(print (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
+                                                  (strips::%rel "downward/src/translate/translate.py") d p)))
+                           :output :string)))))
 
 (defun num-operator-ours (p &optional (d (strips::find-domain p)))
   (format t "~&Testing prolog-based grounding, without invariant synthesis")
-  (with-test-ground (parse p d)
-    (length ops)))
+  (with-timing
+      (ignore-errors
+        (with-test-ground (parse p d)
+          (length ops)))))
 
 (defmacro with-timing (form)
   (with-gensyms (start)
@@ -531,53 +535,43 @@
         (ours-total 0))
     (dolist (p *small-files*)
       (format t "~&~%##### Testing ~a" p)
-      (let ((d (strips::find-domain p)))
-        (plet (((fd time-fd)
-                (with-timing
-                    (read-from-string
-                     (uiop:run-program `("sh" "-c"
-                                              ,(format nil "~a ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
-                                                       (strips::%rel "downward/src/translate/translate.py") d p))
-                                       :output :string))))
-               ((ours time-ours)
-                (with-timing
-                    (with-test-ground (time (parse p d))
-                      (length ops)))))
-          (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
-          (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
-          (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
-          (cond
-            ((= fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                             (incf op=-time=)
-                             (if (< time-fd time-ours)
-                                 (incf op=-time<)
-                                 (incf op=-time>))))
-            ((< fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                             (incf op<-time=)
-                             (if (< time-fd time-ours)
-                                 (incf op<-time<)
-                                 (incf op<-time>))))
-            ((> fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                             (incf op>-time=)
-                             (if (< time-fd time-ours)
-                                 (incf op>-time<)
-                                 (incf op>-time>)))))
-          (incf fd-total time-fd)
-          (incf ours-total time-ours)
-          (format t "
+      (plet (((fd time-fd) (num-operator-fd p))
+             ((ours time-ours) (num-operator-ours p)))
+        (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
+        (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
+        (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
+        (cond
+          ((= fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                           (incf op=-time=)
+                           (if (< time-fd time-ours)
+                               (incf op=-time<)
+                               (incf op=-time>))))
+          ((< fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                           (incf op<-time=)
+                           (if (< time-fd time-ours)
+                               (incf op<-time<)
+                               (incf op<-time>))))
+          ((> fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                           (incf op>-time=)
+                           (if (< time-fd time-ours)
+                               (incf op>-time<)
+                               (incf op>-time>)))))
+        (incf fd-total time-fd)
+        (incf ours-total time-ours)
+        (format t "
 Runtime total: FD: ~a OURS: ~a
 ~{~{~13a~}~%~}"
-                  fd-total ours-total
-                  `((------- FD-wins    ours-wins  diff<1 sum)
-                    (same-op ,op=-time< ,op=-time> ,op=-time= ,(+ op=-time< op=-time> op=-time=))
-                    (more-op ,op<-time< ,op<-time> ,op<-time= ,(+ op<-time< op<-time> op<-time=))
-                    (less-op ,op>-time< ,op>-time> ,op>-time= ,(+ op>-time< op>-time> op>-time=))
-                    (sum     ,(+ op=-time< op<-time< op>-time<)
-                             ,(+ op=-time> op<-time> op>-time>)
-                             ,(+ op=-time= op<-time= op>-time=)
-                             ,(+ (+ op=-time< op=-time> op=-time=)
-                                 (+ op<-time< op<-time> op<-time=)
-                                 (+ op>-time< op>-time> op>-time=))))))))))
+                fd-total ours-total
+                `((------- FD-wins    ours-wins  diff<1 sum)
+                  (same-op ,op=-time< ,op=-time> ,op=-time= ,(+ op=-time< op=-time> op=-time=))
+                  (more-op ,op<-time< ,op<-time> ,op<-time= ,(+ op<-time< op<-time> op<-time=))
+                  (less-op ,op>-time< ,op>-time> ,op>-time= ,(+ op>-time< op>-time> op>-time=))
+                  (sum     ,(+ op=-time< op<-time< op>-time<)
+                           ,(+ op=-time> op<-time> op>-time>)
+                           ,(+ op=-time= op<-time= op>-time=)
+                           ,(+ (+ op=-time< op=-time> op=-time=)
+                               (+ op<-time< op<-time> op<-time=)
+                               (+ op>-time< op>-time> op>-time=)))))))))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
