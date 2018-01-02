@@ -474,6 +474,23 @@
     #+(or) "axiom-domains/philosophers-strips-derived/p01.pddl" ; FD is too slow
     "axiom-domains/psr-middle-adl-derived/p01.pddl"             ; ours < fd with negative preconditions
     #+(or) "axiom-domains/psr-middle-strips-derived/p01.pddl"   ; FD is too slow
+    "ipc2006-optsat/openstacks/p01.pddl"
+    "ipc2006-optsat/pathways/p01.pddl"
+    "ipc2006-optsat/pipesworld/p01.pddl"
+    "ipc2006-optsat/rovers/p01.pddl"
+    ;; "ipc2006-optsat/storage/p01.pddl" ; EITHER type
+    "ipc2006-optsat/tpp/p01.pddl"
+    "ipc2006-optsat/trucks/p01.pddl"
+
+    "ipc2008-opt/elevators-opt08/p01.pddl"
+    "ipc2008-opt/openstacks-opt08/p01.pddl"
+    "ipc2008-opt/parcprinter-opt08/p01.pddl"
+    "ipc2008-opt/pegsol-opt08/p01.pddl"
+    "ipc2008-opt/scanalyzer-opt08/p01.pddl"
+    "ipc2008-opt/sokoban-opt08/p01.pddl"
+    "ipc2008-opt/transport-opt08/p01.pddl"
+    "ipc2008-opt/woodworking-opt08/p01.pddl"
+
     "ipc2011-opt/barman-opt11/p01.pddl"
     "ipc2011-opt/elevators-opt11/p01.pddl"
     "ipc2011-opt/floortile-opt11/p01.pddl"
