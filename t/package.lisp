@@ -452,6 +452,19 @@
         (setf ops-with ops)))
     (is-true (set-equal ops-without ops-with :test 'equal))))
 
+(test relaxed-reachability-noop
+  (let (ops-fd ops-with ops-without)
+    (setf ops-fd (num-operator-fd (%rel "check/rovers-noop/p01.pddl")))
+    (let ((*enable-no-op-pruning* nil))
+      (with-test-ground (parse (%rel "check/rovers-noop/p01.pddl"))
+        ;; (print ops)
+        (is (/= ops-fd (length ops)))
+        (setf ops-without ops)))
+    (let ((*enable-no-op-pruning* t))
+      (with-test-ground (parse (%rel "check/rovers-noop/p01.pddl"))
+        (is (= ops-fd (length ops)))
+        (setf ops-with ops)))))
+
 (in-suite grounding)
 
 (defmacro with-timing (form)
