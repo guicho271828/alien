@@ -149,8 +149,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                (cons new))
              (list* `(:- ,new
                          ;; min-c1 has larger arity; put min-c2 first
-                         ,(normalize-fact-term min-c2)
-                         ,(normalize-fact-term min-c1))
+                         ,(normalize-fact-term min-c1)
+                         ,(normalize-fact-term min-c2))
                     acc)))))))
 
 ;;; relaxed-reachability
