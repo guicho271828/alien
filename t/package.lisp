@@ -451,7 +451,7 @@
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis~%")
   (with-timing
-    (ignore-errors
+    (handler-case
       (bt:with-timeout (120)
         (let ((command (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
                                (strips::%rel "downward/src/translate/translate.py") d p)))
@@ -459,15 +459,19 @@
           (terpri *trace-output*)
           (read-from-string
            (uiop:run-program `("sh" "-c" ,command)
-                             :output :string)))))))
+                             :output :string))))
+      (bt:timeout ()
+        nil))))
 
 (defun num-operator-ours (p &optional (d (strips::find-domain p)))
   (format t "~&Testing prolog-based grounding, without invariant synthesis~%")
   (with-timing
-    (ignore-errors
+    (handler-case
       (bt:with-timeout (120)
         (with-test-ground (parse p d)
-          (length ops))))))
+          (length ops)))
+      (bt:timeout ()
+        nil))))
 
 (defparameter *small-files*
   '("researchers-domain/p07.pddl"
