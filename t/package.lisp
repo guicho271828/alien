@@ -466,7 +466,8 @@
                   internal-time-units-per-second)))))
 
 (defparameter *small-files*
-  '("axiom-domains/opttel-adl-derived/p01.pddl"
+  '("researchers-domain/p07.pddl"
+    "axiom-domains/opttel-adl-derived/p01.pddl"
     #+(or) "axiom-domains/opttel-strips-derived/p01.pddl"       ; FD is too slow
     "axiom-domains/philosophers-adl-derived/p01.pddl"
     #+(or) "axiom-domains/philosophers-strips-derived/p01.pddl" ; FD is too slow
