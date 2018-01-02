@@ -23,12 +23,6 @@
 
 ;; run test with (run! test-name) 
 
-(defvar *problems*
-  (iter (for p in (directory (asdf:system-relative-pathname :strips #p"*/*/*.pddl")))
-        (match p
-          ((pathname :name (guard name (not (search "domain" name :from-end t))))
-           (collecting p result-type vector)))))
-
 (defun test-condition (c objects predicates)
   (ematch c
     ((or `(not (,name ,@args))
@@ -51,7 +45,7 @@
     (let ((*package* (find-package :cl-user)))
       (parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))))
 
-  (for-all ((p (lambda () (random-elt *problems*))))
+  (for-all ((p (lambda () (random-elt *small-files*))))
     (let (parsed)
       (finishes
         (setf parsed (parse p)))
@@ -447,19 +441,6 @@
 
 (in-suite grounding)
 
-(defun num-operator-fd (p &optional (d (strips::find-domain p)))
-  (format t "~&Testing FD grounding, without invariant synthesis")
-  (read-from-string
-   (uiop:run-program `("sh" "-c"
-                            ,(print (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
-                                            (strips::%rel "downward/src/translate/translate.py") d p)))
-                     :output :string)))
-
-(defun num-operator-ours (p &optional (d (strips::find-domain p)))
-  (format t "~&Testing prolog-based grounding, without invariant synthesis")
-  (with-test-ground (parse p d)
-    (length ops)))
-
 (defmacro with-timing (form)
   (with-gensyms (start)
     `(let ((,start (get-internal-real-time)))
@@ -467,13 +448,56 @@
                (/ (float (- (get-internal-real-time) ,start))
                   internal-time-units-per-second)))))
 
+(defun num-operator-fd (p &optional (d (strips::find-domain p)))
+  (format t "~&Testing FD grounding, without invariant synthesis~%")
+  (with-timing
+    (handler-case
+      (bt:with-timeout (120)
+        (let ((command (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
+                               (strips::%rel "downward/src/translate/translate.py") d p)))
+          (write-string command *trace-output*)
+          (terpri *trace-output*)
+          (read-from-string
+           (uiop:run-program `("sh" "-c" ,command)
+                             :output :string))))
+      (bt:timeout ()
+        nil))))
+
+(defun num-operator-ours (p &optional (d (strips::find-domain p)))
+  (format t "~&Testing prolog-based grounding, without invariant synthesis~%")
+  (with-timing
+    (handler-case
+      (bt:with-timeout (120)
+        (with-test-ground (parse p d)
+          (length ops)))
+      (bt:timeout ()
+        nil))))
+
 (defparameter *small-files*
-  '("axiom-domains/opttel-adl-derived/p01.pddl"
+  '("researchers-domain/p07.pddl"
+    "axiom-domains/opttel-adl-derived/p01.pddl"
     #+(or) "axiom-domains/opttel-strips-derived/p01.pddl"       ; FD is too slow
     "axiom-domains/philosophers-adl-derived/p01.pddl"
     #+(or) "axiom-domains/philosophers-strips-derived/p01.pddl" ; FD is too slow
     "axiom-domains/psr-middle-adl-derived/p01.pddl"             ; ours < fd with negative preconditions
     #+(or) "axiom-domains/psr-middle-strips-derived/p01.pddl"   ; FD is too slow
+    "ipc2006-optsat/openstacks/p01.pddl"
+    "ipc2006-optsat/pathways/p01.pddl"
+    "ipc2006-optsat/pipesworld/p01.pddl"
+    "ipc2006-optsat/rovers/p01.pddl"
+    ;; "ipc2006-optsat/storage/p01.pddl" ; EITHER type
+    "ipc2006-optsat/tpp/p01.pddl"
+    "ipc2006-optsat/trucks/p01.pddl"
+
+    "ipc2008-opt/elevators-opt08/p01.pddl"
+    "ipc2008-opt/openstacks-opt08/p01.pddl"
+    "ipc2008-opt/parcprinter-opt08/p01.pddl"
+    "ipc2008-opt/pegsol-opt08/p01.pddl"
+    "ipc2008-opt/scanalyzer-opt08/p01.pddl"
+    "ipc2008-opt/sokoban-opt08/p01.pddl"
+    "ipc2008-opt/transport-opt08/p01.pddl"
+    "ipc2008-opt/woodworking-opt08/p01.pddl"
+
     "ipc2011-opt/barman-opt11/p01.pddl"
     "ipc2011-opt/elevators-opt11/p01.pddl"
     "ipc2011-opt/floortile-opt11/p01.pddl"
@@ -503,7 +527,62 @@
     "ipc2014-agl/transport-agl14/p01.pddl"
     "ipc2014-agl/visitall-agl14/p01.pddl"))
 
-(test num-operator
+(defparameter *middle-files*
+  '("axiom-domains/opttel-adl-derived/p10.pddl"
+    #+(or) "axiom-domains/opttel-strips-derived/p10.pddl"       ; FD is too slow
+    "axiom-domains/philosophers-adl-derived/p10.pddl"
+    #+(or) "axiom-domains/philosophers-strips-derived/p10.pddl" ; FD is too slow
+    "axiom-domains/psr-middle-adl-derived/p10.pddl"             ; ours < fd with negative preconditions
+    #+(or) "axiom-domains/psr-middle-strips-derived/p10.pddl"   ; FD is too slow
+    "ipc2006-optsat/openstacks/p10.pddl"
+    "ipc2006-optsat/pathways/p10.pddl"
+    "ipc2006-optsat/pipesworld/p10.pddl"
+    "ipc2006-optsat/rovers/p10.pddl"
+    ;; "ipc2006-optsat/storage/p10.pddl" ; EITHER type
+    "ipc2006-optsat/tpp/p10.pddl"
+    "ipc2006-optsat/trucks/p10.pddl"
+
+    "ipc2008-opt/elevators-opt08/p10.pddl"
+    "ipc2008-opt/openstacks-opt08/p10.pddl"
+    "ipc2008-opt/parcprinter-opt08/p10.pddl"
+    "ipc2008-opt/pegsol-opt08/p10.pddl"
+    "ipc2008-opt/scanalyzer-opt08/p10.pddl"
+    "ipc2008-opt/sokoban-opt08/p10.pddl"
+    "ipc2008-opt/transport-opt08/p10.pddl"
+    "ipc2008-opt/woodworking-opt08/p10.pddl"
+
+    "ipc2011-opt/barman-opt11/p10.pddl"
+    "ipc2011-opt/elevators-opt11/p10.pddl"
+    "ipc2011-opt/floortile-opt11/p10.pddl"
+    "ipc2011-opt/nomystery-opt11/p10.pddl"
+    "ipc2011-opt/openstacks-opt11/p10.pddl"
+    "ipc2011-opt/parcprinter-opt11/p10.pddl"
+    "ipc2011-opt/parking-opt11/p10.pddl"
+    "ipc2011-opt/pegsol-opt11/p10.pddl"
+    "ipc2011-opt/scanalyzer-opt11/p10.pddl"
+    "ipc2011-opt/sokoban-opt11/p10.pddl"
+    "ipc2011-opt/tidybot-opt11/p10.pddl" ; ours < fd with negative preconditions
+    "ipc2011-opt/transport-opt11/p10.pddl"
+    "ipc2011-opt/visitall-opt11/p10.pddl"
+    "ipc2011-opt/woodworking-opt11/p10.pddl"
+    "ipc2014-agl/barman-agl14/p10.pddl"
+    "ipc2014-agl/cavediving-agl14/p10.pddl"
+    "ipc2014-agl/childsnack-agl14/p10.pddl"
+    "ipc2014-agl/citycar-agl14/p10.pddl"
+    "ipc2014-agl/floortile-agl14/p10.pddl"
+    "ipc2014-agl/ged-agl14/p10.pddl"
+    "ipc2014-agl/hiking-agl14/p10.pddl"
+    "ipc2014-agl/maintenance-agl14/p10.pddl"
+    "ipc2014-agl/openstacks-agl14/p10.pddl"
+    "ipc2014-agl/parking-agl14/p10.pddl"
+    "ipc2014-agl/tetris-agl14/p10.pddl"
+    "ipc2014-agl/thoughtful-agl14/p10.pddl"
+    "ipc2014-agl/transport-agl14/p10.pddl"
+    "ipc2014-agl/visitall-agl14/p10.pddl"))
+
+(defun test-num-operators (files)
+  (setf (cl-rlimit:rlimit cl-rlimit:+rlimit-address-space+) 8000000000)
+                          
   (setf *kernel* (make-kernel 2 :bindings `((*standard-output* . ,*standard-output*)
                                             (*error-output* . ,*error-output*)
                                             (*trace-output* . ,*trace-output*))))
@@ -512,55 +591,57 @@
         (op>-time< 0) (op>-time> 0) (op>-time= 0)
         (fd-total 0)
         (ours-total 0))
-    (dolist (p *small-files*)
+    (dolist (p files)
       (format t "~&~%##### Testing ~a" p)
-      (let ((d (strips::find-domain p)))
-        (plet (((fd time-fd)
-                (with-timing
-                    (read-from-string
-                     (uiop:run-program `("sh" "-c"
-                                              ,(format nil "~a ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
-                                                       (strips::%rel "downward/src/translate/translate.py") d p))
-                                       :output :string))))
-               ((ours time-ours)
-                (with-timing
-                    (with-test-ground (time (parse p d))
-                      (length ops)))))
-          (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
-          (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
-          (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
-          (cond
-            ((= fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                             (incf op=-time=)
-                             (if (< time-fd time-ours)
-                                 (incf op=-time<)
-                                 (incf op=-time>))))
-            ((< fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                             (incf op<-time=)
-                             (if (< time-fd time-ours)
-                                 (incf op<-time<)
-                                 (incf op<-time>))))
-            ((> fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                             (incf op>-time=)
-                             (if (< time-fd time-ours)
-                                 (incf op>-time<)
-                                 (incf op>-time>)))))
-          (incf fd-total time-fd)
-          (incf ours-total time-ours)
-          (format t "
+      (plet (((fd time-fd) (num-operator-fd p))
+             ((ours time-ours) (num-operator-ours p)))
+        (match* (fd ours)
+          (((number) (number))
+           (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
+           (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
+           (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
+           (cond
+             ((= fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                              (incf op=-time=)
+                              (if (< time-fd time-ours)
+                                  (incf op=-time<)
+                                  (incf op=-time>))))
+             ((< fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                              (incf op<-time=)
+                              (if (< time-fd time-ours)
+                                  (incf op<-time<)
+                                  (incf op<-time>))))
+             ((> fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                              (incf op>-time=)
+                              (if (< time-fd time-ours)
+                                  (incf op>-time<)
+                                  (incf op>-time>)))))
+           (incf fd-total time-fd)
+           (incf ours-total time-ours)
+           (format t "
 Runtime total: FD: ~a OURS: ~a
 ~{~{~13a~}~%~}"
-                  fd-total ours-total
-                  `((------- FD-wins    ours-wins  diff<1 sum)
-                    (same-op ,op=-time< ,op=-time> ,op=-time= ,(+ op=-time< op=-time> op=-time=))
-                    (more-op ,op<-time< ,op<-time> ,op<-time= ,(+ op<-time< op<-time> op<-time=))
-                    (less-op ,op>-time< ,op>-time> ,op>-time= ,(+ op>-time< op>-time> op>-time=))
-                    (sum     ,(+ op=-time< op<-time< op>-time<)
-                             ,(+ op=-time> op<-time> op>-time>)
-                             ,(+ op=-time= op<-time= op>-time=)
-                             ,(+ (+ op=-time< op=-time> op=-time=)
-                                 (+ op<-time< op<-time> op<-time=)
-                                 (+ op>-time< op>-time> op>-time=))))))))))
+                   fd-total ours-total
+                   `((------- FD-wins    ours-wins  diff<1 sum)
+                     (same-op ,op=-time< ,op=-time> ,op=-time= ,(+ op=-time< op=-time> op=-time=))
+                     (more-op ,op<-time< ,op<-time> ,op<-time= ,(+ op<-time< op<-time> op<-time=))
+                     (less-op ,op>-time< ,op>-time> ,op>-time= ,(+ op>-time< op>-time> op>-time=))
+                     (sum     ,(+ op=-time< op<-time< op>-time<)
+                              ,(+ op=-time> op<-time> op>-time>)
+                              ,(+ op=-time= op<-time= op>-time=)
+                              ,(+ (+ op=-time< op=-time> op=-time=)
+                                  (+ op<-time< op<-time> op<-time=)
+                                  (+ op>-time< op>-time> op>-time=))))))
+          (((number) _)
+           (fail "On problem ~a, fd returned ~a ops in ~a sec, ours failed" p fd time-fd))
+          ((_ (number))
+           (pass "On problem ~a, ours returned ~a ops in ~a sec, fd failed" p ours time-ours)))))))
+
+(test num-operator-small
+  (test-num-operators *small-files*))
+
+(test num-operator-middle
+  (test-num-operators *middle-files*))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
@@ -600,6 +681,7 @@ Runtime total: FD: ~a OURS: ~a
 
 (defparameter *timeout* 60)
 
+#+(or)
 (test can-load-large-file
   (iter (for file in *large-files*)
         (handler-case
