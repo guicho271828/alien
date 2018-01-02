@@ -524,7 +524,7 @@
     "ipc2014-agl/transport-agl14/p01.pddl"
     "ipc2014-agl/visitall-agl14/p01.pddl"))
 
-(test num-operator
+(defun test-num-operators (files)
   (setf *kernel* (make-kernel 2 :bindings `((*standard-output* . ,*standard-output*)
                                             (*error-output* . ,*error-output*)
                                             (*trace-output* . ,*trace-output*))))
@@ -533,7 +533,7 @@
         (op>-time< 0) (op>-time> 0) (op>-time= 0)
         (fd-total 0)
         (ours-total 0))
-    (dolist (p *small-files*)
+    (dolist (p files)
       (format t "~&~%##### Testing ~a" p)
       (plet (((fd time-fd) (num-operator-fd p))
              ((ours time-ours) (num-operator-ours p)))
@@ -572,6 +572,9 @@ Runtime total: FD: ~a OURS: ~a
                            ,(+ (+ op=-time< op=-time> op=-time=)
                                (+ op<-time< op<-time> op<-time=)
                                (+ op>-time< op>-time> op>-time=)))))))))
+
+(test num-operator-small
+  (test-num-operators *small-files*))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
