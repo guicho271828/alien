@@ -15,3 +15,6 @@
 [submodule "ipc2006-optsat"]
 	path = ipc2006-optsat
 	url = https://github.com/guicho271828/ipc2006-optsat.git
+[submodule "ipc2008-opt"]
+	path = ipc2008-opt
+	url = https://github.com/guicho271828/ipc2008-opt.git
