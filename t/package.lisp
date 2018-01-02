@@ -23,12 +23,6 @@
 
 ;; run test with (run! test-name) 
 
-(defvar *problems*
-  (iter (for p in (directory (asdf:system-relative-pathname :strips #p"*/*/*.pddl")))
-        (match p
-          ((pathname :name (guard name (not (search "domain" name :from-end t))))
-           (collecting p result-type vector)))))
-
 (defun test-condition (c objects predicates)
   (ematch c
     ((or `(not (,name ,@args))
@@ -51,7 +45,7 @@
     (let ((*package* (find-package :cl-user)))
       (parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))))
 
-  (for-all ((p (lambda () (random-elt *problems*))))
+  (for-all ((p (lambda () (random-elt *small-files*))))
     (let (parsed)
       (finishes
         (setf parsed (parse p)))
