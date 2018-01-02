@@ -670,6 +670,7 @@ Runtime total: FD: ~a OURS: ~a
 
 (defparameter *timeout* 60)
 
+#+(or)
 (test can-load-large-file
   (iter (for file in *large-files*)
         (handler-case
