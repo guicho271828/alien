@@ -441,6 +441,13 @@
 
 (in-suite grounding)
 
+(defmacro with-timing (form)
+  (with-gensyms (start)
+    `(let ((,start (get-internal-real-time)))
+       (values ,form
+               (/ (float (- (get-internal-real-time) ,start))
+                  internal-time-units-per-second)))))
+
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis")
   (with-timing
@@ -459,13 +466,6 @@
       (bt:with-timeout (120)
         (with-test-ground (parse p d)
           (length ops))))))
-
-(defmacro with-timing (form)
-  (with-gensyms (start)
-    `(let ((,start (get-internal-real-time)))
-       (values ,form
-               (/ (float (- (get-internal-real-time) ,start))
-                  internal-time-units-per-second)))))
 
 (defparameter *small-files*
   '("researchers-domain/p07.pddl"
