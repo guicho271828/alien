@@ -449,18 +449,20 @@
                   internal-time-units-per-second)))))
 
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
-  (format t "~&Testing FD grounding, without invariant synthesis")
+  (format t "~&Testing FD grounding, without invariant synthesis~%")
   (with-timing
     (ignore-errors
       (bt:with-timeout (120)
-        (read-from-string
-         (uiop:run-program `("sh" "-c"
-                                  ,(print (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
-                                                  (strips::%rel "downward/src/translate/translate.py") d p)))
-                           :output :string))))))
+        (let ((command (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
+                               (strips::%rel "downward/src/translate/translate.py") d p)))
+          (write-string command *trace-output*)
+          (terpri *trace-output*)
+          (read-from-string
+           (uiop:run-program `("sh" "-c" ,command)
+                             :output :string)))))))
 
 (defun num-operator-ours (p &optional (d (strips::find-domain p)))
-  (format t "~&Testing prolog-based grounding, without invariant synthesis")
+  (format t "~&Testing prolog-based grounding, without invariant synthesis~%")
   (with-timing
     (ignore-errors
       (bt:with-timeout (120)
