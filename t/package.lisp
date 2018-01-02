@@ -524,6 +524,59 @@
     "ipc2014-agl/transport-agl14/p01.pddl"
     "ipc2014-agl/visitall-agl14/p01.pddl"))
 
+(defparameter *middle-files*
+  '("axiom-domains/opttel-adl-derived/p10.pddl"
+    #+(or) "axiom-domains/opttel-strips-derived/p10.pddl"       ; FD is too slow
+    "axiom-domains/philosophers-adl-derived/p10.pddl"
+    #+(or) "axiom-domains/philosophers-strips-derived/p10.pddl" ; FD is too slow
+    "axiom-domains/psr-middle-adl-derived/p10.pddl"             ; ours < fd with negative preconditions
+    #+(or) "axiom-domains/psr-middle-strips-derived/p10.pddl"   ; FD is too slow
+    "ipc2006-optsat/openstacks/p10.pddl"
+    "ipc2006-optsat/pathways/p10.pddl"
+    "ipc2006-optsat/pipesworld/p10.pddl"
+    "ipc2006-optsat/rovers/p10.pddl"
+    ;; "ipc2006-optsat/storage/p10.pddl" ; EITHER type
+    "ipc2006-optsat/tpp/p10.pddl"
+    "ipc2006-optsat/trucks/p10.pddl"
+
+    "ipc2008-opt/elevators-opt08/p10.pddl"
+    "ipc2008-opt/openstacks-opt08/p10.pddl"
+    "ipc2008-opt/parcprinter-opt08/p10.pddl"
+    "ipc2008-opt/pegsol-opt08/p10.pddl"
+    "ipc2008-opt/scanalyzer-opt08/p10.pddl"
+    "ipc2008-opt/sokoban-opt08/p10.pddl"
+    "ipc2008-opt/transport-opt08/p10.pddl"
+    "ipc2008-opt/woodworking-opt08/p10.pddl"
+
+    "ipc2011-opt/barman-opt11/p10.pddl"
+    "ipc2011-opt/elevators-opt11/p10.pddl"
+    "ipc2011-opt/floortile-opt11/p10.pddl"
+    "ipc2011-opt/nomystery-opt11/p10.pddl"
+    "ipc2011-opt/openstacks-opt11/p10.pddl"
+    "ipc2011-opt/parcprinter-opt11/p10.pddl"
+    "ipc2011-opt/parking-opt11/p10.pddl"
+    "ipc2011-opt/pegsol-opt11/p10.pddl"
+    "ipc2011-opt/scanalyzer-opt11/p10.pddl"
+    "ipc2011-opt/sokoban-opt11/p10.pddl"
+    "ipc2011-opt/tidybot-opt11/p10.pddl" ; ours < fd with negative preconditions
+    "ipc2011-opt/transport-opt11/p10.pddl"
+    "ipc2011-opt/visitall-opt11/p10.pddl"
+    "ipc2011-opt/woodworking-opt11/p10.pddl"
+    "ipc2014-agl/barman-agl14/p10.pddl"
+    "ipc2014-agl/cavediving-agl14/p10.pddl"
+    "ipc2014-agl/childsnack-agl14/p10.pddl"
+    "ipc2014-agl/citycar-agl14/p10.pddl"
+    "ipc2014-agl/floortile-agl14/p10.pddl"
+    "ipc2014-agl/ged-agl14/p10.pddl"
+    "ipc2014-agl/hiking-agl14/p10.pddl"
+    "ipc2014-agl/maintenance-agl14/p10.pddl"
+    "ipc2014-agl/openstacks-agl14/p10.pddl"
+    "ipc2014-agl/parking-agl14/p10.pddl"
+    "ipc2014-agl/tetris-agl14/p10.pddl"
+    "ipc2014-agl/thoughtful-agl14/p10.pddl"
+    "ipc2014-agl/transport-agl14/p10.pddl"
+    "ipc2014-agl/visitall-agl14/p10.pddl"))
+
 (defun test-num-operators (files)
   (setf *kernel* (make-kernel 2 :bindings `((*standard-output* . ,*standard-output*)
                                             (*error-output* . ,*error-output*)
@@ -575,6 +628,9 @@ Runtime total: FD: ~a OURS: ~a
 
 (test num-operator-small
   (test-num-operators *small-files*))
+
+(test num-operator-middle
+  (test-num-operators *middle-files*))
 
 (defparameter *large-files*
   '("axiom-domains/opttel-adl-derived/p48.pddl"
