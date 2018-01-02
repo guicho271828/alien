@@ -578,6 +578,8 @@
     "ipc2014-agl/visitall-agl14/p10.pddl"))
 
 (defun test-num-operators (files)
+  (setf (cl-rlimit:rlimit cl-rlimit:+rlimit-address-space+) 8000000000)
+                          
   (setf *kernel* (make-kernel 2 :bindings `((*standard-output* . ,*standard-output*)
                                             (*error-output* . ,*error-output*)
                                             (*trace-output* . ,*trace-output*))))
