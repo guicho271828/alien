@@ -443,6 +443,7 @@ and also orders the terms by 'structure ordering' --- e.g.
                        ,@(negative-conditions-satisfiable body)))))
 
            ;; prove the negation of the body, (not (and body...)) = (or (not body)...)
+           #+(or)
            (when body
              (let ((neg-body (mapcar (compose #'to-nnf #'negate) body)))
                (register-deleted
@@ -464,12 +465,11 @@ and also orders the terms by 'structure ordering' --- e.g.
 (defun negative-conditions-satisfiable (conditions)
   (iter (for p in conditions)
         (when (negative p)
-          (collecting
-           (let ((atom (second p)))
-             (if (axiom-p atom)
-                 (normalize-del-term atom)
-                 `(or (not ,(normalize-init-term atom))
-                      ,(normalize-del-term atom))))))))
+          (let ((atom (second p)))
+            (unless (axiom-p atom)
+              (collecting
+               `(or (not ,(normalize-init-term atom))
+                    ,(normalize-del-term atom))))))))
 
 (defun %ground (&optional debug)
   (run-prolog
