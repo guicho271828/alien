@@ -42,6 +42,7 @@
    #:ground
    #:*monotonicity*
    #:with-parsed-information2
-   #:easy-invariant))
+   #:easy-invariant
+   #:*enable-no-op-pruning*))
 
 (setf trivia:*arity-check-by-test-call* nil)

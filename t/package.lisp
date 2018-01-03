@@ -429,15 +429,41 @@
     (is-true (mem '((a o2) (0)) ops))))
 
 (test relaxed-reachability5
-  (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
-    (is (= 286 (length ops)))))
+  (let (ops-with ops-without)
+    (let ((*enable-no-op-pruning* nil))
+      (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
+        (is (= 286 (length ops)))
+        (setf ops-without ops)))
+    (let ((*enable-no-op-pruning* t))
+      (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
+        ;; (is (= 286 (length ops)))
+        (setf ops-with ops)))
+    (is-true (set-equal ops-without ops-with :test 'equal))))
 
 (test relaxed-reachability6
-  (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
-    (print (length facts))
-    (print (length ops))
-    (print (length axioms))
-    (is (= 616 (length ops)))))
+  (let (ops-with ops-without)
+    (let ((*enable-no-op-pruning* nil))
+      (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
+        (is (= 616 (length ops)))
+        (setf ops-without ops)))
+    (let ((*enable-no-op-pruning* t))
+      (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
+        ;; (is (= 286 (length ops)))
+        (setf ops-with ops)))
+    (is-true (set-equal ops-without ops-with :test 'equal))))
+
+(test relaxed-reachability-noop
+  (let (ops-fd ops-with ops-without)
+    (setf ops-fd (num-operator-fd (%rel "check/rovers-noop/p01.pddl")))
+    (let ((*enable-no-op-pruning* nil))
+      (with-test-ground (parse (%rel "check/rovers-noop/p01.pddl"))
+        ;; (print ops)
+        (is (/= ops-fd (length ops)))
+        (setf ops-without ops)))
+    (let ((*enable-no-op-pruning* t))
+      (with-test-ground (parse (%rel "check/rovers-noop/p01.pddl"))
+        (is (= ops-fd (length ops)))
+        (setf ops-with ops)))))
 
 (in-suite grounding)
 
