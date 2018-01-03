@@ -77,3 +77,6 @@
      nil)
     ((plist :precondition `(and ,@precond))
      (some (conjoin #'positive #'never-true-p) precond))))
+
+(defun axiom-p (p) (find (first p) *axioms* :key #'caadr))
+
