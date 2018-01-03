@@ -23,6 +23,7 @@
  :components ((:module "preprocess"
                        :components ((:file "package")
                                     (:file "util")
+                                    (:file "specials")
                                     (:file "2-translate")
                                     (:module "lib"
                                              :components ((:file "equivalence")))
