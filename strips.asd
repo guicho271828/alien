@@ -18,7 +18,8 @@
               :cl-prolog2.swi
               :cl-prolog2.yap
               :cl-prolog2.bprolog
-              :cl-rlimit)
+              :cl-rlimit
+              :cl-cpus)
  :serial t
  :components ((:module "preprocess"
                        :components ((:file "package")
