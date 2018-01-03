@@ -46,6 +46,10 @@
    #:*enable-no-op-pruning*
    #:*enable-negative-precondition-pruning-for-fluents*
    #:*enable-negative-precondition-pruning-for-axioms*
-   #:*enable-negative-precondition-pruning*))
+   #:*enable-negative-precondition-pruning*
+   #:with-parsed-information3
+   #:*ground-axioms*
+   #:*facts*
+   #:*ops*))
 
 (setf trivia:*arity-check-by-test-call* nil)

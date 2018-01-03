@@ -286,7 +286,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                           (when (added-p p)
                             (collecting
                              `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
-            (write ":axioms\\n")
+            (write ":ground-axioms\\n")
             (wrap
              (and ,@(iter (for a in *axioms*)
                           (ematch a
