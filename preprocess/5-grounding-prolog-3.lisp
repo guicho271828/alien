@@ -287,10 +287,16 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                           (when (added-p p)
                             (collecting
                              `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
+            (write ":axioms\\n")
+            (wrap
+             (and ,@(iter (for a in *axioms*)
+                          (ematch a
+                            ((list :derived p _)
+                             (collecting
+                              `(forall ,(normalize-fact-term p) (print-sexp ,p))))))))
             (write ":ops\\n")
             (wrap
              (and ,@(iter (for a in *actions*)
-                          (when (never-applicable-p a) (next-iteration))
                           (ematch a
                             ((plist :action name
                                     :parameters params)
@@ -370,7 +376,6 @@ and also orders the terms by 'structure ordering' --- e.g.
 
 (defun register-ops ()
   (iter (for a in *actions*)
-        (when (never-applicable-p a) (next-iteration))
         (ematch a
           ((plist :action name
                   :parameters params
@@ -425,7 +430,6 @@ and also orders the terms by 'structure ordering' --- e.g.
 
 (defun register-axioms ()
   (iter (for a in *axioms*)
-        (when (never-applicable-p a) (next-iteration))
         (ematch a
           ((list :derived `(,name ,@params) `(and ,@body))
            (if (and (null body) (null params))

@@ -46,37 +46,56 @@
                           (`(forall ,_ (when ,_ ,atom))
                             (when (and (negative atom) (eq p-name (caadr atom)))
                               (return-from outer t))))))))))
-    (ematch* ((or add axiom) del)
-      ((t t) :generic)
-      ((t nil) :monotonic+)
-      ((nil t) :monotonic-)
-      ((nil nil) :static))))
+    (ematch* (axiom add del)
+      ((t   nil nil) :axiom)
+      ((nil t   t  ) :generic)
+      ((nil t   nil) :monotonic+)
+      ((nil nil t  ) :monotonic-)
+      ((nil nil nil) :static))))
 
 (defvar *monotonicity*)
 
-(defun generic-p (p) (member (first p) (getf *monotonicity* :generic)))
-(defun monotonic+p (p) (member (first p) (getf *monotonicity* :monotonic+)))
-(defun monotonic-p (p) (member (first p) (getf *monotonicity* :monotonic-)))
-(defun static-p (p) (member (first p) (getf *monotonicity* :static)))
+(defun generic-p (p)
+  "Lifted Predicate p is added and deleted by some actions"
+  (member (first p) (getf *monotonicity* :generic)))
+(defun monotonic+p (p)
+  "Lifted predicate p is only added by actions"
+  (member (first p) (getf *monotonicity* :monotonic+)))
+(defun monotonic-p (p)
+  "Lifted predicate p is only deleted by actions"
+  (member (first p) (getf *monotonicity* :monotonic-)))
+(defun static-p (p)
+  "Lifted predicate p is never added nor deleted by actions"
+  (member (first p) (getf *monotonicity* :static)))
 
-(defun added-p (p) (or (generic-p p) (monotonic+p p)))
-(defun deleted-p (p) (or (generic-p p) (monotonic-p p)))
+(defun axiom-p (p)
+  "Lifted predicate p is an axiom"
+  (member (first p) (getf *monotonicity* :axiom)))
 
-(defun in-init-p (p) (member (first p) *init* :key #'car))
+(defun added-p (p)
+  "Lifted Predicate p is added by some actions"
+  (or (generic-p p) (monotonic+p p)))
+(defun deleted-p (p)
+  "Lifted Predicate p is deleted by some actions"
+  (or (generic-p p) (monotonic-p p)))
 
-(defun never-true-p (p) (and (not (in-init-p p)) (not (added-p p))))
+;; (defun in-init-p (p) (member (first p) *init* :key #'car))
 
-(defun could-become-true-p (p) (not (never-true-p p)))
+;; (defun never-true-p (p)
+;;   "Lifted predicate p is always false"
+;;   (if (axiom-p p)
+;;       nil
+;;       (and (not (in-init-p p)) (not (added-p p)))))
 
 ;; easy operator invariants
-(defun never-applicable-p (a)
-  (ematch a
-    ((list :derived _ `(and ,@body))
-     (some (conjoin #'positive #'never-true-p) body))
-    ((plist :precondition nil)
-     nil)
-    ((plist :precondition `(and ,@precond))
-     (some (conjoin #'positive #'never-true-p) precond))))
+;; (defun never-applicable-p (a)
+;;   (ematch a
+;;     ((list :derived _ `(and ,@body))
+;;      (some (conjoin #'positive #'never-true-p) body))
+;;     ((plist :precondition nil)
+;;      nil)
+;;     ((plist :precondition `(and ,@precond))
+;;      (some (conjoin #'positive #'never-true-p) precond))))
 
-(defun axiom-p (p) (find (first p) *axioms* :key #'caadr))
+
 
