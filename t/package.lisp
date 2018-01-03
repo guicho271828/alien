@@ -466,65 +466,71 @@
         (setf ops-with ops)))))
 
 (test relaxed-reachability7 ; initially true vs false predicates which are never deleted
-  (with-test-ground (strips::parse1
-                     '(define (domain d)
-                       (:requirements :strips :typing)
-                       (:predicates (p ?x) (q ?x))
-                       (:action a :parameters (?x) :precondition (and (not (p ?x))) :effect (q ?x)))
-                     '(define (problem p)
-                       (:domain d)
-                       (:objects a b)
-                       (:init (p a))
-                       (:goal (and))))
-    (is-true (not (mem '(q a) facts)))
-    (is-true (mem '(q b) facts))))
+  (let ((*enable-negative-precondition-pruning-for-fluents* t))
+    (with-test-ground (strips::parse1
+                       '(define (domain d)
+                         (:requirements :strips :typing)
+                         (:predicates (p ?x) (q ?x))
+                         (:action a :parameters (?x) :precondition (and (not (p ?x))) :effect (q ?x)))
+                       '(define (problem p)
+                         (:domain d)
+                         (:objects a b)
+                         (:init (p a))
+                         (:goal (and))))
+      (is-true (not (mem '(q a) facts)))
+      (is-true (mem '(q b) facts)))))
 
 (test relaxed-reachability8 ; initially true predicates which can be deleted vs which is never deleted
-  (with-test-ground (strips::parse1
-                     '(define (domain d)
-                       (:requirements :strips :typing)
-                       (:predicates (p ?x) (q ?x) (r ?x))
-                       (:action a :parameters (?x) :precondition (not (p ?x)) :effect (q ?x))
-                       (:action a :parameters (?x) :precondition (r ?x)       :effect (not (p ?x))))
-                     '(define (problem p)
-                       (:domain d)
-                       (:objects a b)
-                       (:init (p a) (p b) (r b))
-                       (:goal (and))))
-    (is-true (not (mem '(q a) facts)))
-    (is-true (mem '(q b) facts))))
+  (let ((*enable-negative-precondition-pruning-for-fluents* t))
+    (with-test-ground (strips::parse1
+                       '(define (domain d)
+                         (:requirements :strips :typing)
+                         (:predicates (p ?x) (q ?x) (r ?x))
+                         (:action a :parameters (?x) :precondition (not (p ?x)) :effect (q ?x))
+                         (:action a :parameters (?x) :precondition (r ?x)       :effect (not (p ?x))))
+                       '(define (problem p)
+                         (:domain d)
+                         (:objects a b)
+                         (:init (p a) (p b) (r b))
+                         (:goal (and))))
+      (is-true (not (mem '(q a) facts)))
+      (is-true (mem '(q b) facts)))))
 
 (test relaxed-reachability9 ; axioms that can become true vs cannot become true
-  (with-test-ground (strips::parse1
-                     '(define (domain d)
-                       (:requirements :strips :typing)
-                       (:predicates (p ?x) (q ?x) (axiom ?x))
-                       (:action a :parameters (?x) :precondition (and (not (axiom ?x))) :effect (q ?x))
-                       (:derived (axiom ?x) (p ?x)))
-                     ;; if (p ?x) can be negative, then (axiom ?x) can also be negative
-                     '(define (problem p)
-                       (:domain d)
-                       (:objects a b)
-                       (:init (p a))
-                       (:goal (and))))
-    (is-true (not (mem '(q a) facts)))  ; (p a) is initially true, never deleted, thus (axiom ?x) is always true
-    (is-true (mem '(q b) facts))))      ; (p b) is initially false, thus (axiom ?x) can become true
+  (let ((*enable-negative-precondition-pruning-for-axioms* t)
+        (*enable-negative-precondition-pruning-for-fluents* t))
+    (with-test-ground (strips::parse1
+                       '(define (domain d)
+                         (:requirements :strips :typing)
+                         (:predicates (p ?x) (q ?x) (axiom ?x))
+                         (:action a :parameters (?x) :precondition (and (not (axiom ?x))) :effect (q ?x))
+                         (:derived (axiom ?x) (p ?x)))
+                       ;; if (p ?x) can be negative, then (axiom ?x) can also be negative
+                       '(define (problem p)
+                         (:domain d)
+                         (:objects a b)
+                         (:init (p a))
+                         (:goal (and))))
+      (is-true (not (mem '(q a) facts)))  ; (p a) is initially true, never deleted, thus (axiom ?x) is always true
+      (is-true (mem '(q b) facts)))))     ; (p b) is initially false, thus (axiom ?x) can become true
 
 (test relaxed-reachability10 ; axioms that can become true vs cannot become true
-  (with-test-ground (strips::parse1
-                     '(define (domain d)
-                       (:requirements :strips :typing)
-                       (:predicates (p ?x) (q ?x) (axiom ?x) (r ?x))
-                       (:action a :parameters (?x) :precondition (and (not (axiom ?x))) :effect (q ?x))
-                       (:action a :parameters (?x) :precondition (r ?x)                 :effect (not (p ?x)))
-                       (:derived (axiom ?x) (p ?x)))
-                     '(define (problem p)
-                       (:domain d)
-                       (:objects a b)
-                       (:init (p a) (p b) (r b))
-                       (:goal (and))))
-    (is-true (not (mem '(q a) facts)))
-    (is-true (mem '(q b) facts))))
+  (let ((*enable-negative-precondition-pruning-for-axioms* t)
+        (*enable-negative-precondition-pruning-for-fluents* t))
+    (with-test-ground (strips::parse1
+                       '(define (domain d)
+                         (:requirements :strips :typing)
+                         (:predicates (p ?x) (q ?x) (axiom ?x) (r ?x))
+                         (:action a :parameters (?x) :precondition (and (not (axiom ?x))) :effect (q ?x))
+                         (:action a :parameters (?x) :precondition (r ?x)                 :effect (not (p ?x)))
+                         (:derived (axiom ?x) (p ?x)))
+                       '(define (problem p)
+                         (:domain d)
+                         (:objects a b)
+                         (:init (p a) (p b) (r b))
+                         (:goal (and))))
+      (is-true (not (mem '(q a) facts)))
+      (is-true (mem '(q b) facts)))))
 
 (in-suite grounding)
 

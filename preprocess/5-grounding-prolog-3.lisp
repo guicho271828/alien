@@ -411,9 +411,10 @@ and also orders the terms by 'structure ordering' --- e.g.
                    (multiple-value-bind (decomposed temporary-rules)
                        (all-relaxed-reachable2 conditions)
                      (mapcar #'register temporary-rules)
-                     (register-deleted
-                      `(:- ,(second atom)
-                           ,(normalize-effect-term `(,name ,@params) i)))
+                     (when *enable-negative-precondition-pruning-for-fluents*
+                       (register-deleted
+                        `(:- ,(second atom)
+                             ,(normalize-effect-term `(,name ,@params) i))))
                      (register-effect
                       `(:- (,name ,@params)
                            ,(normalize-op-term `(,name ,@params))
@@ -443,8 +444,7 @@ and also orders the terms by 'structure ordering' --- e.g.
                        ,@(negative-conditions-satisfiable body)))))
 
            ;; prove the negation of the body, (not (and body...)) = (or (not body)...)
-           #+(or)
-           (when body
+           (when (and *enable-negative-precondition-pruning-for-axioms* body)
              (let ((neg-body (mapcar (compose #'to-nnf #'negate) body)))
                (register-deleted
                 `(:- (,name ,@params)
@@ -463,13 +463,18 @@ and also orders the terms by 'structure ordering' --- e.g.
                      ,@(negative-conditions-satisfiable body)))))))))
 
 (defun negative-conditions-satisfiable (conditions)
-  (iter (for p in conditions)
-        (when (negative p)
-          (let ((atom (second p)))
-            (unless (axiom-p atom)
-              (collecting
-               `(or (not ,(normalize-init-term atom))
-                    ,(normalize-del-term atom))))))))
+  (when *enable-negative-precondition-pruning*
+    (iter (for p in conditions)
+          (when (negative p)
+            (let ((atom (second p)))
+              (if (axiom-p atom)
+                  (when *enable-negative-precondition-pruning-for-axioms*
+                    (collecting
+                     (normalize-del-term atom)))
+                  (when *enable-negative-precondition-pruning-for-fluents*
+                    (collecting
+                     `(or (not ,(normalize-init-term atom))
+                          ,(normalize-del-term atom))))))))))
 
 (defun %ground (&optional debug)
   (run-prolog

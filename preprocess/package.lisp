@@ -43,6 +43,9 @@
    #:*monotonicity*
    #:with-parsed-information2
    #:easy-invariant
-   #:*enable-no-op-pruning*))
+   #:*enable-no-op-pruning*
+   #:*enable-negative-precondition-pruning-for-fluents*
+   #:*enable-negative-precondition-pruning-for-axioms*
+   #:*enable-negative-precondition-pruning*))
 
 (setf trivia:*arity-check-by-test-call* nil)
