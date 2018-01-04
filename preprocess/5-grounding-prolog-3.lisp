@@ -427,6 +427,9 @@ and also orders the terms by 'structure ordering' --- e.g.
                                    (collecting `(object ,p)))
                            ,@(negative-conditions-satisfiable conditions)) i))))))))))
 
+;; note: negated axiom should not exist in the axiom body
+;; See PDDL2.2 paper, p4, third item
+
 (defun register-axioms ()
   (iter (for a in *axioms*)
         (ematch a
