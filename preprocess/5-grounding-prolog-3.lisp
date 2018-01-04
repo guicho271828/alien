@@ -285,7 +285,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
              (and ,@(iter (for p in *predicates*)
                           (when (added-p p)
                             (collecting
-                             `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
+                                `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
+            ;; note: reachable atoms = (union added init) = (union generic monotonic+ init)
             (write ":ground-axioms\\n")
             (wrap
              (and ,@(iter (for a in *axioms*)

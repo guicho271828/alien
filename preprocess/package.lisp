@@ -48,6 +48,8 @@
    #:*enable-negative-precondition-pruning-for-axioms*
    #:*enable-negative-precondition-pruning*
    #:with-parsed-information3
+   #:axiom-layers
+   #:mutex-invariant
    #:*ground-axioms*
    #:*facts*
    #:*ops*))
