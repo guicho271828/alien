@@ -731,6 +731,9 @@ Runtime total: FD: ~a OURS: ~a
 (test num-operator-small
   (test-num-operators *small-files*))
 
+(def-suite :strips.middle)
+(in-suite :strips.middle)
+
 (test num-operator-middle
   (test-num-operators *middle-files*))
 
