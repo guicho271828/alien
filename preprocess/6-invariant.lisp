@@ -43,6 +43,7 @@
              (collecting
                  `(fact ,f)))
      ,@(axiom-layer-rules)
+     (:- (table (/ axiom-layer-over-disjunctions 2)))
      (:- (axiom-layer-over-disjunctions ?i ?predicate)
          (fact ?predicate)
          (findall ?j (axiom-layer ?j ?predicate) ?list)
