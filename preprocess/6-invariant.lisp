@@ -41,7 +41,7 @@
      (:- (style_check (- singleton)))
      ,@(iter (for f in (append (union *init* *facts*) *ground-axioms*))
              (collecting
-                 `(fact ,f)))
+                 `(fact ,(ensure-zeroary-to-atom f))))
      (:- (table (/ axiom-layer 2))) ; this is a suboptimal solution due to the possible SWI bug below
      ,@(axiom-layer-rules)
      ;; this causes an exception "No permission to append findall-bag `0' (continuation in findall/3 generator?)".
@@ -66,13 +66,14 @@
 (defun axiom-layer-rules ()
   (mapcar (lambda-ematch
             (`(:derived ,predicate (and ,@body))
-              `(:- (axiom-layer ,predicate ?i)
+              `(:- (axiom-layer ,(ensure-zeroary-to-atom predicate) ?i)
                    (findall ?j
                             (and
                              ,@(iter (for c in body)
                                      (for ?layer = (gensym "?layer"))
                                      (collecting `(axiom-layer-over-disjunctions
-                                                   ,(if (positive c) c (second c)) ,?layer)
+                                                   ,(ensure-zeroary-to-atom
+                                                     (if (positive c) c (second c))) ,?layer)
                                        into rule-body)
                                      (collecting ?layer
                                        into layer-vars)

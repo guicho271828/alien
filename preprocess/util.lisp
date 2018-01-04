@@ -135,3 +135,8 @@
      t)
     ((list* _)
      nil)))
+
+(defun ensure-zeroary-to-atom (f)
+  (match f
+    ((list x) x)
+    (_ f)))
