@@ -44,9 +44,9 @@
                  `(fact ,f)))
      ,@(axiom-layer-rules)
      (:- (table (/ axiom-layer-over-disjunctions 2)))
-     (:- (axiom-layer-over-disjunctions ?i ?predicate)
+     (:- (axiom-layer-over-disjunctions ?predicate ?i)
          (fact ?predicate)
-         (findall ?j (axiom-layer ?j ?predicate) ?list)
+         (findall ?j (axiom-layer ?predicate ?j) ?list)
          (max_list (list* 0 ?list) ?i))
      ;; 
      ,@(print-sexp :swi t)
@@ -55,7 +55,7 @@
          (call ?goal)
          (write ")"))
      (:- main
-         (wrap (forall (axiom-layer-over-disjunctions ?i ?ga)
+         (wrap (forall (axiom-layer-over-disjunctions ?ga ?i)
                        (and (print-sexp (list ?ga ?i)) nl)))
          halt))
    :swi :args '("-g" "main") :debug debug))
@@ -63,12 +63,13 @@
 (defun axiom-layer-rules ()
   (mapcar (lambda-ematch
             (`(:derived ,predicate (and ,@body))
-              `(:- (axiom-layer ?i ,predicate)
+              `(:- (axiom-layer ,predicate ?i)
                    (findall ?j
                             (and
                              ,@(iter (for c in body)
                                      (for ?layer = (gensym "?layer"))
-                                     (collecting `(axiom-layer-over-disjunctions ,?layer ,(if (positive c) c (second c)))
+                                     (collecting `(axiom-layer-over-disjunctions
+                                                   ,(if (positive c) c (second c)) ,?layer)
                                        into rule-body)
                                      (collecting ?layer
                                        into layer-vars)
