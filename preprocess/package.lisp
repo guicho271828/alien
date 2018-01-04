@@ -46,6 +46,14 @@
    #:*enable-no-op-pruning*
    #:*enable-negative-precondition-pruning-for-fluents*
    #:*enable-negative-precondition-pruning-for-axioms*
-   #:*enable-negative-precondition-pruning*))
+   #:*enable-negative-precondition-pruning*
+   #:with-parsed-information3
+   #:axiom-layers
+   #:mutex-invariant
+   #:*ground-axioms*
+   #:*facts*
+   #:*ops*
+   #:with-parsed-information4
+   #:*axiom-layers*))
 
 (setf trivia:*arity-check-by-test-call* nil)

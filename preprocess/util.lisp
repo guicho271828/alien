@@ -86,6 +86,41 @@
              :actions *actions*)
       ,@body)))
 
+(defmacro with-parsed-information3 (info &body body)
+  "Binds the special variables using INFO, which is a parsed & flattened result of pddl files (see 2-translate.lisp).
+   *types* *objects* *predicates* *init* *goal* *axioms* *actions* "
+  `(match ,info
+     ((plist :facts *facts*
+             :ops *ops*
+             :ground-axioms *ground-axioms*
+             :monotonicity *monotonicity*
+             :type *types*
+             :objects *objects*
+             :predicates *predicates*
+             :init *init*
+             :goal *goal*
+             :axioms *axioms*
+             :actions *actions*)
+      ,@body)))
+
+(defmacro with-parsed-information4 (info &body body)
+  "Binds the special variables using INFO, which is a parsed & flattened result of pddl files (see 2-translate.lisp).
+   *types* *objects* *predicates* *init* *goal* *axioms* *actions* "
+  `(match ,info
+     ((plist :axiom-layers *axiom-layers*
+             :facts *facts*
+             :ops *ops*
+             :ground-axioms *ground-axioms*
+             :monotonicity *monotonicity*
+             :type *types*
+             :objects *objects*
+             :predicates *predicates*
+             :init *init*
+             :goal *goal*
+             :axioms *axioms*
+             :actions *actions*)
+      ,@body)))
+
 (defun positive (form)
   (ematch form
     ((list* (or 'not 'increase) _)
@@ -100,3 +135,8 @@
      t)
     ((list* _)
      nil)))
+
+(defun ensure-zeroary-to-atom (f)
+  (match f
+    ((list x) x)
+    (_ f)))

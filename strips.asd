@@ -29,7 +29,8 @@
                                     (:module "lib"
                                              :components ((:file "equivalence")))
                                     (:file "4-easy-invariant")
-                                    (:file "5-grounding-prolog-3")))
+                                    (:file "5-grounding-prolog-3")
+                                    (:file "6-invariant")))
               (:module "search"
                        :components ((:file "util"))))
  :description "A STRIPS planner"
