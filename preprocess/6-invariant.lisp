@@ -37,16 +37,24 @@
 
 (defun %axiom-layers (&optional debug)
   (run-prolog
-   `((:- (use_module (library tabling))) ; swi specific
-     (:- (style_check (- singleton)))
+   `(;; (:- (use_module (library tabling))) ; swi specific
+     ;; (:- (style_check (- singleton)))
+
+     ;; bprolog missing max_list
+     (:- (max_list (list ?x) ?x))
+     (:- (max_list (list* ?x ?rest) ?y)
+         (max_list ?rest ?z)
+         (is ?y (max ?x ?z)))
+         
+     
      ,@(iter (for f in (append (union *init* *facts*) *ground-axioms*))
              (collecting
                  `(fact ,(ensure-zeroary-to-atom f))))
-     (:- (table (/ axiom-layer 2))) ; this is a suboptimal solution due to the possible SWI bug below
+     ;; (:- (table (/ axiom-layer 2))) ; this is a suboptimal solution due to the possible SWI bug below
      ,@(axiom-layer-rules)
      ;; this causes an exception "No permission to append findall-bag `0' (continuation in findall/3 generator?)".
      ;; Not sure the reason --- SWI bug?
-     ;; (:- (table (/ axiom-layer-over-disjunctions 2)))
+     (:- (table (/ axiom-layer-over-disjunctions 2)))
      (:- (axiom-layer-over-disjunctions ?predicate ?i)
          (fact ?predicate)
          (findall ?j (axiom-layer ?predicate ?j) ?list)
@@ -61,7 +69,7 @@
          (wrap (forall (axiom-layer-over-disjunctions ?ga ?i)
                        (and (print-sexp (list ?ga ?i)) nl)))
          halt))
-   :swi :args '("-g" "main") :debug debug))
+   :bprolog :args '("-g" "main") :debug debug))
 
 (defun axiom-layer-rules ()
   (mapcar (lambda-ematch
