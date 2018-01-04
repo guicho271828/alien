@@ -370,6 +370,7 @@
     (is-true (strips::added-p '(p)))
     (is-true (strips::monotonic+p '(p)))
     (is-true (strips::static-p '(goal)))
+    (print *facts*)
     (is-true (mem '(p) *facts*))
     (is-true (mem '(d o1) *ground-axioms*))
     (is-true (mem '(d o2) *ground-axioms*))

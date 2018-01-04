@@ -315,7 +315,8 @@ and the consumed inequality conditions are removed from *inequality*."
              (and ,@(iter (for p in *predicates*)
                           (when (added-p p)
                             (collecting
-                                `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
+                                ;; this prints goal as (goal)
+                                `(forall ,(normalize-fact-term p) (print-sexp ,(ensure-zeroary-to-list p))))))))
             ;; note: reachable atoms = (union added init) = (union generic monotonic+ init)
             (write ":ground-axioms\\n")
             (wrap
@@ -323,17 +324,20 @@ and the consumed inequality conditions are removed from *inequality*."
                           (ematch a
                             ((list :derived p _)
                              (collecting
-                              `(forall ,(normalize-fact-term p) (print-sexp ,p))))))))
+                                 ;; this prints goal as (goal)
+                                 `(forall ,(normalize-fact-term p) (print-sexp ,(ensure-zeroary-to-list p)))))))))
             (write ":ops\\n")
             (wrap
              (and ,@(iter (for a in *actions*)
                           (ematch a
                             ((plist :action name
                                     :parameters params)
-                             (collecting
-                              `(forall ,(normalize-op-term `(,name ,@params))
-                                       (and (findall ?i ,(normalize-effect-term `(,name ,@params) '?i) ?list)
-                                            (print-sexp (list (,name ,@params) ?list))))))))))))))))
+                             (let ((p `(,name ,@params)))
+                               (collecting
+                                   `(forall ,(normalize-op-term p)
+                                            (and (findall ?i ,(normalize-effect-term p '?i) ?list)
+                                                 ;; this prints goal as (goal)
+                                                 (print-sexp (list ,(ensure-zeroary-to-list p) ?list)))))))))))))))))
 
 (defun no-op-constraints (effects)
   "adding the constraint which prunes a combination of parameters when
