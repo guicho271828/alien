@@ -455,7 +455,9 @@ and also orders the terms by 'structure ordering' --- e.g.
                 `(:- (,name ,@params)
                      (or ,@(let ((disjunctions
                                   (append (iter (for p in neg-body)
+                                                ;; positive clauses (turned from negative) are handled here
                                                 (when (positive p) (collecting (normalize-fact-term p))))
+                                          ;; negative clauses (turned from positive) are handled here
                                           (negative-conditions-satisfiable neg-body))))
                              (iter (for d in disjunctions)
                                    (collecting
