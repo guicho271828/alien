@@ -42,8 +42,11 @@
      ,@(iter (for f in (append (union *init* *facts*) *ground-axioms*))
              (collecting
                  `(fact ,f)))
+     (:- (table (/ axiom-layer 2))) ; this is a suboptimal solution due to the possible SWI bug below
      ,@(axiom-layer-rules)
-     (:- (table (/ axiom-layer-over-disjunctions 2)))
+     ;; this causes an exception "No permission to append findall-bag `0' (continuation in findall/3 generator?)".
+     ;; Not sure the reason --- SWI bug?
+     ;; (:- (table (/ axiom-layer-over-disjunctions 2)))
      (:- (axiom-layer-over-disjunctions ?predicate ?i)
          (fact ?predicate)
          (findall ?j (axiom-layer ?predicate ?j) ?list)
