@@ -117,7 +117,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (defun all-relaxed-reachable2 (conditions)
   (-<> conditions
     (remove-if-not #'positive arrow-macros:<>)
-    (remove-duplicates :test 'equal)
     (join-ordering)))
 
 ;;;; this join ordering implementation is too slow on large number of objects, e.g. visitall-agl14

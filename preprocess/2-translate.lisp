@@ -804,7 +804,7 @@ Signals an error when the type is not connected to the root OBJECT type."
       (rec `(forall () (when (and) ,effect)))
       `(and ,@acc))))
 
-;;; parse8 --- output
+;;; parse8 --- remove-duplicates and output
 
 (defun parse8 ()
   (list :type *types*
@@ -813,6 +813,27 @@ Signals an error when the type is not connected to the root OBJECT type."
         :predicate-types *predicate-types*
         :init *init4*
         :goal *goal4*
-        :axioms *axioms6*
-        :actions *actions7*))
+        :axioms
+        (mapcar (lambda-ematch
+                  (`(:derived ,predicate (and ,@body))
+                    `(:derived ,predicate (and ,@(remove-duplicates body :test 'equal)))))
+                *axioms6*)
+        :actions
+        (mapcar (lambda-ematch
+                  ((plist :action name :parameters params :original-parameters orig
+                          :precondition `(and ,@precond)
+                          :effect `(and ,@effects))
+                   (list :action name
+                         :parameters params
+                         :original-parameters orig
+                         :precondition
+                         `(and ,@(remove-duplicates precond :test 'equal))
+                         :effect
+                         `(and ,@(mapcar
+                                  (lambda-ematch
+                                    (`(forall ,vars (when (and ,@conditions) ,atom))
+                                      `(forall ,vars (when (and ,@(remove-duplicates conditions :test 'equal))
+                                                       ,atom))))
+                                  effects)))))
+                *actions7*)))
 
