@@ -114,10 +114,28 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 ;;; join ordering
 
+(defvar *inequality*)
+
 (defun all-relaxed-reachable2 (conditions)
-  (-<> conditions
-    (remove-if-not #'positive arrow-macros:<>)
-    (join-ordering)))
+  (iter (for c in conditions)
+        (ematch c
+          (`(= ,@_)
+            (collect c into equality))
+          (`(not (= ,x ,y))
+            (collect (cons x y) into inequality))
+          (`(not ,_)
+            ;; do nothing
+            )
+          (_
+           (if (some #'variablep (cdr c))
+               (collect c into lifted)
+               (collect (normalize-fact-term c) into grounded))))
+        (finally
+         (let ((*inequality* inequality))
+           (multiple-value-bind (decomposed temporary-rules) (join-ordering lifted)
+             (return
+               (values (append equality grounded decomposed)
+                       temporary-rules)))))))
 
 ;;;; this join ordering implementation is too slow on large number of objects, e.g. visitall-agl14
 
@@ -153,19 +171,13 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                         min-key2 key2
                         min-key3 key3))))
     (values min-u min-c1 min-c2)))
-    
+
+(defvar *instantiated*)
+
 (defun join-ordering (conditions)
   "Helmert09, p40. This impl takes O(N^2)"
-  (iter (for c in conditions)
-        (if (some #'variablep (cdr c))
-            (collect c into lifted)
-            (collect (normalize-fact-term c) into grounded))
-        (finally
-         (return
-          (multiple-value-bind (decomposed temporary-rules)
-              (join-ordering-aux lifted nil)
-            (values (append grounded decomposed)
-                    temporary-rules))))))
+  (let ((*instantiated* nil))
+    (join-ordering-aux conditions nil)))
 
 (defun join-ordering-aux (conditions acc)
   (if (<= (length conditions) 2)
@@ -181,8 +193,29 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
              (list* `(:- ,new
                          ;; min-c1 has larger arity; put min-c2 first
                          ,(normalize-fact-term min-c1)
-                         ,(normalize-fact-term min-c2))
+                         ,@(when (not (tmp-p min-c1))
+                             ;; check for inequality as early as possible
+                             (instantiated-inequality min-c1))
+                         ,(normalize-fact-term min-c2)
+                         ,@(when (not (tmp-p min-c2))
+                             ;; check for inequality as early as possible
+                             (instantiated-inequality min-c2)))
                     acc)))))))
+
+(defun instantiated-inequality (condition)
+  "Returns a set of inequality predicates (/= x y) that can be checked after the condition.
+As a side effect, special variable *instantiated* is extended with newly instantiated variables,
+and the consumed inequality conditions are removed from *inequality*."
+  (let ((instantiated (union *instantiated* (remove-if-not #'variablep (cdr condition)))))
+    (iter (for (x . y) in *inequality*)
+          (if (and (or (not (variablep x)) (member x instantiated))
+                   (or (not (variablep y)) (member y instantiated)))
+              (collecting `(\\= ,x ,y) into result)
+              (collecting (cons x y) into keep))
+          (finally
+           (setf *instantiated* instantiated
+                 *inequality* keep)
+           (return result)))))
 
 ;;; relaxed-reachability
 
@@ -260,9 +293,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
          *initial-facts*
          *deletable-facts*
          *reachable-ops*)
-     (register `(= ?o ?o))
-     (register-init `(= ?o ?o))
-     (register-deleted `(:- (= ? ?) ! fail))
      (mapcar #'register *init*)
      (mapcar #'register-init *init*)
      (register-ops)
@@ -475,14 +505,19 @@ and also orders the terms by 'structure ordering' --- e.g.
     (iter (for p in conditions)
           (when (negative p)
             (let ((atom (second p)))
-              (if (axiom-p atom)
-                  (when *enable-negative-precondition-pruning-for-axioms*
-                    (collecting
-                     (normalize-del-term atom)))
-                  (when *enable-negative-precondition-pruning-for-fluents*
-                    (collecting
-                     `(or (not ,(normalize-init-term atom))
-                          ,(normalize-del-term atom))))))))))
+              (cond
+                ((axiom-p atom)
+                 (when *enable-negative-precondition-pruning-for-axioms*
+                   (collecting
+                       (normalize-del-term atom))))
+                ((eq (car atom) '=)
+                 ;; skip
+                 )
+                (t
+                 (when *enable-negative-precondition-pruning-for-fluents*
+                   (collecting
+                       `(or (not ,(normalize-init-term atom))
+                            ,(normalize-del-term atom)))))))))))
 
 (defun %ground (&optional debug)
   (run-prolog
