@@ -115,9 +115,22 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 ;;; join ordering
 
 (defun all-relaxed-reachable2 (conditions)
-  (-<> conditions
-    (remove-if-not #'positive arrow-macros:<>)
-    (join-ordering)))
+  (iter (for c in conditions)
+        (ematch c
+          (`(= ,@_)
+            (collect c into equality))
+          (`(not (= ,@rest))
+            ;; SWI prolog constraint
+            (collect `(dif ,@rest) into equality))
+          (`(not ,_)
+            ;; do nothing
+            )
+          (_ (collect c into standard)))
+        (finally
+         (multiple-value-bind (decomposed temporary-rules) (join-ordering standard)
+           (return
+             (values (append equality decomposed)
+                     temporary-rules))))))
 
 ;;;; this join ordering implementation is too slow on large number of objects, e.g. visitall-agl14
 
@@ -260,9 +273,6 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
          *initial-facts*
          *deletable-facts*
          *reachable-ops*)
-     (register `(= ?o ?o))
-     (register-init `(= ?o ?o))
-     (register-deleted `(:- (= ? ?) ! fail))
      (mapcar #'register *init*)
      (mapcar #'register-init *init*)
      (register-ops)
@@ -475,14 +485,19 @@ and also orders the terms by 'structure ordering' --- e.g.
     (iter (for p in conditions)
           (when (negative p)
             (let ((atom (second p)))
-              (if (axiom-p atom)
-                  (when *enable-negative-precondition-pruning-for-axioms*
-                    (collecting
-                     (normalize-del-term atom)))
-                  (when *enable-negative-precondition-pruning-for-fluents*
-                    (collecting
-                     `(or (not ,(normalize-init-term atom))
-                          ,(normalize-del-term atom))))))))))
+              (cond
+                ((axiom-p atom)
+                 (when *enable-negative-precondition-pruning-for-axioms*
+                   (collecting
+                       (normalize-del-term atom))))
+                ((eq (car atom) '=)
+                 ;; skip
+                 )
+                (t
+                 (when *enable-negative-precondition-pruning-for-fluents*
+                   (collecting
+                       `(or (not ,(normalize-init-term atom))
+                            ,(normalize-del-term atom)))))))))))
 
 (defun %ground (&optional debug)
   (run-prolog
