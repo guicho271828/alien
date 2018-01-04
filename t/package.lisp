@@ -704,7 +704,8 @@
         (op<-time< 0) (op<-time> 0) (op<-time= 0)
         (op>-time< 0) (op>-time> 0) (op>-time= 0)
         (fd-total 0)
-        (ours-total 0))
+        (ours-total 0)
+        (times nil))
     (dolist (p files)
       (format t "~&~%##### Testing ~a" p)
       (handler-case
@@ -734,6 +735,7 @@
                                       (incf op>-time>)))))
                (incf fd-total time-fd)
                (incf ours-total time-ours)
+               (push (list p time-ours time-fd) times)
                (format t "
 Runtime total: FD: ~a OURS: ~a
 ~{~{~13a~}~%~}"
@@ -753,7 +755,10 @@ Runtime total: FD: ~a OURS: ~a
               ((_ (number))
                (pass "On problem ~a, ours returned ~a ops in ~a sec, fd failed" p ours time-ours))))
         (error (c)
-          (fail "Received an error:~% ~a" c))))))
+          (fail "Received an error:~% ~a" c))))
+    (format t "~&Runtime statistics:~%~{~{~50a ~10a ~10a~}~%~}"
+            (list* '(problem ours fd)
+                   (sort times #'> :key #'second)))))
 
 (test num-operator-small
   (test-num-operators *small-files*))
