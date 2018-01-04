@@ -18,6 +18,7 @@
 (defvar *facts*)
 (defvar *ops*)
 (defvar *ground-axioms*)
+(defvar *axiom-layers*)
 
 (defun mutex-invariant (info)
   (with-parsed-information3 info

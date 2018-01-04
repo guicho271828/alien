@@ -52,6 +52,8 @@
    #:mutex-invariant
    #:*ground-axioms*
    #:*facts*
-   #:*ops*))
+   #:*ops*
+   #:with-parsed-information4
+   #:*axiom-layers*))
 
 (setf trivia:*arity-check-by-test-call* nil)
