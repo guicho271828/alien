@@ -315,20 +315,11 @@
 (defparameter *debug* nil)
 
 (defun call-test-ground (info fn)
-  (with-parsed-information2 (easy-invariant info)
-    (let ((result (strips::%ground *debug*)))
-      ;; (print result)
-      (apply fn (iter (for x in (read-from-string result))
-                      (collecting
-                       (if (listp x)
-                           (remove-duplicates x :test 'equal)
-                           x)))))))
+  (with-parsed-information4 (mutex-invariant (ground (easy-invariant info) nil *package*))
+    (funcall fn)))
 
 (defmacro with-test-ground (info &body body)
-  `(call-test-ground ,info
-                     (lambda (&key facts ops fluents axioms)
-                       (declare (ignorable facts ops fluents axioms))
-                       ,@body)))
+  `(call-test-ground ,info (lambda () ,@body)))
 
 (defun mem (elem list)
   (member elem list :test 'equal))
@@ -353,13 +344,14 @@
     (is-true (strips::added-p '(p ?x)))
     (is-true (strips::monotonic+p '(p ?x)))
     (is-true (strips::static-p '(goal)))
-    (print facts)
-    (is-true (mem '(d o1) axioms))
-    (is-true (mem '(p o1) facts))
-    (is-true (mem '(d o2) axioms))
-    (is-true (mem '(p o2) facts))
-    (is-true (mem '((a o1) (0)) ops))
-    (is-true (mem '((a o2) (0)) ops))))
+    (print *facts*)
+    (print *ground-axioms*)
+    (is-true (mem '(d o1) *ground-axioms*))
+    (is-true (mem '(p o1) *facts*))
+    (is-true (mem '(d o2) *ground-axioms*))
+    (is-true (mem '(p o2) *facts*))
+    (is-true (mem '((a o1) (0)) *ops*))
+    (is-true (mem '((a o2) (0)) *ops*))))
 
 (test relaxed-reachability2
   ;; parameter ?x is not referenced in the axiom body
@@ -377,11 +369,11 @@
     (is-true (strips::added-p '(p)))
     (is-true (strips::monotonic+p '(p)))
     (is-true (strips::static-p '(goal)))
-    (is-true (mem '(p) facts))
-    (is-true (mem '(d o1) axioms))
-    (is-true (mem '(d o2) axioms))
-    (is-true (mem '((a o1) (0)) ops))
-    (is-true (mem '((a o2) (0)) ops))))
+    (is-true (mem '(p) *facts*))
+    (is-true (mem '(d o1) *ground-axioms*))
+    (is-true (mem '(d o2) *ground-axioms*))
+    (is-true (mem '((a o1) (0)) *ops*))
+    (is-true (mem '((a o2) (0)) *ops*))))
 
 (test relaxed-reachability3
   ;; parameter ?x is a free variable in the axiom body
@@ -400,13 +392,13 @@
     (is-true (strips::monotonic+p '(p ?x)))
     (is-true (strips::static-p '(goal)))
     
-    (is-true (mem '(p o1) facts))
-    (is-true (mem '(p o2) facts))
-    (is-true (mem '(d) axioms))
-    (is-true (= 1 (count '(d) axioms :test 'equal)))
-    (is-true (mem '((a o1) (0)) ops))
-    (is-true (mem '((a o2) (0)) ops))
-    (is-true (mem '((a o2) (0)) ops))))
+    (is-true (mem '(p o1) *facts*))
+    (is-true (mem '(p o2) *facts*))
+    (is-true (mem '(d) *ground-axioms*))
+    (is-true (= 1 (count '(d) *ground-axioms* :test 'equal)))
+    (is-true (mem '((a o1) (0)) *ops*))
+    (is-true (mem '((a o2) (0)) *ops*))
+    (is-true (mem '((a o2) (0)) *ops*))))
 
 (test relaxed-reachability4
   (with-test-ground (strips::parse1 '(define (domain d)
@@ -419,36 +411,36 @@
                               (:objects o1 o2)
                               (:init )
                               (:goal (goal))))
-    (is-true (mem '(p o1) facts))
-    (is-true (mem '(p o2) facts))
-    (is-true (not (mem '(p2 o1) facts)))
-    (is-true (not (mem '(p2 o2) facts)))
-    (is-true (not (mem '(d) facts)))
-    (is-true (mem '((a o1) (0)) ops))
-    (is-true (mem '((a o2) (0)) ops))))
+    (is-true (mem '(p o1) *facts*))
+    (is-true (mem '(p o2) *facts*))
+    (is-true (not (mem '(p2 o1) *facts*)))
+    (is-true (not (mem '(p2 o2) *facts*)))
+    (is-true (not (mem '(d) *ground-axioms*)))
+    (is-true (mem '((a o1) (0)) *ops*))
+    (is-true (mem '((a o2) (0)) *ops*))))
 
 (test relaxed-reachability5
   (let (ops-with ops-without)
     (let ((*enable-no-op-pruning* nil))
       (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
-        (is (= 286 (length ops)))
-        (setf ops-without ops)))
+        (is (= 286 (length *ops*)))
+        (setf ops-without *ops*)))
     (let ((*enable-no-op-pruning* t))
       (with-test-ground (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
-        ;; (is (= 286 (length ops)))
-        (setf ops-with ops)))
+        ;; (is (= 286 (length *ops*)))
+        (setf ops-with *ops*)))
     (is-true (set-equal ops-without ops-with :test 'equal))))
 
 (test relaxed-reachability6
   (let (ops-with ops-without)
     (let ((*enable-no-op-pruning* nil))
       (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
-        (is (= 616 (length ops)))
-        (setf ops-without ops)))
+        (is (= 616 (length *ops*)))
+        (setf ops-without *ops*)))
     (let ((*enable-no-op-pruning* t))
       (with-test-ground (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
-        ;; (is (= 286 (length ops)))
-        (setf ops-with ops)))
+        ;; (is (= 286 (length *ops*)))
+        (setf ops-with *ops*)))
     (is-true (set-equal ops-without ops-with :test 'equal))))
 
 (test relaxed-reachability-noop
@@ -456,13 +448,13 @@
     (setf ops-fd (num-operator-fd (%rel "check/rovers-noop/p01.pddl")))
     (let ((*enable-no-op-pruning* nil))
       (with-test-ground (parse (%rel "check/rovers-noop/p01.pddl"))
-        ;; (print ops)
-        (is (/= ops-fd (length ops)))
-        (setf ops-without ops)))
+        ;; (print *ops*)
+        (is (/= ops-fd (length *ops*)))
+        (setf ops-without *ops*)))
     (let ((*enable-no-op-pruning* t))
       (with-test-ground (parse (%rel "check/rovers-noop/p01.pddl"))
-        (is (= ops-fd (length ops)))
-        (setf ops-with ops)))))
+        (is (= ops-fd (length *ops*)))
+        (setf ops-with *ops*)))))
 
 (test relaxed-reachability7 ; initially true vs false predicates which are never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))
@@ -476,8 +468,8 @@
                          (:objects a b)
                          (:init (p a))
                          (:goal (and))))
-      (is-true (not (mem '(q a) facts)))
-      (is-true (mem '(q b) facts)))))
+      (is-true (not (mem '(q a) *facts*)))
+      (is-true (mem '(q b) *facts*)))))
 
 (test relaxed-reachability8 ; initially true predicates which can be deleted vs which is never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))
@@ -492,8 +484,8 @@
                          (:objects a b)
                          (:init (p a) (p b) (r b))
                          (:goal (and))))
-      (is-true (not (mem '(q a) facts)))
-      (is-true (mem '(q b) facts)))))
+      (is-true (not (mem '(q a) *facts*)))
+      (is-true (mem '(q b) *facts*)))))
 
 (test relaxed-reachability9 ; axioms that can become true vs cannot become true
   (let ((*enable-negative-precondition-pruning-for-axioms* t)
@@ -510,8 +502,8 @@
                          (:objects a b)
                          (:init (p a))
                          (:goal (and))))
-      (is-true (not (mem '(q a) facts)))  ; (p a) is initially true, never deleted, thus (axiom ?x) is always true
-      (is-true (mem '(q b) facts)))))     ; (p b) is initially false, thus (axiom ?x) can become true
+      (is-true (not (mem '(q a) *facts*)))  ; (p a) is initially true, never deleted, thus (axiom ?x) is always true
+      (is-true (mem '(q b) *facts*)))))     ; (p b) is initially false, thus (axiom ?x) can become true
 
 (test relaxed-reachability10 ; axioms that can become true vs cannot become true
   (let ((*enable-negative-precondition-pruning-for-axioms* t)
@@ -528,8 +520,8 @@
                          (:objects a b)
                          (:init (p a) (p b) (r b))
                          (:goal (and))))
-      (is-true (not (mem '(q a) facts)))
-      (is-true (mem '(q b) facts)))))
+      (is-true (not (mem '(q a) *facts*)))
+      (is-true (mem '(q b) *facts*)))))
 
 
 (test axiom-layer
@@ -589,7 +581,7 @@
     (handler-case
       (bt:with-timeout (120)
         (with-test-ground (parse p d)
-          (length ops)))
+          (length *ops*)))
       (bt:timeout ()
         nil))))
 

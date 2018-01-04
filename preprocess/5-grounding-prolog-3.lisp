@@ -8,10 +8,10 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defun ground (info &optional debug)
+(defun ground (info &optional debug (package (find-package :pddl)))
   (with-parsed-information2 info
     (let ((result (%ground debug)))
-      (let ((result2 (let ((*package* (find-package :pddl)))
+      (let ((result2 (let ((*package* package))
                        (read-from-string result))))
         (append (iter (for x in result2)
                       (collecting
