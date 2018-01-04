@@ -525,11 +525,12 @@ and also orders the terms by 'structure ordering' --- e.g.
 
 (defun %ground (&optional debug)
   (run-prolog
-   (append `((:- (use_module (library tabling))) ; swi specific
-             (:- (style_check (- singleton))))
-           (effect-order)
-           (remove-subsumed)
-           (print-sexp :swi t)
+   (append (when (eq :swi *grounding-prolog*)
+             `((:- (use_module (library tabling))) ; swi specific
+               (:- (style_check (- singleton)))))
+           ;; (effect-order)
+           ;; (remove-subsumed)
+           (print-sexp)
            `((:- (wrap ?goal)
                  (write "(")
                  (call ?goal)
@@ -540,5 +541,5 @@ and also orders the terms by 'structure ordering' --- e.g.
                  (wrap relaxed-reachability)
                  halt))
            (relaxed-reachability))
-   :swi :args '("-g" "main") :debug debug))
+   *grounding-prolog* :args '("-g" "main") :debug debug :input nil))
 

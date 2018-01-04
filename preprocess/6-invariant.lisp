@@ -42,8 +42,9 @@
 
 (defun %axiom-layers (&optional debug)
   (run-prolog
-   `(;; (:- (use_module (library tabling))) ; swi specific
-     ;; (:- (style_check (- singleton)))
+   `(,@(when (eq :swi *axiom-layer-prolog*)
+         `((:- (use_module (library tabling))) ; swi specific
+           (:- (style_check (- singleton)))))
 
      ;; bprolog missing max_list
      (:- (max_list (list ?x) ?x))
@@ -74,7 +75,7 @@
          (wrap (forall (axiom-layer-over-disjunctions ?ga ?i)
                        (and (print-sexp (list ?ga ?i)) nl)))
          halt))
-   :bprolog :args '("-g" "main") :debug debug))
+   *axiom-layer-prolog* :args '("-g" "main") :debug debug :input nil))
 
 (defun axiom-layer-rules ()
   (mapcar (lambda-ematch
