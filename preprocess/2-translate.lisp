@@ -811,7 +811,7 @@ Signals an error when the type is not connected to the root OBJECT type."
         :objects *objects*
         :predicates *predicates*
         :predicate-types *predicate-types*
-        :init *init4*
+        :init (remove-duplicates *init4* :test 'equal)
         :goal *goal4*
         :axioms
         (mapcar (lambda-ematch
