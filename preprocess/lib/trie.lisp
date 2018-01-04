@@ -1,10 +1,11 @@
 
-(in-package :strips)
+(in-package :strips.lib)
 
 ;; hackish plist-based trie implementation
 ;; not for performance
 
-(define-constant +terminal+ '+terminal+)
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (define-constant +terminal+ '+terminal+))
 
 (defun trie-push (plist list)
   (match list
@@ -47,6 +48,7 @@
                            (vector-pop stack))))))
       (rec plist))))
 
+#+(or)
 (let ((trie nil))
   (setf trie (trie-push trie '(a b c)))
   (print trie)

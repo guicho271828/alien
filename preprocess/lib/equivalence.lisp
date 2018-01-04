@@ -1,5 +1,5 @@
 
-(in-package :strips)
+(in-package :strips.lib)
 
 ;; X -> classid
 ;; classid -> [X]
