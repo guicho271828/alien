@@ -34,6 +34,7 @@
                             (:file "2-translate")
                             (:file "4-easy-invariant")
                             (:file "5-grounding-prolog-3")
-                            (:file "6-invariant"))))
+                            (:file "6-invariant")
+                            (:file "7-instantiate"))))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))

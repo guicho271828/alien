@@ -121,6 +121,30 @@
              :actions *actions*)
       ,@body)))
 
+(defmacro with-parsed-information5 (info &body body)
+  "Binds the special variables using INFO, which is a parsed & flattened result of pddl files (see 2-translate.lisp).
+   *types* *objects* *predicates* *init* *goal* *axioms* *actions* "
+  `(match ,info
+     ((plist :index *index*
+             :fluent-size *fluent-size*
+             :trie *trie*
+             :instantiated-ops *instantiated-ops*
+
+             :axiom-layers *axiom-layers*
+             :facts *facts*
+             :ops *ops*
+             
+             :ground-axioms *ground-axioms*
+             :monotonicity *monotonicity*
+             :type *types*
+             :objects *objects*
+             :predicates *predicates*
+             :init *init*
+             :goal *goal*
+             :axioms *axioms*
+             :actions *actions*)
+      ,@body)))
+
 (defun positive (form)
   (ematch form
     ((list* (or 'not 'increase) _)
@@ -140,3 +164,11 @@
   (match f
     ((list x) x)
     (_ f)))
+
+(declaim (inline make-bit-vector))
+(defun make-bit-vector (length)
+  (make-array length :element-type 'bit :initial-element 0))
+
+(declaim (inline linear-extend))
+(defun linear-extend (vector element)
+  (vector-push-extend element vector (array-total-size vector)))
