@@ -47,7 +47,7 @@
      (:- (axiom-layer-over-disjunctions ?i ?predicate)
          (fact ?predicate)
          (findall ?j (axiom-layer ?j ?predicate) ?list)
-         (max_member ?i (list* 0 ?list)))
+         (max_list (list* 0 ?list) ?i))
      ;; 
      ,@(print-sexp :swi t)
      (:- (wrap ?goal)
@@ -76,10 +76,10 @@
                                       (return
                                         (append rule-body
                                                 ;; take the max over dependent axioms/predicates
-                                                `((max_member ?j (list ,@layer-vars))))))))
+                                                `((max_list (list ,@layer-vars) ?j)))))))
                             ?list)
                    ;; take the max over the combinations of assignments to existentially quiantified variables
-                   (max_member ?i1 (list* 0 ?list))
+                   (max_list (list* 0 ?list) ?i1)
                    (is ?i (+ ?i1 1)))))
           *axioms*))
 
