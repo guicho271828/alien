@@ -9,7 +9,9 @@
         :strips :pddl
         :fiveam
         :iterate :alexandria :trivia
-        :lparallel))
+        :lparallel
+        :arrow-macros)
+  (:shadowing-import-from :trivia :<>))
 (in-package :strips.test)
 
 (named-readtables:in-readtable :fare-quasiquote)
@@ -528,6 +530,34 @@
                          (:goal (and))))
       (is-true (not (mem '(q a) facts)))
       (is-true (mem '(q b) facts)))))
+
+
+(test axiom-layer
+  (let ((*axioms* `((:derived (reachable ?x) (and (at ?x)))
+                    (:derived (reachable ?x) (and (next ?x ?y) (reachable ?y)))))
+        (*ground-axioms* `((reachable 0) (reachable 1) (reachable 2)))
+        (*facts* `((at 2)))
+        (*init* `((next 0 1) (next 1 2)))
+        (*predicates* `((next ?x ?y)
+                        (reachable ?x)
+                        (at ?x))))
+    (finishes (print (strips::%axiom-layers t))))
+
+
+  (with-parsed-information3 (-> "axiom-domains/opttel-adl-derived/p01.pddl"
+                              strips::%rel
+                              parse
+                              easy-invariant
+                              ground)
+    (finishes (print (axiom-layers t))))
+
+  (finishes
+    (-> "axiom-domains/opttel-adl-derived/p01.pddl"
+      strips::%rel
+      parse
+      easy-invariant
+      ground
+      mutex-invariant)))
 
 (in-suite grounding)
 
