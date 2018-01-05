@@ -6,5 +6,11 @@
    #:index-insert
    #:index
    #:index-ref
-   #:index-size))
+   #:index-size
+   #:make-trie
+   #:trie-insert
+   #:trie-member
+   #:trie-insert-all
+   #:map-trie
+   #:query-trie))
 
