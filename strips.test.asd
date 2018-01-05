@@ -19,9 +19,11 @@
                :fiveam
                :bordeaux-threads
                :lparallel)
+  :serial t
   :components ((:module "t"
                 :components
-                ((:file "package"))))
+                ((:file "package")
+                 (:file "instantiate"))))
   :perform (test-op :after (op c) (eval
  (read-from-string
   "(5am:run! :strips)"))
