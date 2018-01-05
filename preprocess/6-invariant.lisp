@@ -1,3 +1,8 @@
+
+;; this file is inadequately named as invariant.lisp.
+;; it is in fact only running the axiom-layer deduction.
+;; the true invariant synthesis code is added in the future.
+
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
