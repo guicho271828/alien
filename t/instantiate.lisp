@@ -91,16 +91,14 @@
     (finishes (println *index*))
     (finishes (println *trie*))
     (finishes (println *fluent-size*))
-    ;; (finishes (println *instantiated-ops*))
-    ))
+    (finishes (println *instantiated-ops*))))
 
 (test instantiate6
   (with-test-instantiate (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
     (finishes (println *index*))
     (finishes (println *trie*))
     (finishes (println *fluent-size*))
-    ;; (finishes (println *instantiated-ops*))
-    ))
+    (finishes (println *instantiated-ops*))))
 
 (test instantiate7 ; initially true vs false predicates which are never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))

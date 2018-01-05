@@ -1,3 +1,6 @@
+;; instantiate EFFECT and OP instance as well as some lookup table for the facts.
+;; EFFECT and OP are primitive representation of operators and its effects.
+
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
@@ -39,23 +42,20 @@
   (mapcar (lambda (op) (instantiate-op op index trie)) *ops*))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (defstruct (effect (:constructor make-effect (size &aux
-                                                     (con+ (make-bit-vector size))
-                                                     (con- (make-bit-vector size))
-                                                     (add (make-bit-vector size))
-                                                     (del (make-bit-vector size)))))
-    (con+ (make-bit-vector 0) :type (simple-bit-vector))
-    (con- (make-bit-vector 0) :type (simple-bit-vector))
-    (add (make-bit-vector 0) :type (simple-bit-vector))
-    (del (make-bit-vector 0) :type (simple-bit-vector)))
-  
-  (defstruct (op (:constructor make-op (size &aux
-                                             (pre+ (make-bit-vector size))
-                                             (pre- (make-bit-vector size))
-                                             (eff (make-array 32 :element-type 'effect :adjustable t :fill-pointer 0)))))
-    (pre+ (make-bit-vector 0) :type (simple-bit-vector))
-    (pre- (make-bit-vector 0) :type (simple-bit-vector))
-    (eff (make-array 0 :elementy-type 'effect :adjustable t :fill-pointer 0) :type (array effect))))
+  (flet ((con () (make-array 16
+                             :element-type 'fixnum
+                             :adjustable t
+                             :fill-pointer 0)))
+    (defstruct effect
+      (con+ (con) :type (array fixnum))
+      (con- (con) :type (array fixnum))
+      (add (con) :type (array fixnum))
+      (del (con) :type (array fixnum)))
+    
+    (defstruct op
+      (pre+ (con) :type (array fixnum))
+      (pre- (con) :type (array fixnum))
+      (eff (make-array 16 :element-type 'effect :adjustable t :fill-pointer 0) :type (array effect)))))
 
 (defun instantiate-op (op index trie)
   (ematch op
@@ -66,7 +66,7 @@
                 :effect `(and ,@effects))
          (let* ((gpre (copy-tree precond))
                 (geff (copy-tree effects))
-                (op (make-op (strips.lib:index-size index))))
+                (op (make-op)))
            (iter (for a in args)
                  (for p in params)
                  (setf gpre (nsubst a p gpre))
@@ -77,10 +77,10 @@
               (dolist (c gpre)
                 (if (positive c)
                     (unless (static-p c)
-                      (setf (aref pre+ (strips.lib:index index c)) 1))
+                      (linear-extend pre+ (strips.lib:index index c)))
                     (let ((i (strips.lib:index index (second c))))
                       (when i ; otherwise unreachable
-                        (setf (aref pre- i) 1)))))
+                        (linear-extend pre- i)))))
               (iter (for e in geff)
                     (for i from 0)
                     (instantiate-effect e eff index trie))))
@@ -106,22 +106,22 @@
       (instantiate-effect-aux2 ground-conditions atom effects index trie)))
 
 (defun instantiate-effect-aux2 (ground-conditions atom effects index trie)
-  (let ((e (make-effect (strips.lib:index-size index))))
+  (let ((e (make-effect)))
     (match e
       ((effect con+ con- add del)
        (iter (for c in ground-conditions)
              (if (positive c)
-                 (setf (aref con+ (strips.lib:index index c)) 1)
+                 (unless (static-p c)
+                   (linear-extend con+ (strips.lib:index index c)))
                  (let ((i (strips.lib:index index (second c))))
                    (when i ; otherwise unreachable
-                     (setf (aref con- i) 1)))))
+                     (linear-extend con- (strips.lib:index index c))))))
        (when (positive atom)
          (strips.lib:query-trie
-          (lambda (c) (setf (aref add (strips.lib:index index c)) 1))
+          (lambda (c) (linear-extend add (strips.lib:index index c)))
           trie atom))
        (when (negative atom)
          (strips.lib:query-trie
-          (lambda (c)
-            (setf (aref del (strips.lib:index index c)) 1))
+          (lambda (c) (linear-extend del (strips.lib:index index c)))
           trie (second atom)))))
     (linear-extend effects e)))
