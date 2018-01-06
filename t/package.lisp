@@ -809,20 +809,14 @@ Runtime total: FD: ~a OURS: ~a
 (test num-operator-small
   (test-num-operators *small-files*))
 
-(def-suite :strips.middle)
-(in-suite :strips.middle)
+(def-suite :strips.more)
+(in-suite :strips.more)
 
 (test num-operator-middle
   (test-num-operators *middle-files*))
 
-(def-suite :strips.large)
-(in-suite :strips.large)
-
 (test num-operator-large
   (test-num-operators *large-files*))
-
-(def-suite :strips.problematic)
-(in-suite :strips.problematic)
 
 (test num-operator-problematic
   (let ((*time-parser* t))
@@ -832,3 +826,7 @@ Runtime total: FD: ~a OURS: ~a
        "axiom-domains/opttel-strips-derived/p19.pddl"
        "ipc2011-opt/tidybot-opt11/p20.pddl"))))
 
+(test num-operator-too-many-ops
+  (test-num-operators '("ipc2014-agl/hiking-agl14/p20.pddl"))
+  (let ((*enable-no-op-pruning* nil))
+    (test-num-operators '("ipc2014-agl/hiking-agl14/p20.pddl"))))
