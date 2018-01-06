@@ -315,7 +315,7 @@
 (defparameter *debug* nil)
 
 (defun call-test-ground (info fn)
-  (with-parsed-information4 (mutex-invariant (ground (easy-invariant info) nil *package*))
+  (with-parsed-information4 (mutex-invariant (ground (easy-invariant info) *debug* *package*))
     (funcall fn)))
 
 (defmacro with-test-ground (info &body body)
@@ -744,7 +744,8 @@
   (setf *kernel* (make-kernel (cpus:get-number-of-processors)
                               :bindings `((*standard-output* . ,*standard-output*)
                                           (*error-output* . ,*error-output*)
-                                          (*trace-output* . ,*trace-output*))))
+                                          (*trace-output* . ,*trace-output*)
+                                          (*debug* . ,*debug*))))
   (let ((op=-time< 0) (op=-time> 0) (op=-time= 0)
         (op<-time< 0) (op<-time> 0) (op<-time= 0)
         (op>-time< 0) (op>-time> 0) (op>-time= 0)
