@@ -588,6 +588,8 @@
     (handler-case
       (bt:with-timeout (*timeout*)
         (with-test-ground (parse p d)
+          (format t "~&~a added facts (generic + monotonic+)~%" (length *facts*))
+          (format t "~&~a reachable axioms~%" (length *ground-axioms*))
           (length *ops*)))
       (bt:timeout ()
         nil)
