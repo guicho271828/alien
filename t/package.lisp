@@ -649,7 +649,8 @@
     "ipc2014-agl/visitall-agl14/p01.pddl"))
 
 (defparameter *middle-files*
-  '("axiom-domains/opttel-adl-derived/p10.pddl"
+  '("researchers-domain/p10.pddl"
+    "axiom-domains/opttel-adl-derived/p10.pddl"
     #+(or) "axiom-domains/opttel-strips-derived/p10.pddl"       ; FD is too slow
     "axiom-domains/philosophers-adl-derived/p10.pddl"
     #+(or) "axiom-domains/philosophers-strips-derived/p10.pddl" ; FD is too slow
@@ -702,7 +703,8 @@
     "ipc2014-agl/visitall-agl14/p10.pddl"))
 
 (defparameter *large-files*
-  '("axiom-domains/opttel-adl-derived/p48.pddl"
+  '("researchers-domain/p12.pddl"
+    "axiom-domains/opttel-adl-derived/p48.pddl"
     "axiom-domains/opttel-strips-derived/p19.pddl"
     "axiom-domains/philosophers-adl-derived/p48.pddl"
     "axiom-domains/philosophers-strips-derived/p48.pddl"
