@@ -19,6 +19,7 @@
                :fact-trie fact-trie
                :op-index op-index
                :instantiated-ops instantiated-ops
+               :successor-generator (generate-sg instantiated-ops)
                info)))))
 
 (defun index-facts ()

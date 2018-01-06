@@ -25,6 +25,7 @@
 (defpackage strips
   (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog2)
   (:shadowing-import-from :trivia :<>)
+  (:shadow :iterate :else)
   (:export
    #:parse
    #:variablep
