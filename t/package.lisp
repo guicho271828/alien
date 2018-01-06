@@ -558,12 +558,15 @@
 
 (in-suite grounding)
 
-(defmacro with-timing (form)
-  (with-gensyms (start)
+(defmacro with-timing (&body forms)
+  (with-gensyms (start results)
     `(let ((,start (get-internal-real-time)))
-       (values ,form
-               (/ (float (- (get-internal-real-time) ,start))
-                  internal-time-units-per-second)))))
+       (let ((,results (multiple-value-list (progn ,@forms))))
+         (values-list
+          (list*
+           (/ (float (- (get-internal-real-time) ,start))
+              internal-time-units-per-second)
+           ,results))))))
 
 (defparameter *timeout* 120)
 
@@ -586,15 +589,19 @@
   (format t "~&Testing prolog-based grounding, without invariant synthesis~%")
   (with-timing
     (handler-case
-      (bt:with-timeout (*timeout*)
-        (with-test-ground (parse p d)
-          (format t "~&~a added facts (generic + monotonic+)~%" (length *facts*))
-          (format t "~&~a reachable axioms~%" (length *ground-axioms*))
-          (length *ops*)))
+        (bt:with-timeout (*timeout*)
+          (let ((*package* (find-package :pddl)))
+            (with-test-ground (parse p d)
+              (format t "~&~a added facts (generic + monotonic+)~%" (length *facts*))
+              (format t "~&~a reachable axioms~%" (length *ground-axioms*))
+              (values (length *ops*)
+                      (member *goal* *ground-axioms* :test 'equal)))))
       (bt:timeout ()
         nil)
       (error (c)
-        (invoke-restart 'transfer-error c)))))
+        (let ((r (find-restart 'transfer-error c)))
+          (when r
+            (invoke-restart 'transfer-error c)))))))
 
 (defparameter *small-files*
   '("researchers-domain/p07.pddl"
@@ -756,56 +763,54 @@
         (times nil))
     (dolist (p files)
       (format t "~&~%##### Testing ~a" p)
-      (handler-case
-          (plet (((fd time-fd) (num-operator-fd p))
-                 ((ours time-ours) (num-operator-ours p)))
-            (incf fd-total time-fd)
-            (incf ours-total time-ours)
-            (push (list p time-ours time-fd) times)
-            (match* (fd ours)
-              (((number) (number))
-               ;; Additional pruning with negative precondition
-               ;; (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
-               (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
-               (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
-               (cond
-                 ((= fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                                  (incf op=-time=)
-                                  (if (< time-fd time-ours)
-                                      (incf op=-time<)
-                                      (incf op=-time>))))
-                 ((< fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                                  (incf op<-time=)
-                                  (if (< time-fd time-ours)
-                                      (incf op<-time<)
-                                      (incf op<-time>))))
-                 ((> fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                                  (incf op>-time=)
-                                  (if (< time-fd time-ours)
-                                      (incf op>-time<)
-                                      (incf op>-time>)))))
-               (format t "
+      (plet (((time-fd fd) (num-operator-fd p))
+             ((time-ours ours goal-achieved) (num-operator-ours p)))
+        (is-true goal-achieved "On ~a, goal axiom was not achieved" p)
+        (incf fd-total time-fd)
+        (incf ours-total time-ours)
+        (push (list p time-ours (not (not goal-achieved)) time-fd) times)
+        (match* (fd ours)
+          (((number) (number))
+           ;; Additional pruning with negative precondition
+           ;; (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
+           (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
+           (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
+           (cond
+             ((= fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                              (incf op=-time=)
+                              (if (< time-fd time-ours)
+                                  (incf op=-time<)
+                                  (incf op=-time>))))
+             ((< fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                              (incf op<-time=)
+                              (if (< time-fd time-ours)
+                                  (incf op<-time<)
+                                  (incf op<-time>))))
+             ((> fd ours) (if (< (abs (- time-fd time-ours)) 1)
+                              (incf op>-time=)
+                              (if (< time-fd time-ours)
+                                  (incf op>-time<)
+                                  (incf op>-time>)))))
+           (format t "
 Runtime total: FD: ~a OURS: ~a
 ~{~{~13a~}~%~}"
-                       fd-total ours-total
-                       `((------- FD-wins    ours-wins  diff<1 sum)
-                         (same-op ,op=-time< ,op=-time> ,op=-time= ,(+ op=-time< op=-time> op=-time=))
-                         (more-op ,op<-time< ,op<-time> ,op<-time= ,(+ op<-time< op<-time> op<-time=))
-                         (less-op ,op>-time< ,op>-time> ,op>-time= ,(+ op>-time< op>-time> op>-time=))
-                         (sum     ,(+ op=-time< op<-time< op>-time<)
-                                  ,(+ op=-time> op<-time> op>-time>)
-                                  ,(+ op=-time= op<-time= op>-time=)
-                                  ,(+ (+ op=-time< op=-time> op=-time=)
-                                      (+ op<-time< op<-time> op<-time=)
-                                      (+ op>-time< op>-time> op>-time=))))))
-              (((number) _)
-               (fail "On problem ~a, fd returned ~a ops in ~a sec, ours failed" p fd time-fd))
-              ((_ (number))
-               (pass "On problem ~a, ours returned ~a ops in ~a sec, fd failed" p ours time-ours))))
-        (error (c)
-          (fail "Received an error:~% ~a" c))))
-    (format t "~&Runtime statistics:~%~{~{~50a ~10a ~10a~}~%~}"
-            (list* '(problem ours fd)
+                   fd-total ours-total
+                   `((------- FD-wins    ours-wins  diff<1 sum)
+                     (same-op ,op=-time< ,op=-time> ,op=-time= ,(+ op=-time< op=-time> op=-time=))
+                     (more-op ,op<-time< ,op<-time> ,op<-time= ,(+ op<-time< op<-time> op<-time=))
+                     (less-op ,op>-time< ,op>-time> ,op>-time= ,(+ op>-time< op>-time> op>-time=))
+                     (sum     ,(+ op=-time< op<-time< op>-time<)
+                              ,(+ op=-time> op<-time> op>-time>)
+                              ,(+ op=-time= op<-time= op>-time=)
+                              ,(+ (+ op=-time< op=-time> op=-time=)
+                                  (+ op<-time< op<-time> op<-time=)
+                                  (+ op>-time< op>-time> op>-time=))))))
+          (((number) _)
+           (fail "On problem ~a, fd returned ~a ops in ~a sec, ours failed" p fd time-fd))
+          ((_ (number))
+           (pass "On problem ~a, ours returned ~a ops in ~a sec, fd failed" p ours time-ours)))))
+    (format t "~&Runtime statistics:~%~{~{~50a ~10a ~10a ~10a~}~%~}"
+            (list* '(problem ours goal? fd)
                    (sort times #'> :key #'second)))))
 
 (test num-operator-small
