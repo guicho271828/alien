@@ -824,11 +824,12 @@ Runtime total: FD: ~a OURS: ~a
   (let ((*time-parser* t))
     (test-num-operators
      '(;; very large grounded domains
-       "axiom-domains/psr-middle-strips-derived/p50.pddl"
-       "axiom-domains/opttel-strips-derived/p19.pddl"
-       "ipc2011-opt/tidybot-opt11/p20.pddl"))))
+       "axiom-domains/psr-middle-strips-derived/p50.pddl" ; 106sec @ 94 facts, 7451 axioms, 5214 ops
+       "axiom-domains/opttel-strips-derived/p19.pddl"  ; 10sec @ 2320 facts, 1601 axioms, 2860 ops
+       "ipc2011-opt/tidybot-opt11/p20.pddl"            ; 55sec @ 386 facts, 1 axioms, 203873 ops (vs FD: 30488 ops)
+       ))))
 
 (test num-operator-too-many-ops
-  (test-num-operators '("ipc2014-agl/hiking-agl14/p20.pddl"))
-  (let ((*enable-no-op-pruning* nil))
-    (test-num-operators '("ipc2014-agl/hiking-agl14/p20.pddl"))))
+  ;; fast downward too many ops, or is mine wrong?
+  ;; maybe fd is not considering (not (= x y)) ? not really...
+  (test-num-operators '("ipc2014-agl/hiking-agl14/p20.pddl")))
