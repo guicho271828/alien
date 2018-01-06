@@ -54,6 +54,14 @@
    #:*facts*
    #:*ops*
    #:with-parsed-information4
-   #:*axiom-layers*))
+   #:*axiom-layers*
+   #:instantiate
+   #:index-facts
+   #:instantiate-ops
+   #:with-parsed-information5
+   #:*instantiated-ops*
+   #:*trie*
+   #:*fluent-size*
+   #:*index*))
 
 (setf trivia:*arity-check-by-test-call* nil)

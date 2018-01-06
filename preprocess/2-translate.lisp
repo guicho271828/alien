@@ -596,12 +596,18 @@ Signals an error when the type is not connected to the root OBJECT type."
     (ematch it
       ((plist :action name :parameters params :precondition pre :effect eff)
        (let ((&pre (&nnf-dnf pre))
-             (&eff (&nnf-dnf/effect eff)))
+             (&eff (&nnf-dnf/effect eff))
+             (i -1))
          (funcall &pre
                   (lambda (pre)
                     (funcall &eff
                              (lambda (eff)
-                               (push (list :action name :parameters params
+                               (incf i)
+                               (push (list :action (let ((*package* (symbol-package name)))
+                                                     ;; not specifying PDDL for testing convenience
+                                                     (symbolicate name (princ-to-string i)))
+                                           :original-action name
+                                           :parameters params
                                            :precondition pre
                                            :effect eff)
                                      *actions5*))))))))))
@@ -699,18 +705,21 @@ Signals an error when the type is not connected to the root OBJECT type."
 (defun move-exists-actions ()
   (dolist (it *actions5*)
     (ematch it
-      ((plist :action name :parameters params :precondition pre :effect eff)
+      ((plist :action name :original-action name2
+              :parameters params :precondition pre :effect eff)
        (push 
         (match (move-exists/condition pre)
           ;; remove exists
           (`(exists ,args ,condition)
             (list :action name
+                  :original-action name2
                   :parameters (append params args)
                   :original-parameters params
                   :precondition condition
                   :effect (move-exists/effect eff)))
           (condition
            (list :action name
+                 :original-action name2
                  :parameters params
                  :original-parameters params
                  :precondition condition
@@ -740,9 +749,13 @@ Signals an error when the type is not connected to the root OBJECT type."
 (defun simplify-effects-actions ()
   (dolist (it *actions6*)
     (ematch it
-      ((plist :action name :parameters params :original-parameters oparams :precondition pre :effect eff)
+      ((plist :action name :original-action name2
+              :parameters params :original-parameters oparams
+              :precondition pre :effect eff)
        (push
-        (list :action name :parameters params :original-parameters oparams :precondition pre :effect (simplify-effect eff))
+        (list :action name :original-action name2
+              :parameters params :original-parameters oparams
+              :precondition pre :effect (simplify-effect eff))
         *actions7*)))))
 
 (defmacro foreach (list &body body)
@@ -820,10 +833,12 @@ Signals an error when the type is not connected to the root OBJECT type."
                 *axioms6*)
         :actions
         (mapcar (lambda-ematch
-                  ((plist :action name :parameters params :original-parameters orig
+                  ((plist :action name :original-action name2
+                          :parameters params :original-parameters orig
                           :precondition `(and ,@precond)
                           :effect `(and ,@effects))
                    (list :action name
+                         :original-action name2
                          :parameters params
                          :original-parameters orig
                          :precondition

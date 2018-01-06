@@ -1,67 +1,110 @@
 
-(in-package :strips)
+(in-package :strips.lib)
 
-;; hackish plist-based trie implementation
-;; not for performance
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (define-constant +t+ '+t+))
 
-(define-constant +terminal+ '+terminal+)
+(defun make-trie ()
+  "Trie implementation based on plist. not for performance"
+  (list +t+ +t+))
 
-(defun trie-push (plist list)
+(defmacro trie-insert (trie list)
+  `(setf ,trie (%trie-insert ,trie ,list)))
+
+(defun %trie-insert (trie list)
   (match list
     (nil
-     (setf (getf plist +terminal+) +terminal+)
-     plist)
+     (setf (getf trie +t+) +t+)
+     trie)
     ((list* first rest)
-     (let ((child (getf plist first)))
+     (let ((child (getf trie first)))
        (if child
            (progn
-             (setf (getf plist first)
-                   (trie-push child rest))
-             plist)
+             (setf (getf trie first)
+                   (%trie-insert child rest))
+             trie)
            (progn
-             (setf (getf plist first)
-                   (trie-push nil rest))
-             plist))))))
+             (setf (getf trie first)
+                   (%trie-insert nil rest))
+             trie))))))
 
-(defun trie-member (plist list)
+(defun trie-member (trie list)
   (match list
     (nil
-     (getf plist +terminal+))
+     (getf trie +t+))
     ((list* first rest)
-     (trie-member (getf plist first) rest))))
+     (trie-member (getf trie first) rest))))
   
-(defun trie-push-all (plist lists)
+(defun trie-insert-all (trie lists)
   (iter (for list in lists)
-        (setf plist (trie-push plist list)))
-  plist)
+        (setf trie (trie-insert trie list)))
+  trie)
 
-(defun map-trie (fn plist)
+(defun map-trie (fn trie)
+  "traverse over the trie and calls FN on each leaf"
   (let ((stack (make-array 32 :adjustable t :fill-pointer 0)))
-    (labels ((rec (plist)
-               (iter (for (key child . rest) on plist by #'cddr)
-                     (if (eq +terminal+ key)
+    (labels ((rec (trie)
+               (iter (for (key child . rest) on trie by #'cddr)
+                     (if (eq +t+ key)
                          (funcall fn (coerce stack 'list))
                          (progn
                            (vector-push-extend key stack 32)
                            (rec child)
                            (vector-pop stack))))))
-      (rec plist))))
+      (rec trie))))
+
+(defun variablep (variable)
+  (ematch variable
+    ((symbol :name (string* #\? _))
+     t)
+    ((symbol)
+     nil)))
+
+;; WIP
+;; The function is called with the matching symbol, and :binding keyword argument with &allow-other-keys.
+
+(defun query-trie (fn trie query)
+  "Traverse over the trie matching the query, where query is a list containing symbols.
+Symbols whose name starts from ? are regarded as variable."
+  (let ((stack (make-array 32 :adjustable t :fill-pointer 0)))
+    (labels ((rec (trie query)
+               (match query
+                 (nil
+                  (when (getf trie +t+)
+                    (funcall fn (coerce stack 'list))))
+                 ((list* head rest)
+                  (if (variablep head)
+                      (iter (for (key child . _) on trie by #'cddr)
+                            (if (eq +t+ key)
+                                nil ; insufficient length
+                                (progn
+                                  (vector-push-extend key stack 32)
+                                  (rec child rest)
+                                  (vector-pop stack))))
+                      (progn
+                        (vector-push-extend head stack 32)
+                        (rec (getf trie head) rest)
+                        (vector-pop stack)))))))
+      (rec trie query))))
+
 
 (let ((trie nil))
-  (setf trie (trie-push trie '(a b c)))
+  (setf trie (trie-insert trie '(a b c)))
   (print trie)
-  (setf trie (trie-push trie '(a b c)))
+  (setf trie (trie-insert trie '(a b c)))
   (print trie)
-  (setf trie (trie-push trie '(a b d)))
-  (setf trie (trie-push trie '(a b e)))
-  (setf trie (trie-push trie '(a c d)))
+  (setf trie (trie-insert trie '(a b d)))
+  (setf trie (trie-insert trie '(a b e)))
+  (setf trie (trie-insert trie '(a c d)))
   (print trie)
-  (setf trie (trie-push trie '(a c)))
+  (setf trie (trie-insert trie '(a c)))
   (terpri)
   (pprint-fill *standard-output* trie)
   (assert (print (trie-member trie '(a c))))
   (assert (not (print (trie-member trie '(a b)))))
   
-  (map-trie #'print trie))
+  (map-trie #'print trie)
+  (terpri)
+  (query-trie #'print trie '(a ? d)))
 
   

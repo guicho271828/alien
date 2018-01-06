@@ -22,16 +22,19 @@
               :cl-cpus)
  :serial t
  :components ((:module "preprocess"
-                       :components ((:file "package")
-                                    (:file "util")
-                                    (:file "specials")
-                                    (:file "2-translate")
-                                    (:module "lib"
-                                             :components ((:file "equivalence")))
-                                    (:file "4-easy-invariant")
-                                    (:file "5-grounding-prolog-3")
-                                    (:file "6-invariant")))
-              (:module "search"
-                       :components ((:file "util"))))
+               :serial t
+               :components ((:file "package")
+                            (:file "util")
+                            (:file "specials")
+                            (:module "lib"
+                             :components ((:file "package")
+                                          (:file "equivalence")
+                                          (:file "indexed-entries")
+                                          (:file "trie")))
+                            (:file "2-translate")
+                            (:file "4-easy-invariant")
+                            (:file "5-grounding-prolog-3")
+                            (:file "6-invariant")
+                            (:file "7-instantiate"))))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))

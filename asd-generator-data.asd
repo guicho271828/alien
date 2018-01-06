@@ -17,9 +17,12 @@ $ update-asdf
 |#
 
 
-((:package)
- (:util)
- (:dir :lib
-       (:rest))
- (:rest))
+((:dir :preprocess
+       (:package)
+       (:util)
+       (:specials)
+       (:dir :lib
+             (:package)
+             (:rest))
+       (:rest :recursive nil)))
 
