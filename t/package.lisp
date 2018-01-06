@@ -560,11 +560,13 @@
                (/ (float (- (get-internal-real-time) ,start))
                   internal-time-units-per-second)))))
 
+(defparameter *timeout* 120)
+
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis~%")
   (with-timing
     (handler-case
-      (bt:with-timeout (120)
+      (bt:with-timeout (*timeout*)
         (let ((command (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
                                (strips::%rel "downward/src/translate/translate.py") d p)))
           (write-string command *trace-output*)
@@ -579,7 +581,7 @@
   (format t "~&Testing prolog-based grounding, without invariant synthesis~%")
   (with-timing
     (handler-case
-      (bt:with-timeout (120)
+      (bt:with-timeout (*timeout*)
         (with-test-ground (parse p d)
           (length *ops*)))
       (bt:timeout ()
@@ -694,6 +696,42 @@
     "ipc2014-agl/transport-agl14/p10.pddl"
     "ipc2014-agl/visitall-agl14/p10.pddl"))
 
+(defparameter *large-files*
+  '("axiom-domains/opttel-adl-derived/p48.pddl"
+    "axiom-domains/opttel-strips-derived/p19.pddl"
+    "axiom-domains/philosophers-adl-derived/p48.pddl"
+    "axiom-domains/philosophers-strips-derived/p48.pddl"
+    "axiom-domains/psr-middle-adl-derived/p50.pddl"
+    "axiom-domains/psr-middle-strips-derived/p50.pddl"
+    "ipc2011-opt/barman-opt11/p20.pddl"
+    "ipc2011-opt/elevators-opt11/p20.pddl"
+    "ipc2011-opt/floortile-opt11/p20.pddl"
+    "ipc2011-opt/nomystery-opt11/p20.pddl"
+    "ipc2011-opt/openstacks-opt11/p20.pddl"
+    "ipc2011-opt/parcprinter-opt11/p20.pddl"
+    "ipc2011-opt/parking-opt11/p20.pddl"
+    "ipc2011-opt/pegsol-opt11/p20.pddl"
+    "ipc2011-opt/scanalyzer-opt11/p20.pddl"
+    "ipc2011-opt/sokoban-opt11/p20.pddl"
+    "ipc2011-opt/tidybot-opt11/p20.pddl"
+    "ipc2011-opt/transport-opt11/p20.pddl"
+    "ipc2011-opt/visitall-opt11/p20.pddl"
+    "ipc2011-opt/woodworking-opt11/p20.pddl"
+    "ipc2014-agl/barman-agl14/p20.pddl"
+    "ipc2014-agl/cavediving-agl14/p20.pddl"
+    "ipc2014-agl/childsnack-agl14/p20.pddl"
+    "ipc2014-agl/citycar-agl14/p20.pddl"
+    "ipc2014-agl/floortile-agl14/p20.pddl"
+    "ipc2014-agl/ged-agl14/p20.pddl"
+    "ipc2014-agl/hiking-agl14/p20.pddl"
+    "ipc2014-agl/maintenance-agl14/p20.pddl"
+    "ipc2014-agl/openstacks-agl14/p20.pddl"
+    "ipc2014-agl/parking-agl14/p20.pddl"
+    "ipc2014-agl/tetris-agl14/p20.pddl"
+    "ipc2014-agl/thoughtful-agl14/p20.pddl"
+    "ipc2014-agl/transport-agl14/p20.pddl"
+    "ipc2014-agl/visitall-agl14/p20.pddl"))
+
 (defun test-num-operators (files)
   (setf (cl-rlimit:rlimit cl-rlimit:+rlimit-address-space+) 8000000000)
   (setf *kernel* (make-kernel (cpus:get-number-of-processors)
@@ -769,54 +807,9 @@ Runtime total: FD: ~a OURS: ~a
 (test num-operator-middle
   (test-num-operators *middle-files*))
 
-(defparameter *large-files*
-  '("axiom-domains/opttel-adl-derived/p48.pddl"
-    "axiom-domains/opttel-strips-derived/p19.pddl"
-    "axiom-domains/philosophers-adl-derived/p48.pddl"
-    "axiom-domains/philosophers-strips-derived/p48.pddl"
-    "axiom-domains/psr-middle-adl-derived/p50.pddl"
-    "axiom-domains/psr-middle-strips-derived/p50.pddl"
-    "ipc2011-opt/barman-opt11/p20.pddl"
-    "ipc2011-opt/elevators-opt11/p20.pddl"
-    "ipc2011-opt/floortile-opt11/p20.pddl"
-    "ipc2011-opt/nomystery-opt11/p20.pddl"
-    "ipc2011-opt/openstacks-opt11/p20.pddl"
-    "ipc2011-opt/parcprinter-opt11/p20.pddl"
-    "ipc2011-opt/parking-opt11/p20.pddl"
-    "ipc2011-opt/pegsol-opt11/p20.pddl"
-    "ipc2011-opt/scanalyzer-opt11/p20.pddl"
-    "ipc2011-opt/sokoban-opt11/p20.pddl"
-    "ipc2011-opt/tidybot-opt11/p20.pddl"
-    "ipc2011-opt/transport-opt11/p20.pddl"
-    "ipc2011-opt/visitall-opt11/p20.pddl"
-    "ipc2011-opt/woodworking-opt11/p20.pddl"
-    "ipc2014-agl/barman-agl14/p20.pddl"
-    "ipc2014-agl/cavediving-agl14/p20.pddl"
-    "ipc2014-agl/childsnack-agl14/p20.pddl"
-    "ipc2014-agl/citycar-agl14/p20.pddl"
-    "ipc2014-agl/floortile-agl14/p20.pddl"
-    "ipc2014-agl/ged-agl14/p20.pddl"
-    "ipc2014-agl/hiking-agl14/p20.pddl"
-    "ipc2014-agl/maintenance-agl14/p20.pddl"
-    "ipc2014-agl/openstacks-agl14/p20.pddl"
-    "ipc2014-agl/parking-agl14/p20.pddl"
-    "ipc2014-agl/tetris-agl14/p20.pddl"
-    "ipc2014-agl/thoughtful-agl14/p20.pddl"
-    "ipc2014-agl/transport-agl14/p20.pddl"
-    "ipc2014-agl/visitall-agl14/p20.pddl"))
+(def-suite :strips.large)
+(in-suite :strips.large)
 
-(defparameter *timeout* 60)
-
-#+(or)
-(test can-load-large-file
-  (iter (for file in *large-files*)
-        (handler-case
-            (bt:with-timeout (*timeout*)
-              (strips::ground (strips::easy-invariant (strips::parse (strips::%rel file))))
-              (pass))
-          (error (c)
-            (fail "Failure while parsing ~a, Reason:~% ~a" file c))
-          (bt:timeout ()
-            (fail "Grounding/parsing ~a did not finish in ~a sec." file *timeout*)))))
-
+(test num-operator-large
+  (test-num-operators *large-files*))
 
