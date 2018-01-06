@@ -820,3 +820,14 @@ Runtime total: FD: ~a OURS: ~a
 (test num-operator-large
   (test-num-operators *large-files*))
 
+(def-suite :strips.problematic)
+(in-suite :strips.problematic)
+
+(test num-operator-problematic
+  (let ((*time-parser* t))
+    (test-num-operators
+     '(;; very large grounded domains
+       "axiom-domains/psr-middle-strips-derived/p50.pddl"
+       "axiom-domains/opttel-strips-derived/p19.pddl"
+       "ipc2011-opt/tidybot-opt11/p20.pddl"))))
+
