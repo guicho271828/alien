@@ -146,12 +146,16 @@
       ,@body)))
 
 (defun positive (form)
-  (ematch form
-    ((list* (or 'not 'increase) _)
-     nil)
-    ((list* name _)
-      (assert (member name *predicates* :key #'first))
-      t)))
+  ;; (declare (optimize (speed 3) (safety 0)))
+  (not (member (car form) '(not increase)))
+  ;; (ematch form
+  ;;   ((list* (or 'not 'increase) _)
+  ;;    nil)
+  ;;   (_
+  ;;    ;; (list* name  _)
+  ;;    ;; (assert (member name *predicates* :key #'first))
+  ;;    t))
+  )
 
 (defun negative (form)
   (ematch form
