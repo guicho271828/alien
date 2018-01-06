@@ -754,6 +754,9 @@
       (handler-case
           (plet (((fd time-fd) (num-operator-fd p))
                  ((ours time-ours) (num-operator-ours p)))
+            (incf fd-total time-fd)
+            (incf ours-total time-ours)
+            (push (list p time-ours time-fd) times)
             (match* (fd ours)
               (((number) (number))
                ;; Additional pruning with negative precondition
@@ -776,9 +779,6 @@
                                   (if (< time-fd time-ours)
                                       (incf op>-time<)
                                       (incf op>-time>)))))
-               (incf fd-total time-fd)
-               (incf ours-total time-ours)
-               (push (list p time-ours time-fd) times)
                (format t "
 Runtime total: FD: ~a OURS: ~a
 ~{~{~13a~}~%~}"
