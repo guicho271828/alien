@@ -13,12 +13,17 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
     (let ((result (%ground debug)))
       (let ((result2 (let ((*package* package))
                        (read-from-string result))))
+        #+(or)
         (append (iter (for x in result2)
                       (collecting
                        (if (listp x)
                            (remove-duplicates x :test 'equal)
                            x)))
-                info)))))
+                ;; this remove-duplicates could be quite time consuming
+                info)
+        ;; result2 may contain duplicates, but we leave it at the moment
+        ;; since we put them in an index and a trie
+        (append result2 info)))))
 
 ;;; tools for reachability predicates
 
