@@ -9,9 +9,12 @@
   (hash (make-hash-table) :type hash-table :read-only t))
 
 (defun index-insert (index element)
-  (let ((a (index-array index)))
-    (setf (gethash element (index-hash index)) (fill-pointer a))
-    (vector-push-extend element a (array-total-size a))))
+  (let ((a (index-array index))
+        (h (index-hash index)))
+    (unless (gethash element h)
+      (setf (gethash element h) (fill-pointer a))
+      (vector-push-extend element a (array-total-size a)))
+    nil))
 
 (defun index (index element)
   (gethash element (index-hash index)))
