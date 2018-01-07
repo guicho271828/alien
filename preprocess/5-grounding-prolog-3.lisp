@@ -186,7 +186,17 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 (defun join-ordering-aux (conditions acc)
   (if (<= (length conditions) 2)
-      (values (mapcar #'normalize-fact-term conditions) acc)
+      ;; (values (mapcar #'normalize-fact-term conditions) acc)
+      (values
+       ;; no longer generate tmp predicates, for handling of inequality correctly
+       (labels ((expand (condition)
+                  (if (tmp-p condition)
+                      `(and ,@(mapcar #'expand (cddr (find condition acc :key 'second :test 'equal))))
+                      (if (eq '\\= (car condition))
+                          condition
+                          (normalize-fact-term condition)))))
+         (mapcar #'expand conditions))
+       nil)
       (multiple-value-bind (min-u min-c1 min-c2) (find-best-join conditions)
         (with-gensyms (tmp)
           (let ((new `(,tmp ,@min-u)))
@@ -197,11 +207,11 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                (cons new))
              (list* `(:- ,new
                          ;; min-c1 has larger arity; put min-c2 first
-                         ,(normalize-fact-term min-c1)
+                         ,min-c1
                          ,@(when (not (tmp-p min-c1))
                              ;; check for inequality as early as possible
                              (instantiated-inequality min-c1))
-                         ,(normalize-fact-term min-c2)
+                         ,min-c2
                          ,@(when (not (tmp-p min-c2))
                              ;; check for inequality as early as possible
                              (instantiated-inequality min-c2)))
