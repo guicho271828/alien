@@ -10,7 +10,8 @@
         :fiveam
         :iterate :alexandria :trivia
         :lparallel
-        :arrow-macros)
+        :arrow-macros
+        :cl-prolog2)
   (:shadowing-import-from :trivia :<>))
 (in-package :strips.test)
 
@@ -312,10 +313,8 @@
   (is-true (strips::tmp-p '(tmp111)))
   (is-false (strips::tmp-p '(a))))
 
-(defparameter *debug* nil)
-
 (defun call-test-ground (info fn)
-  (with-parsed-information4 (mutex-invariant (ground (easy-invariant info) nil *package*))
+  (with-parsed-information4 (mutex-invariant (ground (easy-invariant info) *package*))
     (funcall fn)))
 
 (defmacro with-test-ground (info &body body)
@@ -558,12 +557,15 @@
 
 (in-suite grounding)
 
-(defmacro with-timing (form)
-  (with-gensyms (start)
+(defmacro with-timing (&body forms)
+  (with-gensyms (start results)
     `(let ((,start (get-internal-real-time)))
-       (values ,form
-               (/ (float (- (get-internal-real-time) ,start))
-                  internal-time-units-per-second)))))
+       (let ((,results (multiple-value-list (progn ,@forms))))
+         (values-list
+          (list*
+           (/ (float (- (get-internal-real-time) ,start))
+              internal-time-units-per-second)
+           ,results))))))
 
 (defparameter *timeout* 120)
 
@@ -586,13 +588,19 @@
   (format t "~&Testing prolog-based grounding, without invariant synthesis~%")
   (with-timing
     (handler-case
-      (bt:with-timeout (*timeout*)
-        (with-test-ground (parse p d)
-          (length *ops*)))
+        (bt:with-timeout (*timeout*)
+          (let ((*package* (find-package :pddl)))
+            (with-test-ground (parse p d)
+              (format t "~&~a added facts (generic + monotonic+)~%" (length *facts*))
+              (format t "~&~a reachable axioms~%" (length *ground-axioms*))
+              (values (length *ops*)
+                      (member *goal* *ground-axioms* :test 'equal)))))
       (bt:timeout ()
         nil)
       (error (c)
-        (invoke-restart 'transfer-error c)))))
+        (let ((r (find-restart 'transfer-error c)))
+          (when r
+            (invoke-restart 'transfer-error c)))))))
 
 (defparameter *small-files*
   '("researchers-domain/p07.pddl"
@@ -649,7 +657,8 @@
     "ipc2014-agl/visitall-agl14/p01.pddl"))
 
 (defparameter *middle-files*
-  '("axiom-domains/opttel-adl-derived/p10.pddl"
+  '("researchers-domain/p10.pddl"
+    "axiom-domains/opttel-adl-derived/p10.pddl"
     #+(or) "axiom-domains/opttel-strips-derived/p10.pddl"       ; FD is too slow
     "axiom-domains/philosophers-adl-derived/p10.pddl"
     #+(or) "axiom-domains/philosophers-strips-derived/p10.pddl" ; FD is too slow
@@ -702,7 +711,8 @@
     "ipc2014-agl/visitall-agl14/p10.pddl"))
 
 (defparameter *large-files*
-  '("axiom-domains/opttel-adl-derived/p48.pddl"
+  '("researchers-domain/p12.pddl"
+    "axiom-domains/opttel-adl-derived/p48.pddl"
     "axiom-domains/opttel-strips-derived/p19.pddl"
     "axiom-domains/philosophers-adl-derived/p48.pddl"
     "axiom-domains/philosophers-strips-derived/p48.pddl"
@@ -737,84 +747,97 @@
     "ipc2014-agl/transport-agl14/p20.pddl"
     "ipc2014-agl/visitall-agl14/p20.pddl"))
 
+(defun print-result-table (array x-titles y-titles)
+  (format t "~&~{~{~13a~}~%~}"
+          `((------- ,@x-titles sum)
+            ,@(iter (for y-title in y-titles)
+                    (for y from 0)
+                    (collecting
+                     (cons y-title
+                           (iter (for x-title in x-titles)
+                                 (for x from 0)
+                                 (collecting (aref array x y) into list)
+                                 (summing (aref array x y)    into sum)
+                                 (finally
+                                  (return (append list (list sum))))))))
+            (sum ,@(iter (for x-title in x-titles)
+                         (for x from 0)
+                         (collecting
+                          (iter (for y-title in y-titles)
+                                (for y from 0)
+                                (summing (aref array x y)))))
+                 ,(iter (for x-title in x-titles)
+                        (for x from 0)
+                        (summing
+                         (iter (for y-title in y-titles)
+                               (for y from 0)
+                               (summing (aref array x y)))))))))
+
 (defun test-num-operators (files)
   (setf (cl-rlimit:rlimit cl-rlimit:+rlimit-address-space+) 8000000000)
   (setf *kernel* (make-kernel (cpus:get-number-of-processors)
                               :bindings `((*standard-output* . ,*standard-output*)
                                           (*error-output* . ,*error-output*)
                                           (*trace-output* . ,*trace-output*))))
-  (let ((op=-time< 0) (op=-time> 0) (op=-time= 0)
-        (op<-time< 0) (op<-time> 0) (op<-time= 0)
-        (op>-time< 0) (op>-time> 0) (op>-time= 0)
-        (fd-total 0)
+  (let ((fd-total 0)
         (ours-total 0)
-        (times nil))
+        (times nil)
+        (result (make-array '(3 3) :initial-element 0)))
     (dolist (p files)
       (format t "~&~%##### Testing ~a" p)
-      (handler-case
-          (plet (((fd time-fd) (num-operator-fd p))
-                 ((ours time-ours) (num-operator-ours p)))
-            (match* (fd ours)
-              (((number) (number))
-               ;; Additional pruning with negative precondition
-               ;; (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
-               (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
-               (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
-               (cond
-                 ((= fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                                  (incf op=-time=)
-                                  (if (< time-fd time-ours)
-                                      (incf op=-time<)
-                                      (incf op=-time>))))
-                 ((< fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                                  (incf op<-time=)
-                                  (if (< time-fd time-ours)
-                                      (incf op<-time<)
-                                      (incf op<-time>))))
-                 ((> fd ours) (if (< (abs (- time-fd time-ours)) 1)
-                                  (incf op>-time=)
-                                  (if (< time-fd time-ours)
-                                      (incf op>-time<)
-                                      (incf op>-time>)))))
-               (incf fd-total time-fd)
-               (incf ours-total time-ours)
-               (push (list p time-ours time-fd) times)
-               (format t "
-Runtime total: FD: ~a OURS: ~a
-~{~{~13a~}~%~}"
-                       fd-total ours-total
-                       `((------- FD-wins    ours-wins  diff<1 sum)
-                         (same-op ,op=-time< ,op=-time> ,op=-time= ,(+ op=-time< op=-time> op=-time=))
-                         (more-op ,op<-time< ,op<-time> ,op<-time= ,(+ op<-time< op<-time> op<-time=))
-                         (less-op ,op>-time< ,op>-time> ,op>-time= ,(+ op>-time< op>-time> op>-time=))
-                         (sum     ,(+ op=-time< op<-time< op>-time<)
-                                  ,(+ op=-time> op<-time> op>-time>)
-                                  ,(+ op=-time= op<-time= op>-time=)
-                                  ,(+ (+ op=-time< op=-time> op=-time=)
-                                      (+ op<-time< op<-time> op<-time=)
-                                      (+ op>-time< op>-time> op>-time=))))))
-              (((number) _)
-               (fail "On problem ~a, fd returned ~a ops in ~a sec, ours failed" p fd time-fd))
-              ((_ (number))
-               (pass "On problem ~a, ours returned ~a ops in ~a sec, fd failed" p ours time-ours))))
-        (error (c)
-          (fail "Received an error:~% ~a" c))))
-    (format t "~&Runtime statistics:~%~{~{~50a ~10a ~10a~}~%~}"
-            (list* '(problem ours fd)
+      (plet (((time-fd fd) (num-operator-fd p))
+             ((time-ours ours goal-achieved) (num-operator-ours p)))
+        (is-true goal-achieved "On ~a, goal axiom was not achieved" p)
+        (incf fd-total time-fd)
+        (incf ours-total time-ours)
+        (push (list p time-ours (not (not goal-achieved)) time-fd) times)
+        (match* (fd ours)
+          (((number) (number))
+           ;; Additional pruning with negative precondition
+           ;; (is (<= fd ours) "On problem ~a, (<= fd ours) evaluated to (<= ~a ~a) = ~a" p fd ours (<= fd ours))
+           (format t "~&Instantiated Operator, FD: ~a vs OURS: ~a" fd ours)
+           (format t "~&Runtime, FD: ~a vs OURS: ~a" time-fd time-ours)
+           (incf (aref result
+                       (cond
+                         ((< (abs (- time-fd time-ours)) 1) 2)
+                         ((< time-fd time-ours) 0)
+                         (t 1))
+                       (cond
+                         ((= fd ours) 0)
+                         ((< fd ours) 1)
+                         ((> fd ours) 2))))
+           (format t "~&Runtime total: FD: ~a OURS: ~a" fd-total ours-total)
+           (print-result-table result '(fd-wins ours-wins diff<1) '(same-op more-op less-op)))
+          (((number) _)
+           (fail "On problem ~a, fd returned ~a ops in ~a sec, ours failed" p fd time-fd))
+          ((_ (number))
+           (pass "On problem ~a, ours returned ~a ops in ~a sec, fd failed" p ours time-ours)))))
+    (format t "~&Runtime statistics:~%~{~{~50a ~10a ~10a ~10a~}~%~}"
+            (list* '(problem ours goal? fd)
                    (sort times #'> :key #'second)))))
 
 (test num-operator-small
   (test-num-operators *small-files*))
 
-(def-suite :strips.middle)
-(in-suite :strips.middle)
+(def-suite :strips.more)
+(in-suite :strips.more)
 
 (test num-operator-middle
   (test-num-operators *middle-files*))
 
-(def-suite :strips.large)
-(in-suite :strips.large)
-
 (test num-operator-large
   (test-num-operators *large-files*))
 
+(test num-operator-problematic
+  (let ((*time-parser* t))
+    (test-num-operators
+     '(;; very large grounded domains
+       "axiom-domains/psr-middle-strips-derived/p50.pddl" ; 106sec @ 94 facts, 7451 axioms, 5214 ops
+       "axiom-domains/opttel-strips-derived/p19.pddl"  ; 10sec @ 2320 facts, 1601 axioms, 2860 ops
+       "ipc2011-opt/tidybot-opt11/p20.pddl"            ; 55sec @ 386 facts, 1 axioms, 203873 ops (vs FD: 30488 ops)
+       ))))
+
+(test num-operator-too-many-ops
+  ;; fast downward too many ops, or is mine wrong?
+  ;; maybe fd is not considering (not (= x y)) ? not really...
+  (test-num-operators '("ipc2014-agl/hiking-agl14/p20.pddl")))

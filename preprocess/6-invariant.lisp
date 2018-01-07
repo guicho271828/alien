@@ -30,8 +30,8 @@
     (list* :axiom-layers (axiom-layers)
            info)))
 
-(defun axiom-layers (&optional debug)
-  (let* ((string (%axiom-layers debug))
+(defun axiom-layers ()
+  (let* ((string (%axiom-layers))
          (list (read-from-string string))
          (result (make-array 32 :element-type 'list :initial-element nil :adjustable t)))
     (iter (for (axiom layer) in list)
@@ -40,7 +40,7 @@
           (push axiom (aref result layer)))
     result))
 
-(defun %axiom-layers (&optional debug)
+(defun %axiom-layers ()
   (run-prolog
    `(,@(when (eq :swi *axiom-layer-prolog*)
          `((:- (use_module (library tabling))) ; swi specific
@@ -75,7 +75,7 @@
          (wrap (forall (axiom-layer-over-disjunctions ?ga ?i)
                        (and (print-sexp (list ?ga ?i)) nl)))
          halt))
-   *axiom-layer-prolog* :args '("-g" "main") :debug debug :input nil))
+   *axiom-layer-prolog* :args '("-g" "main") :input nil))
 
 (defun axiom-layer-rules ()
   (mapcar (lambda-ematch

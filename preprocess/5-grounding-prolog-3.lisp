@@ -8,17 +8,22 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defun ground (info &optional debug (package (find-package :pddl)))
+(defun ground (info &optional (package (find-package :pddl)))
   (with-parsed-information2 info
-    (let ((result (%ground debug)))
+    (let ((result (%ground)))
       (let ((result2 (let ((*package* package))
                        (read-from-string result))))
+        #+(or)
         (append (iter (for x in result2)
                       (collecting
                        (if (listp x)
                            (remove-duplicates x :test 'equal)
                            x)))
-                info)))))
+                ;; this remove-duplicates could be quite time consuming
+                info)
+        ;; result2 may contain duplicates, but we leave it at the moment
+        ;; since we put them in an index and a trie
+        (append result2 info)))))
 
 ;;; tools for reachability predicates
 
@@ -181,7 +186,16 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 (defun join-ordering-aux (conditions acc)
   (if (<= (length conditions) 2)
-      (values (mapcar #'normalize-fact-term conditions) acc)
+      ;; (values (mapcar #'normalize-fact-term conditions) acc)
+      (values
+       ;; no longer generate tmp predicates, for handling of inequality correctly
+       (labels ((expand (condition)
+                  (if (tmp-p condition)
+                      (mappend #'expand (cddr (find condition acc :key 'second :test 'equal)))
+                      (list* (normalize-fact-term condition)
+                             (instantiated-inequality condition)))))
+         (mappend #'expand conditions))
+       nil)
       (multiple-value-bind (min-u min-c1 min-c2) (find-best-join conditions)
         (with-gensyms (tmp)
           (let ((new `(,tmp ,@min-u)))
@@ -192,14 +206,8 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
                (cons new))
              (list* `(:- ,new
                          ;; min-c1 has larger arity; put min-c2 first
-                         ,(normalize-fact-term min-c1)
-                         ,@(when (not (tmp-p min-c1))
-                             ;; check for inequality as early as possible
-                             (instantiated-inequality min-c1))
-                         ,(normalize-fact-term min-c2)
-                         ,@(when (not (tmp-p min-c2))
-                             ;; check for inequality as early as possible
-                             (instantiated-inequality min-c2)))
+                         ,min-c1
+                         ,min-c2)
                     acc)))))))
 
 (defun instantiated-inequality (condition)
@@ -523,7 +531,7 @@ and also orders the terms by 'structure ordering' --- e.g.
                        `(or (not ,(normalize-init-term atom))
                             ,(normalize-del-term atom)))))))))))
 
-(defun %ground (&optional debug)
+(defun %ground ()
   (run-prolog
    (append (when (eq :swi *grounding-prolog*)
              `((:- (use_module (library tabling))) ; swi specific
@@ -541,5 +549,5 @@ and also orders the terms by 'structure ordering' --- e.g.
                  (wrap relaxed-reachability)
                  halt))
            (relaxed-reachability))
-   *grounding-prolog* :args '("-g" "main") :debug debug :input nil))
+   *grounding-prolog* :args '("-g" "main") :input nil))
 
