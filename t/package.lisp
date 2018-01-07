@@ -567,7 +567,7 @@
               internal-time-units-per-second)
            ,results))))))
 
-(defparameter *timeout* 120)
+(defparameter *timeout* 300)
 
 (defun num-operator-fd (p &optional (d (strips::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis~%")
