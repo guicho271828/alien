@@ -8,9 +8,9 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defun ground (info &optional debug (package (find-package :pddl)))
+(defun ground (info &optional (package (find-package :pddl)))
   (with-parsed-information2 info
-    (let ((result (%ground debug)))
+    (let ((result (%ground)))
       (let ((result2 (let ((*package* package))
                        (read-from-string result))))
         #+(or)
@@ -538,7 +538,7 @@ and also orders the terms by 'structure ordering' --- e.g.
                        `(or (not ,(normalize-init-term atom))
                             ,(normalize-del-term atom)))))))))))
 
-(defun %ground (&optional debug)
+(defun %ground ()
   (run-prolog
    (append (when (eq :swi *grounding-prolog*)
              `((:- (use_module (library tabling))) ; swi specific
@@ -556,5 +556,5 @@ and also orders the terms by 'structure ordering' --- e.g.
                  (wrap relaxed-reachability)
                  halt))
            (relaxed-reachability))
-   *grounding-prolog* :args '("-g" "main") :debug debug :input nil))
+   *grounding-prolog* :args '("-g" "main") :input nil))
 

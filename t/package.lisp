@@ -10,7 +10,8 @@
         :fiveam
         :iterate :alexandria :trivia
         :lparallel
-        :arrow-macros)
+        :arrow-macros
+        :cl-prolog2)
   (:shadowing-import-from :trivia :<>))
 (in-package :strips.test)
 
@@ -312,10 +313,8 @@
   (is-true (strips::tmp-p '(tmp111)))
   (is-false (strips::tmp-p '(a))))
 
-(defparameter *debug* nil)
-
 (defun call-test-ground (info fn)
-  (with-parsed-information4 (mutex-invariant (ground (easy-invariant info) *debug* *package*))
+  (with-parsed-information4 (mutex-invariant (ground (easy-invariant info) *package*))
     (funcall fn)))
 
 (defmacro with-test-ground (info &body body)
@@ -779,8 +778,7 @@
   (setf *kernel* (make-kernel (cpus:get-number-of-processors)
                               :bindings `((*standard-output* . ,*standard-output*)
                                           (*error-output* . ,*error-output*)
-                                          (*trace-output* . ,*trace-output*)
-                                          (*debug* . ,*debug*))))
+                                          (*trace-output* . ,*trace-output*))))
   (let ((fd-total 0)
         (ours-total 0)
         (times nil)
