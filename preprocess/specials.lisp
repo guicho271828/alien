@@ -9,3 +9,6 @@
 (define-symbol-macro *enable-negative-precondition-pruning*
     (or *enable-negative-precondition-pruning-for-axioms*
         *enable-negative-precondition-pruning-for-fluents*))
+
+(defvar *grounding-prolog* :bprolog)
+(defvar *axiom-layer-prolog* :bprolog)

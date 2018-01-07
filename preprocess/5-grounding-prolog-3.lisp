@@ -315,7 +315,8 @@ and the consumed inequality conditions are removed from *inequality*."
              (and ,@(iter (for p in *predicates*)
                           (when (added-p p)
                             (collecting
-                                `(forall ,(normalize-fact-term p) (print-sexp ,p)))))))
+                                ;; this prints goal as (goal)
+                                `(forall ,(normalize-fact-term p) (print-sexp ,(ensure-zeroary-to-list p))))))))
             ;; note: reachable atoms = (union added init) = (union generic monotonic+ init)
             (write ":ground-axioms\\n")
             (wrap
@@ -323,17 +324,20 @@ and the consumed inequality conditions are removed from *inequality*."
                           (ematch a
                             ((list :derived p _)
                              (collecting
-                              `(forall ,(normalize-fact-term p) (print-sexp ,p))))))))
+                                 ;; this prints goal as (goal)
+                                 `(forall ,(normalize-fact-term p) (print-sexp ,(ensure-zeroary-to-list p)))))))))
             (write ":ops\\n")
             (wrap
              (and ,@(iter (for a in *actions*)
                           (ematch a
                             ((plist :action name
                                     :parameters params)
-                             (collecting
-                              `(forall ,(normalize-op-term `(,name ,@params))
-                                       (and (findall ?i ,(normalize-effect-term `(,name ,@params) '?i) ?list)
-                                            (print-sexp (list (,name ,@params) ?list))))))))))))))))
+                             (let ((p `(,name ,@params)))
+                               (collecting
+                                   `(forall ,(normalize-op-term p)
+                                            (and (findall ?i ,(normalize-effect-term p '?i) ?list)
+                                                 ;; this prints goal as (goal)
+                                                 (print-sexp (list ,(ensure-zeroary-to-list p) ?list)))))))))))))))))
 
 (defun no-op-constraints (effects)
   "adding the constraint which prunes a combination of parameters when
@@ -521,11 +525,12 @@ and also orders the terms by 'structure ordering' --- e.g.
 
 (defun %ground (&optional debug)
   (run-prolog
-   (append `((:- (use_module (library tabling))) ; swi specific
-             (:- (style_check (- singleton))))
-           (effect-order)
-           (remove-subsumed)
-           (print-sexp :swi t)
+   (append (when (eq :swi *grounding-prolog*)
+             `((:- (use_module (library tabling))) ; swi specific
+               (:- (style_check (- singleton)))))
+           ;; (effect-order)
+           ;; (remove-subsumed)
+           (print-sexp)
            `((:- (wrap ?goal)
                  (write "(")
                  (call ?goal)
@@ -536,5 +541,5 @@ and also orders the terms by 'structure ordering' --- e.g.
                  (wrap relaxed-reachability)
                  halt))
            (relaxed-reachability))
-   :swi :args '("-g" "main") :debug debug))
+   *grounding-prolog* :args '("-g" "main") :debug debug :input nil))
 

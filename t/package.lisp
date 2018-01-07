@@ -370,6 +370,7 @@
     (is-true (strips::added-p '(p)))
     (is-true (strips::monotonic+p '(p)))
     (is-true (strips::static-p '(goal)))
+    (print *facts*)
     (is-true (mem '(p) *facts*))
     (is-true (mem '(d o1) *ground-axioms*))
     (is-true (mem '(d o2) *ground-axioms*))
@@ -420,6 +421,7 @@
     (is-true (mem '((a0 o1) (0)) *ops*))
     (is-true (mem '((a0 o2) (0)) *ops*))))
 
+#+(or)
 (test relaxed-reachability5
   (let (ops-with ops-without)
     (let ((*enable-no-op-pruning* nil))
@@ -432,6 +434,7 @@
         (setf ops-with *ops*)))
     (is-true (set-equal ops-without ops-with :test 'equal))))
 
+#+(or)
 (test relaxed-reachability6
   (let (ops-with ops-without)
     (let ((*enable-no-op-pruning* nil))
@@ -444,6 +447,7 @@
         (setf ops-with *ops*)))
     (is-true (set-equal ops-without ops-with :test 'equal))))
 
+#+(or)
 (test relaxed-reachability-noop
   (let (ops-fd ops-with ops-without)
     (setf ops-fd (num-operator-fd (%rel "check/rovers-noop/p01.pddl")))

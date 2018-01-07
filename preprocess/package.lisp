@@ -62,6 +62,8 @@
    #:*instantiated-ops*
    #:*trie*
    #:*fluent-size*
-   #:*index*))
+   #:*index*
+   #:*grounding-prolog*
+   #:*axiom-layer-prolog*))
 
 (setf trivia:*arity-check-by-test-call* nil)

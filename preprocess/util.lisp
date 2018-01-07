@@ -161,8 +161,15 @@
      nil)))
 
 (defun ensure-zeroary-to-atom (f)
+  "convert a nullary predicate to a prolog atom, e.g. (goal) -> goal"
   (match f
     ((list x) x)
+    (_ f)))
+
+(defun ensure-zeroary-to-list (f)
+  "convert a nullary predicate to a prolog list, e.g. (goal) -> (list goal)"
+  (match f
+    ((list x) `(list ,x))
     (_ f)))
 
 (declaim (inline make-bit-vector))
