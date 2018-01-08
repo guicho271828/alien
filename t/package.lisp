@@ -284,6 +284,7 @@
 (def-suite grounding :in :strips)
 (in-suite grounding)
 
+#+obsolete
 (test join-ordering
   (let ((*predicates* '((in-city ?l1 ?c)
                         (in-city ?l2 ?c)
