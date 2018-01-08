@@ -31,9 +31,9 @@
                                            (:objects o1 o2)
                                            (:init )
                                            (:goal (goal))))
-    (finishes (println *index*))
-    (finishes (println *trie*))
-    (finishes (println *fluent-size*))
+    (finishes (println *fact-index*))
+    (finishes (println *fact-trie*))
+    (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))))
 
 (test instantiate2
@@ -48,9 +48,9 @@
                                            (:objects o1 o2)
                                            (:init )
                                            (:goal (goal))))
-    (finishes (println *index*))
-    (finishes (println *trie*))
-    (finishes (println *fluent-size*))
+    (finishes (println *fact-index*))
+    (finishes (println *fact-trie*))
+    (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))))
 
 (test instantiate3
@@ -65,9 +65,9 @@
                                            (:objects o1 o2)
                                            (:init )
                                            (:goal (goal))))
-    (finishes (println *index*))
-    (finishes (println *trie*))
-    (finishes (println *fluent-size*))
+    (finishes (println *fact-index*))
+    (finishes (println *fact-trie*))
+    (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))))
 
 (test instantiate4
@@ -81,23 +81,23 @@
                                            (:objects o1 o2)
                                            (:init )
                                            (:goal (goal))))
-    (finishes (println *index*))
-    (finishes (println *trie*))
-    (finishes (println *fluent-size*))
+    (finishes (println *fact-index*))
+    (finishes (println *fact-trie*))
+    (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))))
 
 (test instantiate5
   (with-test-instantiate (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
-    (finishes (println *index*))
-    (finishes (println *trie*))
-    (finishes (println *fluent-size*))
+    (finishes (println *fact-index*))
+    (finishes (println *fact-trie*))
+    (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))))
 
 (test instantiate6
   (with-test-instantiate (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
-    (finishes (println *index*))
-    (finishes (println *trie*))
-    (finishes (println *fluent-size*))
+    (finishes (println *fact-index*))
+    (finishes (println *fact-trie*))
+    (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))))
 
 (test instantiate7 ; initially true vs false predicates which are never deleted
@@ -112,9 +112,9 @@
                               (:objects a b)
                               (:init (p a))
                               (:goal (and))))
-      (finishes (println *index*))
-      (finishes (println *trie*))
-      (finishes (println *fluent-size*))
+      (finishes (println *fact-index*))
+      (finishes (println *fact-trie*))
+      (finishes (println *fact-size*))
       (finishes (println *instantiated-ops*)))))
 
 (test instantiate8 ; initially true predicates which can be deleted vs which is never deleted
@@ -130,9 +130,9 @@
                               (:objects a b)
                               (:init (p a) (p b) (r b))
                               (:goal (and))))
-      (finishes (println *index*))
-      (finishes (println *trie*))
-      (finishes (println *fluent-size*))
+      (finishes (println *fact-index*))
+      (finishes (println *fact-trie*))
+      (finishes (println *fact-size*))
       (finishes (println *instantiated-ops*)))))
 
 (test instantiate9 ; axioms that can become true vs cannot become true
@@ -150,9 +150,9 @@
                               (:objects a b)
                               (:init (p a))
                               (:goal (and))))
-      (finishes (println *index*))
-      (finishes (println *trie*))
-      (finishes (println *fluent-size*))
+      (finishes (println *fact-index*))
+      (finishes (println *fact-trie*))
+      (finishes (println *fact-size*))
       (finishes (println *instantiated-ops*)))))
 
 (test instantiate10 ; axioms that can become true vs cannot become true
@@ -170,9 +170,9 @@
                               (:objects a b)
                               (:init (p a) (p b) (r b))
                               (:goal (and))))
-      (finishes (println *index*))
-      (finishes (println *trie*))
-      (finishes (println *fluent-size*))
+      (finishes (println *fact-index*))
+      (finishes (println *fact-trie*))
+      (finishes (println *fact-size*))
       (finishes (println *instantiated-ops*)))))
 
 

@@ -125,9 +125,10 @@
   "Binds the special variables using INFO, which is a parsed & flattened result of pddl files (see 2-translate.lisp).
    *types* *objects* *predicates* *init* *goal* *axioms* *actions* "
   `(match ,info
-     ((plist :index *index*
-             :fluent-size *fluent-size*
-             :trie *trie*
+     ((plist :fact-index *fact-index*
+             :fact-size *fact-size*
+             :fact-trie *fact-trie*
+             :op-index *op-index*
              :instantiated-ops *instantiated-ops*
 
              :axiom-layers *axiom-layers*

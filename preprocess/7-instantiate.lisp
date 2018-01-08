@@ -4,26 +4,27 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defvar *index*)
-(defvar *fluent-size*)
-(defvar *trie*)
+(defvar *fact-index*)
+(defvar *fact-size*)
+(defvar *fact-trie*)
+(defvar *op-index*)
 (defvar *instantiated-ops*)
 
 (defun instantiate (info)
   (with-parsed-information4 info
-    (multiple-value-bind (index fluent-size trie) (index-facts)
-      (multiple-value-bind (op-index instantiated-ops) (instantiate-ops index trie)
-        (list* :index index
-               :fluent-size fluent-size
-               :trie trie
+    (multiple-value-bind (fact-index fact-size fact-trie) (index-facts)
+      (multiple-value-bind (op-index instantiated-ops) (instantiate-ops fact-index fact-trie)
+        (list* :fact-index fact-index
+               :fact-size fact-size
+               :fact-trie fact-trie
                :op-index op-index
-               :instantiated-ops instantiate-ops
+               :instantiated-ops instantiated-ops
                info)))))
 
 (defun index-facts ()
   (let ((i (strips.lib:make-index :test 'equal))
         (trie (strips.lib:make-trie))
-        (fluent-size 0))
+        (fact-size 0))
     ;; indexing init
     (dolist (f *init*)
       (unless (static-p f)
@@ -33,12 +34,12 @@
     (dolist (f *facts*)
       (strips.lib:index-insert i f)
       (strips.lib:trie-insert trie f))
-    (setf fluent-size (strips.lib:index-size i))
+    (setf fact-size (strips.lib:index-size i))
     ;; indexing axioms
     (dolist (f *ground-axioms*)
       (strips.lib:index-insert i f)
       (strips.lib:trie-insert trie f))
-    (values i fluent-size trie)))
+    (values i fact-size trie)))
 
 (defun instantiate-ops (index trie)
   (values (let ((i (strips.lib:make-index :test 'equal)))
