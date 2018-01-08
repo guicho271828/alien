@@ -12,11 +12,13 @@
 (defun instantiate (info)
   (with-parsed-information4 info
     (multiple-value-bind (index fluent-size trie) (index-facts)
-      (list* :index index
-             :fluent-size fluent-size
-             :trie trie
-             :instantiated-ops (instantiate-ops index trie)
-             info))))
+      (multiple-value-bind (op-index instantiated-ops) (instantiate-ops index trie)
+        (list* :index index
+               :fluent-size fluent-size
+               :trie trie
+               :op-index op-index
+               :instantiated-ops instantiate-ops
+               info)))))
 
 (defun index-facts ()
   (let ((i (strips.lib:make-index :test 'equal))
@@ -39,7 +41,10 @@
     (values i fluent-size trie)))
 
 (defun instantiate-ops (index trie)
-  (mapcar (lambda (op) (instantiate-op op index trie)) *ops*))
+  (values (let ((i (strips.lib:make-index :test 'equal)))
+            (dolist (o *ops* i)
+              (strips.lib:index-insert i o)))
+          (mapcar (lambda (op) (instantiate-op op index trie)) *ops*)))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (flet ((con () (make-array 16
