@@ -529,15 +529,41 @@
 
 
 (test axiom-layer
-  (let ((*axioms* `((:derived (reachable ?x) (and (at ?x)))
-                    (:derived (reachable ?x) (and (next ?x ?y) (reachable ?y)))))
-        (*ground-axioms* `((reachable 0) (reachable 1) (reachable 2)))
-        (*facts* `((at 2)))
-        (*init* `((next 0 1) (next 1 2)))
-        (*predicates* `((next ?x ?y)
-                        (reachable ?x)
-                        (at ?x))))
-    (finishes (print (strips::%axiom-layers t))))
+  (is-true
+   (let ((*axioms* `((:derived (reachable ?x) (and (at ?x)))
+                     (:derived (reachable ?x) (and (next ?x ?y) (reachable ?y)))))
+         (*ground-axioms* `((reachable 0) (reachable 1) (reachable 2)))
+         (*facts* `((at 2)))
+         (*init* `((next 0 1) (next 1 2)))
+         (*predicates* `((next ?x ?y)
+                         (reachable ?x)
+                         (at ?x)))
+         (*axiom-layer-prolog* :swi))
+     (set= '(((next 1 2) 0)
+             ((next 0 1) 0)
+             ((at 2) 0)
+             ((reachable 0) 3)
+             ((reachable 1) 2)
+             ((reachable 2) 1))
+           (read-from-string (strips::%axiom-layers)))))
+  
+  (is-true
+   (let ((*axioms* `((:derived (reachable ?x) (and (at ?x)))
+                     (:derived (reachable ?x) (and (next ?x ?y) (reachable ?y)))))
+         (*ground-axioms* `((reachable 0) (reachable 1) (reachable 2)))
+         (*facts* `((at 2)))
+         (*init* `((next 0 1) (next 1 2)))
+         (*predicates* `((next ?x ?y)
+                         (reachable ?x)
+                         (at ?x)))
+         (*axiom-layer-prolog* :bprolog))
+     (set= '(((next 1 2) 0)
+             ((next 0 1) 0)
+             ((at 2) 0)
+             ((reachable 0) 3)
+             ((reachable 1) 2)
+             ((reachable 2) 1))
+           (read-from-string (strips::%axiom-layers)))))
 
 
   (with-parsed-information3 (-> "axiom-domains/opttel-adl-derived/p01.pddl"
@@ -545,7 +571,7 @@
                               parse
                               easy-invariant
                               ground)
-    (finishes (print (axiom-layers t))))
+    (finishes (print (axiom-layers))))
 
   (finishes
     (-> "axiom-domains/opttel-adl-derived/p01.pddl"
