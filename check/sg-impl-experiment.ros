@@ -1,0 +1,523 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  #+quicklisp (ql:quickload '(:iterate :trivia :alexandria :introspect-environment) :silent t))
+
+(defpackage :ros.script.sg-impl-experiment.3724390784
+  (:use :cl :iterate :trivia :alexandria :introspect-environment)
+  (:shadow :else))
+(in-package :ros.script.sg-impl-experiment.3724390784)
+
+(declaim (sb-ext:muffle-conditions style-warning))
+;; recursive datastructure
+
+(defmacro ftype* (name &rest types)
+  `(declaim (ftype (function ,(butlast types) ,(lastcar types)) ,name)))
+
+(defmacro in-compile-time ((environment) &body body &environment env)
+  (check-type environment symbol)
+  (eval `(let ((,environment ,env)) (progn ,@body))))
+
+(defmacro print-values (&body form)
+  `(multiple-value-call (lambda (&rest args) (map nil #'print args))
+     ,@form))
+
+(deftype condition-array (&optional elements bit-length)
+  `(simple-array bit (,elements ,bit-length)))
+(ftype* random-condition-array fixnum fixnum condition-array)
+(defun random-condition-array (elements bit-length)
+  (let ((a (make-array (list elements bit-length) :element-type 'bit)))
+    (dotimes (d elements a)
+      (dotimes (b bit-length)
+        ;; precondition requirement is quite sparse
+        (setf (aref a d b) (if (< (random bit-length) 5) 1 0))))))
+
+(deftype binary-state (&optional bit-length)
+  `(simple-bit-vector ,bit-length))
+(ftype* random-binary-state fixnum binary-state)
+(defun random-binary-state (bit-length)
+  (let ((a (make-array (list bit-length) :element-type 'bit)))
+    (dotimes (b bit-length a)
+      (setf (aref a b) (random 2)))))
+
+#+(or)
+(print (random-binary-state 10))
+#+(or)
+(print (random-condition-array 10 10))
+
+;; (in-compile-time (env)
+;;   (print-values (introspect-environment:variable-information 'e env)))
+
+(ftype* naive condition-array binary-state fixnum)
+(defun naive (condition-array state)
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  (destructuring-bind (elements bit-length) (array-dimensions condition-array)
+    (declare (fixnum elements bit-length))
+    (let ((counter 0))
+      (declare (fixnum counter))
+      (dotimes (e elements counter)
+        (dotimes (b bit-length (incf counter))
+          (when (= 1 (aref condition-array e b))
+            (when (= 0 (aref state b))
+              (return))))))))
+
+(defun run-naive (condition-array states)
+  (print :run-naive) (force-output)
+  (time (loop for s in states do (naive condition-array s))))
+
+(defun test (fn)
+  (assert (= 1 (funcall fn
+                        (copy-array #2A((0 0 1 0)
+                                        (0 1 1 0)
+                                        (0 1 0 1)) :element-type 'bit)
+                        #*0011)))
+  (assert (= 2 (funcall fn
+                        (copy-array #2A((0 0 1 0)
+                                        (0 1 1 0)
+                                        (0 1 0 1)) :element-type 'bit)
+                        #*0110))))
+
+(test #'naive)
+
+;; this is a simplified SG with no negative condition, thus v = 1 and don't care branches only
+;; actually a zdd w/o gc
+
+(defvar *dd-hash*)
+(defstruct dd-node
+  (variable -1 :type fixnum)            ; [0, bit-length)
+  (else -1 :type fixnum)                ; -1 : 0 node, -2 : 1 node
+  (then -1 :type fixnum))
+
+(deftype dd ()
+  `(simple-array dd-node))
+
+(ftype* generate-dd condition-array (values dd fixnum))
+(defun generate-dd (condition-array)
+  (destructuring-bind (elements bit-length) (array-dimensions condition-array)
+    (declare (fixnum elements bit-length))
+    (let* ((uninitialized (make-dd-node :variable most-positive-fixnum
+                                        :then most-positive-fixnum
+                                        :else most-positive-fixnum))
+           (zero -1)
+           (one -2)
+           (dd (make-array 32 :element-type 'dd-node
+                           :initial-element uninitialized
+                           :fill-pointer 0 :adjustable t))
+           (*dd-hash* (make-hash-table :test 'equalp))
+           (current zero))
+      (dotimes (e elements)
+        (labels ((rec (current b)
+                   ;; returns index
+                   (cond
+                     ((<= bit-length b) one)
+                     ((= zero current)
+                      (if (= 1 (aref condition-array e b))
+                          (getnode b zero (rec zero (1+ b)))
+                          ;; (getnode b (rec zero (1+ b)) zero)
+                          (rec zero (1+ b)))) ; 1-branch = zero : eliminated
+                     ((= one current)
+                      (if (= 1 (aref condition-array e b))
+                          (getnode b one (rec one (1+ b)))
+                          (getnode b (rec one (1+ b)) one)))
+                     (t
+                       (match (aref dd current)
+                         ((dd-node variable :else else :then then)
+                          (cond
+                            ((= variable b)
+                             ;;
+                             ;;  v=b      v=b              v=b 
+                             ;;  / \  ->  / \      or      / \ 
+                             ;; e   t    e  (rec t)  (rec e)  t
+                             ;;
+                             (if (= 1 (aref condition-array e b))
+                                 (getnode b else (rec then (1+ b)))
+                                 (getnode b (rec else (1+ b)) then)))
+                            ((< b variable)
+                             ;;
+                             ;;  v=b'>b   v=b        
+                             ;;  / \  ->  / \          or unchanged
+                             ;; e   t  v=b' (rec zero)
+                             ;;
+                             (if (= 1 (aref condition-array e b))
+                                 (getnode b current (rec zero (1+ b)))
+                                 (rec current (1+ b))))
+                            ((< variable b)
+                             (error "(< variable b) !"))))))))
+                 
+                 (getnode (variable else then) ; odd variable order, this is because
+                                           ; a DD figure tend to draw zeros on
+                                           ; the left
+                   ;; returns an index.
+                   (if (= zero then)
+                       else
+                       (let ((node (make-dd-node :variable variable :then then :else else)))
+                         (if-let ((index (gethash node *dd-hash*)))
+                           index
+                           (let ((len (length dd)))
+                             (vector-push-extend node dd (array-total-size dd))
+                             (setf (gethash node *dd-hash*) len)))))))
+          (setf current (rec current 0))))
+
+      (values
+       (subseq dd 0 (length dd))
+       current))))
+
+#+(or)
+(print-values
+  (generate-dd (copy-array #2A((0 0 1 0)
+                               (0 1 1 0)
+                               (0 1 0 1)) :element-type 'bit)))
+
+#+(or)
+(print (type-of
+  (generate-dd (copy-array #2A((0 0 1 0)
+                               (0 1 1 0)
+                               (0 1 0 1)) :element-type 'bit))))
+
+(ftype* dd-loop dd fixnum binary-state fixnum)
+(defun dd-loop (dd root state)
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  (let ((counter 0)
+        (zero -1)
+        (one -2))
+    (declare (fixnum counter))
+    (labels ((rec (current b)
+               (declare (fixnum b))
+               (cond
+                 ((= zero current))
+                 ((= one current)
+                  (incf counter))
+                 (t
+                  (match (aref dd current)
+                    ((dd-node variable else then)
+                     (cond
+                       ((= variable b)
+                        (when (= 1 (aref state b))
+                          (rec then (1+ b)))
+                        (rec else (1+ b)))
+                       ((< b variable)
+                        (rec current (1+ b)))
+                       ((< variable b)
+                        (error "(< variable b) !")))))))))
+      (rec root 0)
+      counter)))
+
+(defun run-dd-loop (condition-array states)
+  (multiple-value-bind (dd root) (generate-dd condition-array)
+    (print :run-dd-loop) (force-output)
+    (time (loop for s in states do (dd-loop dd root s)))))
+
+(test (lambda (condition-array state)
+        (multiple-value-call #'dd-loop (generate-dd condition-array) state)))
+
+;; decision tree as a large tagbody, allowing branch prediction
+
+(defvar *inline* nil)
+(defun print-function-size (fn)
+  (format t "Function segment size sum: ~a"
+          (reduce #'+ (sb-disassem:get-fun-segments fn) :key #'sb-disassem:seg-length)))
+
+(defun %as-flet (dd root)
+  (let ((zero -1)
+        (one -2))
+    (labels ((fname (id) (symbolicate 'f (princ-to-string id)))
+             (fbody (node id)
+               (match node
+                 ((dd-node then else)
+                  `(,(fname id) (b)
+                     (declare (fixnum b))
+                     (incf b)
+                     (when (= 1 (aref state b)) (,(fname then) b))
+                     (,(fname else) b))))))
+      (iter (for node in-vector dd)
+            (for id from 0)
+            (collecting (fbody node id) into flet-bodies)
+            (collecting (fname id) into flet-names)
+            (finally
+             (push `(,(fname zero) (b) (declare (ignore b)))                flet-bodies)
+             (push `(,(fname one)  (b) (declare (ignore b)) (incf counter)) flet-bodies)
+             (push (fname zero) flet-names)
+             (push (fname one) flet-names)
+             (return
+               `(labels ,flet-bodies
+                  (declare (dynamic-extent ,@(mapcar (lambda (n) `(function ,n)) flet-names)))
+                  ,@(when *inline* `((declare (inline ,@flet-names))))
+                  (,(fname root) 0))))))))
+
+(defun as-flet (dd root)
+  `(lambda (state)
+     (declare (optimize (speed 3) (safety 0) (debug 0)))
+     (declare (binary-state state))
+     (let ((counter 0))
+       (declare (fixnum counter))
+       ,(%as-flet dd root)
+       counter)))
+
+(defun run-flet (condition-array states &optional *inline*)
+  ;; (print :compile-flet) (force-output)
+  (let ((fn (progn (compile nil (multiple-value-call #'as-flet
+                                 (generate-dd condition-array))))))
+    (print-function-size fn)
+    (print :run-flet) (force-output)
+    (time (loop for s in states do (funcall fn s)))))
+
+#+(or)
+(test (lambda (condition-array state)
+        (let ((fn (compile nil (multiple-value-call #'as-flet
+                                 (generate-dd condition-array)))))
+          ;; (disassemble fn)
+          (funcall fn state))))
+
+#+(or)
+(print (multiple-value-call #'as-flet
+         (generate-dd (copy-array #2A((0 0 1 0)
+                                      (0 1 1 0)
+                                      (0 1 0 1)) :element-type 'bit))))
+
+(defun %as-flet2 (dd root)
+  (let ((zero -1)
+        (one -2))
+    (labels ((fname (id) (symbolicate 'f (princ-to-string id)))
+             (fbody (node id)
+               (match node
+                 ((dd-node then else)
+                  `(,(fname id) ()
+                     (incf b)
+                     (when (= 1 (aref state b)) (,(fname then)))
+                     (,(fname else))
+                     (decf b))))))
+      (iter (for node in-vector dd)
+            (for id from 0)
+            (collecting (fbody node id) into flet-bodies)
+            (collecting (fname id) into flet-names)
+            (finally
+             (push `(,(fname zero) ())                flet-bodies)
+             (push `(,(fname one)  () (incf counter)) flet-bodies)
+             (push (fname zero) flet-names)
+             (push (fname one) flet-names)
+             (return
+               `(let ((b 0))
+                  (declare (fixnum b))
+                  (labels ,flet-bodies
+                    (declare (dynamic-extent ,@(mapcar (lambda (n) `(function ,n)) flet-names)))
+                    ,@(when *inline* `((declare (inline ,@flet-names))))
+                    (,(fname root))))))))))
+
+(defun as-flet2 (dd root)
+  `(lambda (state)
+     (declare (optimize (speed 3) (safety 0) (debug 0)))
+     (declare (binary-state state))
+     (let ((counter 0))
+       (declare (fixnum counter))
+       ,(%as-flet2 dd root)
+       counter)))
+
+(defun run-flet2 (condition-array states &optional *inline*)
+  ;; (print :compile-flet2) (force-output)
+  (let ((fn (progn (compile nil (multiple-value-call #'as-flet2
+                                 (generate-dd condition-array))))))
+    (print-function-size fn)
+    (print :run-flet2) (force-output)
+    (time (loop for s in states do (funcall fn s)))))
+
+#+(or)
+(test (lambda (condition-array state)
+        (let ((fn (compile nil (multiple-value-call #'as-flet2
+                                 (generate-dd condition-array)))))
+          ;; (disassemble fn)
+          (funcall fn state))))
+
+
+(defun %as-flet3 (dd root)
+  (let ((zero -1)
+        (one -2))
+    (labels ((fname (id) (symbolicate 'f (princ-to-string id)))
+             (fbody (node id)
+               (match node
+                 ((dd-node variable then else)
+                  `(,(fname id) ()
+                     (when (= 1 (aref state ,variable)) (,(fname then)))
+                     (,(fname else)))))))
+      (iter (for node in-vector dd)
+            (for id from 0)
+            (collecting (fbody node id) into flet-bodies)
+            (collecting (fname id) into flet-names)
+            (finally
+             (push `(,(fname zero) ())                flet-bodies)
+             (push `(,(fname one)  () (incf counter)) flet-bodies)
+             (push (fname zero) flet-names)
+             (push (fname one) flet-names)
+             (return
+               `(labels ,flet-bodies
+                  (declare (dynamic-extent ,@(mapcar (lambda (n) `(function ,n)) flet-names)))
+                  ,@(when *inline* `((declare (inline ,@flet-names))))
+                  (,(fname root)))))))))
+
+(defun as-flet3 (dd root)
+  `(lambda (state)
+     (declare (optimize (speed 3) (safety 0) (debug 0)))
+     (declare (binary-state state))
+     (let ((counter 0))
+       (declare (fixnum counter))
+       ,(%as-flet3 dd root)
+       counter)))
+
+(defun run-flet3 (condition-array states &optional *inline*)
+  ;; (print :compile-flet3) (force-output)
+  (let ((fn (progn (compile nil (multiple-value-call #'as-flet3
+                                 (generate-dd condition-array))))))
+    (print-function-size fn)
+    (print :run-flet3) (force-output)
+    (time (loop for s in states do (funcall fn s)))))
+
+#+(or)
+(test (lambda (condition-array state)
+        (let ((fn (compile nil (multiple-value-call #'as-flet3
+                                 (generate-dd condition-array)))))
+          ;; (disassemble fn)
+          (funcall fn state))))
+
+
+
+(defun %as-flet4 (dd root)
+  (let ((zero -1)
+        (one -2)
+        (used-by (make-hash-table))
+        (bodies (make-hash-table)))
+    (labels ((fname (id) (symbolicate 'f (princ-to-string id)))
+             (fbody (node id)
+               (match node
+                 ((dd-node variable then else)
+                  (pushnew id (gethash then used-by))
+                  (pushnew id (gethash else used-by))
+                  (setf (gethash id bodies)
+                        `(,(fname id) ()
+                           ,@(cond
+                               ((= then zero) nil)
+                               ((= then one) `((when (= 1 (aref state ,variable))
+                                                 (incf counter))))
+                               (t            `((when (= 1 (aref state ,variable))
+                                                 (,(fname then))))))
+                           ,@(cond
+                               ((= else zero) nil)
+                               ((= else one) `((incf counter)))
+                               (t            `((,(fname else)))))))))))
+      
+      (pushnew most-positive-fixnum (gethash root used-by))
+      
+      (iter (for node in-vector dd with-index id)
+            (fbody node id))
+      (let ((removed (make-array (length dd) :initial-element nil)))
+        (labels ((rec (id)
+                   (when (null (gethash id used-by))
+                     (when (not (aref removed id))
+                       (setf (aref removed id) t)
+                       (match (aref dd id)
+                         ((dd-node then else)
+                          (deletef (gethash then used-by) id)
+                          (deletef (gethash else used-by) id)
+                          (rec then)
+                          (rec else)))))))
+          (iter (for (id body) in-hashtable bodies)
+                (rec id)))
+        (iter (for removed? in-vector removed with-index id)
+              (when removed?
+                (remhash id bodies))))
+      
+      `(labels ,(iter (for (id body) in-hashtable bodies) (collect body))
+         (declare (dynamic-extent ,@(iter (for (id body) in-hashtable bodies)
+                                          (collect `(function ,(fname id))))))
+         ,@(when *inline*
+             `((declare (inline ,@(iter (for (id body) in-hashtable bodies)
+                                        (collect (fname id)))))))
+         (,(fname root))))))
+
+(defun as-flet4 (dd root)
+  `(lambda (state)
+     (declare (optimize (speed 3) (safety 0) (debug 0)))
+     (declare (binary-state state))
+     (let ((counter 0))
+       (declare (fixnum counter))
+       ,(%as-flet4 dd root)
+       counter)))
+
+(defun run-flet4 (condition-array states &optional *inline*)
+  ;; (print :compile-flet4) (force-output)
+  (let ((fn (progn (compile nil (multiple-value-call #'as-flet4
+                                 (generate-dd condition-array))))))
+    (print-function-size fn)
+    (print :run-flet4) (force-output)
+    (time (loop for s in states do (funcall fn s)))))
+
+(test (lambda (condition-array state)
+        (let ((fn (compile nil (multiple-value-call #'as-flet4
+                                 (generate-dd condition-array)))))
+          ;; (disassemble fn)
+          (funcall fn state))))
+
+;; (defun run-macrolet (condition-array states &optional *inline*)
+;;   (let ((fn (compile nil (multiple-value-call #'as-macrolet
+;;                            (generate-dd condition-array)))))
+;;     (print :run-macrolet) (force-output)
+;;     (time (loop for s in states do (funcall fn s)))))
+;; 
+;; (defun as-macrolet (dd root)
+;;   `(lambda (state)
+;;      (declare (optimize (speed 3) (safety 0) (debug 0)))
+;;      (declare (binary-state state))
+;;      (let ((counter 0))
+;;        (declare (fixnum counter))
+;;        ,(%as-macrolet dd root)
+;;        counter)))
+;; 
+;; (defun %as-macrolet (dd root)
+;;   (let ((zero -1)
+;;         (one -2))
+;;     (labels ((fname (id) (symbolicate 'f (princ-to-string id)))
+;;              (fbody (node id)
+;;                (match node
+;;                  ((dd-node then else)
+;;                   `(,(fname id) (b)
+;;                      (declare (fixnum b))
+;;                      (incf b)
+;;                      (when (= 1 (aref state b)) (,(fname then) b))
+;;                      (,(fname else) b))))))
+;;       (iter (for node in-vector dd)
+;;             (for id from 0)
+;;             (collecting (fbody node id) into macrolet-bodies)
+;;             (collecting (fname id) into macrolet-names)
+;;             (finally
+;;              (push `(,(fname zero) (b) (declare (ignore b)))                macrolet-bodies)
+;;              (push `(,(fname one)  (b) (declare (ignore b)) (incf counter)) macrolet-bodies)
+;;              (push (fname zero) macrolet-names)
+;;              (push (fname one) macrolet-names)
+;;              (return
+;;                `(labels ,macrolet-bodies
+;;                   (declare (dynamic-extent ,@(mapcar (lambda (n) `(function ,n)) macrolet-names)))
+;;                   ,@(when *inline* `((declare (inline ,@macrolet-names))))
+;;                   (,(fname root) 0))))))))
+
+
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (match argv
+    ((list (read elements) (read bit-length) (read num-states))
+     (let ((condition-array (random-condition-array elements bit-length))
+           (states (loop repeat num-states collect (random-binary-state bit-length))))
+       ;; (run-naive condition-array states)
+       (run-dd-loop condition-array states)
+       ;; (run-flet condition-array states)
+       ;; (run-flet condition-array states t)
+       ;; (run-flet2 condition-array states)
+       ;; (run-flet2 condition-array states t)
+       (run-flet4 condition-array states)
+       (run-flet4 condition-array states t)))
+    (_
+     (format t "sg-impl-experiments.ros elements bit-length num-states~%"))))
+
+;;; vim: set ft=lisp lisp:
