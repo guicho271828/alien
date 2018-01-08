@@ -24,7 +24,7 @@
         (fluent-size 0))
     ;; indexing init
     (dolist (f *init*)
-      (when (deleted-p f)
+      (unless (static-p f)
         (strips.lib:index-insert i f)
         (strips.lib:trie-insert trie f)))
     ;; indexing fluents
