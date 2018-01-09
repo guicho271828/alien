@@ -1,0 +1,303 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  #+quicklisp (ql:quickload '(:alexandria :trivia :iterate :introspect-environment) :silent t))
+
+(defpackage :ros.script.case.3724474528
+  (:use :cl :alexandria :trivia :iterate :introspect-environment))
+(in-package :ros.script.case.3724474528)
+
+;; from http://g000001.cddddr.org/3644058435
+
+(defun 256way/case (i)
+  (let ((rand (random 10)))
+    (case i
+      . #.(loop :for x :from 0 :repeat 256
+                :collect `((,x) (progn (* i rand)))))))
+
+(defun test (fn x)
+  (print
+   (time
+    (let (tem)
+      (dotimes (i 1000000 tem)
+        (setq tem (funcall fn x)))))))
+
+(test #'256way/case 255) ; 0.232 sec 4809bytes
+(test #'256way/case 0)   ; 0.050 sec
+
+;; naive lambda+vector
+
+(defmacro fcase (i &body body)
+  `(funcall
+    (svref (vector ,@(loop :for b :in body
+                        :collect `(lambda () ,b)))
+           ,i)))
+
+(defun 256way/fcase (i)
+  (let ((rand (random 10)))
+    (fcase i
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+(test #'256way/fcase 255) ; 4.3sec 10,255,897,520 bytes consed
+(test #'256way/fcase 0)   ; 4.3sec 10,255,902,528 bytes consed
+
+;; flet+vector
+
+(defun sym (&rest args)
+  (apply #'symbolicate (mapcar #'princ-to-string args)))
+
+(defmacro fcase2 (i &body body)
+  `(flet ,(iter (for b in body)
+                (for i from 0)
+                (collecting
+                 `(,(sym 'f i) () ,b)))
+     (let ((v (vector ,@(iter (for i below (length body))
+                              (collecting `(function ,(sym 'f i)))))))
+       (funcall (svref v ,i)))))
+
+(defun 256way/fcase2 (i)
+  (let ((rand (random 10)))
+    (fcase2 i
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+(test #'256way/fcase2 255) ; 4.3sec 10,255,887,264 bytes consed
+(test #'256way/fcase2 0)   ; 4.4sec 10,255,902,256 bytes consed
+
+;; flet+vector+dx
+
+(defmacro fcase3 (i &body body)
+  `(flet ,(iter (for b in body)
+                (for i from 0)
+                (collecting
+                 `(,(sym 'f i) () ,b)))
+     (declare (dynamic-extent ,@(iter (for i below (length body))
+                                      (collecting `(function ,(sym 'f i))))))
+     (let ((v (vector ,@(iter (for i below (length body))
+                              (collecting `(function ,(sym 'f i)))))))
+       (declare (dynamic-extent v))
+       (funcall (svref v ,i)))))
+
+(defun 256way/fcase3 (i)
+  (let ((rand (random 10)))
+    (fcase3 i
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+(test #'256way/fcase3 255) ; 1.192 sec 0 bytes consed
+(test #'256way/fcase3 0)
+
+;; flet+vector+dx+type
+
+(defmacro fcase3t (i &body body)
+  `(flet ,(iter (for b in body)
+                (for j from 0)
+                (collecting
+                 `(,(sym 'f j) () (locally (declare ((eql ,j) ,i)) ,b))))
+     (declare (dynamic-extent ,@(iter (for i below (length body))
+                                      (collecting `(function ,(sym 'f i))))))
+     (let ((v (vector ,@(iter (for i below (length body))
+                              (collecting `(function ,(sym 'f i)))))))
+       (declare (dynamic-extent v))
+       (funcall (svref v ,i)))))
+
+(defun 256way/fcase3t (i)
+  (let ((rand (random 10)))
+    (fcase3t i
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+(test #'256way/fcase3t 255) ; 1.192 sec 0 bytes consed
+(test #'256way/fcase3t 0)   ; 1.187 sec 0 bytes consed
+
+;; lambda+vector+load time value --- does not compile, cannot reference RAND
+
+(defmacro fcase4 (i &body body)
+  `(funcall
+    (svref (load-time-value (vector ,@(loop :for b :in body
+                                         :collect `(lambda () ,b)))
+                            t)
+           ,i)))
+
+#+(or)
+(defun 256way/fcase4 (i)
+  (let ((rand (random 10)))
+    (fcase4 i
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+;; flet+vector+load time value --- does not compile, cannot reference functions
+
+(defmacro fcase5 (i &body body)
+  `(flet ,(iter (for b in body)
+                (for i from 0)
+                (collecting
+                 `(,(sym 'f i) () ,b)))
+     (declare (dynamic-extent ,@(iter (for i below (length body))
+                                      (collecting `(function ,(sym 'f i))))))
+     (let ((v (load-time-value
+               (vector ,@(iter (for i below (length body))
+                               (collecting `(function ,(sym 'f i))))))))
+       ;; (declare (dynamic-extent v))
+       (funcall (svref v ,i)))))
+
+#+(or)
+(defun 256way/fcase5 (i)
+  (let ((rand (random 10)))
+    (fcase5 i
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+;; lambda on heap + vector + load time value XXX cannot reference RAND
+
+;; nothing here
+
+;; load time value vector, initially empty, then used as a cache in the initial invokation
+
+(defmacro fcase6 (i &body body)
+  (with-gensyms (flag v)
+    `(flet ,(iter (for b in body)
+                  (for j from 0)
+                  (collecting
+                   `(,(sym 'f j) () (locally (declare ((eql ,j) ,i)) ,b))))
+       (declare (dynamic-extent ,@(iter (for i below (length body))
+                                        (collecting `(function ,(sym 'f i))))))
+       (let ((,flag (load-time-value (list nil)))
+             (,v (load-time-value
+                  (make-array ,(length body) :element-type 'function :initial-element (lambda ())))))
+         (unless (car ,flag)
+           (setf (car ,flag) t)
+           ,@(iter (for i below (length body))
+                   (collecting `(setf (aref ,v i) (function ,(sym 'f i)))))
+           (print :fitst-time))
+         ;; (declare (dynamic-extent v))
+         (funcall (svref ,v ,i))))))
+
+(defun 256way/fcase6 (i)
+  (let ((rand (random 10)))
+    (fcase6 i
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+(test #'256way/fcase6 255) ; 1.06sec 0 bytes
+(test #'256way/fcase6 0)   ; 1.075sec 0 bytes
+
+;; bitwise binary search + type (CASE version constant-folds types) 
+
+(defmacro fcase7 (i &body body)
+  `(flet ,(iter (for b in body)
+                (for j from 0)
+                (collecting
+                 `(,(sym 'f j) () (locally (declare ((eql ,j) ,i)) ,b))))
+     (declare (dynamic-extent ,@(iter (for i below (length body))
+                                      (collecting `(function ,(sym 'f i))))))
+     ,(fcase7-aux i (1- (integer-length (1- (length body)))) 0 (1- (length body)))))
+
+(defun fcase7-aux (i digit min max)
+  (if (< 0 digit)
+      `(if (logbitp ,digit ,i)
+           ,(fcase7-aux i (1- digit) (+ min (expt 2 digit)) max)
+           ,(fcase7-aux i (1- digit) min (1- (+ min (expt 2 digit)))))
+      `(if (logbitp ,digit ,i)
+           (,(sym 'f max))
+           (,(sym 'f min)))))
+
+(defun 256way/fcase7 (i)                ; 14454 bytes
+  (let ((rand (random 10)))
+    (fcase7 i
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+(test #'256way/fcase7 255) ; 0.102 0 bytes
+(test #'256way/fcase7 0)   ; 0.102 0 bytes
+
+
+(defun 4096way/case (i)
+  (let ((rand (random 10)))
+    (case i
+      . #.(loop :for x :from 0 :repeat 4096
+                :collect `((,x) (progn (* i rand)))))))
+
+
+(defun 4096way/fcase7 (i)                ; 14454 bytes
+  (let ((rand (random 10)))
+    (fcase7 i
+      . #.(loop :for x :from 0 :repeat 4096
+             :collect `(progn (* i rand))))))
+
+(test #'4096way/case 4095)   ; 8.9sec
+(test #'4096way/case 0)      ; 0.044sec
+(test #'4096way/fcase7 4095) ; 0.128sec
+(test #'4096way/fcase7 0)    ; 0.129sec
+
+;; lambda+vector+load time value, variables are declared
+
+(defmacro fcase8 (i (&rest vars) &body body)
+  `(funcall
+    (svref (load-time-value (vector
+                             ,@(iter (for b in body)
+                                     (for j from 0)
+                                     (collecting
+                                      `(lambda (,i ,@vars) (locally (declare ((eql ,j) ,i)) ,b)))))
+                            t)
+           ,i)
+    ,i ,@vars))
+
+(defun 256way/fcase8 (i)
+  (let ((rand (random 10)))
+    (fcase8 i (rand)
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+(defun 4096way/fcase8 (i)
+  (let ((rand (random 10)))
+    (fcase8 i (rand)
+      . #.(loop :for x :from 0 :repeat 4096
+             :collect `(progn (* i rand))))))
+
+(test #'4096way/fcase8 4095) ; 0.051sec
+(test #'4096way/fcase8 0)    ; 0.053sec
+
+;; lambda+vector+load time value, variables are automatically obtained from the environment
+
+(defmacro fcase9 (i &body body &environment env)
+  (let ((vars (find-lexical-variables env)))
+    `(funcall
+      (svref (load-time-value (vector
+                               ,@(iter (for b in body)
+                                       (for j from 0)
+                                       (collecting
+                                        `(lambda (,@vars) (locally (declare ((eql ,j) ,i)) ,b)))))
+                              t)
+             ,i)
+      ,@vars)))
+
+(defun find-lexical-variables (env)
+  (mapcar #'car
+          (sb-c::lexenv-vars
+           (sb-c::coerce-to-lexenv env))))
+
+(defun 256way/fcase9 (i)
+  (let ((rand (random 10)))
+    (fcase9 i
+      . #.(loop :for x :from 0 :repeat 256
+             :collect `(progn (* i rand))))))
+
+(defun 4096way/fcase9 (i)
+  (let ((rand (random 10)))
+    (fcase9 i
+      . #.(loop :for x :from 0 :repeat 4096
+             :collect `(progn (* i rand))))))
+
+(test #'4096way/fcase9 4095) ; 0.050 sec
+(test #'4096way/fcase9 0)    ; 0.050 sec
+
+(defun main (&rest argv)
+  (declare (ignorable argv)))
+;;; vim: set ft=lisp lisp:
+
