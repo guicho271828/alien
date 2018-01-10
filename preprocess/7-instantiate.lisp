@@ -87,6 +87,7 @@
                     (let ((i (strips.lib:index index (second c))))
                       (when i ; otherwise unreachable
                         (linear-extend pre (lognot i))))))
+              (sort pre #'<) 
               (iter (for e in geff)
                     (for i from 0)
                     (instantiate-effect e eff index trie))))
@@ -122,6 +123,7 @@
                  (let ((i (strips.lib:index index (second c))))
                    (when i ; otherwise unreachable
                      (linear-extend con (lognot i))))))
+       (sort con #'<)
        (when (positive atom)
          (strips.lib:query-trie
           (lambda (c) (setf eff (strips.lib:index index c)))
