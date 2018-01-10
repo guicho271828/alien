@@ -57,7 +57,7 @@
                              :fill-pointer 0)))
     (defstruct effect
       (con (con) :type (array fixnum))
-      (eff (con) :type (array fixnum)))
+      (eff 0 :type fixnum))
     
     (defstruct op
       (pre (con) :type (array fixnum))
@@ -114,7 +114,7 @@
 (defun instantiate-effect-aux2 (ground-conditions atom effects index trie)
   (let ((e (make-effect)))
     (match e
-      ((effect con eff)
+      ((effect con :eff (place eff))
        (iter (for c in ground-conditions)
              (if (positive c)
                  (unless (static-p c)
@@ -124,14 +124,14 @@
                      (linear-extend con (lognot i))))))
        (when (positive atom)
          (strips.lib:query-trie
-          (lambda (c) (linear-extend eff (strips.lib:index index c)))
+          (lambda (c) (setf eff (strips.lib:index index c)))
           trie atom))
        (when (negative atom)
          (strips.lib:query-trie
           (lambda (c)
             (let ((i (strips.lib:index index c))) ;; note: don't have to call SECOND
               (when i ; otherwise unreachable      ;       |  because it is done already
-                (linear-extend eff (lognot i)))))  ;       |
+                (setf eff (lognot i)))))           ;       |
           trie (second atom)))                     ; <--- here
        ;; note: ignoring action cost at the moment
        ))
