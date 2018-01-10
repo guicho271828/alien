@@ -25,11 +25,11 @@
 (defpackage strips
   (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog2)
   (:shadowing-import-from :trivia :<>)
+  (:shadow :iterate :else)
   (:export
    #:parse
    #:variablep
    #:free
-   #:with-parsed-information
    #:*types*
    #:*objects*
    #:*predicates*
@@ -39,31 +39,38 @@
    #:*actions*
    #:%rel
    #:*predicate-types*
-   #:ground
+   #:with-parsed-information
+   
+   #:easy-invariant
    #:*monotonicity*
    #:with-parsed-information2
-   #:easy-invariant
+   
    #:*enable-no-op-pruning*
    #:*enable-negative-precondition-pruning-for-fluents*
    #:*enable-negative-precondition-pruning-for-axioms*
    #:*enable-negative-precondition-pruning*
-   #:with-parsed-information3
-   #:axiom-layers
-   #:mutex-invariant
+   #:ground
+   #:*grounding-prolog*
    #:*ground-axioms*
    #:*facts*
    #:*ops*
-   #:with-parsed-information4
+   #:with-parsed-information3
+   
+   #:axiom-layers
+   #:mutex-invariant
    #:*axiom-layers*
+   #:*axiom-layer-prolog*
+   #:with-parsed-information4
+   
    #:instantiate
    #:index-facts
    #:instantiate-ops
-   #:with-parsed-information5
+   #:*fact-index*
+   #:*fact-size*
+   #:*fact-trie*
    #:*instantiated-ops*
-   #:*trie*
-   #:*fluent-size*
-   #:*index*
-   #:*grounding-prolog*
-   #:*axiom-layer-prolog*))
+   #:*op-index*
+   #:*sg*
+   #:with-parsed-information5))
 
 (setf trivia:*arity-check-by-test-call* nil)

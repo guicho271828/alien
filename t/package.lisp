@@ -119,7 +119,7 @@
                   (fail "Axiom does not follow the expected form: ~%~s" a))))))))))
 
 (defun set= (a b)
-  (set-equal a b :test 'equal))
+  (set-equal a b :test 'equalp))
 
 (test translate2
   (is (set=
