@@ -54,7 +54,8 @@
   (flet ((con () (make-array 16
                              :element-type 'fixnum
                              :adjustable t
-                             :fill-pointer 0)))
+                             :fill-pointer 0
+                             :initial-element most-positive-fixnum)))
     (defstruct effect
       (con (con) :type (array fixnum))
       (eff 0 :type fixnum))
