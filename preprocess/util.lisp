@@ -183,3 +183,7 @@
 (declaim (inline linear-extend))
 (defun linear-extend (vector element)
   (vector-push-extend element vector (array-total-size vector)))
+
+(defmacro in-compile-time ((environment) &body body &environment env)
+  (check-type environment symbol)
+  (eval `(let ((,environment ,env)) (progn ,@body))))
