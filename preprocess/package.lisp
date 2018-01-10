@@ -70,6 +70,7 @@
    #:*fact-trie*
    #:*instantiated-ops*
    #:*op-index*
+   #:*sg*
    #:with-parsed-information5))
 
 (setf trivia:*arity-check-by-test-call* nil)

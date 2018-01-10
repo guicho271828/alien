@@ -15,19 +15,19 @@
 
 (defvar *sg*)
 
-(defstruct (sg-node (:constructor sg-node (variable then else either)))
+(defstruct (sg-node (:constructor sg-node (variable then else either))
+                    (:constructor make-sg-node))
   "VARIABLE corresponds to an index of a fact.
 THEN/ELSE/EITHER are child nodes correspinding to the condition for variable V being 1,0, or don't care.
-A child node is either a number corresponding to an operator index, or a sg node. "
+A child node is a generator node or a sg node.
+A generator node is just a list containing operator indices."
   (variable -1 :type fixnum)
-  (then -1 :type (or sg-node fixnum))
-  (else -1 :type (or sg-node fixnum))
-  (either -1 :type (or sg-node fixnum)))
-
-(define-constant +zero-node+ -1)
+  (then nil :type (or sg-node list))
+  (else nil :type (or sg-node list))
+  (either nil :type (or sg-node list)))
 
 (defun generate-sg (instantiated-ops)
-  (let ((current +zero-node+))
+  (let ((current nil))
     (iter (for op in-vector instantiated-ops with-index i)
           (setf current (extend-sg current op i)))
     current))
@@ -39,23 +39,30 @@ A child node is either a number corresponding to an operator index, or a sg node
                 (let* ((condition (aref pre con-index))
                        (var (if (minusp condition)
                                 (lognot condition)
-                                condition))))
+                                condition)))
                   (cond
                     ((= condition most-positive-fixnum)
                      ;; no more conditions
-                     index)
+                     (ematch current
+                       ((type list) ; leaf branch
+                        (cons index current))
+                       ((sg-node variable then else either) ; inner node
+                        (sg-node variable then else (rec either (1+ con-index))))))
                     
-                    ((eql current +zero-node+)
+                    ((null current)
                      (cond
                        ((minusp condition)
                         ;; negative condition
-                        (sg-node var +zero-node+ (rec +zero-node+ (1+ con-index)) +zero-node+))
+                        (sg-node var nil (rec nil (1+ con-index)) nil))
                        (t
                         ;; positive condition
-                        (sg-node var (rec +zero-node+ (1+ con-index)) +zero-node+ +zero-node+))))
-                    
+                        (sg-node var (rec nil (1+ con-index)) nil nil))))
                     (t
                      (ematch current
+                       ((type list)
+                        (if (minusp condition)
+                            (sg-node var nil (rec nil (1+ con-index)) current)
+                            (sg-node var (rec nil (1+ con-index)) nil current)))
                        ((sg-node variable then else either)
                         (cond
                           ((= var variable)
@@ -64,8 +71,10 @@ A child node is either a number corresponding to an operator index, or a sg node
                                (sg-node var (rec then (1+ con-index)) else either)))
                           ((< var variable)
                            (if (minusp condition)
-                               (sg-node var current (rec +zero-node+ (1+ con-index)) current)
-                               (sg-node var (rec +zero-node+ (1+ con-index)) current current))))))))))
+                               (sg-node var nil (rec nil (1+ con-index)) current)
+                               (sg-node var (rec nil (1+ con-index)) nil current)))
+                          ((< variable var)
+                           (sg-node variable then else (rec either con-index)))))))))))
        (rec current 0)))))
 
 (defun applicable-ops (sg state)

@@ -34,7 +34,10 @@
     (finishes (println *fact-index*))
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
-    (finishes (println *instantiated-ops*))))
+    (finishes (println *op-index*))
+    (finishes (println *instantiated-ops*))
+    (finishes (println *sg*))
+    (is-true (set= *sg* '(0 1)))))
 
 (test instantiate2
   ;; parameter ?x is not referenced in the axiom body
@@ -51,7 +54,9 @@
     (finishes (println *fact-index*))
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
-    (finishes (println *instantiated-ops*))))
+    (finishes (println *instantiated-ops*))
+    (finishes (println *sg*))
+    (is-true (set= *sg* '(0 1)))))
 
 (test instantiate3
   ;; parameter ?x is a free variable in the axiom body
@@ -68,7 +73,9 @@
     (finishes (println *fact-index*))
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
-    (finishes (println *instantiated-ops*))))
+    (finishes (println *instantiated-ops*))
+    (finishes (println *sg*))
+    (is-true (set= *sg* '(0 1)))))
 
 (test instantiate4
   (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
@@ -84,21 +91,44 @@
     (finishes (println *fact-index*))
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
-    (finishes (println *instantiated-ops*))))
+    (finishes (println *instantiated-ops*))
+    (finishes (println *sg*))
+    (is-true (set= *sg* '(0 1)))))
 
 (test instantiate5
+  (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
+                                                  (:requirements :strips :typing)
+                                                  (:predicates (at ?x) (connected ?x ?y))
+                                                  (:action move :parameters (?x ?y)
+                                                           :precondition (and (at ?x) (connected ?x ?y))
+                                                           :effect (and (not (at ?x)) (at ?y))))
+                                         'pddl::(define (problem p)
+                                                  (:domain d)
+                                                  (:objects l1 l2 l3)
+                                                  (:init (at l1) (connected l1 l2) (connected l2 l3))
+                                                  (:goal (at l3))))
+    (finishes (println *fact-index*))
+    (finishes (println *fact-trie*))
+    (finishes (println *fact-size*))
+    (finishes (println *instantiated-ops*))
+    (finishes (println *sg*))
+    (is-true (equalp *sg* (strips::sg-node 0 '(0) nil (strips::sg-node 1 '(1) nil nil))))))
+
+(test instantiate-opttel
   (with-test-instantiate (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
     (finishes (println *fact-index*))
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
-    (finishes (println *instantiated-ops*))))
+    (finishes (println *instantiated-ops*))
+    (finishes (println *sg*))))
 
-(test instantiate6
+(test instantiate-transport
   (with-test-instantiate (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
     (finishes (println *fact-index*))
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
-    (finishes (println *instantiated-ops*))))
+    (finishes (println *instantiated-ops*))
+    (finishes (println *sg*))))
 
 (test instantiate7 ; initially true vs false predicates which are never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))
