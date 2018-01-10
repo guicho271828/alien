@@ -47,20 +47,20 @@
               (strips.lib:index-insert i o)))
           (mapcar (lambda (op) (instantiate-op op index trie)) *ops*)))
 
+;; conditions and effects are represented by a fixnum index to a fact.
+;; however, the fixnum can be negative, in which case it represent a negative condition or a delete effect.
+
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (flet ((con () (make-array 16
                              :element-type 'fixnum
                              :adjustable t
                              :fill-pointer 0)))
     (defstruct effect
-      (con+ (con) :type (array fixnum))
-      (con- (con) :type (array fixnum))
-      (add (con) :type (array fixnum))
-      (del (con) :type (array fixnum)))
+      (con (con) :type (array fixnum))
+      (eff (con) :type (array fixnum)))
     
     (defstruct op
-      (pre+ (con) :type (array fixnum))
-      (pre- (con) :type (array fixnum))
+      (pre (con) :type (array fixnum))
       (eff (make-array 16 :element-type 'effect :adjustable t :fill-pointer 0) :type (array effect)))))
 
 (defun instantiate-op (op index trie)
@@ -79,14 +79,14 @@
                  (setf geff (nsubst a p geff)))
 
            (match op
-             ((op pre+ pre- eff)
+             ((op pre eff)
               (dolist (c gpre)
                 (if (positive c)
                     (unless (static-p c)
-                      (linear-extend pre+ (strips.lib:index index c)))
+                      (linear-extend pre (strips.lib:index index c)))
                     (let ((i (strips.lib:index index (second c))))
                       (when i ; otherwise unreachable
-                        (linear-extend pre- i)))))
+                        (linear-extend pre (lognot i))))))
               (iter (for e in geff)
                     (for i from 0)
                     (instantiate-effect e eff index trie))))
@@ -114,20 +114,25 @@
 (defun instantiate-effect-aux2 (ground-conditions atom effects index trie)
   (let ((e (make-effect)))
     (match e
-      ((effect con+ con- add del)
+      ((effect con eff)
        (iter (for c in ground-conditions)
              (if (positive c)
                  (unless (static-p c)
-                   (linear-extend con+ (strips.lib:index index c)))
+                   (linear-extend con (strips.lib:index index c)))
                  (let ((i (strips.lib:index index (second c))))
                    (when i ; otherwise unreachable
-                     (linear-extend con- (strips.lib:index index c))))))
+                     (linear-extend con (lognot i))))))
        (when (positive atom)
          (strips.lib:query-trie
-          (lambda (c) (linear-extend add (strips.lib:index index c)))
+          (lambda (c) (linear-extend eff (strips.lib:index index c)))
           trie atom))
        (when (negative atom)
          (strips.lib:query-trie
-          (lambda (c) (linear-extend del (strips.lib:index index c)))
-          trie (second atom)))))
+          (lambda (c)
+            (let ((i (strips.lib:index index c))) ;; note: don't have to call SECOND
+              (when i ; otherwise unreachable      ;       |  because it is done already
+                (linear-extend eff (lognot i)))))  ;       |
+          trie (second atom)))                     ; <--- here
+       ;; note: ignoring action cost at the moment
+       ))
     (linear-extend effects e)))
