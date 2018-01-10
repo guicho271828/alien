@@ -45,7 +45,7 @@
   (values (let ((i (strips.lib:make-index :test 'equal)))
             (dolist (o *ops* i)
               (strips.lib:index-insert i o)))
-          (mapcar (lambda (op) (instantiate-op op index trie)) *ops*)))
+          (map 'vector (lambda (op) (instantiate-op op index trie)) *ops*)))
 
 ;; conditions and effects are represented by a fixnum index to a fact.
 ;; however, the fixnum can be negative, in which case it represent a negative condition or a delete effect.
