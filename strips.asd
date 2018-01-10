@@ -16,13 +16,10 @@
               :trivia.quasiquote
               :arrow-macros
               :cl-prolog2.swi
-              :cl-prolog2.yap
               :cl-prolog2.bprolog
-              :cl-rlimit
-              :cl-cpus)
+              :bordeaux-threads)
  :serial t
  :components ((:module "preprocess"
-               :serial t
                :components ((:file "package")
                             (:file "util")
                             (:file "specials")
@@ -36,6 +33,14 @@
                             (:file "5-grounding-prolog-3")
                             (:file "6-invariant")
                             (:file "7-instantiate")
-                            (:file "8-successor-generator"))))
+                            (:file "8-successor-generator")))
+              (:module "search"
+               :components ((:file "util")
+                            (:file "specials")
+                            (:file "1-state")
+                            (:file "heuristic")
+                            (:file "open-list")
+                            (:file "search")
+                            (:file "special"))))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))

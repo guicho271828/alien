@@ -1,0 +1,55 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  ;;#+quicklisp (ql:quickload '() :silent t)
+  )
+
+(defpackage :ros.script.array.3724666146
+  (:use :cl))
+(in-package :ros.script.array.3724666146)
+
+  ;; Direct subclasses: SIMPLE-VECTOR, SIMPLE-BIT-VECTOR, SIMPLE-STRING,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-SINGLE-FLOAT,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-DOUBLE-FLOAT,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-2,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-4,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-7, <-- this one exists for the same reason 
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-8,     specialized element type for NIL exists.
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-15,    when you upgrade (unsigned-byte 6),
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-16,    the result should be a subtype of both
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-31,    unsigned-byte 8 and signed-byte 8.
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-32,    the common greatest subtype of two are
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-FIXNUM,     unsigned-byte 7 .
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-63,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-UNSIGNED-BYTE-64,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-SIGNED-BYTE-8,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-SIGNED-BYTE-16,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-SIGNED-BYTE-32,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-FIXNUM,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-SIGNED-BYTE-64,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-COMPLEX-SINGLE-FLOAT,
+  ;;                    SB-KERNEL::SIMPLE-ARRAY-COMPLEX-DOUBLE-FLOAT
+
+(defvar *a*)
+
+(defun allocate (&optional bit-length)
+  (setf *a* nil)
+  (sb-ext:gc :full t)
+  ;; (sb-vm:memory-usage :print-spaces t :count-spaces '(:dynamic) :print-summary nil)
+  (when bit-length
+    (setf *a*
+          (make-array (expt 1024 2)
+                      :element-type `(unsigned-byte ,bit-length)
+                      :initial-element 1)))
+  (sb-vm:memory-usage :print-spaces t :count-spaces '(:dynamic) :print-summary nil)
+  (print (type-of *a*)))
+
+
+
+(defun main (&rest argv)
+  (declare (ignorable argv)))
+;;; vim: set ft=lisp lisp:

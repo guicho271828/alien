@@ -1,0 +1,5 @@
+#!/bin/bash
+
+update-asdf -y -s strips -f strips.asdata
+
+update-asdf -y -s strips.test -f strips.test.asdata

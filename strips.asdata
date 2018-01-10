@@ -24,5 +24,9 @@ $ update-asdf
        (:dir :lib
              (:package)
              (:rest))
-       (:rest :recursive nil)))
+       (:rest :recursive nil))
+ (:dir :search
+       (:util)
+       (:specials)
+       (:rest)))
 
