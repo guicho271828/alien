@@ -81,6 +81,7 @@
     (finishes (println *instantiated-ops*))
     (finishes (println *sg*))
     (is-true (set= *sg* '(0 1)))
+    (println *axiom-layers*)
     (finishes (println *instantiated-axioms*))))
 
 (test instantiate4

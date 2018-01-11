@@ -110,20 +110,25 @@
 (defun instantiate-effect-aux (conditions ground-conditions atom effects index trie)
   "recurse into each possibility of universally quantified condition"
   (if conditions
-      (strips.lib:query-trie
-       (lambda (c)
-         (let ((rest-conditions (copy-tree (rest conditions))))
-           (iter (for a in (rest c))
-                 (for p in (rest (first conditions)))
-                 (when (variablep p)
-                   (setf rest-conditions (nsubst a p rest-conditions))))
-           (instantiate-effect-aux rest-conditions (cons c ground-conditions) atom effects index trie)))
-       trie (first conditions))
+      (ematch conditions
+        ((list* first rest)
+         (let* ((negative (negative first))
+                (c (if negative (second first) first)))
+           (strips.lib:query-trie
+            (lambda (gc)
+              (let ((rest (copy-tree rest)))
+                (iter (for a in (rest gc))
+                      (for p in (rest c))
+                      (when (variablep p)
+                        (setf rest (nsubst a p rest))))
+                (instantiate-effect-aux rest (cons (if negative `(not ,gc) gc) ground-conditions)
+                                        atom effects index trie)))
+            trie c))))
       (instantiate-effect-aux2 ground-conditions atom effects index trie)))
 
 (defun instantiate-effect-aux2 (ground-conditions atom effects index trie)
   (let ((e (make-effect)))
-    (match e
+    (ematch e
       ((effect con :eff (place eff))
        (iter (for c in ground-conditions)
              (if (positive c)
