@@ -148,16 +148,18 @@
        ))
     (linear-extend effects e)))
 
-(defun instantiate-axioms (index trie)
+(defun instantiate-axioms (index trie &aux (first-iteration t))
   (map 'vector
        (lambda (layer)
-         (let ((results (make-array (length *ground-axioms*)
+         (let ((results (make-array 32
                                     :element-type 'effect
                                     :fill-pointer 0
                                     :adjustable t
                                     :initial-element +uninitialized-effect+)))
-           (dolist (axiom layer)
-             (instantiate-axiom axiom index trie results))
+           (if first-iteration
+               (setf first-iteration nil)
+               (dolist (axiom layer)
+                 (instantiate-axiom axiom index trie results)))
            results))
        *axiom-layers*))
 
