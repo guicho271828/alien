@@ -63,7 +63,13 @@
     
     (defstruct op
       (pre (con) :type (array fixnum))
-      (eff (make-array 16 :element-type 'effect :adjustable t :fill-pointer 0) :type (array effect)))))
+      (eff (make-array 16
+                       :element-type 'effect
+                       :initial-element +uninitialized-effect+
+                       :adjustable t
+                       :fill-pointer 0) :type (array effect)))))
+
+(define-constant +uninitialized-effect+ (make-effect))
 
 (defun instantiate-op (op index trie)
   (ematch op
