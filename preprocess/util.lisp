@@ -132,6 +132,8 @@
              :instantiated-ops *instantiated-ops*
              :successor-generator *sg*
              :instantiated-axioms *instantiated-axioms*
+             :instantiated-init *instantiated-init*
+             :instantiated-goal *instantiated-goal*
 
              :axiom-layers *axiom-layers*
              :facts *facts*

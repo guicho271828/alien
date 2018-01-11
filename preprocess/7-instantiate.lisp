@@ -10,6 +10,8 @@
 (defvar *op-index*)
 (defvar *instantiated-ops*)
 (defvar *instantiated-axioms*)
+(defvar *instantiated-init*)
+(defvar *instantiated-goal*)
 
 (defun instantiate (info)
   (with-parsed-information4 info
@@ -22,6 +24,8 @@
                :instantiated-ops instantiated-ops
                :successor-generator (generate-sg instantiated-ops)
                :instantiated-axioms (instantiate-axioms fact-index fact-trie)
+               :instantiated-init (instantiate-init fact-index fact-size)
+               :instantiated-goal (instantiate-goal fact-index)
                info)))))
 
 (defun index-facts ()
@@ -185,3 +189,15 @@
                 ;; need to instantiate each free variable
                 (instantiate-effect-aux gbody nil axiom results index trie))))))))
 
+(defun instantiate-init (fact-index fact-size)
+  (let ((results (make-array fact-size
+                             :element-type 'fixnum
+                             :fill-pointer 0
+                             :adjustable t)))
+    (iter (for p in *init*)
+          (unless (static-p p)
+            (linear-extend results (strips.lib:index fact-index p))))
+    results))
+
+(defun instantiate-goal (fact-index)
+  (strips.lib:index fact-index *goal*))
