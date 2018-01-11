@@ -75,7 +75,10 @@
          (write ")"))
      (:- main
          (wrap (forall (axiom-layer-over-disjunctions ?ga ?i)
-                       (print-sexp (list ?ga ?i))))
+                       (or (-> (atom ?ga)
+                             ;; fix for zero-ary predicates
+                             (print-sexp (list (list ?ga) ?i)))
+                           (print-sexp (list ?ga ?i)))))
          halt))
    *axiom-layer-prolog* :args '("-g" "main") :input nil))
 
