@@ -21,7 +21,7 @@
                :op-index op-index
                :instantiated-ops instantiated-ops
                :successor-generator (generate-sg instantiated-ops)
-               :instantiated-axioms (instantiate-axioms fact-index)
+               :instantiated-axioms (instantiate-axioms fact-index fact-trie)
                info)))))
 
 (defun index-facts ()
@@ -148,7 +148,7 @@
        ))
     (linear-extend effects e)))
 
-(defun instantiate-axioms (index)
+(defun instantiate-axioms (index trie)
   (map 'vector
        (lambda (layer)
          (let ((results (make-array (length *ground-axioms*)
@@ -157,29 +157,20 @@
                                     :adjustable t
                                     :initial-element +uninitialized-effect+)))
            (dolist (axiom layer)
-             (instantiate-axiom axiom index results))
+             (instantiate-axiom axiom index trie results))
            results))
        *axiom-layers*))
 
-(defun instantiate-axiom (axiom index results)
+(defun instantiate-axiom (axiom index trie results)
   (match axiom
     ((list* name args)
      (iter (for lifted in (remove-if-not (lambda-match ((list :derived `(,(eq name) ,@_) _) t)) *axioms*))
            (ematch lifted
              ((list :derived `(,(eq name) ,@params) `(and ,@body))
-              (let* ((gbody (copy-tree body))
-                     (effect (make-effect :eff (strips.lib:index index axiom))))
+              (let ((gbody (copy-tree body)))
                 (iter (for a in args)
                       (for p in params)
                       (setf gbody (nsubst a p gbody)))
-                (ematch effect
-                  ((effect con)
-                   (dolist (c gbody)
-                     (if (positive c)
-                         (unless (static-p c)
-                           (linear-extend con (strips.lib:index index c)))
-                         (let ((i (strips.lib:index index (second c))))
-                           (when i ; otherwise unreachable
-                             (linear-extend con (lognot i))))))))
-                (linear-extend results effect))))))))
+                ;; need to instantiate each free variable
+                (instantiate-effect-aux gbody nil axiom results index trie))))))))
 
