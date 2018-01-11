@@ -131,6 +131,7 @@
              :op-index *op-index*
              :instantiated-ops *instantiated-ops*
              :successor-generator *sg*
+             :instantiated-axioms *instantiated-axioms*
 
              :axiom-layers *axiom-layers*
              :facts *facts*

@@ -9,6 +9,7 @@
 (defvar *fact-trie*)
 (defvar *op-index*)
 (defvar *instantiated-ops*)
+(defvar *instantiated-axioms*)
 
 (defun instantiate (info)
   (with-parsed-information4 info
@@ -20,6 +21,7 @@
                :op-index op-index
                :instantiated-ops instantiated-ops
                :successor-generator (generate-sg instantiated-ops)
+               :instantiated-axioms (instantiate-axioms fact-index fact-trie)
                info)))))
 
 (defun index-facts ()
@@ -28,9 +30,13 @@
         (fact-size 0))
     ;; indexing init
     (dolist (f *init*)
+      ;; index contains only fluent facts; however, trie contains all facts,
+      ;; including static facts, because it is used for looking up the
+      ;; candidates for free variables.  static facts are never added to the
+      ;; preconditions nor effect conditions.
       (unless (static-p f)
-        (strips.lib:index-insert i f)
-        (strips.lib:trie-insert trie f)))
+        (strips.lib:index-insert i f))
+      (strips.lib:trie-insert trie f))
     ;; indexing fluents
     (dolist (f *facts*)
       (strips.lib:index-insert i f)
@@ -69,7 +75,7 @@
                        :adjustable t
                        :fill-pointer 0) :type (array effect)))))
 
-(define-constant +uninitialized-effect+ (make-effect))
+(define-constant +uninitialized-effect+ (make-effect) :test 'equalp)
 
 (defun instantiate-op (op index trie)
   (ematch op
@@ -108,20 +114,25 @@
 (defun instantiate-effect-aux (conditions ground-conditions atom effects index trie)
   "recurse into each possibility of universally quantified condition"
   (if conditions
-      (strips.lib:query-trie
-       (lambda (c)
-         (let ((rest-conditions (copy-tree (rest conditions))))
-           (iter (for a in (rest c))
-                 (for p in (rest (first conditions)))
-                 (when (variablep p)
-                   (setf rest-conditions (nsubst a p rest-conditions))))
-           (instantiate-effect-aux rest-conditions (cons c ground-conditions) atom effects index trie)))
-       trie (first conditions))
+      (ematch conditions
+        ((list* first rest)
+         (let* ((negative (negative first))
+                (c (if negative (second first) first)))
+           (strips.lib:query-trie
+            (lambda (gc)
+              (let ((rest (copy-tree rest)))
+                (iter (for a in (rest gc))
+                      (for p in (rest c))
+                      (when (variablep p)
+                        (setf rest (nsubst a p rest))))
+                (instantiate-effect-aux rest (cons (if negative `(not ,gc) gc) ground-conditions)
+                                        atom effects index trie)))
+            trie c))))
       (instantiate-effect-aux2 ground-conditions atom effects index trie)))
 
 (defun instantiate-effect-aux2 (ground-conditions atom effects index trie)
   (let ((e (make-effect)))
-    (match e
+    (ematch e
       ((effect con :eff (place eff))
        (iter (for c in ground-conditions)
              (if (positive c)
@@ -145,3 +156,32 @@
        ;; note: ignoring action cost at the moment
        ))
     (linear-extend effects e)))
+
+(defun instantiate-axioms (index trie &aux (first-iteration t))
+  (map 'vector
+       (lambda (layer)
+         (let ((results (make-array 32
+                                    :element-type 'effect
+                                    :fill-pointer 0
+                                    :adjustable t
+                                    :initial-element +uninitialized-effect+)))
+           (if first-iteration
+               (setf first-iteration nil)
+               (dolist (axiom layer)
+                 (instantiate-axiom axiom index trie results)))
+           results))
+       *axiom-layers*))
+
+(defun instantiate-axiom (axiom index trie results)
+  (ematch axiom
+    ((list* name args)
+     (iter (for lifted in (remove-if-not (lambda-match ((list :derived `(,(eq name) ,@_) _) t)) *axioms*))
+           (ematch lifted
+             ((list :derived `(,(eq name) ,@params) `(and ,@body))
+              (let ((gbody (copy-tree body)))
+                (iter (for a in args)
+                      (for p in params)
+                      (setf gbody (nsubst a p gbody)))
+                ;; need to instantiate each free variable
+                (instantiate-effect-aux gbody nil axiom results index trie))))))))
+

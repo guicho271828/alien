@@ -71,6 +71,7 @@
    #:*instantiated-ops*
    #:*op-index*
    #:*sg*
-   #:with-parsed-information5))
+   #:with-parsed-information5
+   #:*instantiated-axioms*))
 
 (setf trivia:*arity-check-by-test-call* nil)

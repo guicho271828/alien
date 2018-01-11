@@ -23,21 +23,25 @@
 (test instantiate1
   (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
                                                   (:requirements :strips :typing)
-                                                  (:predicates (d ?x) (p ?x) (goal))
+                                                  (:predicates (d ?x) (p ?x))
                                                   (:action a :parameters (?x) :precondition (and) :effect (p ?x))
                                                   (:derived (d ?x) (p ?x)))
                                          'pddl::(define (problem p)
                                                   (:domain d)
                                                   (:objects o1 o2)
                                                   (:init )
-                                                  (:goal (goal))))
+                                                  (:goal (d o1))))
     (finishes (println *fact-index*))
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
     (finishes (println *op-index*))
     (finishes (println *instantiated-ops*))
     (finishes (println *sg*))
-    (is-true (set= *sg* '(0 1)))))
+    (is-true (set= *sg* '(0 1)))
+    (finishes (println *axiom-layers*))
+    (finishes (println *instantiated-axioms*))
+    (is (= 2 (length (aref *instantiated-axioms* 1))))
+    (is (= 1 (length (aref *instantiated-axioms* 2))))))
 
 (test instantiate2
   ;; parameter ?x is not referenced in the axiom body
@@ -56,7 +60,8 @@
     (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))
     (finishes (println *sg*))
-    (is-true (set= *sg* '(0 1)))))
+    (is-true (set= *sg* '(0 1)))
+    (finishes (println *instantiated-axioms*))))
 
 (test instantiate3
   ;; parameter ?x is a free variable in the axiom body
@@ -75,7 +80,9 @@
     (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))
     (finishes (println *sg*))
-    (is-true (set= *sg* '(0 1)))))
+    (is-true (set= *sg* '(0 1)))
+    (println *axiom-layers*)
+    (finishes (println *instantiated-axioms*))))
 
 (test instantiate4
   (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
@@ -93,7 +100,8 @@
     (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))
     (finishes (println *sg*))
-    (is-true (set= *sg* '(0 1)))))
+    (is-true (set= *sg* '(0 1)))
+    (finishes (println *instantiated-axioms*))))
 
 (test instantiate5
   (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
@@ -112,7 +120,8 @@
     (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))
     (finishes (println *sg*))
-    (is-true (equalp *sg* (strips::sg-node 0 '(0) nil (strips::sg-node 1 '(1) nil nil))))))
+    (is-true (equalp *sg* (strips::sg-node 0 '(0) nil (strips::sg-node 1 '(1) nil nil))))
+    (finishes (println *instantiated-axioms*))))
 
 (test instantiate-opttel
   (with-test-instantiate (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))
@@ -120,7 +129,8 @@
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))
-    (finishes (println *sg*))))
+    (finishes (println *sg*))
+    (finishes (println *instantiated-axioms*))))
 
 (test instantiate-transport
   (with-test-instantiate (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
@@ -128,7 +138,8 @@
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))
-    (finishes (println *sg*))))
+    (finishes (println *sg*))
+    (finishes (println *instantiated-axioms*))))
 
 (test instantiate7 ; initially true vs false predicates which are never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))
@@ -145,7 +156,8 @@
       (finishes (println *fact-index*))
       (finishes (println *fact-trie*))
       (finishes (println *fact-size*))
-      (finishes (println *instantiated-ops*)))))
+      (finishes (println *instantiated-ops*))
+      (finishes (println *instantiated-axioms*)))))
 
 (test instantiate8 ; initially true predicates which can be deleted vs which is never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))
@@ -163,7 +175,8 @@
       (finishes (println *fact-index*))
       (finishes (println *fact-trie*))
       (finishes (println *fact-size*))
-      (finishes (println *instantiated-ops*)))))
+      (finishes (println *instantiated-ops*))
+      (finishes (println *instantiated-axioms*)))))
 
 (test instantiate9 ; axioms that can become true vs cannot become true
   (let ((*enable-negative-precondition-pruning-for-axioms* t)
@@ -183,7 +196,8 @@
       (finishes (println *fact-index*))
       (finishes (println *fact-trie*))
       (finishes (println *fact-size*))
-      (finishes (println *instantiated-ops*)))))
+      (finishes (println *instantiated-ops*))
+      (finishes (println *instantiated-axioms*)))))
 
 (test instantiate10 ; axioms that can become true vs cannot become true
   (let ((*enable-negative-precondition-pruning-for-axioms* t)
@@ -203,6 +217,7 @@
       (finishes (println *fact-index*))
       (finishes (println *fact-trie*))
       (finishes (println *fact-size*))
-      (finishes (println *instantiated-ops*)))))
+      (finishes (println *instantiated-ops*))
+      (finishes (println *instantiated-axioms*)))))
 
 

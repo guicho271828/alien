@@ -66,6 +66,7 @@
 (defun query-trie (fn trie query)
   "Traverse over the trie matching the query, where query is a list containing symbols.
 Symbols whose name starts from ? are regarded as variable."
+  (assert (every #'symbolp query))
   (let ((stack (make-array 32 :adjustable t :fill-pointer 0)))
     (labels ((rec (trie query)
                (match query
