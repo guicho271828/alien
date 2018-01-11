@@ -23,14 +23,14 @@
 (test instantiate1
   (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
                                                   (:requirements :strips :typing)
-                                                  (:predicates (d ?x) (p ?x) (goal))
+                                                  (:predicates (d ?x) (p ?x))
                                                   (:action a :parameters (?x) :precondition (and) :effect (p ?x))
                                                   (:derived (d ?x) (p ?x)))
                                          'pddl::(define (problem p)
                                                   (:domain d)
                                                   (:objects o1 o2)
                                                   (:init )
-                                                  (:goal (goal))))
+                                                  (:goal (d o1))))
     (finishes (println *fact-index*))
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
@@ -39,7 +39,9 @@
     (finishes (println *sg*))
     (is-true (set= *sg* '(0 1)))
     (finishes (println *axiom-layers*))
-    (finishes (println *instantiated-axioms*))))
+    (finishes (println *instantiated-axioms*))
+    (is (= 2 (length (aref *instantiated-axioms* 1))))
+    (is (= 1 (length (aref *instantiated-axioms* 2))))))
 
 (test instantiate2
   ;; parameter ?x is not referenced in the axiom body
