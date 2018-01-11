@@ -162,7 +162,7 @@
        *axiom-layers*))
 
 (defun instantiate-axiom (axiom index trie results)
-  (match axiom
+  (ematch axiom
     ((list* name args)
      (iter (for lifted in (remove-if-not (lambda-match ((list :derived `(,(eq name) ,@_) _) t)) *axioms*))
            (ematch lifted
