@@ -97,7 +97,6 @@
                         (linear-extend pre (lognot i))))))
               (sort pre #'<) 
               (iter (for e in geff)
-                    (for i from 0)
                     (instantiate-effect e eff index trie))))
            op))))))
 
