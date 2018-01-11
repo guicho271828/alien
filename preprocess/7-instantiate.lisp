@@ -30,9 +30,13 @@
         (fact-size 0))
     ;; indexing init
     (dolist (f *init*)
+      ;; index contains only fluent facts; however, trie contains all facts,
+      ;; including static facts, because it is used for looking up the
+      ;; candidates for free variables.  static facts are never added to the
+      ;; preconditions nor effect conditions.
       (unless (static-p f)
-        (strips.lib:index-insert i f)
-        (strips.lib:trie-insert trie f)))
+        (strips.lib:index-insert i f))
+      (strips.lib:trie-insert trie f))
     ;; indexing fluents
     (dolist (f *facts*)
       (strips.lib:index-insert i f)
