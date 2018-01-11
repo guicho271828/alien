@@ -9,6 +9,7 @@
 (defvar *fact-trie*)
 (defvar *op-index*)
 (defvar *instantiated-ops*)
+(defvar *instantiated-axioms*)
 
 (defun instantiate (info)
   (with-parsed-information4 info
@@ -20,6 +21,7 @@
                :op-index op-index
                :instantiated-ops instantiated-ops
                :successor-generator (generate-sg instantiated-ops)
+               :instantiated-axioms (instantiate-axioms fact-index)
                info)))))
 
 (defun index-facts ()
@@ -69,7 +71,7 @@
                        :adjustable t
                        :fill-pointer 0) :type (array effect)))))
 
-(define-constant +uninitialized-effect+ (make-effect))
+(define-constant +uninitialized-effect+ (make-effect) :test 'equalp)
 
 (defun instantiate-op (op index trie)
   (ematch op
@@ -145,3 +147,39 @@
        ;; note: ignoring action cost at the moment
        ))
     (linear-extend effects e)))
+
+(defun instantiate-axioms (index)
+  (map 'vector
+       (lambda (layer)
+         (let ((results (make-array (length *ground-axioms*)
+                                    :element-type 'effect
+                                    :fill-pointer 0
+                                    :adjustable t
+                                    :initial-element +uninitialized-effect+)))
+           (dolist (axiom layer)
+             (instantiate-axiom axiom index results))
+           results))
+       *axiom-layers*))
+
+(defun instantiate-axiom (axiom index results)
+  (match axiom
+    ((list* name args)
+     (iter (for lifted in (remove-if-not (lambda-match ((list :derived `(,(eq name) ,@_) _) t)) *axioms*))
+           (ematch lifted
+             ((list :derived `(,(eq name) ,@params) `(and ,@body))
+              (let* ((gbody (copy-tree body))
+                     (effect (make-effect :eff (strips.lib:index index axiom))))
+                (iter (for a in args)
+                      (for p in params)
+                      (setf gbody (nsubst a p gbody)))
+                (ematch effect
+                  ((effect con)
+                   (dolist (c gbody)
+                     (if (positive c)
+                         (unless (static-p c)
+                           (linear-extend con (strips.lib:index index c)))
+                         (let ((i (strips.lib:index index (second c))))
+                           (when i ; otherwise unreachable
+                             (linear-extend con (lognot i))))))))
+                (linear-extend results effect))))))))
+
