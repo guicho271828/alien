@@ -30,9 +30,9 @@
     (list* :axiom-layers (axiom-layers)
            info)))
 
-(defun axiom-layers ()
+(defun axiom-layers (&optional (package (find-package :pddl)))
   (let* ((string (%axiom-layers))
-         (list (read-from-string string))
+         (list (let ((*package* package)) (read-from-string string)))
          (result (make-array 32 :element-type 'list :initial-element nil :adjustable t)))
     (iter (for (axiom layer) in list)
           (unless (array-in-bounds-p result layer)
