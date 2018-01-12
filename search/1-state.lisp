@@ -3,7 +3,7 @@
 
 (deftype state ()
   "vector representing a state, each bit is a proposition"
-  `(simple-bit-vector ,(if (boundp '*fact-index*)
+  `(simple-bit-vector ,(if (boundp '*state-size*)
                            *state-size*
                            '*)))
 
@@ -25,5 +25,11 @@ axiom information should be deduced from the axiom evaluator."
   (make-array (* *fact-size* maximum-states) :element-type 'bit))
 
 
+(deftype state-id ()
+  '(unsigned-byte 32))
+
+(defun maximum-state-id ()
+  (floor (* 8 1024 *memory-limit*)
+         *fact-size*))
 
 

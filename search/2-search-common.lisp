@@ -5,6 +5,7 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
+(ftype* initialize-init state)
 (defun initialize-init ()
   (let ((state (make-state)))
     (iter (for f in-vector *instantiated-init*)
@@ -15,6 +16,7 @@
 (define-condition goal-found (error)
   ((state :initarg :state)))
 
+(ftype* state t)
 (defun report-if-goal (state)
   (declare (state state))
   (when (= 1 (aref state *instantiated-goal*))
@@ -97,7 +99,9 @@
                         (setf (aref counters i) c)))))))))))
   state)
 
+(ftype* run-search (function () t) null)
 (defun run-search (searcher-fn)
   (bt:with-timeout (*time-limit*)
-    (funcall searcher-fn)))
+    (funcall searcher-fn))
+  nil)
 
