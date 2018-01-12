@@ -7,6 +7,7 @@
 (defvar *fact-index*)
 (defvar *fact-size*)
 (defvar *fact-trie*)
+(defvar *state-size*)
 (defvar *op-index*)
 (defvar *instantiated-ops*)
 (defvar *instantiated-axioms*)
@@ -35,7 +36,7 @@
   '(simple-array effect))
 
 (declaim (strips.lib:index *fact-index* *op-index*))
-(declaim (fixnum *fact-size*))
+(declaim (fixnum *fact-size* *state-size*))
 (declaim (cons *fact-trie*))
 (declaim ((simple-array op) *instantiated-ops*))
 (declaim ((simple-array axiom-layer) *instantiated-axioms*))
@@ -49,6 +50,7 @@
         (list* :fact-index fact-index
                :fact-size fact-size
                :fact-trie fact-trie
+               :state-size (strips.lib:index-size fact-index)
                :op-index op-index
                :instantiated-ops instantiated-ops
                :successor-generator (generate-sg instantiated-ops)
