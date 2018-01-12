@@ -99,9 +99,6 @@
                         (setf (aref counters i) c)))))))))))
   state)
 
-(ftype* run-search (function () t) null)
-(defun run-search (searcher-fn)
-  (bt:with-timeout (*time-limit*)
-    (funcall searcher-fn))
-  nil)
+(deftype searcher ()
+  '(function () t))
 

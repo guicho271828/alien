@@ -5,13 +5,9 @@
 
 (defvar *open-list*)
 
-;; id-based, bucket based (because unit cost)
 
 
-
-;; (deftype state-id ()
-;;   `(integer 0 ,(maximum-state-id)))
 
 (defstruct bucket-open-list
-  )
+  (buckets (make-array 32 :element-type '(array))))
 

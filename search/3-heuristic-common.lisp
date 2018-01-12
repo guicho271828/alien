@@ -8,6 +8,7 @@
   `(unsigned-byte 16))
 
 (deftype evaluator ()
+  '(function (state-id) scalar))
+
+(deftype heuristics ()
   '(function (state) scalar))
-
-

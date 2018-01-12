@@ -39,7 +39,8 @@
                             (:file "0-util")
                             (:file "1-state")
                             (:file "2-search-common")
-                            (:file "heuristic")
-                            (:file "open-list"))))
+                            (:file "3-heuristic-common")
+                            (:file "open-list")
+                            (:file "searchers/timeout"))))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))
