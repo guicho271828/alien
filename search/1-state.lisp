@@ -26,8 +26,4 @@ axiom information should be deduced from the axiom evaluator."
 
 
 
-(deftype scalar ()
-  "32 bit integer used to store g-value, h-value etc."
-  `(unsigned-byte 16))
-
 

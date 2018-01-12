@@ -3,5 +3,10 @@
 
 ;;; heuristics
 
-; FF, blind, monte-carlo win-rate
+(deftype scalar ()
+  "integer used to store g-value, h-value etc."
+  `(unsigned-byte 16))
+
+(deftype evaluator ()
+  '(function (state) scalar))
 
