@@ -13,6 +13,35 @@
 (defvar *instantiated-init*)
 (defvar *instantiated-goal*)
 
+;; conditions and effects are represented by a fixnum index to a fact.
+;; however, the fixnum can be negative, in which case it represent a negative condition or a delete effect.
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (flet ((con () (make-a-array 16 :element-type 'fixnum :initial-element most-positive-fixnum)))
+    (defstruct effect
+      (con (con) :type (array fixnum))
+      (eff 0 :type fixnum))
+    
+    (defstruct op
+      (pre (con) :type (array fixnum))
+      (eff (make-a-array 16
+                         :element-type 'effect
+                         :initial-element +uninitialized-effect+)
+           :type (array effect)))))
+
+(define-constant +uninitialized-effect+ (make-effect) :test 'equalp)
+
+(deftype axiom-layer ()
+  '(simple-array effect))
+
+(declaim (strips.lib:index *fact-index* *op-index*))
+(declaim (fixnum *fact-size*))
+(declaim (cons *fact-trie*))
+(declaim ((simple-array op) *instantiated-ops*))
+(declaim ((simple-array axiom-layer) *instantiated-axioms*))
+(declaim ((simple-array fixnum) *instantiated-init*))
+(declaim (fixnum *instantiated-goal*))
+
 (defun instantiate (info)
   (with-parsed-information4 info
     (multiple-value-bind (fact-index fact-size fact-trie) (index-facts)
@@ -56,25 +85,7 @@
   (values (let ((i (strips.lib:make-index :test 'equal)))
             (dolist (o *ops* i)
               (strips.lib:index-insert i o)))
-          (map 'vector (lambda (op) (instantiate-op op index trie)) *ops*)))
-
-;; conditions and effects are represented by a fixnum index to a fact.
-;; however, the fixnum can be negative, in which case it represent a negative condition or a delete effect.
-
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (flet ((con () (make-a-array 16 :element-type 'fixnum :initial-element most-positive-fixnum)))
-    (defstruct effect
-      (con (con) :type (array fixnum))
-      (eff 0 :type fixnum))
-    
-    (defstruct op
-      (pre (con) :type (array fixnum))
-      (eff (make-a-array 16
-                         :element-type 'effect
-                         :initial-element +uninitialized-effect+)
-           :type (array effect)))))
-
-(define-constant +uninitialized-effect+ (make-effect) :test 'equalp)
+          (map '(simple-array op) (lambda (op) (instantiate-op op index trie)) *ops*)))
 
 (defun instantiate-op (op index trie)
   (ematch op
@@ -157,7 +168,7 @@
     (linear-extend effects e)))
 
 (defun instantiate-axioms (index trie &aux (first-iteration t))
-  (map 'vector
+  (map '(array axiom-layer)
        (lambda (layer)
          (let ((results (make-a-array 32
                                       :element-type 'effect
