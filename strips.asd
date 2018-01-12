@@ -35,12 +35,11 @@
                             (:file "7-instantiate")
                             (:file "8-successor-generator")))
               (:module "search"
-               :components ((:file "util")
-                            (:file "specials")
+               :components ((:file "0-special")
+                            (:file "0-util")
                             (:file "1-state")
+                            (:file "2-search-common")
                             (:file "heuristic")
-                            (:file "open-list")
-                            (:file "search")
-                            (:file "special"))))
+                            (:file "open-list"))))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))
