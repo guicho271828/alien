@@ -4,6 +4,7 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (define-constant +t+ '+t+))
 
+(ftype* make-trie list)
 (defun make-trie ()
   "Trie implementation based on plist. not for performance"
   (list +t+ +t+))
@@ -11,6 +12,7 @@
 (defmacro trie-insert (trie list)
   `(setf ,trie (%trie-insert ,trie ,list)))
 
+(ftype* %trie-insert list list list)
 (defun %trie-insert (trie list)
   (match list
     (nil
@@ -28,18 +30,21 @@
                    (%trie-insert nil rest))
              trie))))))
 
+(ftype* trie-member list list (or (eql +t+) null))
 (defun trie-member (trie list)
-  (match list
+  (ematch list
     (nil
      (getf trie +t+))
     ((list* first rest)
      (trie-member (getf trie first) rest))))
   
+(ftype* trie-insert-all list list list)
 (defun trie-insert-all (trie lists)
   (iter (for list in lists)
         (setf trie (trie-insert trie list)))
   trie)
 
+(ftype* map-trie (function (list) t) list null)
 (defun map-trie (fn trie)
   "traverse over the trie and calls FN on each leaf"
   (let ((stack (make-array 32 :adjustable t :fill-pointer 0)))
@@ -51,8 +56,10 @@
                            (vector-push-extend key stack 32)
                            (rec child)
                            (vector-pop stack))))))
-      (rec trie))))
+      (rec trie))
+    nil))
 
+(ftype* variablep symbol boolean)
 (defun variablep (variable)
   (ematch variable
     ((symbol :name (string* #\? _))
@@ -63,6 +70,7 @@
 ;; WIP
 ;; The function is called with the matching symbol, and :binding keyword argument with &allow-other-keys.
 
+(ftype* query-trie (function (list) t) list list null)
 (defun query-trie (fn trie query)
   "Traverse over the trie matching the query, where query is a list containing symbols.
 Symbols whose name starts from ? are regarded as variable."
@@ -86,8 +94,8 @@ Symbols whose name starts from ? are regarded as variable."
                         (vector-push-extend head stack 32)
                         (rec (getf trie head) rest)
                         (vector-pop stack)))))))
-      (rec trie query))))
-
+      (rec trie query)
+      nil)))
 
 (let ((trie nil))
   (setf trie (trie-insert trie '(a b c)))

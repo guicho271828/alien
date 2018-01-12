@@ -16,11 +16,14 @@
       (vector-push-extend element a (array-total-size a)))
     nil))
 
+(ftype* index index t (values array-index boolean))
 (defun index (index element)
   (gethash element (index-hash index)))
 
+(ftype* index-ref index array-index t)
 (defun index-ref (index i)
   (aref (index-array index) i))
 
+(ftype* index-size index array-index)
 (defun index-size (index)
   (length (index-array index)))
