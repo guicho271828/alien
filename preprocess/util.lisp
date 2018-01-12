@@ -185,6 +185,14 @@
 (defun make-bit-vector (length)
   (make-array length :element-type 'bit :initial-element 0))
 
+(declaim (inline make-a-array))
+(defun make-a-array (dimensions &key (element-type t) (initial-element 0))
+  (make-array dimensions
+              :element-type element-type
+              :adjustable t
+              :fill-pointer 0
+              :initial-element initial-element))
+
 (declaim (inline linear-extend))
 (defun linear-extend (vector element)
   (vector-push-extend element vector (array-total-size vector)))

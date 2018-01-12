@@ -62,22 +62,17 @@
 ;; however, the fixnum can be negative, in which case it represent a negative condition or a delete effect.
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (flet ((con () (make-array 16
-                             :element-type 'fixnum
-                             :adjustable t
-                             :fill-pointer 0
-                             :initial-element most-positive-fixnum)))
+  (flet ((con () (make-a-array 16 :element-type 'fixnum :initial-element most-positive-fixnum)))
     (defstruct effect
       (con (con) :type (array fixnum))
       (eff 0 :type fixnum))
     
     (defstruct op
       (pre (con) :type (array fixnum))
-      (eff (make-array 16
-                       :element-type 'effect
-                       :initial-element +uninitialized-effect+
-                       :adjustable t
-                       :fill-pointer 0) :type (array effect)))))
+      (eff (make-a-array 16
+                         :element-type 'effect
+                         :initial-element +uninitialized-effect+)
+           :type (array effect)))))
 
 (define-constant +uninitialized-effect+ (make-effect) :test 'equalp)
 
@@ -164,11 +159,9 @@
 (defun instantiate-axioms (index trie &aux (first-iteration t))
   (map 'vector
        (lambda (layer)
-         (let ((results (make-array 32
-                                    :element-type 'effect
-                                    :fill-pointer 0
-                                    :adjustable t
-                                    :initial-element +uninitialized-effect+)))
+         (let ((results (make-a-array 32
+                                      :element-type 'effect
+                                      :initial-element +uninitialized-effect+)))
            (if first-iteration
                (setf first-iteration nil)
                (dolist (axiom layer)
@@ -190,10 +183,7 @@
                 (instantiate-effect-aux gbody nil axiom results index trie))))))))
 
 (defun instantiate-init (fact-index fact-size)
-  (let ((results (make-array fact-size
-                             :element-type 'fixnum
-                             :fill-pointer 0
-                             :adjustable t)))
+  (let ((results (make-a-array fact-size :element-type 'fixnum)))
     (iter (for p in *init*)
           (unless (static-p p)
             (linear-extend results (strips.lib:index fact-index p))))
