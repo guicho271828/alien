@@ -40,7 +40,13 @@
                             (:file "1-state")
                             (:file "2-search-common")
                             (:file "3-heuristic-common")
-                            (:file "open-list")
-                            (:file "searchers/timeout"))))
+                            (:file "4-open-list-common")
+                            (:module "heuristics"
+                             :components ())
+                            (:module "searchers"
+                             :components ((:file "eager")
+                                          (:file "timeout")))
+                            (:module "open-list"
+                             :components ((:file "bucket-open-list"))))))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))

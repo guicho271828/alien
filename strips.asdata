@@ -26,5 +26,8 @@ $ update-asdf
              (:rest))
        (:rest :recursive nil))
  (:dir :search
-       (:rest)))
+       (:rest)
+       (:dir :heuristics)
+       (:dir :searchers)
+       (:dir :open-list)))
 
