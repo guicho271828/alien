@@ -1,9 +1,9 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-;;; open list
-
 (defvar *open-list*)
+
+;;; open list
 
 (defstruct bucket-open-list
   "bucket open list with single key, fifo tiebreaking; initial, slow implementation"

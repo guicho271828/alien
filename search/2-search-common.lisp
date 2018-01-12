@@ -99,6 +99,32 @@
                         (setf (aref counters i) c)))))))))))
   state)
 
+(ftype* apply-op op state &optional state state)
+(defun apply-op (op state &optional (child (make-state) child-supplied-p))
+  (unless child-supplied-p
+    (simple-style-warning "consing a new state outside close-list"))
+  (ematch op
+    ((op eff)
+     (map nil (lambda (e) (apply-effect e state child)) eff)
+     child)))
+
+(ftype* apply-effect effect state &optional state state)
+(defun apply-effect (effect state &optional (child (make-state) child-supplied-p))
+  (unless child-supplied-p
+    (simple-style-warning "consing a new state outside close-list"))
+  (replace child state)
+  (ematch effect
+    ((effect con eff)
+     (when (every (lambda (i) (or (and (minusp i)
+                                       (= 0 (aref state (lognot i))))
+                                  (= 1 (aref state (lognot i)))))
+                  con)
+       (if (minusp eff)
+           (let ((i (lognot eff)))
+             (setf (aref child i) 0))
+           (setf (aref child eff) 1)))))
+  child)
+
 (deftype searcher ()
   '(function () t))
 

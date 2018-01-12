@@ -34,11 +34,18 @@
 
 (defun make-state ()
   "create a state **including** the axiom cells."
+  (let ((s (make-array *state-size* :element-type 'bit)))
+    (values s (register-state s))))
+
+(defun make-temporary-state ()
+  "create a state **including** the axiom cells."
   (make-array *state-size* :element-type 'bit))
 
 (declaim (close-list *close-list*))
 (defvar *close-list*)
 
+;; TODO: it's not detecting the duplciates!!!
+;; TODO: only copy the facts!!!
 (ftype* register-state state state-id)
 (defun register-state (state)
   (let* ((close *close-list*)
@@ -46,7 +53,8 @@
     (declare (close-list close))
     (replace (close-list-array close) state
              :start1 state-id)
-    (setf (close-list-count close) (1+ state-id))))
+    (setf (close-list-count close) (1+ state-id))
+    state-id))
 
 (ftype* retrieve-state state-id &optional state state)
 (defun retrieve-state (state-id &optional (state (make-state) state-supplied-p))
