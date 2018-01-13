@@ -16,12 +16,13 @@
 (define-condition goal-found (error)
   ((state :initarg :state)))
 
-(ftype* state t)
+(ftype* report-if-goal state boolean)
 (defun report-if-goal (state)
   (declare (state state))
-  (when (= 1 (aref state *instantiated-goal*))
-    (with-simple-restart (continue "continue searching")
-      (error 'goal-found :state state))))
+  (if (= 1 (aref state *instantiated-goal*))
+      (progn (cerror "continue searching" 'goal-found :state state)
+             t)
+      nil))
 
 (ftype* applicable-ops sg-node state list)
 (defun applicable-ops (sg state)
@@ -99,20 +100,15 @@
                         (setf (aref counters i) c)))))))))))
   state)
 
-(ftype* apply-op op state &optional state state)
-(defun apply-op (op state &optional (child (make-state) child-supplied-p))
-  (unless child-supplied-p
-    (simple-style-warning "consing a new state outside close-list"))
+(ftype* apply-op op state state state)
+(defun apply-op (op state child)
   (ematch op
     ((op eff)
      (map nil (lambda (e) (apply-effect e state child)) eff)
      child)))
 
-(ftype* apply-effect effect state &optional state state)
-(defun apply-effect (effect state &optional (child (make-state) child-supplied-p))
-  (unless child-supplied-p
-    (simple-style-warning "consing a new state outside close-list"))
-  (replace child state)
+(ftype* apply-effect effect state state state)
+(defun apply-effect (effect state child)
   (ematch effect
     ((effect con eff)
      (when (every (lambda (i) (or (and (minusp i)
