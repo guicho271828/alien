@@ -1,7 +1,8 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defvar *state-information-list*)
+(declaim (list *state-information-list*))
+(defvar *state-information-list* nil)
 
 (defun storage-bit-per-state ()
   (+ *fact-size*
@@ -24,43 +25,46 @@
 (deftype state-id ()
   '(unsigned-byte 32))
 
-(deftype state-db ()
-  `(simple-bit-vector ,(runtime-type (* *fact-size* (maximum-states)))))
+(ftype* state-= state state boolean)
+(defun state-= (s1 s2)
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  ;; specialized to sb-int:bit-vector-=, then
+  ;; inlined by defoptimizer, then
+  ;; additionally, length comparison etc. are removed by the runtime type
+  (equal s1 s2))
 
-(defstruct close-list
-  (count 0 :type state-id)
-  (array (make-bit-vector (* *fact-size* (maximum-states))) :type state-db))
+(ftype* state-hash state integer)
+(defun state-hash (s)
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  (sxhash s))
 
+(sb-ext:define-hash-table-test state-= state-hash)
 
-(defun make-state ()
+;; TODO static vectors, segmented vectors
+(declaim (inline make-state))
+(defun make-state (&optional temporary)
   "create a state **including** the axiom cells."
   (let ((s (make-array *state-size* :element-type 'bit)))
-    (values s (register-state s))))
+    (if temporary
+        s
+        (values s (register-state s)))))
 
-(defun make-temporary-state ()
-  "create a state **including** the axiom cells."
-  (make-array *state-size* :element-type 'bit))
+;; (sb-vm:memory-usage :print-spaces t :count-spaces '(:aaa) :print-summary nil)
 
-(declaim (close-list *close-list*))
+(declaim (strips.lib:index *close-list*))
 (defvar *close-list*)
 
-;; TODO: it's not detecting the duplciates!!!
-;; TODO: only copy the facts!!!
+(defun make-close-list ()
+  (strips.lib:make-index :test 'state-=))
+
 (ftype* register-state state state-id)
 (defun register-state (state)
-  (let* ((close *close-list*)
-         (state-id (close-list-count close)))
-    (declare (close-list close))
-    (replace (close-list-array close) state
-             :start1 state-id)
-    (setf (close-list-count close) (1+ state-id))
-    state-id))
+  (or (strips.lib:index *close-list* state)
+      (strips.lib:index-insert *close-list* state)))
 
-(ftype* retrieve-state state-id &optional state state)
-(defun retrieve-state (state-id &optional (state (make-state) state-supplied-p))
-  (unless state-supplied-p
-    (simple-style-warning "consing a new state outside close-list"))
-  (replace state (close-list-array *close-list*)
-           :start2 state-id)
-  state)
+(ftype* retrieve-state state-id state)
+(defun retrieve-state (state-id)
+  (strips.lib:index-ref *close-list* state-id))
+
+;; TODO: idea: prune by bloom filter
 
