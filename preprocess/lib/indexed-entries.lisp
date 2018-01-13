@@ -8,19 +8,27 @@
   (array (make-array 32 :adjustable t :fill-pointer 0) :type array :read-only t)
   (hash (make-hash-table) :type hash-table :read-only t))
 
+(ftype* index-insert index t (values array-index boolean))
 (defun index-insert (index element)
+  "insert the element to the index, return the id and a boolean indicating whether the element was insterted."
   (let ((a (index-array index))
         (h (index-hash index)))
-    (unless (gethash element h)
-      (setf (gethash element h) (fill-pointer a))
-      (vector-push-extend element a (array-total-size a)))
-    nil))
+    (if-let ((index (gethash element h)))
+      index
+      (prog1 (values (setf (gethash element h) (fill-pointer a)) t)
+        (vector-push-extend element a (array-total-size a))))))
 
-(defun index (index element)
+(ftype* index-id index t (values array-index boolean))
+(defun index-id (index element)
+  "return the id of the given element, and a boolean if the element exists (for telling NIL being registered or not)."
   (gethash element (index-hash index)))
 
-(defun index-ref (index i)
-  (aref (index-array index) i))
+(ftype* index-ref index array-index t)
+(defun index-ref (index id)
+  "return the element of the given id."
+  (aref (index-array index) id))
 
+(ftype* index-size index array-index)
 (defun index-size (index)
+  "return the number of elements in the index."
   (length (index-array index)))

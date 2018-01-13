@@ -72,6 +72,7 @@
    #:*op-index*
    #:*sg*
    #:with-parsed-information5
-   #:*instantiated-axioms*))
+   #:*instantiated-axioms*
+   #:*state-size*))
 
 (setf trivia:*arity-check-by-test-call* nil)

@@ -7,11 +7,41 @@
 (defvar *fact-index*)
 (defvar *fact-size*)
 (defvar *fact-trie*)
+(defvar *state-size*)
 (defvar *op-index*)
 (defvar *instantiated-ops*)
 (defvar *instantiated-axioms*)
 (defvar *instantiated-init*)
 (defvar *instantiated-goal*)
+
+;; conditions and effects are represented by a fixnum index to a fact.
+;; however, the fixnum can be negative, in which case it represent a negative condition or a delete effect.
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (flet ((con () (make-a-array 16 :element-type 'fixnum :initial-element most-positive-fixnum)))
+    (defstruct effect
+      (con (con) :type (array fixnum))
+      (eff 0 :type fixnum))
+    
+    (defstruct op
+      (pre (con) :type (array fixnum))
+      (eff (make-a-array 16
+                         :element-type 'effect
+                         :initial-element +uninitialized-effect+)
+           :type (array effect)))))
+
+(define-constant +uninitialized-effect+ (make-effect) :test 'equalp)
+
+(deftype axiom-layer ()
+  '(simple-array effect))
+
+(declaim (strips.lib:index *fact-index* *op-index*))
+(declaim (fixnum *fact-size* *state-size*))
+(declaim (cons *fact-trie*))
+(declaim ((simple-array op) *instantiated-ops*))
+(declaim ((simple-array axiom-layer) *instantiated-axioms*))
+(declaim ((simple-array fixnum) *instantiated-init*))
+(declaim (fixnum *instantiated-goal*))
 
 (defun instantiate (info)
   (with-parsed-information4 info
@@ -20,6 +50,7 @@
         (list* :fact-index fact-index
                :fact-size fact-size
                :fact-trie fact-trie
+               :state-size (strips.lib:index-size fact-index)
                :op-index op-index
                :instantiated-ops instantiated-ops
                :successor-generator (generate-sg instantiated-ops)
@@ -56,25 +87,7 @@
   (values (let ((i (strips.lib:make-index :test 'equal)))
             (dolist (o *ops* i)
               (strips.lib:index-insert i o)))
-          (map 'vector (lambda (op) (instantiate-op op index trie)) *ops*)))
-
-;; conditions and effects are represented by a fixnum index to a fact.
-;; however, the fixnum can be negative, in which case it represent a negative condition or a delete effect.
-
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (flet ((con () (make-a-array 16 :element-type 'fixnum :initial-element most-positive-fixnum)))
-    (defstruct effect
-      (con (con) :type (array fixnum))
-      (eff 0 :type fixnum))
-    
-    (defstruct op
-      (pre (con) :type (array fixnum))
-      (eff (make-a-array 16
-                         :element-type 'effect
-                         :initial-element +uninitialized-effect+)
-           :type (array effect)))))
-
-(define-constant +uninitialized-effect+ (make-effect) :test 'equalp)
+          (map '(simple-array op) (lambda (op) (instantiate-op op index trie)) *ops*)))
 
 (defun instantiate-op (op index trie)
   (ematch op
@@ -96,8 +109,8 @@
               (dolist (c gpre)
                 (if (positive c)
                     (unless (static-p c)
-                      (linear-extend pre (strips.lib:index index c)))
-                    (let ((i (strips.lib:index index (second c))))
+                      (linear-extend pre (strips.lib:index-id index c)))
+                    (let ((i (strips.lib:index-id index (second c))))
                       (when i ; otherwise unreachable
                         (linear-extend pre (lognot i))))))
               (sort pre #'<) 
@@ -136,19 +149,19 @@
        (iter (for c in ground-conditions)
              (if (positive c)
                  (unless (static-p c)
-                   (linear-extend con (strips.lib:index index c)))
-                 (let ((i (strips.lib:index index (second c))))
+                   (linear-extend con (strips.lib:index-id index c)))
+                 (let ((i (strips.lib:index-id index (second c))))
                    (when i ; otherwise unreachable
                      (linear-extend con (lognot i))))))
        (sort con #'<)
        (when (positive atom)
          (strips.lib:query-trie
-          (lambda (c) (setf eff (strips.lib:index index c)))
+          (lambda (c) (setf eff (strips.lib:index-id index c)))
           trie atom))
        (when (negative atom)
          (strips.lib:query-trie
           (lambda (c)
-            (let ((i (strips.lib:index index c))) ;; note: don't have to call SECOND
+            (let ((i (strips.lib:index-id index c))) ;; note: don't have to call SECOND
               (when i ; otherwise unreachable      ;       |  because it is done already
                 (setf eff (lognot i)))))           ;       |
           trie (second atom)))                     ; <--- here
@@ -157,7 +170,7 @@
     (linear-extend effects e)))
 
 (defun instantiate-axioms (index trie &aux (first-iteration t))
-  (map 'vector
+  (map '(array axiom-layer)
        (lambda (layer)
          (let ((results (make-a-array 32
                                       :element-type 'effect
@@ -186,8 +199,8 @@
   (let ((results (make-a-array fact-size :element-type 'fixnum)))
     (iter (for p in *init*)
           (unless (static-p p)
-            (linear-extend results (strips.lib:index fact-index p))))
+            (linear-extend results (strips.lib:index-id fact-index p))))
     results))
 
 (defun instantiate-goal (fact-index)
-  (strips.lib:index fact-index *goal*))
+  (strips.lib:index-id fact-index *goal*))

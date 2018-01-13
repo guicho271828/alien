@@ -200,3 +200,13 @@
 (defmacro in-compile-time ((environment) &body body &environment env)
   (check-type environment symbol)
   (eval `(let ((,environment ,env)) (progn ,@body))))
+
+(defmacro ftype* (name &rest types)
+  `(declaim (ftype (function ,(butlast types) ,(lastcar types)) ,name)))
+
+(defmacro runtime-type (form)
+  `(handler-case
+       ,form
+     (unbound-variable ()
+       (simple-style-warning "form ~a failed during type computation, defaulting to *" ',form)
+       '*)))

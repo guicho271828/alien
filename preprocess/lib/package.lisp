@@ -14,3 +14,7 @@
    #:map-trie
    #:query-trie))
 
+(in-package :strips.lib)
+
+(defmacro ftype* (name &rest types)
+  `(declaim (ftype (function ,(butlast types) ,(lastcar types)) ,name)))

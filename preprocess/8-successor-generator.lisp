@@ -26,6 +26,8 @@ A generator node is just a list containing operator indices."
   (else nil :type (or sg-node list))
   (either nil :type (or sg-node list)))
 
+(deftype sg () '(or list sg-node))
+
 (defun generate-sg (instantiated-ops)
   (let ((current nil))
     (iter (for op in-vector instantiated-ops with-index i)
@@ -77,17 +79,4 @@ A generator node is just a list containing operator indices."
                            (sg-node variable then else (rec either con-index)))))))))))
        (rec current 0)))))
 
-(defun applicable-ops (sg state)
-  (declare (simple-bit-vector state))
-  (let ((results nil))
-    (labels ((rec (node)
-               (ematch node
-                 ((integer) (push node results))
-                 ((sg-node variable then else either)
-                  (case (aref state variable)
-                    (0 (rec else))
-                    (1 (rec then)))
-                  (rec either)))))
-      (rec sg)
-      results)))
 
