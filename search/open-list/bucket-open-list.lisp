@@ -1,6 +1,10 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
+;;; open list
+
+;; slow, initial implementation of bucket open list as a placeholder for initial submission
+
 (defstruct bucket-open-list
   "bucket open list with single key, fifo tiebreaking; initial, slow implementation"
   (min-key 0 :type fixnum)
