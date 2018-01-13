@@ -56,7 +56,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
   (assert (not (tmp-p term)))
   (ematch term
     ((list name)
-     `(op ,name))
+     `(operator ,name))
     ((list* name args)
      `(,(symbolicate name '-o) ,@args))))
 
@@ -240,7 +240,7 @@ and the consumed inequality conditions are removed from *inequality*."
                    (ends-with-subseq "-I" str)
                    (ends-with-subseq "-D" str)
                    (ends-with-subseq "-O" str)
-                   (member name '(op
+                   (member name '(operator
                                   eff
                                   init
                                   del
