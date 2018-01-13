@@ -124,31 +124,31 @@
 (defmacro with-parsed-information5 (info &body body)
   "Binds the special variables using INFO, which is a parsed & flattened result of pddl files (see 2-translate.lisp).
    *types* *objects* *predicates* *init* *goal* *axioms* *actions* "
-  `(match ,info
-     ((plist :fact-index *fact-index*
-             :fact-size *fact-size*
-             :fact-trie *fact-trie*
-             :op-index *op-index*
-             :instantiated-ops *instantiated-ops*
-             :successor-generator *sg*
-             :instantiated-axioms *instantiated-axioms*
-             :instantiated-init *instantiated-init*
-             :instantiated-goal *instantiated-goal*
+  (once-only (info)
+    `(let ((*fact-index* (getf ,info :fact-index))
+           (*fact-size* (getf ,info :fact-size))
+           (*fact-trie* (getf ,info :fact-trie))
+           (*op-index* (getf ,info :op-index))
+           (*instantiated-ops* (getf ,info :instantiated-ops))
+           (*sg* (getf ,info :successor-generator))
+           (*instantiated-axioms* (getf ,info :instantiated-axioms))
+           (*instantiated-init* (getf ,info :instantiated-init))
+           (*instantiated-goal* (getf ,info :instantiated-goal))
 
-             :axiom-layers *axiom-layers*
-             :facts *facts*
-             :ops *ops*
-             
-             :ground-axioms *ground-axioms*
-             :monotonicity *monotonicity*
-             :type *types*
-             :objects *objects*
-             :predicates *predicates*
-             :init *init*
-             :goal *goal*
-             :axioms *axioms*
-             :actions *actions*)
-      ,@body)))
+           (*axiom-layers* (getf ,info :axiom-layers))
+           (*facts* (getf ,info :facts))
+           (*ops* (getf ,info :ops))
+           
+           (*ground-axioms* (getf ,info :ground-axioms))
+           (*monotonicity* (getf ,info :monotonicity))
+           (*types* (getf ,info :type))
+           (*objects* (getf ,info :objects))
+           (*predicates* (getf ,info :predicates))
+           (*init* (getf ,info :init))
+           (*goal* (getf ,info :goal))
+           (*axioms* (getf ,info :axioms))
+           (*actions* (getf ,info :actions)))
+       ,@body)))
 
 (defun positive (form)
   ;; (declare (optimize (speed 3) (safety 0)))
