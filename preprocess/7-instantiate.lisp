@@ -109,8 +109,8 @@
               (dolist (c gpre)
                 (if (positive c)
                     (unless (static-p c)
-                      (linear-extend pre (strips.lib:index index c)))
-                    (let ((i (strips.lib:index index (second c))))
+                      (linear-extend pre (strips.lib:index-id index c)))
+                    (let ((i (strips.lib:index-id index (second c))))
                       (when i ; otherwise unreachable
                         (linear-extend pre (lognot i))))))
               (sort pre #'<) 
@@ -149,19 +149,19 @@
        (iter (for c in ground-conditions)
              (if (positive c)
                  (unless (static-p c)
-                   (linear-extend con (strips.lib:index index c)))
-                 (let ((i (strips.lib:index index (second c))))
+                   (linear-extend con (strips.lib:index-id index c)))
+                 (let ((i (strips.lib:index-id index (second c))))
                    (when i ; otherwise unreachable
                      (linear-extend con (lognot i))))))
        (sort con #'<)
        (when (positive atom)
          (strips.lib:query-trie
-          (lambda (c) (setf eff (strips.lib:index index c)))
+          (lambda (c) (setf eff (strips.lib:index-id index c)))
           trie atom))
        (when (negative atom)
          (strips.lib:query-trie
           (lambda (c)
-            (let ((i (strips.lib:index index c))) ;; note: don't have to call SECOND
+            (let ((i (strips.lib:index-id index c))) ;; note: don't have to call SECOND
               (when i ; otherwise unreachable      ;       |  because it is done already
                 (setf eff (lognot i)))))           ;       |
           trie (second atom)))                     ; <--- here
@@ -199,8 +199,8 @@
   (let ((results (make-a-array fact-size :element-type 'fixnum)))
     (iter (for p in *init*)
           (unless (static-p p)
-            (linear-extend results (strips.lib:index fact-index p))))
+            (linear-extend results (strips.lib:index-id fact-index p))))
     results))
 
 (defun instantiate-goal (fact-index)
-  (strips.lib:index fact-index *goal*))
+  (strips.lib:index-id fact-index *goal*))
