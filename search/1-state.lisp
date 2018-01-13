@@ -41,7 +41,6 @@
 (sb-ext:define-hash-table-test state-= state-hash)
 
 ;; TODO static vectors, segmented vectors
-(declaim (inline make-state))
 (defun make-state (&optional temporary)
   "create a state **including** the axiom cells."
   (let ((s (make-array *state-size* :element-type 'bit)))

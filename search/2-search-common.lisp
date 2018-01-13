@@ -39,7 +39,8 @@
                     (1 (rec then)))
                   (rec either)))))
       (rec sg)
-      results)))
+      (mapcar (lambda (op) (aref *instantiated-ops* op))
+              results))))
 
 (ftype* apply-axioms state state)
 (defun apply-axioms (state)

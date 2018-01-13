@@ -2,26 +2,24 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(ftype* eager searcher)
-(defun eager ()
-  (let* ((state (initialize-init))
-         (open (make-bucket-open-list))
-         (init-id (register-state state)))
-
+(defun eager (evaluator)
+  (let* ((init (initialize-init))
+         (open (make-bucket-open-list)))
     
-    (do* ((id init-id (bucket-open-list-pop open))
-          (state state (retrieve-state id state)))
+    (do* ((id (register-state init) (bucket-open-list-pop open))
+          (state init (retrieve-state id)))
          ()
       
       (apply-axioms state)
       (report-if-goal state)
-      (let ((child (make-temporary-state)))
+      
+      (let ((child (make-state t)))
         (dolist (op (applicable-ops *sg* state))
-          (apply-op (aref *instantiated-ops* op)
-                    state child)
+          (replace child state)
+          (apply-op op state child)
           (apply-axioms child)
           (let ((id (register-state child)))
-            (bucket-open-list-insert open (evaluate child) id)))))))
+            (bucket-open-list-insert open (funcall evaluator child) id)))))))
 
 
     
