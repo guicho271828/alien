@@ -433,7 +433,9 @@ and also orders the terms by 'structure ordering' --- e.g.
                    ,@(iter (for p in params)
                            (collecting `(object ,p)))
                    ,@(no-op-constraints effects)
-                   ,@(negative-conditions-satisfiable precond))))
+                   ,@(negative-conditions-satisfiable precond)
+                   ;; because the condition can be null
+                   true)))
            (iter (for e in effects) (for i from 0)
              (match e
                ;; TODO: (FORALL VARS ...) is not really necessary.
@@ -489,7 +491,8 @@ and also orders the terms by 'structure ordering' --- e.g.
                        ;; ensure all parameters are grounded
                        ,@(iter (for p in params)
                                (collecting `(object ,p)))
-                       ,@(negative-conditions-satisfiable body)))))
+                       ,@(negative-conditions-satisfiable body)
+                       true))))
 
            ;; prove the negation of the body, (not (and body...)) = (or (not body)...)
            (when body
