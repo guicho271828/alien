@@ -73,6 +73,10 @@
    #:*sg*
    #:with-parsed-information5
    #:*instantiated-axioms*
-   #:*state-size*))
+   #:*state-size*
+   #:eager
+   #:goal-found
+   #:timeout
+   #:goal-count))
 
 (setf trivia:*arity-check-by-test-call* nil)

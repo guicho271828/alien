@@ -42,7 +42,7 @@
                             (:file "3-heuristic-common")
                             (:file "4-open-list-common")
                             (:module "heuristics"
-                             :components ())
+                             :components ((:file "goal-count")))
                             (:module "searchers"
                              :components ((:file "eager")
                                           (:file "timeout")))

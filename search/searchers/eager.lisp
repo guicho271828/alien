@@ -8,7 +8,7 @@
     
     (do* ((id (register-state init) (bucket-open-list-pop open))
           (state init (retrieve-state id)))
-         ()
+         (nil)
       
       (apply-axioms state)
       (report-if-goal state)
@@ -21,6 +21,4 @@
           (let ((id (register-state child)))
             (bucket-open-list-insert open (funcall evaluator child) id)))))))
 
-
-    
   

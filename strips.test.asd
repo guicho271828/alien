@@ -14,10 +14,12 @@
               :fiveam
               :bordeaux-threads
               :lparallel
-              :cl-cpus)
+              :cl-cpus
+              :cl-rlimit)
  :serial t
  :components ((:module "t"
                :components ((:file "package")
-                            (:file "instantiate"))))
+                            (:file "instantiate")
+                            (:file "solve"))))
  :perform (test-op :after (op c)
            (eval (read-from-string "(5am:run! :strips)"))))

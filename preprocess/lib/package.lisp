@@ -3,8 +3,9 @@
   (:use :cl :trivia :iterate :alexandria)
   (:export
    #:make-index
-   #:index-insert
    #:index
+   #:index-id
+   #:index-insert
    #:index-ref
    #:index-size
    #:make-trie
