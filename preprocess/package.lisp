@@ -72,7 +72,7 @@
    #:*op-index*
    #:*sg*
    #:with-parsed-information5
-   #:*instantiated-axioms*
+   #:*instantiated-axiom-layers*
    #:*state-size*
    #:eager
    #:goal-found

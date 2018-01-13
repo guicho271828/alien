@@ -6,8 +6,8 @@
 (def-suite solve :in :strips)
 (in-suite solve)
 
-(test movie1
-  (with-parsed-information5 (-> (%rel "movie/p01.pddl")
+(defun solve (path)
+  (with-parsed-information5 (-> (%rel path)
                               parse
                               easy-invariant
                               ground
@@ -15,3 +15,10 @@
                               instantiate)
     (signals goal-found
       (eager #'goal-count))))
+
+(test movie (solve "movie/p01.pddl"))
+(test cavediving (solve "cavediving/p01.pddl"))
+(test citycar (solve "citycar/p01.pddl"))
+(test parkprinter (solve "parkprinter/p01.pddl"))
+(test researchers (solve "researchers/p01.pddl"))
+(test sokoban (solve "sokoban/p01.pddl"))

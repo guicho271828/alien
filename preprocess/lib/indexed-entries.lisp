@@ -18,7 +18,7 @@
       (prog1 (values (setf (gethash element h) (fill-pointer a)) t)
         (vector-push-extend element a (array-total-size a))))))
 
-(ftype* index-id index t (values array-index boolean))
+(ftype* index-id index t (values (or array-index null) boolean))
 (defun index-id (index element)
   "return the id of the given element, and a boolean if the element exists (for telling NIL being registered or not)."
   (gethash element (index-hash index)))

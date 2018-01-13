@@ -128,10 +128,11 @@
     `(let ((*fact-index* (getf ,info :fact-index))
            (*fact-size* (getf ,info :fact-size))
            (*fact-trie* (getf ,info :fact-trie))
+           (*state-size* (getf ,info :state-size))
            (*op-index* (getf ,info :op-index))
            (*instantiated-ops* (getf ,info :instantiated-ops))
            (*sg* (getf ,info :successor-generator))
-           (*instantiated-axioms* (getf ,info :instantiated-axioms))
+           (*instantiated-axiom-layers* (getf ,info :instantiated-axiom-layers))
            (*instantiated-init* (getf ,info :instantiated-init))
            (*instantiated-goal* (getf ,info :instantiated-goal))
 

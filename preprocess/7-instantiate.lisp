@@ -10,7 +10,7 @@
 (defvar *state-size*)
 (defvar *op-index*)
 (defvar *instantiated-ops*)
-(defvar *instantiated-axioms*)
+(defvar *instantiated-axiom-layers*)
 (defvar *instantiated-init*)
 (defvar *instantiated-goal*)
 
@@ -30,17 +30,17 @@
                          :initial-element +uninitialized-effect+)
            :type (array effect)))))
 
-(define-constant +uninitialized-effect+ (make-effect) :test 'equalp)
+(defvar +uninitialized-effect+ (make-effect))
 
 (deftype axiom-layer ()
-  '(simple-array effect))
+  '(array effect))
 
 (declaim (strips.lib:index *fact-index* *op-index*))
 (declaim (fixnum *fact-size* *state-size*))
 (declaim (cons *fact-trie*))
-(declaim ((simple-array op) *instantiated-ops*))
-(declaim ((simple-array axiom-layer) *instantiated-axioms*))
-(declaim ((simple-array fixnum) *instantiated-init*))
+(declaim ((array op) *instantiated-ops*))
+(declaim ((array axiom-layer) *instantiated-axiom-layers*))
+(declaim ((array fixnum) *instantiated-init*))
 (declaim (fixnum *instantiated-goal*))
 
 (defun instantiate (info)
@@ -54,7 +54,7 @@
                :op-index op-index
                :instantiated-ops instantiated-ops
                :successor-generator (generate-sg instantiated-ops)
-               :instantiated-axioms (instantiate-axioms fact-index fact-trie)
+               :instantiated-axiom-layers (instantiate-axiom-layers fact-index fact-trie)
                :instantiated-init (instantiate-init fact-index fact-size)
                :instantiated-goal (instantiate-goal fact-index)
                info)))))
@@ -87,7 +87,8 @@
   (values (let ((i (strips.lib:make-index :test 'equal)))
             (dolist (o *ops* i)
               (strips.lib:index-insert i o)))
-          (map '(simple-array op) (lambda (op) (instantiate-op op index trie)) *ops*)))
+          (coerce (map 'vector (lambda (op) (instantiate-op op index trie)) *ops*)
+                  '(simple-array op))))
 
 (defun instantiate-op (op index trie)
   (ematch op
@@ -169,18 +170,19 @@
        ))
     (linear-extend effects e)))
 
-(defun instantiate-axioms (index trie &aux (first-iteration t))
-  (map '(array axiom-layer)
-       (lambda (layer)
-         (let ((results (make-a-array 32
-                                      :element-type 'effect
-                                      :initial-element +uninitialized-effect+)))
-           (if first-iteration
-               (setf first-iteration nil)
-               (dolist (axiom layer)
-                 (instantiate-axiom axiom index trie results)))
-           results))
-       *axiom-layers*))
+(defun instantiate-axiom-layers (index trie &aux (first-iteration t))
+  (coerce (map 'vector
+               (lambda (layer)
+                 (let ((results (make-a-array 32
+                                              :element-type 'effect
+                                              :initial-element +uninitialized-effect+)))
+                   (if first-iteration
+                       (setf first-iteration nil)
+                       (dolist (axiom layer)
+                         (instantiate-axiom axiom index trie results)))
+                   results))
+               *axiom-layers*)
+          '(array axiom-layer)))
 
 (defun instantiate-axiom (axiom index trie results)
   (ematch axiom

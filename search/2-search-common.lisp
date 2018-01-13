@@ -24,7 +24,7 @@
              t)
       nil))
 
-(ftype* applicable-ops sg-node state list)
+(ftype* applicable-ops sg state list)
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
   (declare (state state))
@@ -47,7 +47,7 @@
   (map nil
        (lambda (layer)
          (apply-axiom-layer layer state))
-       *instantiated-axioms*)
+       *instantiated-axiom-layers*)
   state)
 
 (ftype* apply-axiom-layer axiom-layer state state)
