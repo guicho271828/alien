@@ -214,6 +214,42 @@ exec ros -Q -- $0 "$@"
 (test (lambda (condition-array state)
         (multiple-value-call #'dd-loop (generate-dd condition-array) state)))
 
+;; dd-loop
+
+(ftype* dd-loop-inlined dd fixnum binary-state fixnum)
+(defun dd-loop-inlined (dd root state)
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  (let ((counter 0)
+        (zero -1)
+        (one -2))
+    (declare (fixnum counter))
+    (labels ((rec (current b)
+               (declare (fixnum b))
+               (cond
+                 ((= zero current))
+                 ((= one current)
+                  (incf counter))
+                 (t
+                  (match (aref dd current)
+                    ((dd-node variable else then)
+                     (cond
+                       ((= variable b)
+                        (when (= 1 (aref state b))
+                          (rec then (1+ b)))
+                        (rec else (1+ b)))
+                       ((< b variable)
+                        (rec current (1+ b)))
+                       ((< variable b)
+                        (error "(< variable b) !")))))))))
+      (declare (inline rec)) 
+      (rec root 0)
+      counter)))
+
+(defun run-dd-loop-inlined (condition-array states)
+  (multiple-value-bind (dd root) (generate-dd condition-array)
+    (print :run-dd-loop-inlined) (force-output)
+    (time (loop for s in states do (dd-loop-inlined dd root s)))))
+
 ;; decision tree as a large tagbody, allowing branch prediction
 
 (defvar *inline* nil)
@@ -511,6 +547,7 @@ exec ros -Q -- $0 "$@"
            (states (loop repeat num-states collect (random-binary-state bit-length))))
        ;; (run-naive condition-array states)
        (run-dd-loop condition-array states)
+       (run-dd-loop-inlined condition-array states)
        ;; (run-flet condition-array states)
        ;; (run-flet condition-array states t)
        ;; (run-flet2 condition-array states)
@@ -520,4 +557,41 @@ exec ros -Q -- $0 "$@"
     (_
      (format t "sg-impl-experiments.ros elements bit-length num-states~%"))))
 
+;; Example:
+;; ./sg-impl-experiment.ros 100 100 10000
+;; 
+;; :RUN-DD-LOOP 
+;; Evaluation took:
+;;   0.049 seconds of real time
+;;   0.048000 seconds of total run time (0.048000 user, 0.000000 system)
+;;   97.96% CPU
+;;   148,098,019 processor cycles
+;;   0 bytes consed
+;;   
+;; 
+;; :RUN-DD-LOOP-INLINED 
+;; Evaluation took:
+;;   0.043 seconds of real time
+;;   0.040000 seconds of total run time (0.040000 user, 0.000000 system)
+;;   93.02% CPU
+;;   128,936,082 processor cycles
+;;   0 bytes consed
+;;   
+;; Function segment size sum: 13020
+;; :RUN-FLET4 
+;; Evaluation took:
+;;   0.007 seconds of real time
+;;   0.008000 seconds of total run time (0.008000 user, 0.000000 system)
+;;   114.29% CPU
+;;   21,293,605 processor cycles
+;;   0 bytes consed
+;;   
+;; Function segment size sum: 13471
+;; :RUN-FLET4 
+;; Evaluation took:
+;;   0.006 seconds of real time
+;;   0.008000 seconds of total run time (0.008000 user, 0.000000 system)
+;;   133.33% CPU
+;;   19,764,406 processor cycles
+;;   0 bytes consed
 ;;; vim: set ft=lisp lisp:
