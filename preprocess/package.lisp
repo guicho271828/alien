@@ -81,6 +81,10 @@
    #:blind
    #:decode-op
    #:decode-state
-   #:report-if-goal))
+   #:report-if-goal
+   #:applicable-ops
+   #:apply-axioms
+   #:apply-op
+   #:make-state))
 
 (setf trivia:*arity-check-by-test-call* nil)

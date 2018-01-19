@@ -24,12 +24,19 @@
                               ground
                               mutex-invariant
                               instantiate)
+    (print
+     (decode-state #*11111111))
+    (let ((s (make-state)))
+      (replace s #*11111110)
+      (is (equal #*11111111
+                 (apply-axioms s))))
     (signals goal-found
       (report-if-goal #*11111111))
     (signals goal-found
       (report-if-goal #*00000001)))
   
-  (solve "movie/p01.pddl"))
+  ;; (solve "movie/p01.pddl")
+  )
 
 (test cavediving (solve "cavediving/p01.pddl"))
 (test citycar (solve "citycar/p01.pddl"))

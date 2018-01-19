@@ -83,10 +83,10 @@
              (when (zerop c) (push i open)))
 
         (do ((j (pop open) (pop open)))
-            ((endp open))
+            ((null j))
           (when (zerop (aref counters j)) ; re-evaluate, since it could be -1
             (decf (aref counters j))      ; -1
-            (setf (aref state j) 1)       ; achieve the axiom
+            (setf (aref state (+ *fact-size* j)) 1)       ; achieve the axiom
             (loop
                for i below len
                for c fixnum across counters
