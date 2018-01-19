@@ -14,10 +14,14 @@
                               ground
                               mutex-invariant
                               instantiate)
-    (signals goal-found
-      (eager #'blind))
-    (signals goal-found
-      (eager #'goal-count))))
+    (print-values
+      (with-timing
+        (signals goal-found
+          (eager #'blind))))
+    (print-values
+      (with-timing
+        (signals goal-found
+          (eager #'goal-count))))))
 
 (test movie
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")
