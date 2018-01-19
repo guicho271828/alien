@@ -87,6 +87,7 @@
    #:apply-op
    #:make-state
    #:memory-usage
-   #:with-memory-usage-diff))
+   #:with-memory-usage-diff
+   #:print-values))
 
 (setf trivia:*arity-check-by-test-call* nil)
