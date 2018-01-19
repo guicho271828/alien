@@ -14,15 +14,21 @@
   (match open
     ((bucket-open-list buckets :min-key (place min-key))
      (unless (array-in-bounds-p buckets key)
-       (adjust-array buckets (* 2 (array-total-size buckets))))
+       (adjust-array buckets (max (length buckets) (expt 2 (integer-length key)))))
      (push element (aref buckets key))
      (minf min-key key))))
 
 (defun bucket-open-list-pop (open)
-  (match open
+  (ematch open
     ((bucket-open-list buckets :min-key (place min-key-place min-key))
      (prog1 (pop (aref buckets min-key))
        (do ()
-           ((aref buckets min-key)
-            (setf min-key-place min-key))
-         (incf min-key))))))
+           (nil)
+         (incf min-key)
+         (if (array-in-bounds-p buckets min-key)
+             (when (aref buckets min-key)
+               (setf min-key-place min-key)
+               (return))
+             (progn
+               (setf min-key-place 0)
+               (return))))))))

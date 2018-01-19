@@ -59,7 +59,7 @@
 (ftype* register-state state state-id)
 (defun register-state (state)
   (or (strips.lib:index-id *close-list* state)
-      (strips.lib:index-insert *close-list* state)))
+      (strips.lib:index-insert *close-list* (copy-seq state))))
 
 (ftype* retrieve-state state-id state)
 (defun retrieve-state (state-id)
