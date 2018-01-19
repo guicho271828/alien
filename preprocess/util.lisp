@@ -53,6 +53,9 @@
   `(multiple-value-call (lambda (&rest args) (mapcar #'print args))
      ,@form))
 
+(defmacro print* (&body forms)
+  `(progn ,@(mapcar (lambda (x) `(print-values ,x)) forms)))
+
 (defmacro errors (&body form)
   `(handler-case
        (progn ,@form)
