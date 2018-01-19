@@ -53,6 +53,19 @@
 (defun make-close-list ()
   (strips.lib:make-index :test 'state-=))
 
+(enumerate status
+  +open+
+  +closed+
+  ;; +dominated+ ;; ?
+  )
+
+(deftype status-list ()
+  '(array status))
+
+(ftype* make-status-list status-list)
+(defun make-status-list ()
+  (make-a-array 1024 :element-type 'status :initial-element +open+))
+
 (ftype* register-state close-list state state-id)
 (defun register-state (close-list state)
   (or (strips.lib:index-id close-list state)
