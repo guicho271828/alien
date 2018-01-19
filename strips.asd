@@ -23,6 +23,7 @@
                :components ((:file "package")
                             (:file "equivalence")
                             (:file "indexed-entries")
+                            (:file "struct-of-array")
                             (:file "trie")))
               (:module "preprocess"
                :components ((:file "package")

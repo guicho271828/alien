@@ -13,7 +13,8 @@
    #:trie-member
    #:trie-insert-all
    #:map-trie
-   #:query-trie))
+   #:query-trie
+   #:defstruct-of-array))
 
 (in-package :strips.lib)
 
