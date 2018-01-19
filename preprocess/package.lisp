@@ -78,6 +78,8 @@
    #:goal-found
    #:timeout
    #:goal-count
-   #:blind))
+   #:blind
+   #:decode-op
+   #:decode-state))
 
 (setf trivia:*arity-check-by-test-call* nil)
