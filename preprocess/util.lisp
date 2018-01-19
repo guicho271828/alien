@@ -201,6 +201,18 @@
 (defun linear-extend (vector element)
   (vector-push-extend element vector (array-total-size vector)))
 
+(defun safe-aref (vector i)
+  (when (not (array-in-bounds-p vector i))
+    (format t "extending array: ~a -> ~a~%" (array-total-size vector) (* 2 (array-total-size vector)))
+    (adjust-array vector (* 2 (array-total-size vector))))
+  (aref vector i))
+
+(defun (setf safe-aref) (newval vector i)
+  (when (not (array-in-bounds-p vector i))
+    (format t "extending array: ~a -> ~a~%" (array-total-size vector) (* 2 (array-total-size vector)))
+    (adjust-array vector (* 2 (array-total-size vector))))
+  (setf (aref vector i) newval))
+
 (defmacro in-compile-time ((environment) &body body &environment env)
   (check-type environment symbol)
   (eval `(let ((,environment ,env)) (progn ,@body))))
