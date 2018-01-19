@@ -12,6 +12,31 @@
 (defun decode-op (op)
   (strips.lib:index-ref *op-index* op))
 
+(defmacro enumerate (name &body name-or-value)
+  "Define a type NAME which could take some values specified by name-or-value.
+name-or-value is a list whose element is whether a SYMBOL for a constant variable, or a list (SYMBOL INTEGER).
+In the first form, the value of enumeration starts from 0 and increments in the each element.
+In the second form, the value is set to INTEGER and the later elements increments from this value.
+You can mix both forms. "
+  (iter (with counter = 0)
+        (for elem in name-or-value)
+        (ematch elem
+          ((symbol)
+           (collecting `(define-constant ,elem ,counter) into body)
+           (collecting counter into values)
+           (incf counter))
+          ((list (and name (symbol)) (and int (integer)))
+           (collecting `(define-constant ,name ,int) into body)
+           (setf counter int)
+           (collecting counter into values)
+           (incf counter)))
+        (finally
+         (return
+           `(progn
+              (deftype ,name () '(member ,@values))
+              ,@body)))))
+
+
 (defun memory-usage ()
   (sb-ext:gc :full t)
   (sb-vm:memory-usage :print-spaces t :count-spaces '(:dynamic) :print-summary nil))
