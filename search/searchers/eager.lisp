@@ -11,12 +11,14 @@
     (labels ((rec ()
                (let* ((id (bucket-open-list-pop open-list))
                       (state (retrieve-state close-list id)))
+                 #+(or)
                  (print-values (values :popping id state))
                  (if (/= +open+ (aref status id))
                      (rec)
                      (setf (safe-aref status id) +closed+))
                  (apply-axioms state)
                  (report-if-goal state)
+                 #+(or)
                  (print (applicable-ops *sg* state))
                  (let ((child (make-state)))
                    (dolist (op (applicable-ops *sg* state))
@@ -25,7 +27,7 @@
                      (apply-axioms child)
                      (let ((id (register-state close-list child)))
                        (bucket-open-list-insert open-list (funcall evaluator child) id))
-                     ;; #+(or)
+                     #+(or)
                      (progn
                        (sleep 1)
                        (print-values (values state
