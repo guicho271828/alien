@@ -17,7 +17,8 @@
               :arrow-macros
               :cl-prolog2.swi
               :cl-prolog2.bprolog
-              :bordeaux-threads)
+              :bordeaux-threads
+              :cffi)
  :serial t
  :components ((:module "lib"
                :components ((:file "package")
@@ -42,6 +43,7 @@
                             (:file "2-search-common")
                             (:file "3-heuristic-common")
                             (:file "4-open-list-common")
+                            (:file "5-information")
                             (:module "heuristics"
                              :components ((:file "blind")
                                           (:file "goal-count")))
