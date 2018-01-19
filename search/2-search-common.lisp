@@ -42,6 +42,8 @@
       (mapcar (lambda (op) (aref *instantiated-ops* op))
               results))))
 
+;; these functions are all destructive.
+
 (ftype* apply-axioms state state)
 (defun apply-axioms (state)
   (map nil
