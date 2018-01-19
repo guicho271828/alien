@@ -77,6 +77,7 @@
    #:eager
    #:goal-found
    #:timeout
-   #:goal-count))
+   #:goal-count
+   #:blind))
 
 (setf trivia:*arity-check-by-test-call* nil)

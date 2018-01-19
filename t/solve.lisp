@@ -14,7 +14,7 @@
                               mutex-invariant
                               instantiate)
     (signals goal-found
-      (eager #'goal-count))))
+      (eager #'blind))))
 
 (test movie (solve "movie/p01.pddl"))
 (test cavediving (solve "cavediving/p01.pddl"))
