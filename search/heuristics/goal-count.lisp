@@ -17,8 +17,8 @@
                                      (lognot c) c)))
                           (if (< i *fact-size*)
                               ;; is a fact
-                              (when (or (and (minusp c) (= 0 (aref state i)))
-                                        (= 1 (aref state i)))
+                              (when (or (and (minusp c) (= 1 (aref state i)))
+                                        (= 0 (aref state i)))
                                 (incf count))
                               (rec (print (find-axiom i))))))))))
       (rec (find-axiom *instantiated-goal*))
