@@ -1,3 +1,4 @@
+;; -*- mode : lisp -*-
 ((:dir :t
        (:package)
        (:rest)))

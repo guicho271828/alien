@@ -1,4 +1,4 @@
-#|
+#| -*- mode : lisp -*-
   This file is a part of strips project.
 
 This is a [asd-generator](https://github.com/phoe/asd-generator/) config file.
@@ -17,13 +17,13 @@ $ update-asdf
 |#
 
 
-((:dir :preprocess
+((:dir :lib
+       (:package)
+       (:rest))
+ (:dir :preprocess
        (:package)
        (:util)
        (:specials)
-       (:dir :lib
-             (:package)
-             (:rest))
        (:rest :recursive nil))
  (:dir :search
        (:rest)

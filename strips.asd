@@ -19,15 +19,15 @@
               :cl-prolog2.bprolog
               :bordeaux-threads)
  :serial t
- :components ((:module "preprocess"
+ :components ((:module "lib"
+               :components ((:file "package")
+                            (:file "equivalence")
+                            (:file "indexed-entries")
+                            (:file "trie")))
+              (:module "preprocess"
                :components ((:file "package")
                             (:file "util")
                             (:file "specials")
-                            (:module "lib"
-                             :components ((:file "package")
-                                          (:file "equivalence")
-                                          (:file "indexed-entries")
-                                          (:file "trie")))
                             (:file "2-translate")
                             (:file "4-easy-invariant")
                             (:file "5-grounding-prolog-3")
