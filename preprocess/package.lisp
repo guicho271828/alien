@@ -80,6 +80,7 @@
    #:goal-count
    #:blind
    #:decode-op
-   #:decode-state))
+   #:decode-state
+   #:report-if-goal))
 
 (setf trivia:*arity-check-by-test-call* nil)
