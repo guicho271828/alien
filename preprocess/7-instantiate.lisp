@@ -170,19 +170,21 @@
        ))
     (linear-extend effects e)))
 
-(defun instantiate-axiom-layers (index trie &aux (first-iteration t))
-  (coerce (map 'vector
-               (lambda (layer)
-                 (let ((results (make-a-array 32
-                                              :element-type 'effect
-                                              :initial-element +uninitialized-effect+)))
-                   (if first-iteration
-                       (setf first-iteration nil)
-                       (dolist (axiom layer)
-                         (instantiate-axiom axiom index trie results)))
-                   results))
-               *axiom-layers*)
-          '(array axiom-layer)))
+(defun instantiate-axiom-layers (index trie)
+  (let ((all-results (make-a-array (length *axiom-layers*)
+                                   :element-type 'axiom-layer
+                                   :initial-element (make-a-array 0
+                                                                  :element-type 'effect
+                                                                  :initial-element +uninitialized-effect+))))
+    (iter (for layer in-sequence *axiom-layers*)
+          (when layer ; skip the empty layers
+            (let ((results (make-a-array (length layer)
+                                         :element-type 'effect
+                                         :initial-element +uninitialized-effect+)))
+              (dolist (axiom layer)
+                (instantiate-axiom axiom index trie results))
+              (linear-extend all-results results))))
+    all-results))
 
 (defun instantiate-axiom (axiom index trie results)
   (ematch axiom
