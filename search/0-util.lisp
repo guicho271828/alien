@@ -16,43 +16,80 @@
   (sb-ext:gc :full t)
   (sb-vm:memory-usage :print-spaces t :count-spaces '(:dynamic) :print-summary nil))
 
-;; (defstruct a b c)
+(defmacro with-memory-usage-diff ((&key (spaces '(:dynamic))) &body body)
+  `(call-with-memory-usage-diff ',spaces (lambda () ,@body)))
 
-;; 384
-;; 352
-;; _32
+(defun call-with-memory-usage-diff (spaces fn)
+  (sb-ext:gc :full t)
+  (let ((old (mapcar #'sb-vm::type-breakdown spaces)))
+    (funcall fn)
+    (sb-ext:gc :full t)
+    (let ((new (mapcar #'sb-vm::type-breakdown spaces)))
+      (iter (for old-breakdown in old)
+            (for new-breakdown in new)
+            (for space in spaces)
+            (format t "~&Memory consumption in ~a:~%" space)
+            (let ((diff (iter (for (byte count type) in new-breakdown)
+                              (for (obyte ocount otype) = (find type old-breakdown :key #'third))
+                              (unless otype
+                                (setf obyte 0 ocount 0))
+                              (unless (zerop (- count ocount))
+                                (collecting (list (- byte obyte) (- count ocount) type))))))
+              (iter (for (byte count type) in diff)
+                    (with digits1 = (1+ (sb-ext:decimal-with-grouped-digits-width
+                                         (reduce #'max (mapcar #'first diff)))))
+                    (with digits2 = (1+ (sb-ext:decimal-with-grouped-digits-width
+                                         (reduce #'max (mapcar #'second diff)))))
+                    (format t "~v@:d bytes for ~v@:d ~a objects~%"
+                            digits1 byte
+                            digits2 count
+                            type)))))))
+
+;; as you can see below, sbcl is not compacting the slots
+
+;; (defparameter *a* nil)
+;;   
+;; (defstruct a0)
+;; (with-memory-usage-diff () (push (make-a0) *a*)) ; 16 bytes, 2 words
+;; (defstruct a1 s1)
+;; (with-memory-usage-diff () (push (make-a1) *a*)) ; 16 bytes, 2 words
+;; (defstruct a2 s1 s2)
+;; (with-memory-usage-diff () (push (make-a2) *a*)) ; 32 bytes, 4 words
+;; (defstruct a3 s1 s2 s3)
+;; (with-memory-usage-diff () (push (make-a3) *a*)) ; 32 bytes, 4 words
+;; (defstruct a4 s1 s2 s3 s4)
+;; (with-memory-usage-diff () (push (make-a4) *a*)) ; 48 bytes, 6 words
 ;; 
-;; 1 fixnum: 8 bytes
-;; i.e. 4 slots per struct
-
-;; (defstruct (v (:type vector)) b c)
-;; (defstruct (v2 (:type vector))
-;;   (b 0 :type fixnum)
-;;   (c 0 :type fixnum))
-
-;; simple-vector also consumes 32 bytes
-;; additional 2 words for each structure
-
-;; (defstruct (v3 (:type (array fixnum)))
-;;   (b 0 :type fixnum)
-;;   (c 0 :type fixnum))
-
-;; (defun v2-b* (v2)
-;;   (declare (vector v2)
-;;            (optimize (safety 0) (speed 3) (debug 0)))
-;;   (v2-b v2))
+;; (defstruct (v0 (:type vector)))
+;; (with-memory-usage-diff () (push (make-v0) *a*)) ; 16 bytes, 2 words
+;; (defstruct (v1 (:type vector)) s1)
+;; (with-memory-usage-diff () (push (make-v1) *a*)) ; 32 bytes, 4 words
+;; (defstruct (v2 (:type vector)) s1 s2)
+;; (with-memory-usage-diff () (push (make-v2) *a*)) ; 32 bytes, 4 words
+;; (defstruct (v3 (:type vector)) s1 s2 s3)
+;; (with-memory-usage-diff () (push (make-v3) *a*)) ; 48 bytes, 6 words
+;; (defstruct (v4 (:type vector)) s1 s2 s3 s4)
+;; (with-memory-usage-diff () (push (make-v4) *a*)) ; 48 bytes, 6 words
 ;; 
-;; (defun v2-c* (v2)
-;;   (declare (vector v2)
-;;            (optimize (safety 0) (speed 3) (debug 0)))
-;;   (v2-c v2))
+;; (defstruct (f0 (:type vector)))
+;; (with-memory-usage-diff () (push (make-f0) *a*)) ; 16 bytes, 2 words
+;; (defstruct (f1 (:type vector)) (s1 0 :type fixnum))
+;; (with-memory-usage-diff () (push (make-f1) *a*)) ; 32 bytes, 4 words
+;; (defstruct (f2 (:type vector)) (s1 0 :type fixnum) (s2 0 :type fixnum))
+;; (with-memory-usage-diff () (push (make-f2) *a*)) ; 32 bytes, 4 words
+;; (defstruct (f3 (:type vector)) (s1 0 :type fixnum) (s2 0 :type fixnum) (s3 0 :type fixnum))
+;; (with-memory-usage-diff () (push (make-f3) *a*)) ; 48 bytes, 6 words
+;; (defstruct (f4 (:type vector)) (s1 0 :type fixnum) (s2 0 :type fixnum) (s3 0 :type fixnum) (s4 0 :type fixnum))
+;; (with-memory-usage-diff () (push (make-f4) *a*)) ; 48 bytes, 6 words
 ;; 
-;; (defun v-b* (v)
-;;   (declare (vector v)
-;;            (optimize (safety 0) (speed 3) (debug 0)))
-;;   (v-b v))
-;; 
-;; (defun v-c* (v)
-;;   (declare (vector v)
-;;            (optimize (safety 0) (speed 3) (debug 0)))
-;;   (v-c v))
+;; (defstruct (ub8-0 (:type vector)))
+;; (with-memory-usage-diff () (push (make-ub8-0) *a*)) ; 16 bytes, 2 words
+;; (defstruct (ub8-1 (:type vector)) (s1 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8-1) *a*)) ; 32 bytes, 4 words
+;; (defstruct (ub8-2 (:type vector)) (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8-2) *a*)) ; 32 bytes, 4 words
+;; (defstruct (ub8-3 (:type vector)) (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)) (s3 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8-3) *a*)) ; 48 bytes, 6 words
+;; (defstruct (ub8-4 (:type vector)) (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)) (s3 0 :type (unsigned-byte 8)) (s4 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8-4) *a*)) ; 48 bytes, 6 words
+

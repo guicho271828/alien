@@ -85,6 +85,8 @@
    #:applicable-ops
    #:apply-axioms
    #:apply-op
-   #:make-state))
+   #:make-state
+   #:memory-usage
+   #:with-memory-usage-diff))
 
 (setf trivia:*arity-check-by-test-call* nil)
