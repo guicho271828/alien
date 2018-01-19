@@ -41,29 +41,26 @@
 (sb-ext:define-hash-table-test state-= state-hash)
 
 ;; TODO static vectors, segmented vectors
-(defun make-state (&optional temporary)
+(defun make-state ()
   "create a state **including** the axiom cells."
-  (let ((s (make-array *state-size* :element-type 'bit)))
-    (if temporary
-        s
-        (values s (register-state s)))))
+  (make-array *state-size* :element-type 'bit))
 
 ;; (sb-vm:memory-usage :print-spaces t :count-spaces '(:aaa) :print-summary nil)
 
-(declaim (strips.lib:index *close-list*))
-(defvar *close-list*)
+(deftype close-list ()
+  'strips.lib:index)
 
 (defun make-close-list ()
   (strips.lib:make-index :test 'state-=))
 
-(ftype* register-state state state-id)
-(defun register-state (state)
-  (or (strips.lib:index-id *close-list* state)
-      (strips.lib:index-insert *close-list* (copy-seq state))))
+(ftype* register-state close-list state state-id)
+(defun register-state (close-list state)
+  (or (strips.lib:index-id close-list state)
+      (strips.lib:index-insert close-list (copy-seq state))))
 
-(ftype* retrieve-state state-id state)
-(defun retrieve-state (state-id)
-  (strips.lib:index-ref *close-list* state-id))
+(ftype* retrieve-state close-list state-id state)
+(defun retrieve-state (close-list state-id)
+  (strips.lib:index-ref close-list state-id))
 
 ;; TODO: idea: prune by bloom filter
 

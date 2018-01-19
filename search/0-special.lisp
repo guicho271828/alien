@@ -10,4 +10,3 @@
 
 (defvar *heuristics* 'ff)
 
-(defvar *open-list* )
