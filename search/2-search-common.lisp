@@ -32,7 +32,7 @@
   (let ((results nil))
     (labels ((rec (node)
                (ematch node
-                 ((type list) (nconcf results node))
+                 ((type list) (appendf results node))
                  ((sg-node variable then else either)
                   (case (aref state variable)
                     (0 (rec else))

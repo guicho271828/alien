@@ -47,7 +47,9 @@ A generator node is just a list containing operator indices."
                      ;; no more conditions
                      (ematch current
                        ((type list) ; leaf branch
-                        (cons index current))
+                        (if (member index current)
+                            current
+                            (cons index current)))
                        ((sg-node variable then else either) ; inner node
                         (sg-node variable then else (rec either (1+ con-index))))))
                     
