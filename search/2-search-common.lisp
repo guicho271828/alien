@@ -116,7 +116,7 @@
     ((effect con eff)
      (when (every (lambda (i) (or (and (minusp i)
                                        (= 0 (aref state (lognot i))))
-                                  (= 1 (aref state (lognot i)))))
+                                  (= 1 (aref state i))))
                   con)
        (if (minusp eff)
            (let ((i (lognot eff)))
