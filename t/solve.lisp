@@ -20,8 +20,11 @@
     ;;       (eager #'blind))))
     (print-values
       (with-timing
-        (signals goal-found
-          (eager #'goal-count))))))
+        (handler-case
+            (signals goal-found
+              (eager #'goal-count))
+          (error (c)
+            (fail (princ-to-string c))))))))
 
 (test movie
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")
@@ -63,9 +66,9 @@
   (solve "movie/p20.pddl"))
 
 (test demo
-  ;; (solve "demo/cavediving/p01.pddl") ; error in sg
+  (solve "demo/sokoban/p01.pddl")
+  (solve "demo/cavediving/p01.pddl")
   ;; (solve "demo/citycar/p01.pddl") ; error in sg
   ;; (solve "demo/parkprinter/p01.pddl") ; list exhausted
   ;; (solve "demo/researchers/p01.pddl") ; error in sg
-  (solve "demo/sokoban/p01.pddl")) ; error in sg
-x
+  )
