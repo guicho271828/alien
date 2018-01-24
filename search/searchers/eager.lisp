@@ -25,10 +25,11 @@
                  (apply-axioms state)
                  (restart-bind ((retrieve-path
                                  (lambda ()
-                                   (iter (for pid initially id then (aref parent pid))
-                                         (for op = (aref generator pid))
-                                         (until (null op))
-                                         (collect (decode-op op))))))
+                                   (nreverse
+                                    (iter (for pid initially id then (aref parent pid))
+                                          (for op = (aref generator pid))
+                                          (until (null op))
+                                          (collect (decode-op op)))))))
                    (report-if-goal state))
                  #+(or)
                  (println (map 'list #'decode-op (applicable-ops *sg* state)))
