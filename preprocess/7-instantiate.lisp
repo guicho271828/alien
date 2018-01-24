@@ -92,7 +92,7 @@
 
 (defun instantiate-op (op index trie)
   (ematch op
-    (`((,name ,@args) ,_)
+    (`((,name ,@args) ,reachable-effects)
       (ematch (find name *actions* :key #'second)
         ((plist :parameters params
                 :precondition `(and ,@precond)
@@ -116,6 +116,9 @@
                         (linear-extend pre (lognot i))))))
               (sort pre #'<) 
               (iter (for e in geff)
+                    (for i from 0)
+                    (unless (member i reachable-effects)
+                      (format *error-output* "~&~a th effect ~a in op ~a was removed." i e `(,name ,@args)))
                     (instantiate-effect e eff index trie))
               ;; ensures literals are deleted before added
               (sort eff #'< :key #'effect-eff)
