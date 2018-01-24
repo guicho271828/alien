@@ -65,6 +65,7 @@
 ;; TODO: idea: prune by bloom filter
 
 (enumerate status
+  +new+
   +open+
   +closed+
   ;; +dominated+ ;; ?
@@ -75,7 +76,7 @@
 
 (ftype* make-status-list status-list)
 (defun make-status-list ()
-  (make-a-array 1024 :element-type 'status :initial-element +open+))
+  (make-a-array 1024 :element-type 'status :initial-element +new+))
 
 
 

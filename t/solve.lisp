@@ -18,15 +18,15 @@
     ;;   (with-timing
     ;;     (signals goal-found
     ;;       (eager #'blind))))
-    (print-values
-      (with-timing
-        (handler-case
+    ;; (print-values
+    ;;   (with-timing
+    (handler-case
             (eager #'goal-count)
-          (goal-found (c)
+          (goal-found ()
             (finishes
-              (print (retrieve-path (goal-found-state c)))))
+              (print (retrieve-path))))
           (error (c)
-            (fail (princ-to-string c))))))))
+            (fail (princ-to-string c))))))
 
 (test movie
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")

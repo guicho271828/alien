@@ -13,14 +13,13 @@
     (apply-axioms state)
     state))
 
-(define-condition goal-found (error)
-  ((state :initarg :state)))
+(define-condition goal-found (error) ())
 
 (ftype* report-if-goal state boolean)
 (defun report-if-goal (state)
   (declare (state state))
   (if (= 1 (aref state *instantiated-goal*))
-      (progn (cerror "continue searching" 'goal-found :state state)
+      (progn (cerror "continue searching" 'goal-found)
              t)
       nil))
 
@@ -41,6 +40,7 @@
       (rec sg)
       (mapcar (lambda (op) (aref *instantiated-ops* op))
               results))))
+;; (sb-c:defknown applicable-ops (sg state) list (sb-c::dx-safe))
 
 ;; these functions are all destructive.
 
