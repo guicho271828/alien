@@ -21,7 +21,7 @@
   (flet ((con () (make-a-array 16 :element-type 'fixnum :initial-element most-positive-fixnum)))
     (defstruct effect
       (con (con) :type (array fixnum))
-      (eff 0 :type fixnum))
+      (eff most-positive-fixnum :type fixnum))
     
     (defstruct op
       (pre (con) :type (array fixnum))
@@ -116,7 +116,9 @@
                         (linear-extend pre (lognot i))))))
               (sort pre #'<) 
               (iter (for e in geff)
-                    (instantiate-effect e eff index trie))))
+                    (instantiate-effect e eff index trie))
+              ;; ensures literals are deleted before added
+              (sort eff #'< :key #'effect-eff)
            op))))))
 
 (defun instantiate-effect (e effects index trie)
