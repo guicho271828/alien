@@ -53,6 +53,17 @@
 (defun make-close-list ()
   (strips.lib:make-index :test 'state-=))
 
+(ftype* register-state close-list state state-id)
+(defun register-state (close-list state)
+  (or (strips.lib:index-id close-list state)
+      (strips.lib:index-insert close-list (copy-seq state))))
+
+(ftype* retrieve-state close-list state-id state)
+(defun retrieve-state (close-list state-id)
+  (strips.lib:index-ref close-list state-id))
+
+;; TODO: idea: prune by bloom filter
+
 (enumerate status
   +open+
   +closed+
@@ -66,14 +77,7 @@
 (defun make-status-list ()
   (make-a-array 1024 :element-type 'status :initial-element +open+))
 
-(ftype* register-state close-list state state-id)
-(defun register-state (close-list state)
-  (or (strips.lib:index-id close-list state)
-      (strips.lib:index-insert close-list (copy-seq state))))
 
-(ftype* retrieve-state close-list state-id state)
-(defun retrieve-state (close-list state-id)
-  (strips.lib:index-ref close-list state-id))
 
 (deftype parent-list ()
   '(array state-id))
@@ -82,7 +86,6 @@
 (defun make-parent-list ()
   (make-a-array 1024 :element-type 'state-id :initial-element #xffffffff))
 
-;; TODO: idea: prune by bloom filter
 (deftype generator () 'fixnum)
 
 (deftype generator-list ()
