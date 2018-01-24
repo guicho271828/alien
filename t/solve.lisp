@@ -21,8 +21,10 @@
     (print-values
       (with-timing
         (handler-case
-            (signals goal-found
-              (eager #'goal-count))
+            (eager #'goal-count)
+          (goal-found (c)
+            (finishes
+              (print (retrieve-path (goal-found-state c)))))
           (error (c)
             (fail (princ-to-string c))))))))
 
