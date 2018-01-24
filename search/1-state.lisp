@@ -76,4 +76,12 @@
   (strips.lib:index-ref close-list state-id))
 
 ;; TODO: idea: prune by bloom filter
+(deftype generator () 'fixnum)
+
+(deftype generator-list ()
+  '(array generator))
+
+(ftype* make-generator-list generator-list)
+(defun make-generator-list ()
+  (make-a-array 1024 :element-type 'generator :initial-element most-positive-fixnum))
 
