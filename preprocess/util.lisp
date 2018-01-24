@@ -201,16 +201,20 @@
 (defun linear-extend (vector element)
   (vector-push-extend element vector (array-total-size vector)))
 
-(defun safe-aref (vector i)
+(defun safe-aref (vector i &optional (initial-element nil initial-element-supplied-p))
   (when (not (array-in-bounds-p vector i))
     (format t "extending array: ~a -> ~a~%" (array-total-size vector) (* 2 (array-total-size vector)))
-    (adjust-array vector (* 2 (array-total-size vector))))
+    (if initial-element-supplied-p
+        (adjust-array vector (* 2 (array-total-size vector)) :initial-element initial-element)
+        (adjust-array vector (* 2 (array-total-size vector)))))
   (aref vector i))
 
-(defun (setf safe-aref) (newval vector i)
+(defun (setf safe-aref) (newval vector i &optional (initial-element nil initial-element-supplied-p))
   (when (not (array-in-bounds-p vector i))
     (format t "extending array: ~a -> ~a~%" (array-total-size vector) (* 2 (array-total-size vector)))
-    (adjust-array vector (* 2 (array-total-size vector))))
+    (if initial-element-supplied-p
+        (adjust-array vector (* 2 (array-total-size vector)) :initial-element initial-element)
+        (adjust-array vector (* 2 (array-total-size vector)))))
   (setf (aref vector i) newval))
 
 (defmacro in-compile-time ((environment) &body body &environment env)

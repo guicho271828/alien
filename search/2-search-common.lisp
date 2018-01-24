@@ -23,23 +23,24 @@
              t)
       nil))
 
-(ftype* applicable-ops sg state list)
+(ftype* applicable-ops sg state (array (or null op)))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
   (declare (state state))
   (declare (sg sg))
-  (let ((results nil))
+  (let ((results (make-a-array 32 :element-type '(or null op) :initial-element nil)))
     (labels ((rec (node)
                (ematch node
-                 ((type list) (appendf results node))
+                 ((type list)
+                  (dolist (op-id node)
+                    (linear-extend results (aref *instantiated-ops* op-id))))
                  ((sg-node variable then else either)
                   (case (aref state variable)
                     (0 (rec else))
                     (1 (rec then)))
                   (rec either)))))
       (rec sg)
-      (mapcar (lambda (op) (aref *instantiated-ops* op))
-              results))))
+      results)))
 ;; (sb-c:defknown applicable-ops (sg state) list (sb-c::dx-safe))
 
 ;; these functions are all destructive.

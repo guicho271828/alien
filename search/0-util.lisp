@@ -10,7 +10,11 @@
           (collect (strips.lib:index-ref *fact-index* i)))))
 
 (defun decode-op (op)
-  (strips.lib:index-ref *op-index* op))
+  (ematch op
+    ((integer)
+     (first (strips.lib:index-ref *op-index* op)))
+    ((op)
+     (decode-op (position op *instantiated-ops*)))))
 
 (defmacro enumerate (name &body name-or-value)
   "Define a type NAME which could take some values specified by name-or-value.

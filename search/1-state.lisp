@@ -87,12 +87,10 @@
 (defun make-parent-list ()
   (make-a-array 1024 :element-type 'state-id :initial-element #xffffffff))
 
-(deftype generator () 'fixnum)
-
 (deftype generator-list ()
-  '(array generator))
+  '(array (or null op)))
 
 (ftype* make-generator-list generator-list)
 (defun make-generator-list ()
-  (make-a-array 1024 :element-type 'generator :initial-element most-positive-fixnum))
+  (make-a-array 1024 :element-type '(or null op) :initial-element nil))
 

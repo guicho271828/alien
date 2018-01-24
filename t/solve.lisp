@@ -20,13 +20,14 @@
     ;;       (eager #'blind))))
     ;; (print-values
     ;;   (with-timing
-    (handler-case
-            (eager #'goal-count)
-          (goal-found ()
-            (finishes
-              (print (retrieve-path))))
-          (error (c)
-            (fail (princ-to-string c))))))
+    (finishes
+      (block nil
+        (handler-bind ((goal-found
+                        (lambda (c)
+                          (declare (ignore c))
+                          (print (retrieve-path))
+                          (return))))
+          (eager #'goal-count))))))
 
 (test movie
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")
