@@ -90,6 +90,7 @@
    #:with-memory-usage-diff
    #:print-values
    #:no-solution
-   #:retrieve-path))
+   #:retrieve-path
+   #:println))
 
 (setf trivia:*arity-check-by-test-call* nil)

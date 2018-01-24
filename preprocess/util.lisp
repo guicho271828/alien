@@ -50,7 +50,7 @@
   (asdf:system-relative-pathname :strips pathname))
 
 (defmacro print-values (&body form)
-  `(multiple-value-call (lambda (&rest args) (mapcar #'print args))
+  `(multiple-value-call (lambda (&rest args) (mapcar #'println args))
      ,@form))
 
 (defmacro print* (&body forms)
@@ -230,3 +230,6 @@
      (unbound-variable ()
        (simple-style-warning "form ~a failed during type computation, defaulting to *" ',form)
        '*)))
+
+(defun println (x)
+  (write x :escape nil) (terpri))

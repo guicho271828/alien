@@ -17,9 +17,6 @@
 (defmacro with-test-instantiate (info &body body)
   `(call-test-instantiate ,info (lambda () ,@body)))
 
-(defun println (x)
-  (princ x) (terpri))
-
 (test instantiate1
   (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
                                                   (:requirements :strips :typing)
