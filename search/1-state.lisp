@@ -75,6 +75,13 @@
 (defun retrieve-state (close-list state-id)
   (strips.lib:index-ref close-list state-id))
 
+(deftype parent-list ()
+  '(array state-id))
+
+(ftype* make-parent-list parent-list)
+(defun make-parent-list ()
+  (make-a-array 1024 :element-type 'state-id :initial-element #xffffffff))
+
 ;; TODO: idea: prune by bloom filter
 (deftype generator () 'fixnum)
 
