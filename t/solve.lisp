@@ -20,6 +20,7 @@
     ;;       (eager #'blind))))
     ;; (print-values
     ;;   (with-timing
+    (print (length *instantiated-ops*))
     (finishes
       (block nil
         (handler-bind ((goal-found
@@ -69,9 +70,10 @@
   (solve "movie/p20.pddl"))
 
 (test demo
-  (solve "demo/sokoban/p01.pddl")
-  (solve "demo/cavediving/p01.pddl")
+  ;; (solve "demo/sokoban/p01.pddl")
+  ;; (solve "demo/cavediving/p01.pddl")
   ;; (solve "demo/citycar/p01.pddl") ; error in sg
+  (solve "demo/parkprinter/p00.pddl") ; list exhausted
   ;; (solve "demo/parkprinter/p01.pddl") ; list exhausted
   ;; (solve "demo/researchers/p01.pddl") ; error in sg
   )
