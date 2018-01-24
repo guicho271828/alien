@@ -12,7 +12,10 @@
 (defun decode-op (op)
   (ematch op
     ((integer)
-     (first (strips.lib:index-ref *op-index* op)))
+     (match (strips.lib:index-ref *op-index* op)
+       ((list (list* name args) _)
+        (list* (getf (find name *actions* :key #'second) :original-action)
+               args))))
     ((op)
      (decode-op (position op *instantiated-ops*)))))
 
