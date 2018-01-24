@@ -16,7 +16,9 @@
                (let* ((id (bucket-open-list-pop open-list))
                       (state (retrieve-state close-list id)))
                  #+(or)
-                 (print-values (values :popping id state))
+                 (print-values (values :popping id state (decode-state state)
+                                       (when-let ((op (aref generator id)))
+                                         (decode-op op))))
                  (when (/= +open+ (safe-aref status id +new+))
                    (return-from rec (rec)))
                  (setf (safe-aref status id +new+) +closed+)
@@ -29,7 +31,7 @@
                                          (collect (decode-op op))))))
                    (report-if-goal state))
                  #+(or)
-                 (print (applicable-ops *sg* state))
+                 (println (map 'list #'decode-op (applicable-ops *sg* state)))
                  (let ((child (make-state)))
                    (iter (for op in-vector (applicable-ops *sg* state))
                          (replace child state)
@@ -43,12 +45,13 @@
                              (bucket-open-list-insert open-list (funcall evaluator child) id2)))
                          #+(or)
                          (progn
-                           (sleep 1)
+                           (sleep 0.1)
                            (print-values (values state
                                                  (decode-state state)
                                                  child
                                                  (decode-state child)
-                                                 open-list))))))
+                                                 open-list))
+                           ))))
                (rec)))
       (rec))))
 
