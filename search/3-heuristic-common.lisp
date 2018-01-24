@@ -12,3 +12,10 @@
 
 (deftype heuristics ()
   '(function (state) scalar))
+
+(deftype g-list ()
+  '(array state-id))
+
+(ftype* make-g-list g-list)
+(defun make-g-list ()
+  (make-a-array 1024 :element-type 'state-id :initial-element #xffffffff))
