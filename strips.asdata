@@ -29,5 +29,7 @@ $ update-asdf
        (:rest)
        (:dir :heuristics)
        (:dir :searchers)
-       (:dir :open-list)))
+       (:dir :open-list))
+ (:dir :validate
+       (:rest)))
 

@@ -24,6 +24,7 @@
                :components ((:file "package")
                             (:file "equivalence")
                             (:file "indexed-entries")
+                            (:file "octet-struct")
                             (:file "struct-of-array")
                             (:file "trie")))
               (:module "preprocess"
@@ -45,12 +46,16 @@
                             (:file "4-open-list-common")
                             (:file "5-information")
                             (:module "heuristics"
-                             :components ((:file "blind")
+                             :components ((:file "alien")
+                                          (:file "blind")
+                                          (:file "ff")
                                           (:file "goal-count")))
                             (:module "searchers"
                              :components ((:file "eager")
                                           (:file "timeout")))
                             (:module "open-list"
-                             :components ((:file "bucket-open-list"))))))
+                             :components ((:file "bucket-open-list")))))
+              (:module "validate"
+               :components ((:file "validate"))))
  :description "A STRIPS planner"
  :in-order-to ((test-op (test-op :strips.test))))

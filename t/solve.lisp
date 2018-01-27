@@ -21,14 +21,19 @@
     ;; (print-values
     ;;   (with-timing
     (print (length *instantiated-ops*))
-    (finishes
-      (block nil
-        (handler-bind ((goal-found
-                        (lambda (c)
-                          (declare (ignore c))
-                          (print (retrieve-path))
-                          (return))))
-          (eager #'goal-count))))))
+    (let (plan)
+      (finishes
+        (block nil
+          (handler-bind ((goal-found
+                          (lambda (c)
+                            (declare (ignore c))
+                            (setf plan (retrieve-path))
+                            (return))))
+            (eager #'goal-count))))
+      (is-true (validate-plan (strips::find-domain (%rel path))
+                              (%rel path)
+                              plan
+                              :verbose t)))))
 
 (test movie
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")
