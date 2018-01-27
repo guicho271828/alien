@@ -118,7 +118,7 @@
               (iter (for e in geff)
                     (for i from 0)
                     (unless (member i reachable-effects)
-                      (format *error-output* "~&~a th effect ~a in op ~a was removed." i e `(,name ,@args)))
+                      (format *error-output* "~&~a th effect ~a in op ~a was removed due to unreachable effect condition." i e `(,name ,@args)))
                     (instantiate-effect e eff index trie))
               ;; ensures literals are deleted before added
               (sort eff #'< :key #'effect-eff)
