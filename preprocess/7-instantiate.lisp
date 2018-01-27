@@ -90,6 +90,18 @@
           (coerce (map 'vector (lambda (op) (instantiate-op op index trie)) *ops*)
                   '(simple-array op))))
 
+(defun opposite-effect-p (a b)
+  (match* (a b)
+    (((effect :con con1 :eff eff1)
+      (effect :con (equalp con1) :eff (= (lognot eff1))))
+     t)))
+
+(declaim (inline logabs))
+(defun logabs (number)
+  (if (minusp number)
+      (lognot number)
+      number))
+
 (defun instantiate-op (op index trie)
   (ematch op
     (`((,name ,@args) ,reachable-effects)
@@ -120,19 +132,30 @@
                     (unless (member i reachable-effects)
                       (format *error-output* "~&~a th effect ~a in op ~a was removed due to unreachable effect condition." i e `(,name ,@args)))
                     (instantiate-effect e eff index trie))
-              ;; ensures literals are deleted before added
-              (sort eff #'< :key #'effect-eff)
               ;; postprocessing: when the effect-conditions are equivalent for the
               ;; positive and negative effect of the same literal, the effect should
               ;; be removed.
-              (delete-duplicates eff :test
-                                 (lambda (a b)
-                                   (match* (a b)
-                                     (((effect :con con1 :eff eff1)
-                                       (effect :con (equalp con1) :eff (= (- eff1))))
-                                      (format *error-output* "~&deleting no-op effect in ~a: ~a ~a"
-                                              `(,name ,@args) a b)
-                                      t))))))
+              (iter (with blacklist = nil)
+                    (for e1 in-vector eff with-index i)
+                    (generate j from 0)
+                    (when (member i blacklist)
+                      (next-iteration))
+                    (iter (for e2 in-vector eff with-index k from (1+ i))
+                          (with noop-found = nil)
+                          (when (opposite-effect-p e1 e2)
+                            (pushnew i blacklist)
+                            (pushnew k blacklist)
+                            (format *error-output* "~&cancelling effects ~a in ~a"
+                                    (strips.lib:index-ref index (logabs (effect-eff e1)))
+                                    `(,name ,@args))
+                            ;; (format *error-output* "~& ~a ~a, ~a ~a" i e1 k e2)
+                            (setf noop-found t))
+                          (finally
+                           (unless noop-found
+                             (next j)
+                             (setf (aref eff j) e1))))
+                    (finally
+                     (setf (fill-pointer eff) (1+ j))))))
            op))))))
 
 (defun instantiate-effect (e effects index trie)
