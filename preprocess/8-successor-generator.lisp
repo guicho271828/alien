@@ -35,6 +35,8 @@ A generator node is just a list containing operator indices."
     current))
 
 (defun extend-sg (current op index)
+  ;; current: current sg node, initially the root node
+  ;; op: operator to add to the sg
   (match op
     ((op pre)
      (labels ((rec (current con-index)

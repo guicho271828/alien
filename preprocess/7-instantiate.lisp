@@ -118,20 +118,22 @@
                  (setf geff (nsubst a p geff)))
 
            (match op
-             ((op pre eff)
-              (dolist (c gpre)
+             ((op pre :eff (place eff))
+              (dolist (c (remove-duplicates gpre :test 'equal))
                 (if (positive c)
                     (unless (static-p c)
                       (linear-extend pre (strips.lib:index-id index c)))
                     (let ((i (strips.lib:index-id index (second c))))
                       (when i ; otherwise unreachable
                         (linear-extend pre (lognot i))))))
-              (sort pre #'<) 
+              (sort pre #'<)
               (iter (for e in geff)
                     (for i from 0)
                     (unless (member i reachable-effects)
                       (format *error-output* "~&~a th effect ~a in op ~a was removed due to unreachable effect condition." i e `(,name ,@args)))
                     (instantiate-effect e eff index trie))
+              (setf eff (sort eff #'< :key #'effect-eff))
+              (setf eff (delete-duplicates eff :test 'equalp))
               ;; postprocessing: when the effect-conditions are equivalent for the
               ;; positive and negative effect of the same literal, the effect should
               ;; be removed.
@@ -186,7 +188,7 @@
   (let ((e (make-effect)))
     (ematch e
       ((effect con :eff (place eff))
-       (iter (for c in ground-conditions)
+       (iter (for c in (remove-duplicates ground-conditions :test 'equal))
              (if (positive c)
                  (unless (static-p c)
                    (linear-extend con (strips.lib:index-id index c)))
