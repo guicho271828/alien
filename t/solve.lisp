@@ -77,8 +77,8 @@
 (test demo
   ;; (solve "demo/sokoban/p01.pddl")
   ;; (solve "demo/cavediving/p01.pddl")
-  ;; (solve "demo/citycar/p01.pddl") ; error in sg
-  (solve "demo/parkprinter/p00.pddl") ; list exhausted
-  ;; (solve "demo/parkprinter/p01.pddl") ; list exhausted
-  ;; (solve "demo/researchers/p01.pddl") ; error in sg
+  ;; ;; (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
+  ;; (solve "demo/parkprinter/p00.pddl")
+  ;; (solve "demo/parkprinter/p01.pddl")
+  (solve "demo/researchers/p01.pddl") ; error in sg
   )
