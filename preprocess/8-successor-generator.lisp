@@ -39,9 +39,7 @@ A generator node is just a list containing operator indices."
     ((op pre)
      (labels ((rec (current con-index)
                 (let* ((condition (aref pre con-index))
-                       (var (if (minusp condition)
-                                (lognot condition)
-                                condition)))
+                       (var (logabs condition)))
                   (cond
                     ((= condition most-positive-fixnum)
                      ;; no more conditions
