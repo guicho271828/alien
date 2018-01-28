@@ -81,6 +81,5 @@
   ;; ;; (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
   (solve "demo/parkprinter/p00.pddl")
   (solve "demo/parkprinter/p01.pddl")
-  (solve "demo/researchers/p01.pddl") ; error in sg
-  (solve "demo/researchers-debug/p01.pddl") ; error in sg
-  )
+  (solve "demo/researchers/p01.pddl")
+  (solve "demo/researchers-debug/p01.pddl"))
