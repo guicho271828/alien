@@ -55,14 +55,14 @@
 
 (ftype* apply-axiom-layer axiom-layer state state)
 (defun apply-axiom-layer (axioms state) 
-  (let ((counters (make-array (length axioms) :element-type 'fixnum))
-        (len (length axioms)))
+  (let* ((len (length axioms))
+         (counters (make-array len :element-type 'fixnum)))
     ;; considered axioms get the counter value of -1
     ;; TODO: make it a load-time-value vector or make it dynamic-extent
     ;; (declare (dynamic-extent counters))
     (flet ((decrement (v counter)
-             (if (or (and (minusp v)
-                          (= 0 (aref state (lognot v))))
+             (if (if (minusp v)
+                     (= 0 (aref state (lognot v)))
                      (= 1 (aref state v)))
                  (1- counter)
                  counter)))
@@ -89,7 +89,7 @@
             ((null j))
           (when (zerop (aref counters j)) ; re-evaluate, since it could be -1
             (decf (aref counters j))      ; -1
-            (setf (aref state (+ *fact-size* j)) 1)       ; achieve the axiom
+            (setf (aref state (effect-eff (aref axioms j))) 1)       ; achieve the axiom
             (loop
                for i below len
                for c fixnum across counters
