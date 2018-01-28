@@ -8,33 +8,36 @@
 
 (defun solve (path)
   (declare (optimize (debug 3) (speed 0)))
-  (with-parsed-information5 (-> (%rel path)
-                              parse
-                              easy-invariant
-                              ground
-                              mutex-invariant
-                              instantiate)
-    ;; (print-values
-    ;;   (with-timing
-    ;;     (signals goal-found
-    ;;       (eager #'blind))))
-    ;; (print-values
-    ;;   (with-timing
-    (print (length *instantiated-ops*))
-    (let (plan)
-      (finishes
-        (block nil
-          (handler-bind ((goal-found
-                          (lambda (c)
-                            (declare (ignore c))
-                            (setf plan (retrieve-path))
-                            (return))))
-            (eager #'goal-count))))
-      (print plan)
-      (is-true (validate-plan (strips::find-domain (%rel path))
-                              (%rel path)
-                              plan
-                              :verbose t)))))
+  (handler-case
+      (with-parsed-information5 (-> (%rel path)
+                                  parse
+                                  easy-invariant
+                                  ground
+                                  mutex-invariant
+                                  instantiate)
+        ;; (print-values
+        ;;   (with-timing
+        ;;     (signals goal-found
+        ;;       (eager #'blind))))
+        ;; (print-values
+        ;;   (with-timing
+        (print (length *instantiated-ops*))
+        (let (result)
+          (finishes
+            (block nil
+              (handler-bind ((goal-found
+                              (lambda (c)
+                                (declare (ignore c))
+                                (setf result (retrieve-path))
+                                (return))))
+                (eager #'goal-count))))
+          (print result)
+          (is-true (validate-plan (strips::find-domain (%rel path))
+                                  (%rel path)
+                                  result
+                                  :verbose t))))
+    (error (c)
+      (fail "~A: plan not found, reason: ~a" path c))))
 
 (test movie
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")
