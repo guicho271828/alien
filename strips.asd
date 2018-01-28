@@ -58,4 +58,15 @@
               (:module "validate"
                :components ((:file "validate"))))
  :description "A STRIPS planner"
- :in-order-to ((test-op (test-op :strips.test))))
+ :in-order-to ((test-op (test-op :strips.test)))
+ :defsystem-depends-on (:trivial-package-manager)
+ :perform
+ (load-op :before (op c)
+          (uiop:symbol-call :trivial-package-manager
+                            :ensure-program
+                            "validate"
+                            :env-alist `(("PATH" . ,(format nil "~a:~a"
+                                                            (asdf:system-relative-pathname
+                                                             :cl-prolog2.bprolog "VAL/")
+                                                            (uiop:getenv "PATH"))))
+                            :from-source (format nil "make -C VAL validate"))))

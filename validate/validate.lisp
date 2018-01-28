@@ -2,6 +2,8 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
+;; old functions, not used now
+#+(or)
 (defun search-fd ()
   (labels ((rec (path)
              (let ((downward (merge-pathnames "downward/" path)))
@@ -14,6 +16,7 @@
     (rec
      (asdf:system-source-directory :strips))))
 
+#+(or)
 (defun fd-relative-pathname (path)
   (let ((path (merge-pathnames
                path
@@ -23,6 +26,7 @@
     (assert (probe-file path))
     path))
 
+#+(or)
 (defun fd-relative-pathname* (&rest paths)
   "returns the first match"
   (or (iter (for path in paths)
@@ -31,12 +35,21 @@
               (error ())))
       (warn "validator not found!")))
 
+;; we now uses this
+(defun search-val ()
+  (labels ((rec (path)
+             (let ((downward (merge-pathnames "VAL/" path)))
+               (if (probe-file downward)
+                   downward
+                   (let ((parent (truename (merge-pathnames "../" path))))
+                     (if (equal '(:absolute) (pathname-directory parent))
+                         (warn "VAL was not found!")
+                         (rec parent)))))))
+    (rec
+     (asdf:system-source-directory :strips))))
+
 (defun validator ()
-  (fd-relative-pathname*
-   "builds/release64/bin/validate"
-   "builds/release32/bin/validate"
-   "src/validate"
-   "validate"))
+  (merge-pathnames "validate" (search-val)))
 
 (defun print-plan (plan &optional (stream *standard-output*))
   (dolist (action plan)
