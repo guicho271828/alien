@@ -20,6 +20,6 @@
                               (when (or (and (minusp c) (= 1 (aref state i)))
                                         (= 0 (aref state i)))
                                 (incf count))
-                              (rec (print (find-axiom i))))))))))
+                              (rec (find-axiom i)))))))))
       (rec (find-axiom *instantiated-goal*))
       count)))
