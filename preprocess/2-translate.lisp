@@ -193,7 +193,7 @@ Signals an error when the type is not connected to the root OBJECT type."
        `(forall ,w/o-type
                 (imply (and ,@type-conditions)
                        ,(flatten-types/condition condition)))))
-    ((list* (and kind (or 'and 'or 'not))
+    ((list* (and kind (or 'and 'or 'not 'imply))
             conditions)
      `(,kind ,@(mapcar #'flatten-types/condition conditions)))
     (_
