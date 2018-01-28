@@ -1,0 +1,487 @@
+begin_version
+3
+end_version
+begin_metric
+0
+end_metric
+11
+begin_variable
+var17
+-1
+2
+Atom knows(researcher1, researcher2)
+NegatedAtom knows(researcher1, researcher2)
+end_variable
+begin_variable
+var18
+-1
+2
+Atom knows(researcher1, researcher3)
+NegatedAtom knows(researcher1, researcher3)
+end_variable
+begin_variable
+var23
+-1
+2
+Atom knows(researcher2, researcher4)
+NegatedAtom knows(researcher2, researcher4)
+end_variable
+begin_variable
+var20
+-1
+2
+Atom knows(researcher2, researcher1)
+NegatedAtom knows(researcher2, researcher1)
+end_variable
+begin_variable
+var27
+-1
+2
+Atom knows(researcher3, researcher4)
+NegatedAtom knows(researcher3, researcher4)
+end_variable
+begin_variable
+var24
+-1
+2
+Atom knows(researcher3, researcher1)
+NegatedAtom knows(researcher3, researcher1)
+end_variable
+begin_variable
+var29
+-1
+2
+Atom knows(researcher4, researcher2)
+NegatedAtom knows(researcher4, researcher2)
+end_variable
+begin_variable
+var30
+-1
+2
+Atom knows(researcher4, researcher3)
+NegatedAtom knows(researcher4, researcher3)
+end_variable
+begin_variable
+var28
+-1
+2
+Atom knows(researcher4, researcher1)
+NegatedAtom knows(researcher4, researcher1)
+end_variable
+begin_variable
+var19
+-1
+2
+Atom knows(researcher1, researcher4)
+NegatedAtom knows(researcher1, researcher4)
+end_variable
+begin_variable
+var3
+-1
+2
+Atom coauthor(researcher1, researcher4)
+NegatedAtom coauthor(researcher1, researcher4)
+end_variable
+0
+begin_state
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+end_state
+begin_goal
+1
+10 0
+end_goal
+18
+begin_operator
+beers-after-conference-m2-c2 researcher2 researcher3 researcher1 researcher4
+4
+0 0
+3 0
+4 0
+7 0
+6
+0 1 -1 0
+0 9 -1 0
+0 2 -1 0
+0 5 -1 0
+0 8 -1 0
+0 6 -1 0
+1
+end_operator
+begin_operator
+beers-after-conference-m2-c2 researcher2 researcher3 researcher4 researcher1
+4
+1 0
+2 0
+5 0
+6 0
+6
+0 0 -1 0
+0 9 -1 0
+0 3 -1 0
+0 4 -1 0
+0 8 -1 0
+0 7 -1 0
+1
+end_operator
+begin_operator
+beers-after-conference-m2-c2 researcher3 researcher2 researcher1 researcher4
+4
+1 0
+2 0
+5 0
+6 0
+6
+0 0 -1 0
+0 9 -1 0
+0 3 -1 0
+0 4 -1 0
+0 8 -1 0
+0 7 -1 0
+1
+end_operator
+begin_operator
+beers-after-conference-m2-c2 researcher3 researcher2 researcher4 researcher1
+4
+0 0
+3 0
+4 0
+7 0
+6
+0 1 -1 0
+0 9 -1 0
+0 2 -1 0
+0 5 -1 0
+0 8 -1 0
+0 6 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher1 researcher2 institution1
+0
+2
+0 0 -1 0
+0 3 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher1 researcher3 institution1
+0
+2
+0 1 -1 0
+0 5 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher1 researcher4 institution1
+0
+2
+0 9 -1 0
+0 8 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher2 researcher1 institution1
+0
+2
+0 0 -1 0
+0 3 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher2 researcher4 institution1
+0
+2
+0 2 -1 0
+0 6 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher3 researcher1 institution1
+0
+2
+0 1 -1 0
+0 5 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher3 researcher4 institution1
+0
+2
+0 4 -1 0
+0 7 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher4 researcher1 institution1
+0
+2
+0 9 -1 0
+0 8 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher4 researcher2 institution1
+0
+2
+0 2 -1 0
+0 6 -1 0
+1
+end_operator
+begin_operator
+meet-at-institution-2 researcher4 researcher3 institution1
+0
+2
+0 4 -1 0
+0 7 -1 0
+1
+end_operator
+begin_operator
+publish-paper-2 researcher1 researcher4
+2
+9 0
+8 0
+1
+0 10 -1 0
+1
+end_operator
+begin_operator
+publish-paper-2 researcher4 researcher1
+2
+9 0
+8 0
+1
+0 10 -1 0
+1
+end_operator
+begin_operator
+read-cs-paper researcher1 researcher4
+0
+1
+0 9 -1 0
+1
+end_operator
+begin_operator
+read-cs-paper researcher4 researcher1
+0
+1
+0 8 -1 0
+1
+end_operator
+0
+begin_SG
+switch 10
+check 12
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+16
+17
+check 0
+check 0
+switch 0
+check 0
+switch 3
+check 0
+switch 4
+check 0
+switch 7
+check 0
+check 2
+0
+3
+check 0
+check 0
+check 0
+check 0
+check 0
+check 0
+check 0
+switch 1
+check 0
+switch 2
+check 0
+switch 5
+check 0
+switch 6
+check 0
+check 2
+1
+2
+check 0
+check 0
+check 0
+check 0
+check 0
+check 0
+check 0
+switch 9
+check 0
+switch 8
+check 0
+check 2
+14
+15
+check 0
+check 0
+check 0
+check 0
+end_SG
+begin_DTG
+0
+1
+0
+4
+0
+end_DTG
+begin_DTG
+0
+1
+0
+5
+0
+end_DTG
+begin_DTG
+0
+1
+0
+8
+0
+end_DTG
+begin_DTG
+0
+1
+0
+4
+0
+end_DTG
+begin_DTG
+0
+1
+0
+10
+0
+end_DTG
+begin_DTG
+0
+1
+0
+5
+0
+end_DTG
+begin_DTG
+0
+1
+0
+8
+0
+end_DTG
+begin_DTG
+0
+1
+0
+10
+0
+end_DTG
+begin_DTG
+0
+1
+0
+6
+0
+end_DTG
+begin_DTG
+0
+1
+0
+6
+0
+end_DTG
+begin_DTG
+0
+1
+0
+14
+2
+9 0
+8 0
+end_DTG
+begin_CG
+6
+1 2
+9 2
+2 2
+5 2
+8 2
+6 2
+6
+0 2
+9 2
+3 2
+4 2
+8 2
+7 2
+6
+0 2
+9 2
+3 2
+4 2
+8 2
+7 2
+6
+1 2
+9 2
+2 2
+5 2
+8 2
+6 2
+6
+1 2
+9 2
+2 2
+5 2
+8 2
+6 2
+6
+0 2
+9 2
+3 2
+4 2
+8 2
+7 2
+6
+0 2
+9 2
+3 2
+4 2
+8 2
+7 2
+6
+1 2
+9 2
+2 2
+5 2
+8 2
+6 2
+1
+10 2
+1
+10 2
+0
+end_CG

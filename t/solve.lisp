@@ -30,6 +30,7 @@
                             (setf plan (retrieve-path))
                             (return))))
             (eager #'goal-count))))
+      (print plan)
       (is-true (validate-plan (strips::find-domain (%rel path))
                               (%rel path)
                               plan
@@ -81,4 +82,5 @@
   ;; (solve "demo/parkprinter/p00.pddl")
   ;; (solve "demo/parkprinter/p01.pddl")
   (solve "demo/researchers/p01.pddl") ; error in sg
+  (solve "demo/researchers-debug/p01.pddl") ; error in sg
   )

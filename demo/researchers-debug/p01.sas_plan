@@ -1,0 +1,3 @@
+(meet-at-institution-2 researcher1 researcher4 institution1)
+(publish-paper-2 researcher1 researcher4)
+; cost = 2 (unit cost)
