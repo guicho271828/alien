@@ -16,6 +16,7 @@ From: ubuntu
     
     export ROSWELL_HOME=/planner/.roswell
     export PATH=/planner/.roswell/bin:$PATH
+    export MAKEFLAGS="-j $((2*$(nproc)))"
     
 %post
 
@@ -35,7 +36,7 @@ From: ubuntu
     git submodule status
     git submodule update --init
     apt-get -y install cmake g++ make python flex bison
-    # ( cd downward ; ./build.py release64 -j6 )
+    # ( cd downward ; ./build.py release64 )
     
     ## Install all necessary dependencies.
     
@@ -47,7 +48,7 @@ From: ubuntu
         cd roswell-src
         sh bootstrap
         ./configure
-        make -j6
+        make
         make install
         ros setup
         )
