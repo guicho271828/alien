@@ -57,7 +57,7 @@ From: ubuntu
     apt-get -y install software-properties-common python-software-properties
     ros install guicho271828/cl-prolog2
     ros install guicho271828/trivial-package-manager
-    ros install guicho271828/strips
+    ros install ./
     alien
     
 %runscript
