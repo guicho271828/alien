@@ -18,11 +18,12 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
                                  ground
                                  mutex-invariant
                                  instantiate)
-       (handler-case
-           (eager #'goal-count)
-         (goal-found ()
-           (with-open-file (s plan-output-file :direction :output)
-             (print-plan (retrieve-path) s))))))
+       (handler-bind ((lambda (c)
+                        (declare (ignore c))
+                        (with-open-file (s plan-output-file :direction :output)
+                          (print-plan (retrieve-path) s)
+                          (return-from main))))
+           (eager #'goal-count))))
     (_
      (format *error-output*
              "Usage: alien.ros domain problem plan-output-file~%"))))
