@@ -35,8 +35,8 @@ From: ubuntu
     
     git submodule status
     git submodule update --init
-    apt-get -y install cmake g++ make python flex bison
-    # ( cd downward ; ./build.py release64 )
+
+    # ( apt-get -y install cmake g++ make python flex bison ; cd downward ; ./build.py release64 )
     
     ## Install all necessary dependencies.
     
@@ -54,10 +54,10 @@ From: ubuntu
         )
     fi
     
-    apt-get -y install software-properties-common python-software-properties
+    apt-get -y install software-properties-common python-software-properties g++ flex bison
     ros install guicho271828/cl-prolog2
     ros install guicho271828/trivial-package-manager
-    ros install ./
+    ros install guicho271828/strips
     alien
     
 %runscript
