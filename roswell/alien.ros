@@ -13,6 +13,7 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
   (declare (ignorable argv))
   (ematch argv
     ((list domain problem plan-output-file)
+     (print :aaaa!)
      (with-parsed-information5 (-> (parse problem domain)
                                  easy-invariant
                                  ground
