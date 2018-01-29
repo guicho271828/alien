@@ -67,6 +67,6 @@
                             "validate"
                             :env-alist `(("PATH" . ,(format nil "~a:~a"
                                                             (asdf:system-relative-pathname
-                                                             :cl-prolog2.bprolog "VAL/")
+                                                             :strips "VAL/")
                                                             (uiop:getenv "PATH"))))
                             :from-source (format nil "make -C VAL validate"))))
