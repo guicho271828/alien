@@ -22,6 +22,7 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
        (handler-bind ((goal-found (lambda (c)
                                     (declare (ignore c))
                                     (print :plan-found!)
+                                    (print-plan (retrieve-path))
                                     (with-open-file (s plan-output-file :direction :output)
                                       (print-plan (retrieve-path) s)
                                       (return-from main)))))
