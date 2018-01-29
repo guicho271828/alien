@@ -66,7 +66,7 @@
                             :ensure-program
                             "validate"
                             :env-alist `(("PATH" . ,(format nil "~a:~a"
-                                                            (asdf:system-relative-pathname
-                                                             :strips "VAL/")
+                                                            (asdf:system-relative-pathname :strips "VAL/")
                                                             (uiop:getenv "PATH"))))
-                            :from-source (format nil "git submodule update --init; make -C VAL validate"))))
+                            :from-source (format nil "cd ~a; git submodule update --init; make validate"
+                                                 (asdf:system-relative-pathname :strips "VAL/")))))
