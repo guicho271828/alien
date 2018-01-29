@@ -66,6 +66,9 @@ From: ubuntu
 
     ## placeholder for initial submission
 
+    ls -la
+    ls -la /planner/.roswell/local-projects/guicho271828/strips
+    
     DOMAINFILE=$1
     PROBLEMFILE=$2
     PLANFILE=$3
