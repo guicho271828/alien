@@ -68,5 +68,6 @@
                             :env-alist `(("PATH" . ,(format nil "~a:~a"
                                                             (asdf:system-relative-pathname :strips "VAL/")
                                                             (uiop:getenv "PATH"))))
-                            :from-source (format nil "cd ~a; git submodule update --init; make validate"
+                            :from-source (format nil "cd ~a; git submodule update --init; cd ~a ; make validate"
+                                                 (asdf:system-source-directory :strips)
                                                  (asdf:system-relative-pathname :strips "VAL/")))))
