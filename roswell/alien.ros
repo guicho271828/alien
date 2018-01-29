@@ -18,11 +18,11 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
                                  ground
                                  mutex-invariant
                                  instantiate)
-       (handler-bind ((lambda (c)
-                        (declare (ignore c))
-                        (with-open-file (s plan-output-file :direction :output)
-                          (print-plan (retrieve-path) s)
-                          (return-from main))))
+       (handler-bind ((goal-found (lambda (c)
+                                    (declare (ignore c))
+                                    (with-open-file (s plan-output-file :direction :output)
+                                      (print-plan (retrieve-path) s)
+                                      (return-from main)))))
            (eager #'goal-count))))
     (_
      (format *error-output*
