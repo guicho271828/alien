@@ -24,11 +24,13 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
                                     (print :plan-found!)
                                     (print-plan (retrieve-path))
                                     (print plan-output-file)
+                                    (ensure-directories-exist plan-output-file)
                                     (with-open-file (s plan-output-file :direction :output
                                                        :if-exists :supersede
                                                        :if-does-not-exist :create)
-                                      (print-plan (retrieve-path) s)
-                                      (return-from main)))))
+                                      (print-plan (retrieve-path) s))
+                                    (print :plan-wrote!)
+                                    (return-from main))))
            (eager #'goal-count))))
     (_
      (format *error-output*
