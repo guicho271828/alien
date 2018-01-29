@@ -69,4 +69,4 @@
                                                             (asdf:system-relative-pathname
                                                              :strips "VAL/")
                                                             (uiop:getenv "PATH"))))
-                            :from-source (format nil "make -C VAL validate"))))
+                            :from-source (format nil "git submodule update --init; make -C VAL validate"))))
