@@ -93,6 +93,7 @@
    #:retrieve-path
    #:println
    #:validate-plan
-   #:find-domain))
+   #:find-domain
+   #:solve-once))
 
 (setf trivia:*arity-check-by-test-call* nil)
