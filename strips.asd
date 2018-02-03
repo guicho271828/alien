@@ -18,6 +18,9 @@
               :cl-prolog2.swi
               :cl-prolog2.bprolog
               :bordeaux-threads
+              :lisp-namespace
+              :introspect-environment
+              :type-r
               :cffi)
  :serial t
  :components ((:module "lib"
