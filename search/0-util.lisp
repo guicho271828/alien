@@ -54,28 +54,28 @@ You can mix both forms. "
 (defun call-with-memory-usage-diff (spaces fn)
   (sb-ext:gc :full t)
   (let ((old (mapcar #'sb-vm::type-breakdown spaces)))
-    (funcall fn)
-    (sb-ext:gc :full t)
-    (let ((new (mapcar #'sb-vm::type-breakdown spaces)))
-      (iter (for old-breakdown in old)
-            (for new-breakdown in new)
-            (for space in spaces)
-            (format t "~&Memory consumption in ~a:~%" space)
-            (let ((diff (iter (for (byte count type) in new-breakdown)
-                              (for (obyte ocount otype) = (find type old-breakdown :key #'third))
-                              (unless otype
-                                (setf obyte 0 ocount 0))
-                              (unless (zerop (- count ocount))
-                                (collecting (list (- byte obyte) (- count ocount) type))))))
-              (iter (for (byte count type) in diff)
-                    (with digits1 = (1+ (sb-ext:decimal-with-grouped-digits-width
-                                         (reduce #'max (mapcar #'first diff)))))
-                    (with digits2 = (1+ (sb-ext:decimal-with-grouped-digits-width
-                                         (reduce #'max (mapcar #'second diff)))))
-                    (format t "~v@:d bytes for ~v@:d ~a objects~%"
-                            digits1 byte
-                            digits2 count
-                            type)))))))
+    (prog1 (funcall fn)
+      (sb-ext:gc :full t)
+      (let ((new (mapcar #'sb-vm::type-breakdown spaces)))
+        (iter (for old-breakdown in old)
+              (for new-breakdown in new)
+              (for space in spaces)
+              (format t "~&Memory consumption in ~a:~%" space)
+              (let ((diff (iter (for (byte count type) in new-breakdown)
+                                (for (obyte ocount otype) = (find type old-breakdown :key #'third))
+                                (unless otype
+                                  (setf obyte 0 ocount 0))
+                                (unless (zerop (- count ocount))
+                                  (collecting (list (- byte obyte) (- count ocount) type))))))
+                (iter (for (byte count type) in diff)
+                      (with digits1 = (1+ (sb-ext:decimal-with-grouped-digits-width
+                                           (reduce #'max (mapcar #'first diff)))))
+                      (with digits2 = (1+ (sb-ext:decimal-with-grouped-digits-width
+                                           (reduce #'max (mapcar #'second diff)))))
+                      (format t "~v@:d bytes for ~v@:d ~a objects~%"
+                              digits1 byte
+                              digits2 count
+                              type))))))))
 
 ;; as you can see below, sbcl is not compacting the slots
 
@@ -126,4 +126,5 @@ You can mix both forms. "
 ;; (with-memory-usage-diff () (push (make-ub8-4) *a*)) ; 48 bytes, 6 words
 
 
-
+;; a single bit vector consumes 32 bytes for tags etc.
+;; (iter (for i below 16) (print (expt 2 i)) (setf *a* (with-memory-usage-diff () (make-array (expt 2 i) :element-type 'bit))))
