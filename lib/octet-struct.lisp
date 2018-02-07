@@ -121,15 +121,17 @@ size: number of bits for the structure"
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
       (cond
-        ((= index-begin index-end)
+        ((or (= index-begin index-end)
+             (= 0 offset-end))
          (ldb (byte size offset-begin)
               (sb-kernel:%vector-raw-bits vector index-begin)))
         (t
-         (+ (ldb (byte (- 64 offset-begin) offset-begin)
-                 (sb-kernel:%vector-raw-bits vector index-begin))
-            (ash (ldb (byte offset-end 0)
-                      (sb-kernel:%vector-raw-bits vector index-end))
-                 (- 64 offset-begin))))))))
+         (the (unsigned-byte 64)
+              (+ (ldb (byte (- 64 offset-begin) offset-begin)
+                      (sb-kernel:%vector-raw-bits vector index-begin))
+                 (ash (ldb (byte offset-end 0)
+                           (sb-kernel:%vector-raw-bits vector index-end))
+                      (- 64 offset-begin)))))))))
 
 (declaim (inline (setf %packed-accessor-int)))
 (defun (setf %packed-accessor-int) (newval vector size position)
@@ -142,7 +144,8 @@ size: number of bits for the structure"
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
       (cond
-        ((= index-begin index-end)
+        ((or (= index-begin index-end)
+             (= 0 offset-end))
          (setf (ldb (byte size offset-begin)
                     (sb-kernel:%vector-raw-bits vector index-begin))
                newval))
@@ -181,6 +184,25 @@ size: number of bits for the structure"
   ;; (%packed-accessor-int vector 62 15)
   (%packed-accessor-int vector 62 105))
 
+;; checking the disassembly
+
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 62 64))) ; 42
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 62 65))) ; 45
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 62 66))) ; 39
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 62 67))) ; 67
+
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 64 64))) ; 42
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 64 65))) ; 66
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 64 66))) ; 67
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 64 67))) ; 67
+
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 63 64))) ; 42
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 63 65))) ; 45
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 63 66))) ; 67
+(defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 63 67))) ; 67
+
+;; checking the store/load
+
 (defun %packed-accessor-test2 ()
   (declare (optimize (speed 3)))
   ;; length 64
@@ -201,6 +223,24 @@ size: number of bits for the structure"
     (print (%packed-accessor-int b 1 63))
     (print (%packed-accessor-int b 1 64))
     (print b)))
+
+;; checking type propagation
+
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 64)) ; 42
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 65)) ; 45
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 66)) ; 39
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 67)) ; 67
+
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 64 64)) ; 42
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 64 65)) ; 66
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 64 66)) ; 67
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 64 67)) ; 67
+
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 63 64)) ; 42
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 63 65)) ; 45
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 63 66)) ; 67
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 63 67)) ; 67
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
