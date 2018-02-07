@@ -107,6 +107,103 @@
                         (%packed-accessor-lambda slotname offset size type))))
        name))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; treating a big vector as a large integer and retrieve the value
+
+(declaim (inline %packed-accessor-int))
+(defun %packed-accessor-int (vector size position)
+  "offset: number of bits from the beginning of the structure
+size: number of bits for the structure"
+  (declare (fixnum position)
+           ((integer 0 64) size)
+           (simple-array vector))
+  (multiple-value-bind (index-begin offset-begin) (floor position 64)
+    (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
+      (cond
+        ((= index-begin index-end)
+         (ldb (byte size offset-begin)
+              (sb-kernel:%vector-raw-bits vector index-begin)))
+        (t
+         (+ (ldb (byte (- 64 offset-begin) offset-begin)
+                 (sb-kernel:%vector-raw-bits vector index-begin))
+            (ash (ldb (byte offset-end 0)
+                      (sb-kernel:%vector-raw-bits vector index-end))
+                 (- 64 offset-begin))))))))
+
+(declaim (inline (setf %packed-accessor-int)))
+(defun (setf %packed-accessor-int) (newval vector size position)
+  "position: number of bits from the beginning of the structure
+size: number of bits for the structure"
+  (declare (fixnum position)
+           ((integer 0 64) size)
+           ((unsigned-byte 64) newval)
+           (simple-array vector))
+  (multiple-value-bind (index-begin offset-begin) (floor position 64)
+    (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
+      (cond
+        ((= index-begin index-end)
+         (setf (ldb (byte size offset-begin)
+                    (sb-kernel:%vector-raw-bits vector index-begin))
+               newval))
+        (t
+         (setf (ldb (byte (- 64 offset-begin) offset-begin)
+                    (sb-kernel:%vector-raw-bits vector index-begin))
+               (ldb (byte (- 64 offset-begin) 0)
+                    newval)
+               (ldb (byte offset-end 0)
+                    (sb-kernel:%vector-raw-bits vector index-end))
+               (ldb (byte offset-end (- 64 offset-begin))
+                    newval)))))))
+
+(defun %packed-accessor-test0 ()
+  (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 0))
+  (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 1))
+  (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 2))
+  (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 3)))
+
+(defun %packed-accessor-test (vector)
+  (declare (optimize (speed 3)))
+  ;; (%packed-accessor-int vector 0 0)
+  ;; (%packed-accessor-int vector 0 5)
+  ;; (%packed-accessor-int vector 0 15)
+  ;; (%packed-accessor-int vector 0 105)
+  ;; (%packed-accessor-int vector 5 0)
+  ;; (%packed-accessor-int vector 5 5)
+  ;; (%packed-accessor-int vector 5 15)
+  ;; (%packed-accessor-int vector 5 105)
+  ;; (%packed-accessor-int vector 32 0)
+  ;; (%packed-accessor-int vector 32 5)
+  ;; (%packed-accessor-int vector 32 15)
+  ;; (%packed-accessor-int vector 32 105)
+  ;; (%packed-accessor-int vector 62 0)
+  ;; (%packed-accessor-int vector 62 5)
+  ;; (%packed-accessor-int vector 62 15)
+  (%packed-accessor-int vector 62 105))
+
+(defun %packed-accessor-test2 ()
+  (declare (optimize (speed 3)))
+  ;; length 64
+  (let ((b #*0000000000000000000000000000000000000000000000000000000000000000))
+    (setf (%packed-accessor-int b 4 0) #b1111)
+    (print (%packed-accessor-int b 4 0))
+    (setf (%packed-accessor-int b 4 4) #b11000) ; the fifth digit is out of bounds
+    (print (%packed-accessor-int b 4 4))
+    (print b))
+  ;; length 128
+  (let ((b #*00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000))
+    (setf (%packed-accessor-int b 4 0) #b1111)
+    (print (%packed-accessor-int b 4 0))
+    (setf (%packed-accessor-int b 4 4) #b11000) ; the fifth digit is out of bounds
+    (print (%packed-accessor-int b 4 4))
+    (setf (%packed-accessor-int b 2 63) #b11) ; across word boundary
+    (print (%packed-accessor-int b 2 63))
+    (print (%packed-accessor-int b 1 63))
+    (print (%packed-accessor-int b 1 64))
+    (print b)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; (declaim (inline a))
 ;; (defun a (x)
 ;;   (print x))
@@ -116,40 +213,20 @@
 ;; (print (function-lambda-expression #'a))
 ;; (print (function-lambda-expression #'b))
 
-(declaim (inline %packed-accessor-int))
-(defun %packed-accessor-int (octet-vector offset size)
-  (declare (fixnum offset size))
-  (let* ((begin offset)
-         (end   (+ size offset)))
-    (multiple-value-bind (index-begin offset-begin) (floor begin 8)
-      (multiple-value-bind (index-end offset-end) (floor end 8)
-        ;; 5,5      6        7,3 
-        ;; 00000111 11111111 11100000
-        ;;      45             59
-        (labels ((rec (int i)
-                   (if (= i index-end)
-                       (+ (ash int offset-end)
-                          (mask-field (byte 0 offset-end)
-                                      (aref octet-vector i)))
-                       (rec (+ (ash int 8)
-                               (aref octet-vector i))
-                            (1+ i)))))
-          (declare (inline rec))
-          (rec (mask-field (byte offset-begin 8)
-                           (aref octet-vector index-begin))
-               (1+ index-begin)))))))
+;; sb-ext:*inline-expansion-limit*
 
-(declaim (inline %packed-accessor-float))
-(defun %packed-accessor-float32 (octet-vector offset size)
-  (let ((int (%packed-accessor-int octet-vector offset size)))
-    (let ((signif (float (dpb ))
-          (exponent )
-          (sign ))
-      (scale-float
-       (float (if (zerop sign)
-                  signif
-                  (- signif)))
-        exponent)))))
+
+;; (declaim (inline %packed-accessor-float))
+;; (defun %packed-accessor-float32 (octet-vector offset size)
+;;   (let ((int (%packed-accessor-int octet-vector offset size)))
+;;     (let ((signif (float (dpb ))
+;;           (exponent )
+;;           (sign ))
+;;       (scale-float
+;;        (float (if (zerop sign)
+;;                   signif
+;;                   (- signif)))
+;;         exponent)))))
 
 #+(or)
 (iter (for f in (map-product (lambda (&rest args) (apply #'symbolicate args))
@@ -237,3 +314,10 @@
 ;; 
 ;; (define-packed-struct state-info+g (state-info g)
 ;;   )
+
+;; (SB-KERNEL:%VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
+;; (SB-KERNEL:%set-VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
+;; sb-vm::single-float-bits
+;; sb-kernel:single-float-bits
+;; sb-ext:single-float-negative-infinity 
+
