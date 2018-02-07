@@ -255,18 +255,66 @@ size: number of bits for the structure"
 
 ;; sb-ext:*inline-expansion-limit*
 
+(declaim (inline %packed-accessor-single-float))
+(defun %packed-accessor-single-float (vector position)
+  "offset: number of bits from the beginning of the structure
+size: number of bits for the structure"
+  (declare (fixnum position)
+           (simple-array vector))
+  (sb-kernel:make-single-float (%packed-accessor-int vector 32 position)))
 
-;; (declaim (inline %packed-accessor-float))
-;; (defun %packed-accessor-float32 (octet-vector offset size)
-;;   (let ((int (%packed-accessor-int octet-vector offset size)))
-;;     (let ((signif (float (dpb ))
-;;           (exponent )
-;;           (sign ))
-;;       (scale-float
-;;        (float (if (zerop sign)
-;;                   signif
-;;                   (- signif)))
-;;         exponent)))))
+(declaim (inline %packed-accessor-double-float))
+(defun %packed-accessor-double-float (vector position)
+  "offset: number of bits from the beginning of the structure
+size: number of bits for the structure"
+  (declare (fixnum position)
+           (simple-array vector))
+  (sb-kernel:make-double-float (%packed-accessor-int vector 32 (+ 32 position))
+                               (%packed-accessor-int vector 32 position)))
+
+
+(declaim (inline (setf %packed-accessor-single-float)))
+(defun (setf %packed-accessor-single-float) (newval vector position)
+  "offset: number of bits from the beginning of the structure
+size: number of bits for the structure"
+  (declare (fixnum position)
+           (single-float newval)
+           (simple-array vector))
+  (setf (%packed-accessor-int vector 32 position)
+        (sb-kernel:single-float-bits newval)))
+
+(declaim (inline (setf %packed-accessor-double-float)))
+(defun (setf %packed-accessor-double-float) (newval vector position)
+  "offset: number of bits from the beginning of the structure
+size: number of bits for the structure"
+  (declare (fixnum position)
+           (double-float newval)
+           (simple-array vector))
+  (setf (%packed-accessor-int vector 32 position)
+        (sb-kernel:double-float-low-bits newval)
+        (%packed-accessor-int vector 32 (+ 32 position))
+        (sb-kernel:double-float-high-bits newval)))
+
+
+(defun %packed-accessor-float-test ()
+  ;; length 64
+  (let ((b #*0000000000000000000000000000000000000000000000000000000000000000))
+    (setf (%packed-accessor-single-float b 0) 3.14)
+    (setf (%packed-accessor-single-float b 32) 2.71)
+    (print (%packed-accessor-single-float b 0))
+    (print (%packed-accessor-single-float b 32))
+    (print b))
+  
+  ;; length 128
+  (let ((b #*00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000))
+    #+(or)
+    (setf (%packed-accessor-double-float b 0) 3.14) ; compilation error
+    (setf (%packed-accessor-double-float b 0) 3.14d0)
+    (setf (%packed-accessor-double-float b 64) 2.71d0)
+    (print (%packed-accessor-double-float b 0))
+    (print (%packed-accessor-double-float b 64))
+    (print b)))
+
 
 #+(or)
 (iter (for f in (map-product (lambda (&rest args) (apply #'symbolicate args))
@@ -296,6 +344,8 @@ size: number of bits for the structure"
           exponent)))
 
 ;; (* sign (scale-float signif exponent))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (declaim (inline %packed-accessor-bitvector))
 ;; (defun %packed-accessor-bitvector (octet-vector slotname offset size)
@@ -360,4 +410,5 @@ size: number of bits for the structure"
 ;; sb-vm::single-float-bits
 ;; sb-kernel:single-float-bits
 ;; sb-ext:single-float-negative-infinity 
-
+;; sb-kernel:make-single-float
+;; sb-kernel:make-double-float
