@@ -27,7 +27,7 @@
                :components ((:file "package")
                             (:file "equivalence")
                             (:file "indexed-entries")
-                            (:file "octet-struct")
+                            (:file "packed-struct")
                             (:file "struct-of-array")
                             (:file "trie")))
               (:module "preprocess"
