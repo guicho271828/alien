@@ -521,11 +521,11 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 (define-packed-struct g ()
   (g 0 scalar))
 
-(merge-packed-struct-layout '(state-info g)
-                            :name 'state-info+g)
+(print
+ (merge-packed-struct-layout '(state-info g)
+                             :name 'state-info+g))
 
-(define-packed-struct state-info+g (state-info g)
-  )
+(define-packed-struct state-info+g (state-info g))
 
 ;; (SB-KERNEL:%VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
 ;; (SB-KERNEL:%set-VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
