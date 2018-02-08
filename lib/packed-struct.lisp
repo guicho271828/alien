@@ -6,10 +6,13 @@
 
 ;; on SBCL:
 ;; Basic common lisp structure consumes additional 2 words for a single structure.
+;; Also, slot types do not save the space usage, since they are fundamentally
+;; arrays. Each slot consumes 1 word.
 ;; This multiplies the space usage when you make a huge number of small structures.
-;; we need much more compact, C-like struct.
 
-;; C-style struct
+;; The code below implements a much more compact, C-like struct in a bit-vector.
+;; The downside of this approach is that each bit-vector still consumes 2 words
+;; for tagging. Do we need CFFI and alloc/free ?
 
 (lispn:define-namespace packed-struct-layout packed-struct-layout nil
                         "A namespace for the layout of the packed structure")
