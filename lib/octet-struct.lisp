@@ -93,19 +93,43 @@
                   :names (mapcar #'first slots)
                   :defaults (mapcar #'second slots)
                   :types (mapcar #'third slots))))
-    (match layout
+    (ematch layout
       ((packed-struct-layout names offsets sizes types)
        `(progn (setf (symbol-packed-struct-layout ',name)
                      ,layout)
                (defun ,(symbolicate 'make- name) ()
-                 (make-array ,(/ (size-of layout) 8) :element-type '(unsigned-byte 8)))
-               ,@(iter (for slotname in names)
-                       (for offset in offsets)
-                       (for size in sizes)
-                       (for type in types)
-                       (collecting
-                        (%packed-accessor-lambda slotname offset size type))))
-       name))))
+                 (make-array ,(size-of layout) :element-type 'bit))
+               ,@(mapcar (curry #'%packed-accessor-def name)
+                         names offsets sizes types)
+               ',name)))))
+
+(defun %packed-accessor-def (struct-name slot-name offset size type)
+  (let ((accessor
+         (ematch (introspect-environment:typexpand type)
+           ((type-r:integer-subtype)
+            `(%packed-accessor-int instance ,size ,offset))
+           ((type-r:single-float-type)
+            `(%packed-accessor-single-float instance ,offset))
+           ((type-r:double-float-type)
+            `(%packed-accessor-double-float instance ,offset))
+           ((type-r:array-subtype)
+            `(%packed-accessor-array instance ,size ,offset))
+           ((type-r:member-type members)
+            (assert (every #'integerp members))
+            `(%packed-accessor-int instance ,size ,offset))))
+        (accessor-name
+         (symbolicate struct-name '- slot-name)))
+    `(progn
+       (declaim (inline ,accessor-name))
+       (defun ,accessor-name (instance)
+         (declare (simple-array instance)
+                  (optimize (speed 3) (safety 0) (debug 0)))
+         ,accessor)
+       (declaim (inline (setf ,accessor-name)))
+       (defun (setf ,accessor-name) (newval instance)
+         (declare (simple-array instance)
+                  (optimize (speed 3) (safety 0) (debug 0)))
+         (setf ,accessor newval)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -467,41 +491,41 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;; test
 
-;; (deftype scalar () '(unsigned-byte 32))
-;; 
-;; (deftype parent () '(unsigned-byte 32))
-;; 
-;; (deftype generator () '(unsigned-byte 32))
-;; 
-;; (deftype status () '(member 0 1 2 3))
-;; 
-;; (define-packed-struct test1 ()
-;;   (scalar 0 scalar)
-;;   (parent 0 parent)
-;;   (generator 0 generator))
-;; 
-;; #+(or)
-;; (define-packed-struct test2 ; should fail, duplicated slot names
-;;   (scalar 0 scalar)
-;;   (scalar 0 scalar))
-;; 
-;; (define-packed-struct state-info ()
-;;   (state 0 (bit-vector 42))
-;;   (status +new+ status)
-;;   (parent 0 parent)
-;;   (generator 0 generator))
-;; 
-;; (define-packed-struct g ()
-;;   (g 0 scalar))
-;; 
-;; (merge-packed-struct-layout '(state-info g)
-;;                             :name 'state-info+g)
-;; 
-;; (define-packed-struct state-info+g (state-info g)
-;;   )
+(deftype scalar () '(unsigned-byte 16))
+
+(deftype parent () '(unsigned-byte 20))
+
+(deftype generator () '(unsigned-byte 8))
+
+(deftype status () '(member 0 1 2 3))
+
+(define-packed-struct test1 () ; 64bit
+  (scalar 0 scalar)
+  (parent 0 parent)
+  (generator 0 generator)
+  (status 0 status))
+
+#+(or)
+(define-packed-struct test2 ; should fail, duplicated slot names
+  (scalar 0 scalar)
+  (scalar 0 scalar))
+
+(define-packed-struct state-info ()
+  (state 0 (bit-vector 42))
+  (status +new+ status)
+  (parent 0 parent)
+  (generator 0 generator))
+
+(define-packed-struct g ()
+  (g 0 scalar))
+
+(merge-packed-struct-layout '(state-info g)
+                            :name 'state-info+g)
+
+(define-packed-struct state-info+g (state-info g)
+  )
 
 ;; (SB-KERNEL:%VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
 ;; (SB-KERNEL:%set-VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
