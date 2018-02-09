@@ -14,9 +14,6 @@
 ;; The downside of this approach is that each bit-vector still consumes 2 words
 ;; for tagging. Do we need CFFI and alloc/free ?
 
-(lispn:define-namespace packed-struct-layout packed-struct-layout nil
-                        "A namespace for the layout of the packed structure")
-
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defstruct (packed-struct-layout (:constructor
                                     make-packed-struct-layout
@@ -32,7 +29,6 @@
     types
     sizes
     offsets))
-
 
 (defmethod make-load-form ((self packed-struct-layout) &optional environment)
   (make-load-form-saving-slots self
@@ -449,6 +445,9 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; define-packed-struct : store values in a bit-vector.
+
+(lispn:define-namespace packed-struct-layout packed-struct-layout nil
+                        "A namespace for the layout of the packed structure")
 
 (defmacro define-packed-struct (name (&rest supertypes) &body slots)
   (let* ((slots (mapcar #'ensure-list slots))
