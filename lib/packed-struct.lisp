@@ -89,14 +89,17 @@
 ;; treating a big vector as a large integer and retrieve the value
 
 (declaim (inline %packed-accessor-int))
-(defun %packed-accessor-int (vector size position)
+(defun %packed-accessor-int (vector size position &optional (word-offset 0))
   "offset: number of bits from the beginning of the structure
 size: number of bits for the structure"
   (declare (fixnum position)
+           (fixnum word-offset)
            ((integer 0 64) size)
            (simple-array vector))
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
+    (incf index-begin word-offset)
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
+      (incf index-end word-offset)
       (cond
         ((or (= index-begin index-end)
              (= 0 offset-end))
@@ -111,15 +114,18 @@ size: number of bits for the structure"
                       (- 64 offset-begin)))))))))
 
 (declaim (inline (setf %packed-accessor-int)))
-(defun (setf %packed-accessor-int) (newval vector size position)
+(defun (setf %packed-accessor-int) (newval vector size position &optional (word-offset 0))
   "position: number of bits from the beginning of the structure
 size: number of bits for the structure"
   (declare (fixnum position)
+           (fixnum word-offset)
            ((integer 0 64) size)
            ((unsigned-byte 64) newval)
            (simple-array vector))
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
+    (incf index-begin word-offset)
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
+      (incf index-end word-offset)
       (cond
         ((or (= index-begin index-end)
              (= 0 offset-end))
@@ -209,6 +215,13 @@ size: number of bits for the structure"
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 65)) ; 45
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 66)) ; 39
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 67)) ; 67
+
+;; testing optionals
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 64)) ; 42
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 64 0)) ; 42
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 64 1)) ; 67
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 64 2)) ; 67
+(defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 64 3)) ; 67
 
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 64 64)) ; 42
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 64 65)) ; 66
