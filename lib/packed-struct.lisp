@@ -88,52 +88,6 @@
       :defaults (append defaults1 defaults2)
       :types    (append types1 types2)))))
 
-(defmacro define-packed-struct (name (&rest supertypes) &body slots)
-  (let* ((slots (mapcar #'ensure-list slots))
-         (layout (merge-packed-struct-layout
-                  supertypes
-                  :name name
-                  :names (mapcar #'first slots)
-                  :defaults (mapcar #'second slots)
-                  :types (mapcar #'third slots))))
-    (ematch layout
-      ((packed-struct-layout names offsets sizes types)
-       `(progn (setf (symbol-packed-struct-layout ',name)
-                     ,layout)
-               (defun ,(symbolicate 'make- name) ()
-                 (make-array ,(size-of layout) :element-type 'bit))
-               ,@(mapcar (curry #'%packed-accessor-def name)
-                         names offsets sizes types)
-               ',name)))))
-
-(defun %packed-accessor-def (struct-name slot-name offset size type)
-  (let ((accessor
-         (ematch (introspect-environment:typexpand type)
-           ((type-r:integer-subtype)
-            `(%packed-accessor-int instance ,size ,offset))
-           ((type-r:single-float-type)
-            `(%packed-accessor-single-float instance ,offset))
-           ((type-r:double-float-type)
-            `(%packed-accessor-double-float instance ,offset))
-           ((type-r:array-subtype)
-            `(%packed-accessor-array instance ,size ,offset))
-           ((type-r:member-type members)
-            (assert (every #'integerp members))
-            `(%packed-accessor-int instance ,size ,offset))))
-        (accessor-name
-         (symbolicate struct-name '- slot-name)))
-    `(progn
-       (declaim (inline ,accessor-name))
-       (defun ,accessor-name (instance)
-         (declare (simple-array instance)
-                  (optimize (speed 3) (safety 0) (debug 0)))
-         ,accessor)
-       (declaim (inline (setf ,accessor-name)))
-       (defun (setf ,accessor-name) (newval instance)
-         (declare (simple-array instance)
-                  (optimize (speed 3) (safety 0) (debug 0)))
-         (setf ,accessor newval)))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; treating a big vector as a large integer and retrieve the value
@@ -491,6 +445,56 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
   (setf (%packed-accessor-array b 256 0)
         #*1010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010)
   0)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; define-packed-struct : store values in a bit-vector.
+
+(defmacro define-packed-struct (name (&rest supertypes) &body slots)
+  (let* ((slots (mapcar #'ensure-list slots))
+         (layout (merge-packed-struct-layout
+                  supertypes
+                  :name name
+                  :names (mapcar #'first slots)
+                  :defaults (mapcar #'second slots)
+                  :types (mapcar #'third slots))))
+    (ematch layout
+      ((packed-struct-layout names offsets sizes types)
+       `(progn (setf (symbol-packed-struct-layout ',name)
+                     ,layout)
+               (defun ,(symbolicate 'make- name) ()
+                 (make-array ,(size-of layout) :element-type 'bit))
+               ,@(mapcar (curry #'%packed-accessor-def name)
+                         names offsets sizes types)
+               ',name)))))
+
+(defun %packed-accessor-def (struct-name slot-name offset size type)
+  (let ((accessor
+         (ematch (introspect-environment:typexpand type)
+           ((type-r:integer-subtype)
+            `(%packed-accessor-int instance ,size ,offset))
+           ((type-r:single-float-type)
+            `(%packed-accessor-single-float instance ,offset))
+           ((type-r:double-float-type)
+            `(%packed-accessor-double-float instance ,offset))
+           ((type-r:array-subtype)
+            `(%packed-accessor-array instance ,size ,offset))
+           ((type-r:member-type members)
+            (assert (every #'integerp members))
+            `(%packed-accessor-int instance ,size ,offset))))
+        (accessor-name
+         (symbolicate struct-name '- slot-name)))
+    `(progn
+       (declaim (inline ,accessor-name))
+       (defun ,accessor-name (instance)
+         (declare (simple-array instance)
+                  (optimize (speed 3) (safety 0) (debug 0)))
+         ,accessor)
+       (declaim (inline (setf ,accessor-name)))
+       (defun (setf ,accessor-name) (newval instance)
+         (declare (simple-array instance)
+                  (optimize (speed 3) (safety 0) (debug 0)))
+         (setf ,accessor newval)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
