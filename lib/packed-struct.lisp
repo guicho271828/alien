@@ -539,5 +539,18 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                       (subseq ,array ,begin (+ ,begin ,size))))))))
       whole))
 
+(defun packed-ref (packed-type index)
+  (let* ((layout (symbol-packed-struct-layout packed-type))
+         (size (size-of layout)))
+    (* index size)))
 
+(define-compiler-macro packed-ref (&whole whole packed-type index &environment env)
+  (if (constantp packed-type env)
+      (match packed-type
+        ((or (list 'quote packed-type)
+             (keyword))
+         (let* ((layout (symbol-packed-struct-layout packed-type))
+                (size (size-of layout)))
+           `(* ,index ,size))))
+      whole))
 
