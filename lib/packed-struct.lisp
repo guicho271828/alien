@@ -71,9 +71,6 @@
         (collecting sum)
         (summing s into sum)))
 
-(defun instantiate-packed-struct (layout)
-  (make-array (/ (size-of layout) 8) :element-type '(unsigned-byte 8)))
-
 (defun merge-packed-struct-layout (structs &key (name (gensym)) names defaults types)
   (let ((result (reduce #'merge-packed-struct-layout-2
                         (mapcar #'symbol-packed-struct-layout structs)
