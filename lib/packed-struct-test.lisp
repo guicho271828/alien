@@ -218,7 +218,19 @@
     (print b5)
     nil))
 
+;; constant folded
+(size-of 'state-info)
 
+(defun test-packed-ref ()
+  (declare (optimize (speed 3))
+           (notinline make-state-info+g-array))
+  (let ((state-info (make-state-info+g-array 1000)))
+    (print state-info)
+    (let ((ptr (packed-ref 'state-info+g 500))
+          (instance (make-state-info+g)))
+      (declare (dynamic-extent instance))
+      (print instance)
+      (print ptr))))
 
 ;; (SB-KERNEL:%VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
 ;; (SB-KERNEL:%set-VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
