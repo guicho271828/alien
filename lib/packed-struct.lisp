@@ -95,7 +95,7 @@ size: number of bits for the structure"
   (declare (fixnum position)
            (fixnum word-offset)
            ((integer 0 64) size)
-           (simple-array vector))
+           (simple-bit-vector vector))
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
     (incf index-begin word-offset)
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
@@ -121,7 +121,7 @@ size: number of bits for the structure"
            (fixnum word-offset)
            ((integer 0 64) size)
            ((unsigned-byte 64) newval)
-           (simple-array vector))
+           (simple-bit-vector vector))
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
     (incf index-begin word-offset)
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
@@ -241,7 +241,7 @@ size: number of bits for the structure"
   "offset: number of bits from the beginning of the structure
 size: number of bits for the structure"
   (declare (fixnum position)
-           (simple-array vector))
+           (simple-bit-vector vector))
   (sb-kernel:make-single-float (%packed-accessor-int vector 32 position)))
 
 (declaim (inline %packed-accessor-double-float))
@@ -249,7 +249,7 @@ size: number of bits for the structure"
   "offset: number of bits from the beginning of the structure
 size: number of bits for the structure"
   (declare (fixnum position)
-           (simple-array vector))
+           (simple-bit-vector vector))
   (sb-kernel:make-double-float (%packed-accessor-int vector 32 (+ 32 position))
                                (%packed-accessor-int vector 32 position)))
 
@@ -259,7 +259,7 @@ size: number of bits for the structure"
 size: number of bits for the structure"
   (declare (fixnum position)
            (single-float newval)
-           (simple-array vector))
+           (simple-bit-vector vector))
   (setf (%packed-accessor-int vector 32 position)
         (sb-kernel:single-float-bits newval)))
 
@@ -269,7 +269,7 @@ size: number of bits for the structure"
 size: number of bits for the structure"
   (declare (fixnum position)
            (double-float newval)
-           (simple-array vector))
+           (simple-bit-vector vector))
   (setf (%packed-accessor-int vector 32 position)
         (sb-kernel:double-float-low-bits newval)
         (%packed-accessor-int vector 32 (+ 32 position))
@@ -331,7 +331,7 @@ size: number of bits for the structure"
 size: number of bits for the structure"
   (declare (fixnum position)
            (fixnum size)
-           (simple-array vector))
+           (simple-bit-vector vector))
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
     (declare (ignorable index-begin offset-begin))
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
@@ -355,7 +355,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
   (declare (fixnum position)
            (fixnum size)
            (simple-array newval)
-           (simple-array vector))
+           (simple-bit-vector vector))
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
     (declare (ignorable index-begin offset-begin))
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
@@ -504,11 +504,11 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
     `(progn
        (declaim (inline ,accessor-name (setf ,accessor-name)))
        (defun ,accessor-name (instance)
-         (declare (simple-array instance)
+         (declare (simple-bit-vector instance)
                   (optimize (speed 3) (safety 0) (debug 0)))
          ,accessor)
        (defun (setf ,accessor-name) (newval instance)
-         (declare (simple-array instance)
+         (declare (simple-bit-vector instance)
                   (optimize (speed 3) (safety 0) (debug 0)))
          (setf ,accessor newval)))))
 
