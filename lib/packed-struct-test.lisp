@@ -229,6 +229,7 @@
     (let ((ptr (packed-ref 'state-info+g 500))
           (instance (make-state-info+g)))
       (declare (dynamic-extent instance))
+      (replace instance state-info :start2 ptr)
       (print instance)
       (print ptr))))
 
