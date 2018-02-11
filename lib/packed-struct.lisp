@@ -502,12 +502,11 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
         (accessor-name
          (symbolicate struct-name '- slot-name)))
     `(progn
-       (declaim (inline ,accessor-name))
+       (declaim (inline ,accessor-name (setf ,accessor-name)))
        (defun ,accessor-name (instance)
          (declare (simple-array instance)
                   (optimize (speed 3) (safety 0) (debug 0)))
          ,accessor)
-       (declaim (inline (setf ,accessor-name)))
        (defun (setf ,accessor-name) (newval instance)
          (declare (simple-array instance)
                   (optimize (speed 3) (safety 0) (debug 0)))
