@@ -521,69 +521,23 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 
 (declaim (inline packed-aref))
 (defun packed-aref (array packed-type index)
-  (let* ((layout (symbol-packed-struct-layout type))
+  (let* ((layout (symbol-packed-struct-layout packed-type))
          (size (size-of layout))
          (begin (* index size)))
     (subseq array begin (+ begin size))))
 
 (define-compiler-macro packed-aref (&whole whole array packed-type index &environment env)
   (if (constantp packed-type env)
-      (let* ((layout (symbol-packed-struct-layout type))
-             (size (size-of layout)))
-        `(let ((begin (* index ,size)))
-           (subseq array begin (+ begin ,size))))
+      (match packed-type
+        ((or (list 'quote packed-type)
+             (keyword))
+         (let* ((layout (symbol-packed-struct-layout packed-type))
+                (size (size-of layout)))
+           (with-gensyms (begin)
+             `(the (simple-bit-vector ,size)
+                   (let ((,begin (* ,index ,size)))
+                      (subseq ,array ,begin (+ ,begin ,size))))))))
       whole))
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; test
-
-(deftype scalar () '(unsigned-byte 16))
-
-(deftype parent () '(unsigned-byte 20))
-
-(deftype generator () '(unsigned-byte 8))
-
-(deftype status () '(member 0 1 2 3))
-
-(define-packed-struct test1 () ; 64bit
-  (scalar 0 scalar)
-  (parent 0 parent)
-  (generator 0 generator)
-  (status 0 status))
-
-#+(or)
-(define-packed-struct test2 ; should fail, duplicated slot names
-  (scalar 0 scalar)
-  (scalar 0 scalar))
-
-(define-packed-struct state-info ()
-  (state 0 (bit-vector 42))
-  (status +new+ status)
-  (parent 0 parent)
-  (generator 0 generator))
-
-(define-packed-struct g ()
-  (g 0 scalar))
-
-(print
- (merge-packed-struct-layout '(state-info g)
-                             :name 'state-info+g))
-
-(define-packed-struct state-info+g (state-info g))
-
-(defvar *state-info* (make-state-info+g-array 1000))
-(describe *state-info*)
-(let ((elem (packed-aref *state-info* 'state-info+g 500)))
-  (print elem))
-
-
-;; (SB-KERNEL:%VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
-;; (SB-KERNEL:%set-VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
-;; sb-vm::single-float-bits
-;; sb-kernel:single-float-bits
-;; sb-ext:single-float-negative-infinity 
-;; sb-kernel:make-single-float
-;; sb-kernel:make-double-float
