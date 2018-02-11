@@ -438,19 +438,19 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
   0)
 
 (defun packed-accessor-array-test2 (b)
-  (declare ((simple-array 32) b))
+  (declare ((simple-bit-vector 32) b))
   (setf (%packed-accessor-array b 5 12)  #*11111)
   0)
 
 (defun packed-accessor-array-test2b (b)
-  (declare ((simple-array 256) b))
+  (declare ((simple-bit-vector 256) b))
   (setf (%packed-accessor-array b 5 16)  #*11111)
   (setf (%packed-accessor-array b 5 32)  #*11111)
   (setf (%packed-accessor-array b 5 128)  #*11111)
   b)
 
 (defun packed-accessor-array-test3 (b)
-  (declare ((simple-array 256) b))
+  (declare ((simple-bit-vector 256) b))
   (setf (%packed-accessor-array b 256 0)
         #*1010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010)
   0)
