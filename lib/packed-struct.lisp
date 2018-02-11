@@ -515,57 +515,22 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; define-packed-struct-array : store many packed-structs in a large bit-vector.
+(declaim (inline packed-aref))
+(defun packed-aref (array packed-type index)
+  (let* ((layout (symbol-packed-struct-layout type))
+         (size (size-of layout))
+         (begin (* index size)))
+    (subseq array begin (+ begin size))))
 
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (defstruct (packed-struct-array (:constructor make-packed-struct-array
-                                                (name length
-                                                 &aux
-                                                 (layout (symbol-packed-struct-layout name)))))
-    (count 0 :type array-index)
-    (%vector (make-array (* (size-of layout) length) :element-type 'bit)
-             :type simple-bit-vector)))
+(define-compiler-macro packed-aref (&whole whole array packed-type index &environment env)
+  (if (constantp packed-type env)
+      (let* ((layout (symbol-packed-struct-layout type))
+             (size (size-of layout)))
+        `(let ((begin (* index ,size)))
+           (subseq array begin (+ begin ,size))))
+      whole))
 
-(defmacro define-packed-struct-array ((name &key (length 1024)))
-  (let* ((layout (symbol-packed-struct-layout name))
-         (varname (symbolicate '* name '*)))
-    (ematch layout
-      ((packed-struct-layout names offsets sizes types)
-       `(progn (defparameter ,varname
-                 (make-packed-struct-array ',name ,length))
-               (defun ,(symbolicate 'make- name) ()
-                 (incf (packed-struct-array-count ,varname)))
-               ,@(mapcar (curry #'%packed-array-accessor-def name (size-of layout))
-                         names offsets sizes types)
-               ',name)))))
 
-(defun %packed-array-accessor-def (struct-name struct-size slot-name offset size type)
-  (let ((accessor
-         (ematch (introspect-environment:typexpand type)
-           ((type-r:integer-subtype)
-            `(%packed-accessor-int instance ,size ,offset))
-           ((type-r:single-float-type)
-            `(%packed-accessor-single-float instance ,offset))
-           ((type-r:double-float-type)
-            `(%packed-accessor-double-float instance ,offset))
-           ((type-r:array-subtype)
-            `(%packed-accessor-array instance ,size ,offset))
-           ((type-r:member-type members)
-            (assert (every #'integerp members))
-            `(%packed-accessor-int instance ,size ,offset))))
-        (accessor-name
-         (symbolicate struct-name '- slot-name)))
-    `(progn
-       (declaim (inline ,accessor-name))
-       (defun ,accessor-name (instance)
-         (declare (array-index instance)
-                  (optimize (speed 3) (safety 0) (debug 0)))
-         ,accessor)
-       (declaim (inline (setf ,accessor-name)))
-       (defun (setf ,accessor-name) (newval instance)
-         (declare (array-index instance)
-                  (optimize (speed 3) (safety 0) (debug 0)))
-         (setf ,accessor newval)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -604,6 +569,12 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                              :name 'state-info+g))
 
 (define-packed-struct state-info+g (state-info g))
+
+(defvar *state-info* (make-state-info+g-array 1000))
+(describe *state-info*)
+(let ((elem (packed-aref *state-info* 'state-info+g 500)))
+  (print elem))
+
 
 ;; (SB-KERNEL:%VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
 ;; (SB-KERNEL:%set-VECTOR-RAW-BITS (make-array 32 :initial-element 1 :element-type 'bit) 0)
