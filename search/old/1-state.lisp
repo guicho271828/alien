@@ -1,23 +1,6 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(declaim (list *state-information-list*))
-(defvar *state-information-list* nil)
-
-(defun storage-bit-per-state ()
-  (+ *fact-size*
-     (reduce #'+ *state-information-list*
-             :key (lambda (array)
-                    (-> array
-                      array-element-type
-                      sb-c::find-saetp
-                      sb-vm:saetp-n-bits)))))
-
-(defun maximum-states ()
-  ;; tbp
-  (floor (* 8 1024 *memory-limit*)
-         (storage-bit-per-state)))
-
 (deftype state ()
   "vector representing a state, each bit is a proposition"
   `(simple-bit-vector ,(runtime-type *state-size*)))
@@ -70,27 +53,4 @@
   +closed+
   ;; +dominated+ ;; ?
   )
-
-(deftype status-list ()
-  '(array status))
-
-(ftype* make-status-list status-list)
-(defun make-status-list ()
-  (make-a-array 1024 :element-type 'status :initial-element +new+))
-
-
-
-(deftype parent-list ()
-  '(array state-id))
-
-(ftype* make-parent-list parent-list)
-(defun make-parent-list ()
-  (make-a-array 1024 :element-type 'state-id :initial-element #xffffffff))
-
-(deftype generator-list ()
-  '(array (or null op)))
-
-(ftype* make-generator-list generator-list)
-(defun make-generator-list ()
-  (make-a-array 1024 :element-type '(or null op) :initial-element nil))
 
