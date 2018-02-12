@@ -8,8 +8,6 @@
 (defvar *time-limit* 300
   "runtime limit in sec")
 
-(defvar *heuristics* 'ff)
-
 (defun solve-once (domain problem plan-output-file fn)
   "Solve the problem, return the first solution"
   (with-parsed-information5 (-> (parse problem domain)

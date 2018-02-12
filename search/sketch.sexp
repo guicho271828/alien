@@ -2,7 +2,7 @@
 
 #|
 
-Return the storage specification for each state,
+Each function returns a storage specification for each state,
 and the set of functions to inline.
 
 scalar : 
