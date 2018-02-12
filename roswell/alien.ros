@@ -13,25 +13,9 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
   (declare (ignorable argv))
   (ematch argv
     ((list domain problem plan-output-file)
-     (print :aaaa!)
-     (with-parsed-information5 (-> (parse problem domain)
-                                 easy-invariant
-                                 ground
-                                 mutex-invariant
-                                 instantiate)
-       (handler-bind ((goal-found (lambda (c)
-                                    (declare (ignore c))
-                                    (print :plan-found!)
-                                    (print-plan (retrieve-path))
-                                    (print plan-output-file)
-                                    (ensure-directories-exist plan-output-file)
-                                    (with-open-file (s plan-output-file :direction :output
-                                                       :if-exists :supersede
-                                                       :if-does-not-exist :create)
-                                      (print-plan (retrieve-path) s))
-                                    (print :plan-wrote!)
-                                    (return-from main))))
-           (eager #'goal-count))))
+     (solve-once domain problem plan-output-file
+                 (lambda ()
+                   (eager #'goal-count))))
     (_
      (format *error-output*
              "Usage: alien.ros domain problem plan-output-file~%"))))

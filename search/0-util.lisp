@@ -54,28 +54,28 @@ You can mix both forms. "
 (defun call-with-memory-usage-diff (spaces fn)
   (sb-ext:gc :full t)
   (let ((old (mapcar #'sb-vm::type-breakdown spaces)))
-    (funcall fn)
-    (sb-ext:gc :full t)
-    (let ((new (mapcar #'sb-vm::type-breakdown spaces)))
-      (iter (for old-breakdown in old)
-            (for new-breakdown in new)
-            (for space in spaces)
-            (format t "~&Memory consumption in ~a:~%" space)
-            (let ((diff (iter (for (byte count type) in new-breakdown)
-                              (for (obyte ocount otype) = (find type old-breakdown :key #'third))
-                              (unless otype
-                                (setf obyte 0 ocount 0))
-                              (unless (zerop (- count ocount))
-                                (collecting (list (- byte obyte) (- count ocount) type))))))
-              (iter (for (byte count type) in diff)
-                    (with digits1 = (1+ (sb-ext:decimal-with-grouped-digits-width
-                                         (reduce #'max (mapcar #'first diff)))))
-                    (with digits2 = (1+ (sb-ext:decimal-with-grouped-digits-width
-                                         (reduce #'max (mapcar #'second diff)))))
-                    (format t "~v@:d bytes for ~v@:d ~a objects~%"
-                            digits1 byte
-                            digits2 count
-                            type)))))))
+    (prog1 (funcall fn)
+      (sb-ext:gc :full t)
+      (let ((new (mapcar #'sb-vm::type-breakdown spaces)))
+        (iter (for old-breakdown in old)
+              (for new-breakdown in new)
+              (for space in spaces)
+              (format t "~&Memory consumption in ~a:~%" space)
+              (let ((diff (iter (for (byte count type) in new-breakdown)
+                                (for (obyte ocount otype) = (find type old-breakdown :key #'third))
+                                (unless otype
+                                  (setf obyte 0 ocount 0))
+                                (unless (zerop (- count ocount))
+                                  (collecting (list (- byte obyte) (- count ocount) type))))))
+                (iter (for (byte count type) in diff)
+                      (with digits1 = (1+ (sb-ext:decimal-with-grouped-digits-width
+                                           (reduce #'max (mapcar #'first diff)))))
+                      (with digits2 = (1+ (sb-ext:decimal-with-grouped-digits-width
+                                           (reduce #'max (mapcar #'second diff)))))
+                      (format t "~v@:d bytes for ~v@:d ~a objects~%"
+                              digits1 byte
+                              digits2 count
+                              type))))))))
 
 ;; as you can see below, sbcl is not compacting the slots
 
@@ -114,14 +114,43 @@ You can mix both forms. "
 ;; (defstruct (f4 (:type vector)) (s1 0 :type fixnum) (s2 0 :type fixnum) (s3 0 :type fixnum) (s4 0 :type fixnum))
 ;; (with-memory-usage-diff () (push (make-f4) *a*)) ; 48 bytes, 6 words
 ;; 
-;; (defstruct (ub8-0 (:type vector)))
-;; (with-memory-usage-diff () (push (make-ub8-0) *a*)) ; 16 bytes, 2 words
-;; (defstruct (ub8-1 (:type vector)) (s1 0 :type (unsigned-byte 8)))
-;; (with-memory-usage-diff () (push (make-ub8-1) *a*)) ; 32 bytes, 4 words
-;; (defstruct (ub8-2 (:type vector)) (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)))
-;; (with-memory-usage-diff () (push (make-ub8-2) *a*)) ; 32 bytes, 4 words
-;; (defstruct (ub8-3 (:type vector)) (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)) (s3 0 :type (unsigned-byte 8)))
-;; (with-memory-usage-diff () (push (make-ub8-3) *a*)) ; 48 bytes, 6 words
-;; (defstruct (ub8-4 (:type vector)) (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)) (s3 0 :type (unsigned-byte 8)) (s4 0 :type (unsigned-byte 8)))
-;; (with-memory-usage-diff () (push (make-ub8-4) *a*)) ; 48 bytes, 6 words
+;; 
+;; (defstruct (ub8v-0 (:type vector)))
+;; (with-memory-usage-diff () (push (make-ub8v-0) *a*)) ; 16 bytes, 2 words
+;; (defstruct (ub8v-1 (:type vector)) (s1 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8v-1) *a*)) ; 32 bytes, 4 words
+;; (defstruct (ub8v-2 (:type vector)) (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8v-2) *a*)) ; 32 bytes, 4 words
+;; (defstruct (ub8v-3 (:type vector)) (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)) (s3 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8v-3) *a*)) ; 48 bytes, 6 words
+;; (defstruct (ub8v-4 (:type vector)) (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)) (s3 0 :type (unsigned-byte 8)) (s4 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8v-4) *a*)) ; 48 bytes, 6 words
+;; 
+;; (defstruct ub8s-0)
+;; (with-memory-usage-diff () (push (make-ub8s-0) *a*)) ; 16 bytes, 2 words
+;; (defstruct ub8s-1 (s1 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8s-1) *a*)) ; 32 bytes, 4 words
+;; (defstruct ub8s-2 (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8s-2) *a*)) ; 32 bytes, 4 words
+;; (defstruct ub8s-3 (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)) (s3 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8s-3) *a*)) ; 48 bytes, 6 words
+;; (defstruct ub8s-4 (s1 0 :type (unsigned-byte 8)) (s2 0 :type (unsigned-byte 8)) (s3 0 :type (unsigned-byte 8)) (s4 0 :type (unsigned-byte 8)))
+;; (with-memory-usage-diff () (push (make-ub8s-4) *a*)) ; 48 bytes, 6 words
+;; 
+;; (defstruct ub4s-0)
+;; (with-memory-usage-diff () (push (make-ub4s-0) *a*)) ; 16 bytes, 2 words
+;; (defstruct ub4s-1 (s1 0 :type (unsigned-byte 4)))
+;; (with-memory-usage-diff () (push (make-ub4s-1) *a*)) ; 32 bytes, 4 words
+;; (defstruct ub4s-2 (s1 0 :type (unsigned-byte 4)) (s2 0 :type (unsigned-byte 4)))
+;; (with-memory-usage-diff () (push (make-ub4s-2) *a*)) ; 32 bytes, 4 words
+;; (defstruct ub4s-3 (s1 0 :type (unsigned-byte 4)) (s2 0 :type (unsigned-byte 4)) (s3 0 :type (unsigned-byte 4)))
+;; (with-memory-usage-diff () (push (make-ub4s-3) *a*)) ; 48 bytes, 6 words
+;; (defstruct ub4s-4 (s1 0 :type (unsigned-byte 4)) (s2 0 :type (unsigned-byte 4)) (s3 0 :type (unsigned-byte 4)) (s4 0 :type (unsigned-byte 4)))
+;; (with-memory-usage-diff () (push (make-ub4s-4) *a*)) ; 48 bytes, 6 words
 
+;; a single bit vector consumes 32 bytes for tags etc.
+;; (iter (for i below 16) (print (expt 2 i)) (setf *a* (with-memory-usage-diff () (make-array (expt 2 i) :element-type 'bit))))
+
+;; stack allocated alien example
+;; (cffi:with-foreign-object (array :int 10)
+;;   )
