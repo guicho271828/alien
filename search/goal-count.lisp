@@ -5,7 +5,7 @@
 (strips.lib:define-packed-struct goal-count ()
   (goal-count 0 (runtime integer 0 *state-size*)))
 
-(defun goal-count (state)
+(defun goal-count-heuristics (state)
   (let ((count 0))
     (labels ((find-axiom (id)
                (iter (for v in-vector *instantiated-axiom-layers*)
@@ -26,3 +26,8 @@
                               (rec (find-axiom i)))))))))
       (rec (find-axiom *instantiated-goal*))
       count)))
+
+
+(defun goal-count ()
+  (list 'goal-count
+        'goal-count-heuristics))

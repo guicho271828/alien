@@ -5,6 +5,10 @@
 (strips.lib:define-packed-struct blind ()
   (blind 0 (integer 0 0)))
 
-(defun blind (state)
+(defun blind-heuristics (state)
   (declare (ignore state))
   0)
+
+(defun blind ()
+  (list 'blind
+        'blind-heuristics))
