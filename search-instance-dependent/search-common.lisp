@@ -21,17 +21,19 @@
              t)
       nil))
 
-(ftype* applicable-ops sg state (array (or null op)))
+(deftype op-id () "-1 is an invalid op for the initial state" `(runtime integer -1 (length *instantiated-ops*)))
+
+(ftype* applicable-ops sg state (array op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
   (declare (state state))
   (declare (sg sg))
-  (let ((results (make-a-array 32 :element-type '(or null op) :initial-element nil)))
+  (let ((results (make-a-array 32 :element-type 'op-id :initial-element -1)))
     (labels ((rec (node)
                (ematch node
                  ((type list)
                   (dolist (op-id node)
-                    (linear-extend results (aref *instantiated-ops* op-id))))
+                    (linear-extend results op-id)))
                  ((sg-node variable then else either)
                   (case (aref state variable)
                     (0 (rec else))
@@ -39,7 +41,6 @@
                   (rec either)))))
       (rec sg)
       results)))
-;; (sb-c:defknown applicable-ops (sg state) list (sb-c::dx-safe))
 
 ;; these functions are all destructive.
 
