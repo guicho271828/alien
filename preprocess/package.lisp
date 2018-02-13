@@ -94,6 +94,7 @@
    #:println
    #:validate-plan
    #:find-domain
-   #:solve-once))
+   #:solve-once
+   #:runtime))
 
 (setf trivia:*arity-check-by-test-call* nil)

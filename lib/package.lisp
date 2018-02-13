@@ -14,7 +14,9 @@
    #:trie-insert-all
    #:map-trie
    #:query-trie
-   #:defstruct-of-array))
+   #:defstruct-of-array
+   #:define-packed-struct
+   #:packed-aref))
 
 (in-package :strips.lib)
 

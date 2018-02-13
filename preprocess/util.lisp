@@ -231,5 +231,8 @@
        (simple-style-warning "form ~a failed during type computation, defaulting to *" ',form)
        '*)))
 
+(deftype runtime (typename &rest args)
+  `(,typename ,@(mapcar #'eval args)))
+
 (defun println (x)
   (write x :escape nil) (terpri))
