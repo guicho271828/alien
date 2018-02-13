@@ -85,8 +85,10 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 ;; ; -> 1
 ;; thus :HASH-FUNCTION and :TEST is not overridden.
 
+(ftype* close-list-insert close-list state (values state-id boolean))
 (defun close-list-insert (close-list thing)
-  "Inserts THING to the close-list under duplicate detection. Returns an id"
+  "Inserts THING to the close-list under duplicate detection. Returns two values: an ID and a boolean.
+If the secondary value is T, then the state is a duplicate."
   (ematch close-list
     ((close-list table
                  key-function
@@ -98,7 +100,7 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
                           :key key-function
                           :test #'state-=)))
          ;; duplicate found, do not insert
-         id
+         (values id t)
          ;; duplicate not found, return the current counter as an id and increment the counter
          (prog1 counter
            (setf (gethash hash table)
