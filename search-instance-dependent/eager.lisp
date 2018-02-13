@@ -11,8 +11,7 @@
 
 (defun eager-search (open-list insert pop)
   (let* ((db (make-state-information-array
-              (/ (* 1024 *memory-limit*)
-                 (size-of 'state-information))))
+              (max-state-id)))
          (close-list (make-close-list :key-function
                                       (lambda (id)
                                         (let ((info (packed-aref db 'state-information id)))

@@ -36,8 +36,12 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   "bitvector representing a state including the axiom bits, each bit is a proposition"
   `(runtime simple-bit-vector *state-size*))
 
+(defun max-state-id ()
+  (floor (* 1024 *memory-limit*)
+         (size-of 'state-information)))
+
 (deftype state-id ()
-  `(runtime integer 0 (floor (* 1024 8 *memory-limit*) (size-of 'state-information))))
+  `(runtime integer 0 (max-state-id)))
 
 (ftype* state-= state state boolean)
 (defun state-= (s1 s2)
