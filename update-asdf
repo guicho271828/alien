@@ -3,3 +3,5 @@
 update-asdf -y -s strips -f strips.asdata
 
 update-asdf -y -s strips.test -f strips.test.asdata
+
+update-asdf -y -s strips.instance-dependent -f strips.instance-dependent.asdata
