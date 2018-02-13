@@ -599,6 +599,13 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                       (subseq ,array ,begin (+ ,begin ,size))))))))
       whole))
 
+(declaim (inline (setf packed-aref)))
+(defun (setf packed-aref) (newval array packed-type index)
+  (let* ((size (size-of packed-type))
+         (begin (* index size)))
+    (assert (= (length newval) size))
+    (replace array newval :start1 begin)))
+
 (declaim (inline packed-ref))
 (defun packed-ref (packed-type index)
   ;; size-of is constant folded by inlining
