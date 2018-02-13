@@ -36,8 +36,7 @@
 
 (define-condition goal-found (error) ())
 
-(defun retrieve-path ()
-  (invoke-restart (find-restart 'retrieve-path)))
+(defun retrieve-path () (invoke-restart (find-restart 'retrieve-path)))
 
 (enumerate status
   +new+
