@@ -232,7 +232,14 @@
        '*)))
 
 (deftype runtime (typename &rest args)
-  `(,typename ,@(mapcar #'eval args)))
+  `(,typename ,@(mapcar (lambda (form)
+                          (handler-case (eval form)
+                            (error (c)
+                              (format *error-output*
+                                      "~&~<; ~@;Type expansion failed at type ~a, using * instead~%   ~a~:>"
+                                      (list form c))
+                              '*)))
+                        args)))
 
 (defun println (x)
   (write x :escape nil) (terpri))
