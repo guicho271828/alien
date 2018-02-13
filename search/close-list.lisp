@@ -30,15 +30,15 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 |#
 
 (deftype state ()
-  "vector representing a state, each bit is a proposition"
+  "bitvector representing a state, each bit is a proposition"
   `(runtime simple-bit-vector *fact-size*))
 
 (deftype state+axioms ()
-  "vector representing a state, each bit is a proposition"
+  "bitvector representing a state including the axiom bits, each bit is a proposition"
   `(runtime simple-bit-vector *state-size*))
 
 (deftype state-id ()
-  '(unsigned-byte 32))
+  '(runtime integer 0 (/ (* 1024 8 *memory-limit*) (size-of 'state-information))))
 
 (ftype* state-= state state boolean)
 (defun state-= (s1 s2)
