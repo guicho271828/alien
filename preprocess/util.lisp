@@ -236,8 +236,8 @@
                           (handler-case (eval form)
                             (error (c)
                               (format *error-output*
-                                      "~&~<; ~@;Runtime type expansion failed at type ~a, using * instead~%   ~a~:>"
-                                      (list form c))
+                                      "~&~<; ~@;caught ~a:  ~a~%    Runtime type expansion failed at type ~a, using * instead~%~:>"
+                                      (list (type-of c) c form))
                               '*)))
                         args)))
 
