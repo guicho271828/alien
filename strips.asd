@@ -43,16 +43,16 @@
               (:module "search"
                :components ((:file "util")
                             (:file "specials")
+                            (:file "blind")
+                            (:file "bucket-open-list")
+                            (:file "eager")
+                            (:file "goal-count")
                             (:module "heuristics"
-                             :components ((:file "alien")
-                                          (:file "blind")
-                                          (:file "ff")
-                                          (:file "goal-count")))
+                             :components ())
                             (:module "searchers"
-                             :components ((:file "eager")
-                                          (:file "timeout")))
+                             :components ())
                             (:module "open-list"
-                             :components ((:file "bucket-open-list")))))
+                             :components ())))
               (:module "validate"
                :components ((:file "validate"))))
  :description "A STRIPS planner"
