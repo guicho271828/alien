@@ -49,8 +49,8 @@
 
 (defstruct builder storage)
 
-(defstruct (evaluator (:includes builder)) function)
+(defstruct (evaluator (:include builder)) function)
 
-(defstruct (open-list (:includes builder)) constructor insert pop)
+(defstruct (open-list (:include builder)) constructor insert pop)
 
-(defstruct (searcher (:includes builder)) init step)
+(defstruct (searcher (:include builder)) body)

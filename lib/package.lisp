@@ -20,7 +20,8 @@
    #:unbound-packed-struct-layout
    #:symbol-packed-struct-layout
    #:packed-struct-layout-boundp
-   #:merge-packed-struct-layout))
+   #:merge-packed-struct-layout
+   #:size-of))
 
 (in-package :strips.lib)
 
