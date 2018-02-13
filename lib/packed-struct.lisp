@@ -39,28 +39,35 @@
     ((packed-struct-layout sizes)
      (* 8 (ceiling (reduce #'+ sizes) 8)))
     (_
-     (match (handler-case (introspect-environment:typexpand type)
+     (let ((expanded
+            (handler-case (introspect-environment:typexpand type)
               (error (c)
                 (format *error-output* "~&Type expansion failed at type ~a, substituting the size = 0:~%   ~a~%"
                         type c)
-                (return-from size-of 0)))
-       ((type-r:integer-subtype low high)
-        (if (minusp low)
-            (1+ (integer-length high))
-            (integer-length high)))
-       ((type-r:float-subtype high)
-        (multiple-value-bind (signif expon) (integer-decode-float high)
-          (+ (integer-length signif)
-             (integer-length expon)
-             1)))
-       ((type-r:member-type members)
-        (size-of `(integer ,(reduce #'min members)
-                           ,(reduce #'max members))))
-       ((type-r:array-subtype element-type dimensions)
-        (* (size-of element-type) (reduce #'* (ensure-list dimensions))))
-       (type
-        (format *error-output* "~&Unsupported type: ~a~%" type)
-        0)))))
+                (return-from size-of 0)))))
+       (handler-case
+           (match expanded
+             ((type-r:integer-subtype low high)
+              (if (minusp low)
+                  (1+ (integer-length high))
+                  (integer-length high)))
+             ((type-r:float-subtype high)
+              (multiple-value-bind (signif expon) (integer-decode-float high)
+                (+ (integer-length signif)
+                   (integer-length expon)
+                   1)))
+             ((type-r:member-type members)
+              (size-of `(integer ,(reduce #'min members)
+                                 ,(reduce #'max members))))
+             ((type-r:array-subtype element-type dimensions)
+              (* (size-of element-type) (reduce #'* (ensure-list dimensions))))
+             (type
+              (format *error-output* "~&Unsupported type: ~a~%" type)
+              0))
+         (error (c)
+           (format *error-output* "~&Misc error while computing the size of ~a (originally ~a):~% ~a~%"
+                   type expanded c)
+           0))))))
 
 ;; constant fold
 (define-compiler-macro size-of (&whole whole type &environment env)
