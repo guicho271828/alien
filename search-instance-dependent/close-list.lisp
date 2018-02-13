@@ -54,6 +54,8 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   (sxhash s))
 
 (declaim (inline make-state make-state+axioms))
+(ftype* make-state state)
+(ftype* make-state+axioms state+axioms)
 (defun make-state        () (make-array *fact-size* :element-type 'bit))
 (defun make-state+axioms () (make-array *state-size* :element-type 'bit))
 
