@@ -47,6 +47,7 @@
                             (:file "bucket-open-list")
                             (:file "eager")
                             (:file "goal-count")
+                            (:file "run")
                             (:module "heuristics"
                              :components ())
                             (:module "searchers"
