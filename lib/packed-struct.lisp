@@ -74,7 +74,7 @@
               0))
          (error (c)
            (format *error-output* "~&caught ~a : ~a~%Misc error while computing the size of ~a (originally ~a):~%"
-                   (type-of c) c type expanded)
+                   (type-of c) c expanded type)
            0))))))
 
 ;; constant fold
