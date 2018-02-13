@@ -537,7 +537,8 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
   (let* ((type2 (handler-case
                     (introspect-environment:typexpand type)
                   (error () nil)))
-         (accessor
+         (array-result-argument nil)
+         (writer
           (match type2
             ((type-r:integer-subtype)
              `(%packed-accessor-int instance ,size ,offset))
@@ -546,28 +547,38 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
             ((type-r:double-float-type)
              `(%packed-accessor-double-float instance ,offset))
             ((type-r:array-subtype)
+             (setf array-result-argument t)
              `(%packed-accessor-array instance ,size ,offset))
             ((type-r:member-type members)
              (assert (every #'integerp members))
              `(%packed-accessor-int instance ,size ,offset))
             (_
              `(error "~&Unsupported type ~a~%" ',type2))))
+         (reader
+          ;; additional storage argument for avoiding consing, ala bit-and
+          (if array-result-argument
+              `(if result
+                   (%packed-accessor-array instance ,size ,offset result)
+                   (%packed-accessor-array instance ,size ,offset))
+              ;; for non-array cases, reader = writer
+              writer))
          (accessor-name
           (symbolicate struct-name '- slot-name)))
     `(progn
        (declaim (inline ,accessor-name (setf ,accessor-name)))
-       (defun ,accessor-name (instance)
+       (defun ,accessor-name (instance ,@(when array-result-argument '(&optional result)))
          (declare (simple-bit-vector instance)
+                  ,@(when array-result-argument `(((or null (simple-bit-vector ,size)) result)))
                   (ignorable instance)
                   (optimize (speed 3) (safety 0)))
-         ,accessor)
+         ,reader)
        (defun (setf ,accessor-name) (newval instance)
          (declare (simple-bit-vector instance)
                   (ignorable instance newval)
                   (optimize (speed 3) (safety 0)))
-         ,(if (eq 'error (first accessor))
-              accessor
-              `(setf ,accessor newval))))))
+         ,(if (eq 'error (first writer))
+              writer
+              `(setf ,writer newval))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
