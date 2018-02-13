@@ -39,3 +39,9 @@
 (defun retrieve-path ()
   (invoke-restart (find-restart 'retrieve-path)))
 
+(enumerate status
+  +new+
+  +open+
+  +closed+
+  +dominated+ ;; ?
+  )

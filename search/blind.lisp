@@ -10,5 +10,5 @@
   0)
 
 (defun blind ()
-  (list 'blind
+  (list (strips.lib:symbol-packed-struct-layout 'blind)
         'blind-heuristics))

@@ -29,5 +29,5 @@
 
 
 (defun goal-count ()
-  (list 'goal-count
+  (list (strips.lib:symbol-packed-struct-layout 'goal-count)
         'goal-count-heuristics))

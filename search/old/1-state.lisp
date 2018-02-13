@@ -47,10 +47,5 @@
 
 ;; TODO: idea: prune by bloom filter
 
-(enumerate status
-  +new+
-  +open+
-  +closed+
-  ;; +dominated+ ;; ?
-  )
+
 

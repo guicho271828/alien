@@ -16,7 +16,11 @@
    #:query-trie
    #:defstruct-of-array
    #:define-packed-struct
-   #:packed-aref))
+   #:packed-aref
+   #:unbound-packed-struct-layout
+   #:symbol-packed-struct-layout
+   #:packed-struct-layout-boundp
+   #:merge-packed-struct-layout))
 
 (in-package :strips.lib)
 

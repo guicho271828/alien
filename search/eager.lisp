@@ -2,6 +2,11 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
+(strips.lib:define-packed-struct eager ()
+  (parent 0 (runtime unsigned-byte *fact-size*))
+  (generator 0 (runtime unsigned-byte (length *instantiated-ops*)))
+  (status +new+ status))
+
 (defun eager (evaluator)
   (let* ((close-list (make-close-list))
          (open-list (make-bucket-open-list))
@@ -56,4 +61,17 @@
                (rec)))
       (rec))))
 
-
+(defun eager (openlist)
+  (destructuring-bind (storage
+                       openlist-instantiate
+                       openlist-insert
+                       openlist-pop)
+      openlist
+    (list (strips.lib:merge-packed-struct-layout 'eager storage)
+          ;; init
+          `(lambda ()
+             (eager-init #',openlist-instantiate))
+          ;; step
+          `(lambda (open)
+             (eager-init #',openlist-insert
+                         #',openlist-pop)))))
