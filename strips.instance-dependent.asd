@@ -13,8 +13,7 @@
  :depends-on (:strips)
  :serial t
  :components ((:module "search-instance-dependent"
-               :components ((:file "blind")
-                            (:file "close-list")
+               :components ((:file "close-list")
                             (:file "eager")
                             (:file "goal-count")
                             (:file "search-common")

@@ -43,6 +43,7 @@
               (:module "search"
                :components ((:file "util")
                             (:file "specials")
+                            (:file "blind")
                             (:file "bucket-open-list")
                             (:file "run")
                             (:module "heuristics"
