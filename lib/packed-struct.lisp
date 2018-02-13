@@ -49,8 +49,9 @@
      (let ((expanded
             (handler-case (introspect-environment:typexpand type)
               (error (c)
-                (format *error-output* "~&Type expansion failed at type ~a, substituting the size = 0:~%   ~a~%"
-                        type c)
+                (format *error-output*
+                        "~&caught ~a : ~a~% Type expansion failed at type ~a, substituting the size = 0:~%"
+                        (type-of c) c type)
                 (return-from size-of 0)))))
        (handler-case
            (match expanded
@@ -72,8 +73,8 @@
               (format *error-output* "~&Unsupported type: ~a~%" type)
               0))
          (error (c)
-           (format *error-output* "~&Misc error while computing the size of ~a (originally ~a):~% ~a~%"
-                   type expanded c)
+           (format *error-output* "~&caught ~a : ~a~%Misc error while computing the size of ~a (originally ~a):~%"
+                   (type-of c) c type expanded)
            0))))))
 
 ;; constant fold
