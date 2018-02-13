@@ -38,24 +38,12 @@
 
 (defun retrieve-path () (invoke-restart (find-restart 'retrieve-path)))
 
-(enumerate status
-  +new+
-  +open+
-  +closed+
-  +dominated+ ;; ?
-  )
+(enumerate status +new+ +open+ +closed+ +dominated+)
 
-(defstruct builder
-  storage)
+(defstruct builder storage)
 
-(defstruct (evaluator (:includes builder))
-  function)
+(defstruct (evaluator (:includes builder)) function)
 
-(defstruct (open-list (:includes builder))
-  constructor
-  insert
-  pop)
+(defstruct (open-list (:includes builder)) constructor insert pop)
 
-(defstruct (searcher (:includes builder))
-  init
-  step)
+(defstruct (searcher (:includes builder)) init step)
