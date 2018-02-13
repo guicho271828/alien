@@ -2,25 +2,31 @@
 (in-package :strips)
 
 (strips.lib:define-packed-struct eager ()
-  (facts 0 (runtime simple-bit-vector *fact-size*))
+  (facts 0 state)
   (parent 0 state-id)
-  (op -1 (runtime integer -1 (length *instantiated-ops*)))
+  (op -1 op-id)
   (status +new+ status))
 
 (strips.lib:define-packed-struct state-information (eager))
+
+(import '(strips.lib:packed-aref
+          strips.lib:size-of))
 
 (defun eager-search (open-list insert pop)
   (let* ((db (make-state-information-array
               (/ (* 1024 *memory-limit*)
                  (size-of 'state-information))))
-         (close-list (make-close-list))
+         (close-list (make-close-list :key-function
+                                      (lambda (id)
+                                        (let ((info (packed-aref db 'state-information id)))
+                                          (state-information-facts info)))))
          (open-list (funcall open-list))
          (info (make-state-information))
          (state (initialize-init))
          (child (make-state)))
     
-    (funcall insert open-list init)
-    (setf (state-information-fact info) state
+    (funcall insert open-list state)
+    (setf (state-information-facts info) state
           (state-information-status info) +open+
           (packed-aref db 'state-information 0) info)
 
@@ -30,20 +36,21 @@
                  (when (/= +open+ (state-information-status info))
                    (return-from rec (rec)))
                  (setf (state-information-status info) +closed+)
-                 (setf state (state-information-fact info state))
+                 (state-information-facts info state)
                  (apply-axioms state)
                  
                  (flet ((path ()
                           (nreverse
                            (iter (for pid initially id then (state-information-parent info))
                                  (packed-aref db 'state-information pid info)
-                                 (for op = (state-information-op info))
-                                 (until (minusp op))
-                                 (collect (decode-op op))))))
+                                 (for op-id = (state-information-op info))
+                                 (until (minusp op-id))
+                                 (collect (decode-op op-id))))))
                    (declare (dynamic-extent #'path))
                    (report-if-goal state #'path))
                  
-                 (iter (for op in-vector (applicable-ops *sg* state))
+                 (iter (for op-id in-vector (applicable-ops *sg* state))
+                       (for op = (aref *instantiated-ops* op-id))
                        (replace child state)
                        (apply-op op state child)
                        (apply-axioms child)
@@ -51,10 +58,10 @@
                          (packed-aref db 'state-information id2 info)
                          (when (= +new+ (state-information-status info))
                            (setf (state-information-parent info) id
-                                 (state-information-op info) op
+                                 (state-information-op info) op-id
                                  (state-information-status info) +open+
                                  (packed-aref db 'state-information id2) info)
-                           (funcall insert open-list init)))))
+                           (funcall insert open-list child)))))
                (rec)))
       ;; (declare (inline rec))
       ;; loop unrolling
