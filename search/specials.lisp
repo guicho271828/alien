@@ -45,3 +45,18 @@
   +closed+
   +dominated+ ;; ?
   )
+
+(defstruct builder
+  storage)
+
+(defstruct (evaluator (:includes builder))
+  function)
+
+(defstruct (open-list (:includes builder))
+  constructor
+  insert
+  pop)
+
+(defstruct (searcher (:includes builder))
+  init
+  step)

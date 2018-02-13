@@ -32,12 +32,14 @@
          (incf min-key))))))
 
 (defun bucket-open-list (evaluator)
-  (destructuring-bind (storage function) evaluator
-    (list storage
-          'make-bucket-open-list
-          `(lambda (open element)
-             (bucket-open-list-insert
-              open
-              (,function element)
-              element))
-          'bucket-open-list-pop)))
+  (ematch evaluator
+    ((evaluator storage function)
+     (make-open-list
+      :storage storage
+      :constructor 'make-bucket-open-list
+      :insert `(lambda (open element)
+                 (bucket-open-list-insert
+                  open
+                  (,function element)
+                  element))
+      :pop 'bucket-open-list-pop))))

@@ -7,7 +7,7 @@
   (generator 0 (runtime unsigned-byte (length *instantiated-ops*)))
   (status +new+ status))
 
-(defun eager (evaluator)
+(defun eager-search (evaluator)
   (let* ((close-list (make-close-list))
          (open-list (make-bucket-open-list))
          (init (initialize-init))
@@ -61,17 +61,12 @@
                (rec)))
       (rec))))
 
-(defun eager (openlist)
-  (destructuring-bind (storage
-                       openlist-instantiate
-                       openlist-insert
-                       openlist-pop)
-      openlist
-    (list (strips.lib:merge-packed-struct-layout 'eager storage)
-          ;; init
-          `(lambda ()
-             (eager-init #',openlist-instantiate))
-          ;; step
-          `(lambda (open)
-             (eager-init #',openlist-insert
-                         #',openlist-pop)))))
+(defun eager (open-list)
+  (match open-list
+    ((open-list storage constructor insert pop)
+     (make-searcher
+      :storage (strips.lib:merge-packed-struct-layout 'eager storage)
+      :body `(lambda ()
+               (eager-search #',constructor
+                             #',insert
+                             #',pop))))))

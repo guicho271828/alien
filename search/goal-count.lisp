@@ -27,7 +27,7 @@
       (rec (find-axiom *instantiated-goal*))
       count)))
 
-
 (defun goal-count ()
-  (list (strips.lib:symbol-packed-struct-layout 'goal-count)
-        'goal-count-heuristics))
+  (make-evaluator
+   :storage 'goal-count
+   :function 'goal-count-heuristics))
