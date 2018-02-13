@@ -41,13 +41,8 @@
                             (:file "7-instantiate")
                             (:file "8-successor-generator")))
               (:module "search"
-               :components ((:file "0-special")
-                            (:file "0-util")
-                            (:file "1-state")
-                            (:file "2-search-common")
-                            (:file "3-heuristic-common")
-                            (:file "4-open-list-common")
-                            (:file "5-information")
+               :components ((:file "util")
+                            (:file "specials")
                             (:module "heuristics"
                              :components ((:file "alien")
                                           (:file "blind")

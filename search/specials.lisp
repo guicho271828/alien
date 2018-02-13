@@ -26,3 +26,12 @@
       (funcall fn))))
 
 ;; TODO: solve-many with specifying N
+
+(define-condition no-solution (simple-error)
+  ()
+  (:report
+   (lambda (c s)
+     (declare (ignore c)) 
+     (format s "Open list exhausted!"))))
+
+(define-condition goal-found (error) ())

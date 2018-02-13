@@ -13,8 +13,6 @@
     (apply-axioms state)
     state))
 
-(define-condition goal-found (error) ())
-
 (ftype* report-if-goal state boolean)
 (defun report-if-goal (state)
   (declare (state state))
