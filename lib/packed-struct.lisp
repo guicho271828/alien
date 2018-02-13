@@ -71,9 +71,14 @@
         (collecting sum)
         (summing s into sum)))
 
+(defun ensure-packed-struct-layout (name-or-layout)
+  (if (symbolp name-or-layout)
+      (symbol-packed-struct-layout name-or-layout)
+      name-or-layout))
+
 (defun merge-packed-struct-layout (structs &key (name (gensym)) names defaults types)
   (let ((result (reduce #'merge-packed-struct-layout-2
-                        (mapcar #'symbol-packed-struct-layout structs)
+                        (mapcar #'ensure-symbol-packed-struct-layout structs)
                         :initial-value
                         (make-packed-struct-layout :name (gensym)
                                                    :names names
