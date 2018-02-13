@@ -26,6 +26,9 @@
   (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog2)
   (:shadowing-import-from :trivia :<>)
   (:shadow :iterate :else)
+  (:import-from :strips.lib
+                :packed-aref
+                :size-of)
   (:export
    #:parse
    #:variablep

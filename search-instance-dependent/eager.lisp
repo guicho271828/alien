@@ -9,9 +9,6 @@
 
 (strips.lib:define-packed-struct state-information (eager))
 
-(import '(strips.lib:packed-aref
-          strips.lib:size-of))
-
 (defun eager-search (open-list insert pop)
   (let* ((db (make-state-information-array
               (/ (* 1024 *memory-limit*)
