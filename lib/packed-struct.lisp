@@ -39,11 +39,11 @@
     ((packed-struct-layout sizes)
      (* 8 (ceiling (reduce #'+ sizes) 8)))
     (_
-     (ematch (handler-case (introspect-environment:typexpand type)
-               (error (c)
-                 (format *error-output* "Type expansion failed at type ~a, substituting the size = 0:~%" type)
-                 (princ c *error-output*)
-                 (return-from size-of 0)))
+     (match (handler-case (introspect-environment:typexpand type)
+              (error (c)
+                (format *error-output* "~&Type expansion failed at type ~a, substituting the size = 0:~%   ~a~%"
+                        type c)
+                (return-from size-of 0)))
        ((type-r:integer-subtype low high)
         (if (minusp low)
             (1+ (integer-length high))
@@ -57,7 +57,10 @@
         (size-of `(integer ,(reduce #'min members)
                            ,(reduce #'max members))))
        ((type-r:array-subtype element-type dimensions)
-        (* (size-of element-type) (reduce #'* (ensure-list dimensions))))))))
+        (* (size-of element-type) (reduce #'* (ensure-list dimensions))))
+       (type
+        (format *error-output* "~&Unsupported type: ~a~%" type)
+        0)))))
 
 ;; constant fold
 (define-compiler-macro size-of (&whole whole type &environment env)
@@ -480,67 +483,79 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                         "A namespace for the layout of the packed structure")
 
 (defmacro define-packed-struct (name (&rest supertypes) &body slots)
-  (let* ((slots (mapcar #'ensure-list slots))
-         (layout (merge-packed-struct-layout
-                  supertypes
-                  :name name
-                  :names (mapcar #'first slots)
-                  :defaults (mapcar #'second slots)
-                  :types (mapcar #'third slots)))
-         (constructor (symbolicate 'make- name))
-         (array-constructor (symbolicate 'make- name '-array)))
-    (ematch layout
-      ((packed-struct-layout names offsets sizes types)
-       `(progn (setf (symbol-packed-struct-layout ',name)
-                     ,layout)
-               (declaim (inline ,constructor ,array-constructor)
-                        (ftype (function () (simple-bit-vector ,(size-of layout)))
-                               ,constructor)
-                        (ftype (function (array-index)
-                                         simple-bit-vector)
-                               ,array-constructor))
-               (defun ,constructor ()
-                 (make-array ,(size-of layout) :element-type 'bit))
-               (defun ,array-constructor (length)
-                 (make-array (* length ,(size-of layout)) :element-type 'bit))
-               #+(or)
-               (define-compiler-macro ,constructor ()
-                 `(make-array ,,(size-of layout) :element-type 'bit))
-               #+(or)
-               (define-compiler-macro ,array-constructor (&whole whole length)
-                 (if (constantp length)
-                     `(make-array ,(* length ,(size-of layout)) :element-type 'bit)
-                     whole))
-               ,@(mapcar (curry #'%packed-accessor-def name)
-                         names offsets sizes types)
-               ',name)))))
+  (fresh-line *error-output*)
+  (pprint-logical-block (*error-output* nil :per-line-prefix "; ")
+    (return-from define-packed-struct
+      (let* ((slots (mapcar #'ensure-list slots))
+             (layout (merge-packed-struct-layout
+                      supertypes
+                      :name name
+                      :names (mapcar #'first slots)
+                      :defaults (mapcar #'second slots)
+                      :types (mapcar #'third slots)))
+             (constructor (symbolicate 'make- name))
+             (array-constructor (symbolicate 'make- name '-array)))
+        (ematch layout
+          ((packed-struct-layout names offsets sizes types)
+           `(progn (setf (symbol-packed-struct-layout ',name)
+                         ,layout)
+                   (declaim (inline ,constructor ,array-constructor)
+                            (ftype (function () (simple-bit-vector ,(size-of layout)))
+                                   ,constructor)
+                            (ftype (function (array-index)
+                                             simple-bit-vector)
+                                   ,array-constructor))
+                   (defun ,constructor ()
+                     (make-array ,(size-of layout) :element-type 'bit))
+                   (defun ,array-constructor (length)
+                     (make-array (* length ,(size-of layout)) :element-type 'bit))
+                   #+(or)
+                   (define-compiler-macro ,constructor ()
+                     `(make-array ,,(size-of layout) :element-type 'bit))
+                   #+(or)
+                   (define-compiler-macro ,array-constructor (&whole whole length)
+                     (if (constantp length)
+                         `(make-array ,(* length ,(size-of layout)) :element-type 'bit)
+                         whole))
+                   ,@(mapcar (curry #'%packed-accessor-def name)
+                             names offsets sizes types)
+                   ',name)))))))
 
 (defun %packed-accessor-def (struct-name slot-name offset size type)
-  (let ((accessor
-         (ematch (introspect-environment:typexpand type)
-           ((type-r:integer-subtype)
-            `(%packed-accessor-int instance ,size ,offset))
-           ((type-r:single-float-type)
-            `(%packed-accessor-single-float instance ,offset))
-           ((type-r:double-float-type)
-            `(%packed-accessor-double-float instance ,offset))
-           ((type-r:array-subtype)
-            `(%packed-accessor-array instance ,size ,offset))
-           ((type-r:member-type members)
-            (assert (every #'integerp members))
-            `(%packed-accessor-int instance ,size ,offset))))
-        (accessor-name
-         (symbolicate struct-name '- slot-name)))
+  (let* ((type2 (handler-case
+                    (introspect-environment:typexpand type)
+                  (error () nil)))
+         (accessor
+          (match type2
+            ((type-r:integer-subtype)
+             `(%packed-accessor-int instance ,size ,offset))
+            ((type-r:single-float-type)
+             `(%packed-accessor-single-float instance ,offset))
+            ((type-r:double-float-type)
+             `(%packed-accessor-double-float instance ,offset))
+            ((type-r:array-subtype)
+             `(%packed-accessor-array instance ,size ,offset))
+            ((type-r:member-type members)
+             (assert (every #'integerp members))
+             `(%packed-accessor-int instance ,size ,offset))
+            (_
+             `(error "~&Unsupported type ~a~%" ',type2))))
+         (accessor-name
+          (symbolicate struct-name '- slot-name)))
     `(progn
        (declaim (inline ,accessor-name (setf ,accessor-name)))
        (defun ,accessor-name (instance)
          (declare (simple-bit-vector instance)
+                  (ignorable instance)
                   (optimize (speed 3) (safety 0) (debug 0)))
          ,accessor)
        (defun (setf ,accessor-name) (newval instance)
          (declare (simple-bit-vector instance)
+                  (ignorable instance newval)
                   (optimize (speed 3) (safety 0) (debug 0)))
-         (setf ,accessor newval)))))
+         ,(if (eq 'error (first accessor))
+              accessor
+              `(setf ,accessor newval))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
