@@ -29,15 +29,39 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 
 |#
 
+(deftype state ()
+  "vector representing a state, each bit is a proposition"
+  `(runtime simple-bit-vector *fact-size*))
+
+(deftype state+axioms ()
+  "vector representing a state, each bit is a proposition"
+  `(runtime simple-bit-vector *state-size*))
+
+(deftype state-id ()
+  '(unsigned-byte 32))
+
+(ftype* state-= state state boolean)
+(defun state-= (s1 s2)
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  ;; specialized to sb-int:bit-vector-=, then
+  ;; inlined by defoptimizer, then
+  ;; additionally, length comparison etc. are removed by the runtime type
+  (equal s1 s2))
+
+(ftype* state-hash state fixnum)
+(defun state-hash (s)
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  (sxhash s))
+
+(declaim (inline make-state make-state+axioms))
+(defun make-state        () (make-array *fact-size* :element-type 'bit))
+(defun make-state+axioms () (make-array *state-size* :element-type 'bit))
+
 (defstruct (close-list (:constructor make-close-list (&rest hash-table-args
-                                                            &key hash-function test-function key-function
+                                                            &key key-function
                                                             &allow-other-keys)))
-  (hash-function #'sb-impl::equalp-hash
-                 :type (function (*) fixnum))
-  (test-function #'equalp
-                 :type (function (* *) boolean))
-  (key-function  #'identity
-                 :type (function (*) *))
+  (key-function  (error "missing key-function")
+                 :type (function (state-id) state))
   (counter       0
                  :type fixnum)
   (table (apply #'make-hash-table
@@ -65,16 +89,14 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   "Inserts THING to the close-list under duplicate detection. Returns an id"
   (ematch close-list
     ((close-list table
-                 hash-function
-                 test-function
                  key-function
                  (counter (place counter)))
      
-     (let* ((hash (funcall hash-function thing))
+     (let* ((hash (state-hash thing))
             (bag (gethash hash table)))
        (if-let ((id (find thing bag
                           :key key-function
-                          :test test-function)))
+                          :test #'state-=)))
          ;; duplicate found, do not insert
          id
          ;; duplicate not found, return the current counter as an id and increment the counter
