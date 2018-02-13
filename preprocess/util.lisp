@@ -50,7 +50,7 @@
   (asdf:system-relative-pathname :strips pathname))
 
 (defmacro print-values (&body form)
-  `(multiple-value-call (lambda (&rest args) (mapcar #'println args))
+  `(multiple-value-call (lambda (&rest args) (values-list (mapcar #'println args)))
      ,@form))
 
 (defmacro print* (&body forms)
