@@ -37,7 +37,7 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   `(runtime simple-bit-vector *state-size*))
 
 (deftype state-id ()
-  '(runtime integer 0 (/ (* 1024 8 *memory-limit*) (size-of 'state-information))))
+  `(runtime integer 0 (/ (* 1024 8 *memory-limit*) (size-of 'state-information))))
 
 (ftype* state-= state state boolean)
 (defun state-= (s1 s2)
