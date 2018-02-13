@@ -39,7 +39,11 @@
     ((packed-struct-layout sizes)
      (* 8 (ceiling (reduce #'+ sizes) 8)))
     (_
-     (ematch (introspect-environment:typexpand type)
+     (ematch (handler-case (introspect-environment:typexpand type)
+               (error (c)
+                 (format *error-output* "Type expansion failed at type ~a, substituting the size = 0:~%" type)
+                 (princ c *error-output*)
+                 (return-from size-of 0)))
        ((type-r:integer-subtype low high)
         (if (minusp low)
             (1+ (integer-length high))
