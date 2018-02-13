@@ -126,3 +126,12 @@
 (deftype searcher ()
   '(function () t))
 
+
+
+(restart-bind ((retrieve-path
+                (lambda ()
+                  (nreverse
+                   (iter (for pid initially id then (aref parent pid))
+                         (for op = (aref generator pid))
+                         (until (null op))
+                         (collect (decode-op op))))))))
