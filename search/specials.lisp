@@ -8,6 +8,12 @@
 (defvar *time-limit* 300
   "runtime limit in sec")
 
+(defun recompile-instance-dependent-code ()
+  (asdf:compile-system :strips.instance-dependent :force t)
+  (asdf:load-system :strips.instance-dependent :force t)
+  ;; ensure the specialised code is removed and does not affect the later debugging
+  (asdf:clear-system :strips.instance-dependent))
+
 (defun solve-once (domain problem plan-output-file fn)
   "Solve the problem, return the first solution"
   (with-parsed-information5 (-> (parse problem domain)
@@ -15,6 +21,7 @@
                               ground
                               mutex-invariant
                               instantiate)
+    (recompile-instance-dependent-code)
     (handler-bind ((goal-found (lambda (c)
                                  (declare (ignore c))
                                  (ensure-directories-exist plan-output-file)
