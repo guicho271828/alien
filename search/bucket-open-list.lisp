@@ -30,3 +30,14 @@
                 t)
             (setf min-key-place min-key))
          (incf min-key))))))
+
+(defun bucket-open-list (evaluator)
+  (destructuring-bind (storage function) evaluator
+    (list storage
+          'make-bucket-open-list
+          `(lambda (open element)
+             (bucket-open-list-insert
+              open
+              (,function element)
+              element))
+          'bucket-open-list-pop)))
