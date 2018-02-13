@@ -496,44 +496,46 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                         "A namespace for the layout of the packed structure")
 
 (defmacro define-packed-struct (name (&rest supertypes) &body slots)
-  (fresh-line *error-output*)
-  (pprint-logical-block (*error-output* nil :per-line-prefix "; ")
-    (return-from define-packed-struct
-      (let* ((slots (mapcar #'ensure-list slots))
-             (layout (merge-packed-struct-layout
-                      supertypes
-                      :name name
-                      :names (mapcar #'first slots)
-                      :defaults (mapcar #'second slots)
-                      :types (mapcar #'third slots)))
-             (constructor (symbolicate 'make- name))
-             (array-constructor (symbolicate 'make- name '-array)))
-        (ematch layout
-          ((packed-struct-layout names offsets sizes types)
-           `(eval-when (:compile-toplevel :load-toplevel :execute)
-              (setf (symbol-packed-struct-layout ',name)
-                    ,layout)
-              (declaim (inline ,constructor ,array-constructor)
-                       (ftype (function () (simple-bit-vector ,(size-of layout)))
-                              ,constructor)
-                       (ftype (function (array-index)
-                                        simple-bit-vector)
-                              ,array-constructor))
-              (defun ,constructor ()
-                (make-array ,(size-of layout) :element-type 'bit))
-              (defun ,array-constructor (length)
-                (make-array (* length ,(size-of layout)) :element-type 'bit))
-              #+(or)
-              (define-compiler-macro ,constructor ()
-                `(make-array ,,(size-of layout) :element-type 'bit))
-              #+(or)
-              (define-compiler-macro ,array-constructor (&whole whole length)
-                (if (constantp length)
-                    `(make-array ,(* length ,(size-of layout)) :element-type 'bit)
-                    whole))
-              ,@(mapcar (curry #'%packed-accessor-def name)
-                        names offsets sizes types)
-              ',name)))))))
+  ;; (fresh-line *error-output*)
+  ;; (pprint-logical-block (*error-output* nil :per-line-prefix "; ")
+  ;;   (return-from define-packed-struct
+  (let* ((slots (mapcar #'ensure-list slots))
+         (layout (merge-packed-struct-layout
+                  supertypes
+                  :name name
+                  :names (mapcar #'first slots)
+                  :defaults (mapcar #'second slots)
+                  :types (mapcar #'third slots)))
+         (constructor (symbolicate 'make- name))
+         (array-constructor (symbolicate 'make- name '-array)))
+    (ematch layout
+      ((packed-struct-layout names offsets sizes types)
+       `(eval-when (:compile-toplevel :load-toplevel :execute)
+          (setf (symbol-packed-struct-layout ',name)
+                ,layout)
+          (declaim (inline ,constructor ,array-constructor)
+                   (ftype (function () (simple-bit-vector ,(size-of layout)))
+                          ,constructor)
+                   (ftype (function (array-index)
+                                    simple-bit-vector)
+                          ,array-constructor))
+          (defun ,constructor ()
+            (make-array ,(size-of layout) :element-type 'bit))
+          (defun ,array-constructor (length)
+            (make-array (* length ,(size-of layout)) :element-type 'bit))
+          #+(or)
+          (define-compiler-macro ,constructor ()
+            `(make-array ,,(size-of layout) :element-type 'bit))
+          #+(or)
+          (define-compiler-macro ,array-constructor (&whole whole length)
+            (if (constantp length)
+                `(make-array ,(* length ,(size-of layout)) :element-type 'bit)
+                whole))
+          ,@(mapcar (curry #'%packed-accessor-def name)
+                    names offsets sizes types)
+          ',name)))
+    ;; ))
+    ))
 
 (defun %packed-accessor-def (struct-name slot-name offset size type)
   (let* ((type2 (handler-case
@@ -555,7 +557,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
              (assert (every #'integerp members))
              `(%packed-accessor-int instance ,size ,offset))
             (_
-             `(error "~&Unsupported type ~a~%" ',type2))))
+             `(error "~&in ~a: Unsupported type ~a~%" (sb-c:source-location) ',type2))))
          (reader
           ;; additional storage argument for avoiding consing, ala bit-and
           (if array-result-argument
