@@ -1,6 +1,5 @@
 
 (in-package :strips)
-(named-readtables:in-readtable :fare-quasiquote)
 
 (strips.lib:define-packed-struct goal-count ()
   (goal-count 0 (runtime integer 0 *state-size*)))

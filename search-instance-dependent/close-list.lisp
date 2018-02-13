@@ -1,6 +1,5 @@
 
-(in-package :strips.lib)
-(named-readtables:in-readtable :fare-quasiquote)
+(in-package :strips)
 
 #|
 

@@ -1,6 +1,5 @@
 
 (in-package :strips)
-(named-readtables:in-readtable :fare-quasiquote)
 
 (strips.lib:define-packed-struct eager ()
   (facts 0 (runtime simple-bit-vector *fact-size*))

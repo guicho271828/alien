@@ -3,7 +3,6 @@
 ;; TODO: applicable ops and apply-axioms are suboptimal.
 
 (in-package :strips)
-(named-readtables:in-readtable :fare-quasiquote)
 
 (ftype* initialize-init state)
 (defun initialize-init ()
