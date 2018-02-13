@@ -35,3 +35,7 @@
      (format s "Open list exhausted!"))))
 
 (define-condition goal-found (error) ())
+
+(defun retrieve-path ()
+  (invoke-restart (find-restart 'retrieve-path)))
+

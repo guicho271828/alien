@@ -56,5 +56,4 @@
                (rec)))
       (rec))))
 
-(defun retrieve-path ()
-  (invoke-restart (find-restart 'retrieve-path)))
+
