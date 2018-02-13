@@ -40,10 +40,12 @@
     ((packed-struct-layout sizes)
      (* 8 (ceiling (reduce #'+ sizes) 8)))
     (_
+     ;; packed-type
      (when (and (symbolp type)
                 (packed-struct-layout-boundp type))
        (return-from size-of
          (size-of (symbol-packed-struct-layout type))))
+     ;; common lisp type
      (let ((expanded
             (handler-case (introspect-environment:typexpand type)
               (error (c)
@@ -576,13 +578,15 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (declaim (inline packed-aref))
-(defun packed-aref (array packed-type index)
-  (let* ((layout (symbol-packed-struct-layout packed-type))
-         (size (size-of layout))
-         (begin (* index size)))
-    (subseq array begin (+ begin size))))
+(defun packed-aref (array packed-type index &optional result)
+  (let* ((size (size-of packed-type))
+         (begin (* index size))
+         (result (or result
+                     (make-array size :element-type 'bit))))
+    (replace result array :start2 begin)))
 
-(define-compiler-macro packed-aref (&whole whole array packed-type index &environment env)
+#+(or)
+(define-compiler-macro packed-aref (&whole whole array packed-type index &optional result &environment env)
   (if (constantp packed-type env)
       (match packed-type
         ((or (list 'quote packed-type)
