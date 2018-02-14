@@ -53,4 +53,4 @@
 
 (defstruct (open-list (:include builder)) constructor insert pop)
 
-(defstruct (searcher (:include builder)) body)
+(defstruct (searcher (:include builder)) form)

@@ -2,6 +2,6 @@
 
 (defun run (search-engine)
   (match search-engine
-    ((searcher storage body)
+    ((searcher storage form)
      (eval `(define-packed-struct state-information (,storage)))
-     (funcall (compile nil `(lambda () ,body))))))
+     (funcall (compile nil form)))))
