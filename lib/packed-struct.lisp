@@ -588,10 +588,12 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 
 (declaim (inline packed-aref))
 (defun packed-aref (array packed-type index &optional result)
+  (declare ((or null simple-bit-vector) result))
   (let* ((size (size-of packed-type))
          (begin (* index size))
          (result (or result
                      (make-array size :element-type 'bit))))
+    (assert (= (length result) size))
     (replace result array :start2 begin)))
 
 #+(or)
@@ -610,6 +612,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 
 (declaim (inline (setf packed-aref)))
 (defun (setf packed-aref) (newval array packed-type index)
+  (declare (simple-bit-vector newval))
   (let* ((size (size-of packed-type))
          (begin (* index size)))
     (assert (= (length newval) size))
