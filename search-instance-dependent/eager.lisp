@@ -18,10 +18,13 @@
                                           (state-information-facts info)))))
          (open-list (funcall open-list))
          (info (make-state-information))
-         (state (initialize-init))
+         (state+axioms (initialize-init))
+         (state (make-state))
+         (child+axioms (make-state+axioms))
          (child (make-state)))
-    
-    (funcall insert open-list state)
+    (replace state state+axioms)
+    (let ((id (close-list-insert close-list state)))
+      (funcall insert open-list id))
     (setf (state-information-facts info) state
           (state-information-status info) +open+
           (packed-aref db 'state-information 0) info)
@@ -33,7 +36,8 @@
                    (return-from rec (rec)))
                  (setf (state-information-status info) +closed+)
                  (state-information-facts info state)
-                 (apply-axioms state)
+                 (replace state+axioms state)
+                 (apply-axioms state+axioms)
                  
                  (flet ((path ()
                           (nreverse
@@ -43,13 +47,14 @@
                                  (until (minusp op-id))
                                  (collect (decode-op op-id))))))
                    (declare (dynamic-extent #'path))
-                   (report-if-goal state #'path))
+                   (report-if-goal state+axioms #'path))
                  
-                 (iter (for op-id in-vector (applicable-ops *sg* state))
+                 (iter (for op-id in-vector (applicable-ops *sg* state+axioms))
                        (for op = (aref *instantiated-ops* op-id))
                        (replace child state)
-                       (apply-op op state child)
-                       (apply-axioms child)
+                       (replace child+axioms state+axioms)
+                       (apply-op op state+axioms child+axioms)
+                       (apply-axioms child+axioms)
                        (let ((id2 (close-list-insert close-list child)))
                          (packed-aref db 'state-information id2 info)
                          (when (= +new+ (state-information-status info))
@@ -57,7 +62,7 @@
                                  (state-information-op info) op-id
                                  (state-information-status info) +open+
                                  (packed-aref db 'state-information id2) info)
-                           (funcall insert open-list child)))))
+                           (funcall insert open-list id2)))))
                (rec)))
       ;; (declare (inline rec))
       ;; loop unrolling

@@ -4,15 +4,15 @@
 
 (in-package :strips)
 
-(ftype* initialize-init state)
+(ftype* initialize-init state+axioms)
 (defun initialize-init ()
-  (let ((state (make-state)))
+  (let ((state (make-state+axioms)))
     (iter (for f in-vector *instantiated-init*)
           (setf (aref state f) 1))
     (apply-axioms state)
     state))
 
-(ftype* report-if-goal state (function (&rest *) *) boolean)
+(ftype* report-if-goal state+axioms (function (&rest *) *) boolean)
 (defun report-if-goal (state callback)
   (declare (state state))
   (if (= 1 (aref state *instantiated-goal*))
@@ -23,7 +23,7 @@
 
 (deftype op-id () "-1 is an invalid op for the initial state" `(runtime integer -1 (length *instantiated-ops*)))
 
-(ftype* applicable-ops sg state (array op-id))
+(ftype* applicable-ops sg state+axioms (array op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
   (declare (state state))
@@ -44,7 +44,7 @@
 
 ;; these functions are all destructive.
 
-(ftype* apply-axioms state state)
+(ftype* apply-axioms state+axioms state+axioms)
 (defun apply-axioms (state)
   (map nil
        (lambda (layer)
@@ -52,7 +52,7 @@
        *instantiated-axiom-layers*)
   state)
 
-(ftype* apply-axiom-layer axiom-layer state state)
+(ftype* apply-axiom-layer axiom-layer state+axioms state+axioms)
 (defun apply-axiom-layer (axioms state) 
   (let* ((len (length axioms))
          (counters (make-array len :element-type 'fixnum)))
@@ -103,14 +103,14 @@
                         (setf (aref counters i) c)))))))))))
   state)
 
-(ftype* apply-op op state state state)
+(ftype* apply-op op state+axioms state+axioms state+axioms)
 (defun apply-op (op state child)
   (ematch op
     ((op eff)
      (map nil (lambda (e) (apply-effect e state child)) eff)
      child)))
 
-(ftype* apply-effect effect state state state)
+(ftype* apply-effect effect state+axioms state+axioms state+axioms)
 (defun apply-effect (effect state child)
   (ematch effect
     ((effect con eff)
