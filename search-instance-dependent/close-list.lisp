@@ -62,6 +62,13 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 (defun make-state        () (make-array *fact-size* :element-type 'bit))
 (defun make-state+axioms () (make-array *state-size* :element-type 'bit))
 
+(defun fixnum-= (a b)
+  (declare (optimize (speed 3) (safety 0))
+           (fixnum a b))
+  (= a b))
+
+(sb-ext:define-hash-table-test fixnum-= identity)
+
 (defstruct (close-list (:constructor make-close-list (&rest hash-table-args
                                                             &key key-function
                                                             &allow-other-keys)))
@@ -72,11 +79,7 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   (table (apply #'make-hash-table
                 :allow-other-keys t
                 ;; assumes the keys are already hash values
-                :hash-function #'identity
-                :test (lambda (a b)
-                        (declare (optimize (speed 3) (safety 0))
-                                 (fixnum a b))
-                        (= a b))
+                :test 'fixnum-=
                 hash-table-args)
          :type hash-table))
 
