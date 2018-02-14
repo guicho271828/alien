@@ -105,6 +105,7 @@
 
    ;; plan reporting
    #:retrieve-path
+   #:output-plan
    #:validate-plan
    
    ;; plan reporting internal

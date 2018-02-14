@@ -15,6 +15,14 @@
   ;; ensure the specialised code is removed and does not affect the later debugging
   (asdf:clear-system :strips.instance-dependent))
 
+(defun output-plan (plan-output-file)
+  "write the plan into a file"
+  (ensure-directories-exist plan-output-file)
+  (with-open-file (s plan-output-file :direction :output
+                     :if-exists :supersede
+                     :if-does-not-exist :create)
+    (print-plan (retrieve-path) s)))
+
 (defun solve-once (domain problem plan-output-file fn)
   "Solve the problem, return the first solution"
   (with-parsed-information5 (-> (parse problem domain)
@@ -23,14 +31,11 @@
                               mutex-invariant
                               instantiate)
     (recompile-instance-dependent-code)
-    (handler-bind ((goal-found (lambda (c)
-                                 (declare (ignore c))
-                                 (ensure-directories-exist plan-output-file)
-                                 (with-open-file (s plan-output-file :direction :output
-                                                    :if-exists :supersede
-                                                    :if-does-not-exist :create)
-                                   (print-plan (retrieve-path) s))
-                                 (return-from solve-once))))
+    (handler-bind ((goal-found
+                    (lambda (c)
+                      (declare (ignore c))
+                      (output-plan plan-output-file)
+                      (return-from solve-once))))
       (funcall fn))))
 
 ;; TODO: solve-many with specifying N
