@@ -21,6 +21,7 @@
               :lisp-namespace
               :introspect-environment
               :type-r
+              :static-vectors
               :cffi)
  :serial t
  :components ((:module "lib"
