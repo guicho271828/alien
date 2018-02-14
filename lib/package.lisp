@@ -1,6 +1,6 @@
 
 (defpackage :strips.lib
-  (:use :cl :trivia :iterate :alexandria)
+  (:use :cl :trivia :iterate :alexandria :static-vectors)
   (:export
    #:make-index
    #:index
