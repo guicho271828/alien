@@ -520,6 +520,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                                     simple-bit-vector)
                           ,array-constructor))
           (defun ,constructor (&key static)
+            ;; note: sb-int:make-static-vector is also available
             (if static
                 (make-static-vector ,(size-of layout) :element-type 'bit)
                 (make-array ,(size-of layout) :element-type 'bit)))
