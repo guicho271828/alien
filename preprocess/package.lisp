@@ -92,6 +92,7 @@
    #:goal-found
    #:no-solution
    #:solve-once
+   #:solve-once-to-file
    #:run
    #:*memory-limit*
    #:*time-limit*

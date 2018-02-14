@@ -23,7 +23,21 @@
                      :if-does-not-exist :create)
     (print-plan (retrieve-path) s)))
 
-(defun solve-once (domain problem plan-output-file fn)
+(defun solve-once (domain problem fn)
+  "Solve the problem, return the first solution"
+  (with-parsed-information5 (-> (parse problem domain)
+                              easy-invariant
+                              ground
+                              mutex-invariant
+                              instantiate)
+    (recompile-instance-dependent-code)
+    (handler-bind ((goal-found
+                    (lambda (c)
+                      (declare (ignore c))
+                      (return-from solve-once (retrieve-path)))))
+      (funcall fn))))
+
+(defun solve-once-to-file (domain problem plan-output-file fn)
   "Solve the problem, return the first solution"
   (with-parsed-information5 (-> (parse problem domain)
                               easy-invariant
@@ -35,7 +49,7 @@
                     (lambda (c)
                       (declare (ignore c))
                       (output-plan plan-output-file)
-                      (return-from solve-once))))
+                      (return-from solve-once-to-file))))
       (funcall fn))))
 
 ;; TODO: solve-many with specifying N
