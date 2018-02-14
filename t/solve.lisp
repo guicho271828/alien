@@ -157,4 +157,11 @@
   ;; (solve "ipc2014-agl/transport-agl14/p01.pddl")
   ;; (solve "ipc2014-agl/visitall-agl14/p01.pddl")
   )
-  
+
+
+(test instance-depdenent
+  (finishes
+    (print
+     (eager
+      (bucket-open-list
+       (blind))))))
