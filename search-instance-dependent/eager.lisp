@@ -68,7 +68,7 @@
   (match open-list
     ((open-list storage constructor insert pop)
      (make-searcher
-      :storage (strips.lib:merge-packed-struct-layout 'eager storage)
+      :storage (strips.lib:merge-packed-struct-layout (list 'eager storage))
       :body `(lambda ()
                (eager-search #',constructor
                              #',insert
