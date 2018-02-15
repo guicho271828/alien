@@ -24,7 +24,7 @@
          (child (make-state)))
     (replace state state+axioms)
     (let ((id (close-list-insert close-list state)))
-      (funcall insert open-list id))
+      (funcall insert open-list id state+axioms))
     (setf (state-information-facts info) state
           (state-information-status info) +open+
           (packed-aref db 'state-information 0) info)
@@ -62,7 +62,7 @@
                                  (state-information-op info) op-id
                                  (state-information-status info) +open+
                                  (packed-aref db 'state-information id2) info)
-                           (funcall insert open-list id2)))))
+                           (funcall insert open-list id2 child+axioms)))))
                (rec)))
       ;; (declare (inline rec))
       ;; loop unrolling

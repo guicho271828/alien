@@ -37,9 +37,9 @@
      (make-open-list
       :storage storage
       :constructor 'make-bucket-open-list
-      :insert `(lambda (open element)
+      :insert `(lambda (open id state)
                  (bucket-open-list-insert
                   open
-                  (,function element)
-                  element))
+                  (,function state)
+                  id))
       :pop 'bucket-open-list-pop))))
