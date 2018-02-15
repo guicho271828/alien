@@ -23,7 +23,7 @@
                                  (goal-count)))))))
           (pass "plan found"))
       (error (c)
-        (fail "Reason: ~a" c)))
+        (fail "in ~a:~%caused ~a:~% Reason: ~a" path (type-of c) c)))
     (if plan
         (is-true (validate-plan (strips:find-domain path)
                                 path
