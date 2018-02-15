@@ -34,6 +34,7 @@
                    (return-from rec (rec)))
                  (setf (state-information-status info) +closed+)
                  (state-information-facts info state)
+                 (fill state+axioms 0)
                  (replace state+axioms state)
                  (apply-axioms state+axioms)
                  
@@ -50,13 +51,17 @@
                  (iter (for op-id in-vector (applicable-ops *sg* state+axioms))
                        (for op = (aref *instantiated-ops* op-id))
                        (replace child state)
-                       (replace child+axioms state+axioms)
+                       (fill child+axioms 0)
+                       (replace child+axioms child)
                        (apply-op op state+axioms child+axioms)
                        (apply-axioms child+axioms)
+                       (replace child child+axioms)
+                       
                        (let ((id2 (close-list-insert close-list child)))
                          (packed-aref db 'state-information id2 info)
                          (when (= +new+ (state-information-status info))
-                           (setf (state-information-parent info) id
+                           (setf (state-information-facts info) child
+                                 (state-information-parent info) id
                                  (state-information-op info) op-id
                                  (state-information-status info) +open+
                                  (packed-aref db 'state-information id2) info)
