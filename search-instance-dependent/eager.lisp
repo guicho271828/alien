@@ -7,8 +7,6 @@
   (op -1 op-id)
   (status +new+ status))
 
-(strips.lib:define-packed-struct state-information (eager))
-
 (defun eager-search (open-list insert pop)
   (let* ((db (make-state-information-array
               (max-state-id)))
@@ -67,7 +65,6 @@
       ;; (declare (inline rec))
       ;; loop unrolling
       (rec))))
-
 
 (defun eager (open-list)
   (match open-list

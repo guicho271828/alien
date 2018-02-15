@@ -30,7 +30,6 @@
                               ground
                               mutex-invariant
                               instantiate)
-    (recompile-instance-dependent-code)
     (handler-bind ((goal-found
                     (lambda (c)
                       (declare (ignore c))
