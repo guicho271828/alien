@@ -116,8 +116,7 @@
                                   (= 1 (aref state i))))
                   con)
        (if (minusp eff)
-           (let ((i (lognot eff)))
-             (setf (aref child i) 0))
+           (setf (aref child (lognot eff)) 0)
            (setf (aref child eff) 1)))))
   child)
 
