@@ -4,7 +4,7 @@
 (strips.lib:define-packed-struct eager ()
   (facts 0 state)
   (parent 0 state-id)
-  (op -1 op-id)
+  (op 0 op-id)
   (status +new+ status))
 
 (defun eager-search (open-list insert pop)
@@ -25,6 +25,7 @@
       (funcall insert open-list id state+axioms))
     (setf (state-information-facts info) state
           (state-information-status info) +open+
+          (state-information-op info) (length *instantiated-ops*)
           (packed-aref db 'state-information 0) info)
 
     (labels ((rec ()
@@ -39,11 +40,12 @@
                  (apply-axioms state+axioms)
                  
                  (flet ((path ()
+                          (declare (optimize (debug 3)))
                           (nreverse
                            (iter (for pid initially id then (state-information-parent info))
                                  (packed-aref db 'state-information pid info)
                                  (for op-id = (state-information-op info))
-                                 (until (minusp op-id))
+                                 (until (= op-id (length *instantiated-ops*)))
                                  (collect (decode-op op-id))))))
                    (declare (dynamic-extent #'path))
                    (report-if-goal state+axioms #'path))

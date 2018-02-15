@@ -20,12 +20,14 @@
              t)
       nil))
 
-(deftype op-id () "-1 is an invalid op for the initial state" `(runtime integer -1 (length *instantiated-ops*)))
+(deftype op-id ()
+  "maximum range (length *instantiated-ops*) is an invalid op for the initial state"
+  `(runtime integer 0 (length *instantiated-ops*)))
 
 (ftype* applicable-ops sg state+axioms (array op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
-  (let ((results (make-a-array 32 :element-type 'op-id :initial-element -1)))
+  (let ((results (make-a-array 32 :element-type 'op-id)))
     (labels ((rec (node)
                (ematch node
                  ((type list)
