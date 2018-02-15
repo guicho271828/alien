@@ -20,7 +20,7 @@ instance-depdendent code should be compiled/loaded three times.
 |#
 
 (defun run (search-engine)
-  (match search-engine
+  (ematch search-engine
     ((searcher storage form)
      ;; second LOAD
      (recompile-instance-dependent-code)

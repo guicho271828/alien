@@ -67,7 +67,7 @@
       (rec))))
 
 (defun eager (open-list)
-  (match open-list
+  (ematch open-list
     ((open-list storage constructor insert pop)
      (make-searcher
       :storage (strips.lib:merge-packed-struct-layout (list 'eager storage))
