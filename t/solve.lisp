@@ -101,7 +101,7 @@
   (solve "ipc2006-optsat/pathways/p01.pddl")
   (solve "ipc2006-optsat/pipesworld/p01.pddl")
   (solve "ipc2006-optsat/rovers/p01.pddl")
-  (solve "ipc2006-optsat/storage/p01.pddl")
+  ;; (solve "ipc2006-optsat/storage/p01.pddl") ; EITHER type
   (solve "ipc2006-optsat/tpp/p01.pddl")
   (solve "ipc2006-optsat/trucks/p01.pddl")
   (solve "ipc2008-opt/elevators-opt08/p01.pddl")
