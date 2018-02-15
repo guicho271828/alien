@@ -10,5 +10,5 @@
 
 (defun blind ()
   (make-evaluator
-   :storage 'blind
+   :storage '(blind)
    :function 'blind-heuristics))

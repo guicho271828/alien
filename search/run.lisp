@@ -28,7 +28,7 @@ instance-depdendent code should be compiled/loaded three times.
      ;; compile STATE-INFORMATION
      (let ((*package* (find-package :strips)))
        ;; because SYMBOLICATE interns in the current package
-       (eval `(strips.lib:define-packed-struct state-information (,storage))))
+       (eval `(strips.lib:define-packed-struct state-information ,storage)))
      ;; third LOAD
      (let ((*features* (cons 'phase/full-compilation *features*)))
        (recompile-instance-dependent-code))

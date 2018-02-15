@@ -33,5 +33,5 @@
 #-(or strips::phase/packed-structs strips::phase/full-compilation)
 (defun goal-count ()
   (make-evaluator
-   :storage 'goal-count
+   :storage '(goal-count)
    :function 'goal-count-heuristics))
