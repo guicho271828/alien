@@ -9,18 +9,26 @@
 (defun solve (path)
   (declare (optimize (debug 3) (speed 0)))
   (let* ((path (%rel path))
-         (plan (solve-once (find-domain path) path
-                           (lambda ()
-                             (print (length *instantiated-ops*))
-                             (strips:run
-                              (eager
-                               (bucket-open-list
-                                (goal-count))))))))
-    (print plan)
-    (is-true (validate-plan (strips:find-domain path)
-                            path
-                            plan
-                            :verbose t))))
+         plan)
+    (handler-case
+        (progn
+          (setf plan
+                (solve-once (find-domain path) path
+                            (lambda ()
+                              (print (length *instantiated-ops*))
+                              (strips:run
+                               (eager
+                                (bucket-open-list
+                                 (goal-count)))))))
+          (pass "plan found"))
+      (error (c)
+        (fail "Reason: ~a" c)))
+    (if plan
+        (is-true (validate-plan (strips:find-domain path)
+                                path
+                                plan
+                                :verbose t))
+        (skip "No plan found, no validation performed"))))
 
 (test movie-basics
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")
