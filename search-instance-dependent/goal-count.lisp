@@ -4,7 +4,7 @@
 (strips.lib:define-packed-struct goal-count ()
   (goal-count 0 (runtime integer 0 *state-size*)))
 
-(ftype* goal-count-heuristics state (runtime integer 0 *state-size*))
+(ftype* goal-count-heuristics state+axioms (runtime integer 0 *state-size*))
 (defun goal-count-heuristics (state)
   (let ((count 0))
     (labels ((find-axiom (id)
