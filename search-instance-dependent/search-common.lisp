@@ -4,6 +4,19 @@
 
 (in-package :strips)
 
+#-strips::phase/full-compilation
+(progn
+  (ftype* initial-state+axioms *)
+  (ftype* report-if-goal * * *)
+  (ftype* applicable-ops * * *)
+  (ftype* apply-axioms * *)
+  (ftype* apply-axiom-layer * * *)
+  (ftype* apply-op * * * *)
+  (ftype* apply-effect * * * *))
+
+#+strips::phase/full-compilation
+(progn
+
 (ftype* initial-state+axioms state+axioms)
 (defun initial-state+axioms ()
   (let ((state (make-state+axioms)))
@@ -121,5 +134,4 @@
            (setf (aref child (lognot eff)) 0)
            (setf (aref child eff) 1)))))
   child)
-
-
+)

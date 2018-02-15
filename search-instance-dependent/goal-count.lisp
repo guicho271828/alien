@@ -1,10 +1,13 @@
 
 (in-package :strips)
 
+#+strips::phase/packed-structs
 (strips.lib:define-packed-struct goal-count ()
   (goal-count 0 (runtime integer 0 *state-size*)))
 
+#+strips::phase/full-compilation
 (ftype* goal-count-heuristics state+axioms (runtime integer 0 *state-size*))
+#+strips::phase/full-compilation
 (defun goal-count-heuristics (state)
   (let ((count 0))
     (labels ((find-axiom (id)
@@ -27,6 +30,7 @@
       (rec (find-axiom *instantiated-goal*))
       count)))
 
+#-(or strips::phase/packed-structs strips::phase/full-compilation)
 (defun goal-count ()
   (make-evaluator
    :storage 'goal-count

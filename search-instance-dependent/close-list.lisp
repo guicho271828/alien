@@ -28,6 +28,16 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 
 |#
 
+#-strips::phase/full-compilation
+(progn
+  (ftype* state-= * * *)
+  (ftype* state-hash * *)
+  (ftype* make-state *)
+  (ftype* make-state+axioms *)
+  (ftype* close-list-insert * * *))
+
+#+strips::phase/full-compilation
+(progn
 (deftype state ()
   "bitvector representing a state, each bit is a proposition"
   `(runtime simple-bit-vector *fact-size*))
@@ -114,4 +124,4 @@ If the secondary value is T, then the state is a duplicate."
            (setf (gethash hash table)
                  (cons counter bag))
            (incf counter)))))))
-
+)

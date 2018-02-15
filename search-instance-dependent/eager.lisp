@@ -1,12 +1,14 @@
 
 (in-package :strips)
 
+#+strips::phase/packed-structs
 (strips.lib:define-packed-struct eager ()
   (facts 0 state)
   (parent 0 state-id)
   (op 0 op-id)
   (status +new+ status))
 
+#+strips::phase/full-compilation
 (defun eager-search (open-list insert pop)
   (let* ((db (make-state-information-array
               (max-state-id)))
@@ -73,6 +75,7 @@
       ;; loop unrolling
       (rec))))
 
+#-(or strips::phase/packed-structs strips::phase/full-compilation)
 (defun eager (open-list)
   (ematch open-list
     ((open-list storage constructor insert pop)
