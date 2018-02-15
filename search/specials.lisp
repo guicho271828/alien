@@ -9,11 +9,13 @@
   "runtime limit in sec")
 
 (defun recompile-instance-dependent-code ()
-  (setf sb-ext:*inline-expansion-limit* 10)
-  (asdf:compile-system :strips.instance-dependent :force t)
-  (asdf:load-system :strips.instance-dependent :force t)
-  ;; ensure the specialised code is removed and does not affect the later debugging
-  (asdf:clear-system :strips.instance-dependent))
+  (let ((sb-ext:*inline-expansion-limit* 10))
+    (unwind-protect
+         (progn
+           (asdf:compile-system :strips.instance-dependent :force t)
+           (asdf:load-system :strips.instance-dependent :force t))
+      ;; ensure the specialised code is removed and does not affect the later debugging
+      (asdf:clear-system :strips.instance-dependent))))
 
 (defun output-plan (plan-output-file)
   "write the plan into a file"
