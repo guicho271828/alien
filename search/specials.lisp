@@ -10,6 +10,7 @@
 
 (defun recompile-instance-dependent-code ()
   (let ((sb-ext:*inline-expansion-limit* 10))
+    (proclaim '(sb-ext:muffle-conditions style-warning sb-ext:compiler-note))
     (unwind-protect
          (progn
            ;; (asdf:compile-system :strips.instance-dependent :force t)
