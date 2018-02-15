@@ -14,9 +14,9 @@
  :serial t
  :components ((:module "search-instance-dependent"
                :components ((:file "close-list")
+                            (:file "search-common")
                             (:file "eager")
                             (:file "goal-count")
-                            (:file "search-common")
                             (:module "heuristics"
                              :components ())
                             (:module "searchers"

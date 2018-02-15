@@ -18,6 +18,8 @@ $ update-asdf
 
 
 ((:dir :search-instance-dependent
+       (:close-list)
+       (:search-common)
        (:rest :recursive nil)
        (:dir :heuristics)
        (:dir :searchers)
