@@ -4,8 +4,8 @@
 
 (in-package :strips)
 
-(ftype* initialize-init state+axioms)
-(defun initialize-init ()
+(ftype* initial-state+axioms state+axioms)
+(defun initial-state+axioms ()
   (let ((state (make-state+axioms)))
     (iter (for f in-vector *instantiated-init*)
           (setf (aref state f) 1))
