@@ -11,6 +11,7 @@
  :description "Test system of strips"
  :license "LLGPL"
  :depends-on (:strips
+              :strips.instance-dependent
               :fiveam
               :bordeaux-threads
               :lparallel

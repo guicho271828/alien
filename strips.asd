@@ -21,6 +21,7 @@
               :lisp-namespace
               :introspect-environment
               :type-r
+              :static-vectors
               :cffi)
  :serial t
  :components ((:module "lib"
@@ -41,23 +42,17 @@
                             (:file "7-instantiate")
                             (:file "8-successor-generator")))
               (:module "search"
-               :components ((:file "0-special")
-                            (:file "0-util")
-                            (:file "1-state")
-                            (:file "2-search-common")
-                            (:file "3-heuristic-common")
-                            (:file "4-open-list-common")
-                            (:file "5-information")
+               :components ((:file "util")
+                            (:file "specials")
+                            (:file "blind")
+                            (:file "bucket-open-list")
+                            (:file "run")
                             (:module "heuristics"
-                             :components ((:file "alien")
-                                          (:file "blind")
-                                          (:file "ff")
-                                          (:file "goal-count")))
+                             :components ())
                             (:module "searchers"
-                             :components ((:file "eager")
-                                          (:file "timeout")))
+                             :components ())
                             (:module "open-list"
-                             :components ((:file "bucket-open-list")))))
+                             :components ())))
               (:module "validate"
                :components ((:file "validate"))))
  :description "A STRIPS planner"

@@ -17,21 +17,11 @@ $ update-asdf
 |#
 
 
-((:dir :lib
-       (:package)
-       (:rest))
- (:dir :preprocess
-       (:package)
-       (:util)
-       (:specials)
-       (:rest :recursive nil))
- (:dir :search
-       (:util)
-       (:specials)
+((:dir :search-instance-dependent
+       (:close-list)
+       (:search-common)
        (:rest :recursive nil)
        (:dir :heuristics)
        (:dir :searchers)
-       (:dir :open-list))
- (:dir :validate
-       (:rest)))
+       (:dir :open-list)))
 

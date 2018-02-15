@@ -26,7 +26,11 @@
   (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog2)
   (:shadowing-import-from :trivia :<>)
   (:shadow :iterate :else)
+  (:import-from :strips.lib
+                :packed-aref
+                :size-of)
   (:export
+   ;; translate
    #:parse
    #:variablep
    #:free
@@ -40,11 +44,13 @@
    #:%rel
    #:*predicate-types*
    #:with-parsed-information
-   
+
+   ;; preprocessing
    #:easy-invariant
    #:*monotonicity*
    #:with-parsed-information2
-   
+
+   ;; grounding
    #:*enable-no-op-pruning*
    #:*enable-negative-precondition-pruning-for-fluents*
    #:*enable-negative-precondition-pruning-for-axioms*
@@ -74,26 +80,50 @@
    #:with-parsed-information5
    #:*instantiated-axiom-layers*
    #:*state-size*
-   #:eager
+
+   ;; misc utils
+   #:memory-usage
+   #:with-memory-usage-diff
+   #:print-values
+   #:println
+   #:find-domain
+
+   ;; search external
    #:goal-found
-   #:timeout
-   #:goal-count
-   #:blind
-   #:decode-op
-   #:decode-state
+   #:no-solution
+   #:solve-once
+   #:solve-once-to-file
+   #:run
+   #:*memory-limit*
+   #:*time-limit*
+   
+   ;; search internal
    #:report-if-goal
    #:applicable-ops
    #:apply-axioms
    #:apply-op
    #:make-state
-   #:memory-usage
-   #:with-memory-usage-diff
-   #:print-values
-   #:no-solution
+
+   ;; plan reporting
    #:retrieve-path
-   #:println
+   #:output-plan
    #:validate-plan
-   #:find-domain
-   #:solve-once))
+   
+   ;; plan reporting internal
+   #:decode-op
+   #:decode-state
+
+   ;; search algorithm/wrapper
+   #:eager
+   #:timeout
+   
+   ;; open list
+   #:bucket-open-list
+   
+   ;; heuristics
+   #:goal-count
+   #:blind
+   #:make-state+axioms
+   #:recompile-instance-dependent-code))
 
 (setf trivia:*arity-check-by-test-call* nil)

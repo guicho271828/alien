@@ -50,7 +50,7 @@
   (asdf:system-relative-pathname :strips pathname))
 
 (defmacro print-values (&body form)
-  `(multiple-value-call (lambda (&rest args) (mapcar #'println args))
+  `(multiple-value-call (lambda (&rest args) (values-list (mapcar #'println args)))
      ,@form))
 
 (defmacro print* (&body forms)
@@ -231,5 +231,28 @@
        (simple-style-warning "form ~a failed during type computation, defaulting to *" ',form)
        '*)))
 
+(deftype runtime (typename &rest args)
+  `(,typename ,@(mapcar (lambda (form)
+                          (handler-case (eval form)
+                            (error (c)
+                              (format *error-output*
+                                      "~&~<; ~@;caught ~a:  ~a~%    Runtime type expansion failed at type ~a, using * instead~%~:>"
+                                      (list (type-of c) c form))
+                              '*)))
+                        args)))
+
 (defun println (x)
   (write x :escape nil) (terpri))
+
+(defmacro break+ (&rest args)
+  (let* ((last-form (lastcar args))
+         (last last-form)
+         (butlast (butlast args)))
+    (once-only (last)
+      `(progn
+         (break "~@{~a~2%~<;;~@; result:~4i~:@_~a~;~:>~2%~}"
+                ,@(iter (for arg in butlast)
+                        (collect `',arg)
+                        (collect `(list ,arg)))
+                ',last-form (list ,last))
+         ,last))))

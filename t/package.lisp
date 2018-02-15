@@ -12,7 +12,8 @@
         :lparallel
         :arrow-macros
         :cl-prolog2)
-  (:shadowing-import-from :trivia :<>))
+  (:shadowing-import-from :trivia :<>)
+  (:shadowing-import-from :fiveam :run))
 (in-package :strips.test)
 
 (named-readtables:in-readtable :fare-quasiquote)

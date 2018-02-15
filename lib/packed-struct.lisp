@@ -35,45 +35,76 @@
                                :environment environment))
 
 (defun size-of (type)
+  "takes a packed type name or a type name, return the number of bits necessary to represent the value"
   (match type
     ((packed-struct-layout sizes)
      (* 8 (ceiling (reduce #'+ sizes) 8)))
     (_
-     (ematch (introspect-environment:typexpand type)
-       ((type-r:integer-subtype low high)
-        (if (minusp low)
-            (1+ (integer-length high))
-            (integer-length high)))
-       ((type-r:float-subtype high)
-        (multiple-value-bind (signif expon) (integer-decode-float high)
-          (+ (integer-length signif)
-             (integer-length expon)
-             1)))
-       ((type-r:member-type members)
-        (size-of `(integer ,(reduce #'min members)
-                           ,(reduce #'max members))))
-       ((type-r:array-subtype element-type dimensions)
-        (* (size-of element-type) (reduce #'* (ensure-list dimensions))))))))
+     ;; packed-type
+     (when (and (symbolp type)
+                (packed-struct-layout-boundp type))
+       (return-from size-of
+         (size-of (symbol-packed-struct-layout type))))
+     ;; common lisp type
+     (let ((expanded
+            (handler-case (introspect-environment:typexpand type)
+              (error (c)
+                (format *error-output*
+                        "~&caught ~a : ~a~% Type expansion failed at type ~a, substituting the size = 0:~%"
+                        (type-of c) c type)
+                (return-from size-of 0)))))
+       (handler-case
+           (match expanded
+             ((type-r:integer-subtype low high)
+              (if (minusp low)
+                  (1+ (integer-length high))
+                  (integer-length high)))
+             ((type-r:float-subtype high)
+              (multiple-value-bind (signif expon) (integer-decode-float high)
+                (+ (integer-length signif)
+                   (integer-length expon)
+                   1)))
+             ((type-r:member-type members)
+              (size-of `(integer ,(reduce #'min members)
+                                 ,(reduce #'max members))))
+             ((type-r:array-subtype element-type dimensions)
+              (* (size-of element-type) (reduce #'* (ensure-list dimensions))))
+             (type
+              (format *error-output* "~&Unsupported type: ~a~%" type)
+              0))
+         (error (c)
+           (format *error-output* "~&caught ~a : ~a~%Misc error while computing the size of ~a (originally ~a):~%"
+                   (type-of c) c expanded type)
+           0))))))
 
 ;; constant fold
 (define-compiler-macro size-of (&whole whole type &environment env)
   (if (constantp type env)
       (match type
-        ((or (list 'quote type)
-             (keyword))
-         (size-of (symbol-packed-struct-layout type)))
+        ((list 'quote type)
+         (size-of type))
         (_
          whole))
       whole))
+
+;; (size-of '(unsigned-byte 5))
+;; (size-of '(integer 0 100))
 
 (defun compute-offset (sizes)
   (iter (for s in sizes)
         (collecting sum)
         (summing s into sum)))
 
+(defun ensure-packed-struct-layout (name-or-layout)
+  (etypecase name-or-layout
+    (symbol
+     (symbol-packed-struct-layout name-or-layout))
+    (packed-struct-layout
+     name-or-layout)))
+
 (defun merge-packed-struct-layout (structs &key (name (gensym)) names defaults types)
   (let ((result (reduce #'merge-packed-struct-layout-2
-                        (mapcar #'symbol-packed-struct-layout structs)
+                        (mapcar #'ensure-packed-struct-layout structs)
                         :initial-value
                         (make-packed-struct-layout :name (gensym)
                                                    :names names
@@ -97,17 +128,14 @@
 ;; treating a big vector as a large integer and retrieve the value
 
 (declaim (inline %packed-accessor-int))
-(defun %packed-accessor-int (vector size position &optional (word-offset 0))
+(defun %packed-accessor-int (vector size position)
   "offset: number of bits from the beginning of the structure
 size: number of bits for the structure"
   (declare (fixnum position)
-           (fixnum word-offset)
            ((integer 0 64) size)
            (simple-bit-vector vector))
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
-    (incf index-begin word-offset)
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
-      (incf index-end word-offset)
       (cond
         ((or (= index-begin index-end)
              (= 0 offset-end))
@@ -122,18 +150,15 @@ size: number of bits for the structure"
                       (- 64 offset-begin)))))))))
 
 (declaim (inline (setf %packed-accessor-int)))
-(defun (setf %packed-accessor-int) (newval vector size position &optional (word-offset 0))
+(defun (setf %packed-accessor-int) (newval vector size position)
   "position: number of bits from the beginning of the structure
 size: number of bits for the structure"
   (declare (fixnum position)
-           (fixnum word-offset)
            ((integer 0 64) size)
            ((unsigned-byte 64) newval)
            (simple-bit-vector vector))
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
-    (incf index-begin word-offset)
     (multiple-value-bind (index-end offset-end) (floor (+ size position) 64)
-      (incf index-end word-offset)
       (cond
         ((or (= index-begin index-end)
              (= 0 offset-end))
@@ -150,12 +175,14 @@ size: number of bits for the structure"
                (ldb (byte offset-end (- 64 offset-begin))
                     newval)))))))
 
+#+(or)
 (defun %packed-accessor-test0 ()
   (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 0))
   (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 1))
   (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 2))
   (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 3)))
 
+#+(or)
 (defun %packed-accessor-test (vector)
   (declare (optimize (speed 3)))
   ;; (%packed-accessor-int vector 0 0)
@@ -177,6 +204,7 @@ size: number of bits for the structure"
 
 ;; checking the disassembly
 
+#+(or)
 (progn
 (defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 62 64))) ; 42
 (defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 62 65))) ; 45
@@ -195,6 +223,7 @@ size: number of bits for the structure"
 )
 ;; checking the store/load
 
+#+(or)
 (defun %packed-accessor-test2 ()
   (declare (optimize (speed 3)))
   ;; length 64
@@ -218,6 +247,7 @@ size: number of bits for the structure"
 
 ;; checking type propagation
 
+#+(or)
 (progn
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 64)) ; 42
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 65)) ; 45
@@ -283,6 +313,7 @@ size: number of bits for the structure"
         (%packed-accessor-int vector 32 (+ 32 position))
         (sb-kernel:double-float-high-bits newval)))
 
+#+(or)
 (defun %packed-accessor-float-test ()
   ;; length 64
   (let ((b #*0000000000000000000000000000000000000000000000000000000000000000))
@@ -419,6 +450,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                (ash (%packed-accessor-int vector offset-begin (- position offset-begin))
                     ~offset-begin)))))))
 
+#+(or)
 (defun packed-accessor-array-test1 ()
   (let ((b (make-array 32 :initial-element 0 :element-type 'bit)))
     (setf (%packed-accessor-array b 5 12)  #*11111)
@@ -445,11 +477,13 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
     (assert (equal b #*1010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010)))
   0)
 
+#+(or)
 (defun packed-accessor-array-test2 (b)
   (declare ((simple-bit-vector 32) b))
   (setf (%packed-accessor-array b 5 12)  #*11111)
   0)
 
+#+(or)
 (defun packed-accessor-array-test2b (b)
   (declare ((simple-bit-vector 256) b))
   (setf (%packed-accessor-array b 5 16)  #*11111)
@@ -457,6 +491,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
   (setf (%packed-accessor-array b 5 128)  #*11111)
   b)
 
+#+(or)
 (defun packed-accessor-array-test3 (b)
   (declare ((simple-bit-vector 256) b))
   (setf (%packed-accessor-array b 256 0)
@@ -471,6 +506,9 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                         "A namespace for the layout of the packed structure")
 
 (defmacro define-packed-struct (name (&rest supertypes) &body slots)
+  ;; (fresh-line *error-output*)
+  ;; (pprint-logical-block (*error-output* nil :per-line-prefix "; ")
+  ;;   (return-from define-packed-struct
   (let* ((slots (mapcar #'ensure-list slots))
          (layout (merge-packed-struct-layout
                   supertypes
@@ -482,67 +520,91 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
          (array-constructor (symbolicate 'make- name '-array)))
     (ematch layout
       ((packed-struct-layout names offsets sizes types)
-       `(progn (setf (symbol-packed-struct-layout ',name)
-                     ,layout)
-               (declaim (inline ,constructor ,array-constructor)
-                        (ftype (function () (simple-bit-vector ,(size-of layout)))
-                               ,constructor)
-                        (ftype (function (array-index)
-                                         simple-bit-vector)
-                               ,array-constructor))
-               (defun ,constructor ()
-                 (make-array ,(size-of layout) :element-type 'bit))
-               (defun ,array-constructor (length)
-                 (make-array (* length ,(size-of layout)) :element-type 'bit))
-               #+(or)
-               (define-compiler-macro ,constructor ()
-                 `(make-array ,,(size-of layout) :element-type 'bit))
-               #+(or)
-               (define-compiler-macro ,array-constructor (&whole whole length)
-                 (if (constantp length)
-                     `(make-array ,(* length ,(size-of layout)) :element-type 'bit)
-                     whole))
-               ,@(mapcar (curry #'%packed-accessor-def name)
-                         names offsets sizes types)
-               ',name)))))
+       `(eval-when (:compile-toplevel :load-toplevel :execute)
+          (setf (symbol-packed-struct-layout ',name)
+                ,layout)
+          (declaim (inline ,constructor ,array-constructor)
+                   (ftype (function (&key (:static *)) (simple-bit-vector ,(size-of layout)))
+                          ,constructor)
+                   (ftype (function (array-index &key (:static *))
+                                    simple-bit-vector)
+                          ,array-constructor))
+          (defun ,constructor (&key static)
+            ;; note: sb-int:make-static-vector is also available
+            (if static
+                (make-static-vector ,(size-of layout) :element-type 'bit)
+                (make-array ,(size-of layout) :element-type 'bit)))
+          (defun ,array-constructor (length &key static)
+            (if static
+                (make-static-vector (* length ,(size-of layout)) :element-type 'bit)
+                (make-array (* length ,(size-of layout)) :element-type 'bit)))
+          ,@(mapcar (curry #'%packed-accessor-def name)
+                    names offsets sizes types)
+          ',name)))
+    ;; ))
+    ))
 
 (defun %packed-accessor-def (struct-name slot-name offset size type)
-  (let ((accessor
-         (ematch (introspect-environment:typexpand type)
-           ((type-r:integer-subtype)
-            `(%packed-accessor-int instance ,size ,offset))
-           ((type-r:single-float-type)
-            `(%packed-accessor-single-float instance ,offset))
-           ((type-r:double-float-type)
-            `(%packed-accessor-double-float instance ,offset))
-           ((type-r:array-subtype)
-            `(%packed-accessor-array instance ,size ,offset))
-           ((type-r:member-type members)
-            (assert (every #'integerp members))
-            `(%packed-accessor-int instance ,size ,offset))))
-        (accessor-name
-         (symbolicate struct-name '- slot-name)))
+  (let* ((type2 (handler-case
+                    (introspect-environment:typexpand type)
+                  (error () nil)))
+         (array-result-argument nil)
+         (writer
+          (match type2
+            ((type-r:integer-subtype)
+             `(%packed-accessor-int instance ,size ,offset))
+            ((type-r:single-float-type)
+             `(%packed-accessor-single-float instance ,offset))
+            ((type-r:double-float-type)
+             `(%packed-accessor-double-float instance ,offset))
+            ((type-r:array-subtype)
+             (setf array-result-argument t)
+             `(%packed-accessor-array instance ,size ,offset))
+            ((type-r:member-type members)
+             (assert (every #'integerp members))
+             `(%packed-accessor-int instance ,size ,offset))
+            (_
+             `(error "~&in ~a: Unsupported type ~a~%" (sb-c:source-location) ',type2))))
+         (reader
+          ;; additional storage argument for avoiding consing, ala bit-and
+          (if array-result-argument
+              `(if result
+                   (%packed-accessor-array instance ,size ,offset result)
+                   (%packed-accessor-array instance ,size ,offset))
+              ;; for non-array cases, reader = writer
+              writer))
+         (accessor-name
+          (symbolicate struct-name '- slot-name)))
     `(progn
        (declaim (inline ,accessor-name (setf ,accessor-name)))
-       (defun ,accessor-name (instance)
+       (defun ,accessor-name (instance ,@(when array-result-argument '(&optional result)))
          (declare (simple-bit-vector instance)
-                  (optimize (speed 3) (safety 0) (debug 0)))
-         ,accessor)
+                  ,@(when array-result-argument `(((or null (simple-bit-vector ,size)) result)))
+                  (ignorable instance)
+                  (optimize (speed 3) (safety 0)))
+         ,reader)
        (defun (setf ,accessor-name) (newval instance)
          (declare (simple-bit-vector instance)
-                  (optimize (speed 3) (safety 0) (debug 0)))
-         (setf ,accessor newval)))))
+                  (ignorable instance newval)
+                  (optimize (speed 3) (safety 0)))
+         ,(if (eq 'error (first writer))
+              writer
+              `(setf ,writer newval))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (declaim (inline packed-aref))
-(defun packed-aref (array packed-type index)
-  (let* ((layout (symbol-packed-struct-layout packed-type))
-         (size (size-of layout))
-         (begin (* index size)))
-    (subseq array begin (+ begin size))))
+(defun packed-aref (array packed-type index &optional result)
+  (declare ((or null simple-bit-vector) result))
+  (let* ((size (size-of packed-type))
+         (begin (* index size))
+         (result (or result
+                     (make-array size :element-type 'bit))))
+    (assert (= (length result) size))
+    (replace result array :start2 begin)))
 
-(define-compiler-macro packed-aref (&whole whole array packed-type index &environment env)
+#+(or)
+(define-compiler-macro packed-aref (&whole whole array packed-type index &optional result &environment env)
   (if (constantp packed-type env)
       (match packed-type
         ((or (list 'quote packed-type)
@@ -554,6 +616,14 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                    (let ((,begin (* ,index ,size)))
                       (subseq ,array ,begin (+ ,begin ,size))))))))
       whole))
+
+(declaim (inline (setf packed-aref)))
+(defun (setf packed-aref) (newval array packed-type index)
+  (declare (simple-bit-vector newval))
+  (let* ((size (size-of packed-type))
+         (begin (* index size)))
+    (assert (= (length newval) size))
+    (replace array newval :start1 begin)))
 
 (declaim (inline packed-ref))
 (defun packed-ref (packed-type index)

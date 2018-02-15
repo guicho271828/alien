@@ -5,7 +5,7 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
 |#
 (progn ;;init forms
   (ros:ensure-asdf)
-  #+quicklisp (ql:quickload '(:strips) :silent t))
+  #+quicklisp (ql:quickload '(:strips.instance-depdent) :silent t))
 
 (in-package :strips)
 
@@ -15,7 +15,10 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
     ((list domain problem plan-output-file)
      (solve-once domain problem plan-output-file
                  (lambda ()
-                   (eager #'goal-count))))
+                   (run
+                    (eager
+                     (bucket-open-list
+                      (goal-count)))))))
     (_
      (format *error-output*
              "Usage: alien.ros domain problem plan-output-file~%"))))

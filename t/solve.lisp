@@ -8,38 +8,30 @@
 
 (defun solve (path)
   (declare (optimize (debug 3) (speed 0)))
-  (handler-case
-      (with-parsed-information5 (-> (%rel path)
-                                  parse
-                                  easy-invariant
-                                  ground
-                                  mutex-invariant
-                                  instantiate)
-        ;; (print-values
-        ;;   (with-timing
-        ;;     (signals goal-found
-        ;;       (eager #'blind))))
-        ;; (print-values
-        ;;   (with-timing
-        (print (length *instantiated-ops*))
-        (let (result)
-          (finishes
-            (block nil
-              (handler-bind ((goal-found
-                              (lambda (c)
-                                (declare (ignore c))
-                                (setf result (retrieve-path))
-                                (return))))
-                (eager #'goal-count))))
-          (print result)
-          (is-true (validate-plan (strips::find-domain (%rel path))
-                                  (%rel path)
-                                  result
-                                  :verbose t))))
-    (error (c)
-      (fail "~A: plan not found, reason: ~a" path c))))
+  (recompile-instance-dependent-code)
+  (let* ((path (%rel path))
+         plan)
+    (handler-case
+        (progn
+          (setf plan
+                (solve-once (find-domain path) path
+                            (lambda ()
+                              (print (length *instantiated-ops*))
+                              (strips:run
+                               (eager
+                                (bucket-open-list
+                                 (goal-count)))))))
+          (pass "plan found"))
+      (error (c)
+        (fail "in ~a:~%caused ~a:~% Reason: ~a" path (type-of c) c)))
+    (if plan
+        (is-true (validate-plan (strips:find-domain path)
+                                path
+                                plan
+                                :verbose t))
+        (skip "No plan found, no validation performed"))))
 
-(test movie
+(test movie-basics
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")
                               parse
                               easy-invariant
@@ -48,34 +40,18 @@
                               instantiate)
     (print
      (decode-state #*11111111))
-    (let ((s (make-state)))
+    (let ((s (make-state+axioms)))
       (replace s #*11111110)
       (is (equal #*11111111
                  (apply-axioms s))))
     (signals goal-found
-      (report-if-goal #*11111111))
+      (report-if-goal #*11111111 (lambda ())))
     (signals goal-found
-      (report-if-goal #*00000001)))
-  
+      (report-if-goal #*00000001 (lambda ())))))
+
+(test movie
   (solve "movie/p01.pddl")
-  (solve "movie/p02.pddl")
-  (solve "movie/p03.pddl")
-  (solve "movie/p04.pddl")
-  (solve "movie/p05.pddl")
-  (solve "movie/p06.pddl")
-  (solve "movie/p07.pddl")
-  (solve "movie/p08.pddl")
-  (solve "movie/p09.pddl")
   (solve "movie/p10.pddl")
-  (solve "movie/p11.pddl")
-  (solve "movie/p12.pddl")
-  (solve "movie/p13.pddl")
-  (solve "movie/p14.pddl")
-  (solve "movie/p15.pddl")
-  (solve "movie/p16.pddl")
-  (solve "movie/p17.pddl")
-  (solve "movie/p18.pddl")
-  (solve "movie/p19.pddl")
   (solve "movie/p20.pddl"))
 
 (test demo
@@ -117,7 +93,7 @@
   (solve "ipc2006-optsat/pathways/p01.pddl")
   (solve "ipc2006-optsat/pipesworld/p01.pddl")
   (solve "ipc2006-optsat/rovers/p01.pddl")
-  (solve "ipc2006-optsat/storage/p01.pddl")
+  ;; (solve "ipc2006-optsat/storage/p01.pddl") ; EITHER type
   (solve "ipc2006-optsat/tpp/p01.pddl")
   (solve "ipc2006-optsat/trucks/p01.pddl")
   (solve "ipc2008-opt/elevators-opt08/p01.pddl")
@@ -157,4 +133,11 @@
   ;; (solve "ipc2014-agl/transport-agl14/p01.pddl")
   ;; (solve "ipc2014-agl/visitall-agl14/p01.pddl")
   )
-  
+
+
+(test instance-depdenent
+  (finishes
+    (print
+     (eager
+      (bucket-open-list
+       (blind))))))
