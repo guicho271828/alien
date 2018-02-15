@@ -123,6 +123,7 @@
    ;; heuristics
    #:goal-count
    #:blind
-   #:make-state+axioms))
+   #:make-state+axioms
+   #:recompile-instance-dependent-code))
 
 (setf trivia:*arity-check-by-test-call* nil)

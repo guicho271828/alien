@@ -8,6 +8,7 @@
 
 (defun solve (path)
   (declare (optimize (debug 3) (speed 0)))
+  (recompile-instance-dependent-code)
   (let* ((path (%rel path))
          plan)
     (handler-case

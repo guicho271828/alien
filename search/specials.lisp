@@ -12,7 +12,7 @@
   (let ((sb-ext:*inline-expansion-limit* 10))
     (unwind-protect
          (progn
-           (asdf:compile-system :strips.instance-dependent :force t)
+           ;; (asdf:compile-system :strips.instance-dependent :force t)
            (asdf:load-system :strips.instance-dependent :force t))
       ;; ensure the specialised code is removed and does not affect the later debugging
       (asdf:clear-system :strips.instance-dependent))))
