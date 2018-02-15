@@ -14,7 +14,6 @@
 
 (ftype* report-if-goal state+axioms (function (&rest *) *) boolean)
 (defun report-if-goal (state callback)
-  (declare (state state))
   (if (= 1 (aref state *instantiated-goal*))
       (progn (restart-bind ((retrieve-path callback))
                (cerror "continue searching" 'goal-found))
@@ -26,8 +25,6 @@
 (ftype* applicable-ops sg state+axioms (array op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
-  (declare (state state))
-  (declare (sg sg))
   (let ((results (make-a-array 32 :element-type 'op-id :initial-element -1)))
     (labels ((rec (node)
                (ematch node
