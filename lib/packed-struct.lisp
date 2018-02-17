@@ -38,7 +38,7 @@
   "takes a packed type name or a type name, return the number of bits necessary to represent the value"
   (match type
     ((packed-struct-layout sizes)
-     (* 8 (ceiling (reduce #'+ sizes) 8)))
+     (reduce #'+ sizes))
     (_
      ;; packed-type
      (when (and (symbolp type)
