@@ -46,42 +46,37 @@
        (return-from size-of
          (size-of (symbol-packed-struct-layout type))))
      ;; common lisp type
-     (let ((expanded
-            (handler-case (introspect-environment:typexpand type)
-              (error (c)
-                (log:warn "caught ~a : ~a~% Type expansion failed at type ~a, substituting the size = 0"
-                          (type-of c) c type)
-                (return-from size-of 0)))))
-       (handler-case
-           (match expanded
-             ((type-r:integer-subtype low high)
-              (if (minusp low)
-                  (1+ (integer-length high))
-                  (integer-length high)))
-             ((type-r:float-subtype high)
-              (multiple-value-bind (signif expon) (integer-decode-float high)
-                (+ (integer-length signif)
-                   (integer-length expon)
-                   1)))
-             ((type-r:member-type members)
-              (size-of `(integer ,(reduce #'min members)
-                                 ,(reduce #'max members))))
-             ((type-r:array-subtype element-type dimensions)
-              (* (size-of element-type) (reduce #'* (ensure-list dimensions))))
-             (type
-              (log:warn "Unsupported type: ~a" type)
-              0))
-         (error (c)
-           (log:warn "caught ~a : ~a~%Misc error while computing the size of ~a (originally ~a)"
-                     (type-of c) c expanded type)
-           0))))))
+     (restart-bind ((continue (lambda (c)
+                                (log:warn "Substituting the size of ~a with 0" type)
+                                (return-from size-of 0))))
+       (match (introspect-environment:typexpand type)
+         ((type-r:integer-subtype low high)
+          (if (minusp low)
+              (1+ (integer-length high))
+              (integer-length high)))
+         ((type-r:float-subtype high)
+          (multiple-value-bind (signif expon) (integer-decode-float high)
+            (+ (integer-length signif)
+               (integer-length expon)
+               1)))
+         ((type-r:member-type members)
+          (size-of `(integer ,(reduce #'min members)
+                             ,(reduce #'max members))))
+         ((type-r:array-subtype element-type dimensions)
+          (* (size-of element-type) (reduce #'* (ensure-list dimensions))))
+         (type
+          (log:warn "Unsupported type: ~a" type)
+          0))))))
 
 ;; constant fold
 (define-compiler-macro size-of (&whole whole type &environment env)
   (if (constantp type env)
       (match type
         ((list 'quote type)
-         (size-of type))
+         (handler-case (size-of type)
+           (error (c)
+             (log:warn "caught ~a : ~a" (type-of c) c)
+             whole)))
         (_
          whole))
       whole))
