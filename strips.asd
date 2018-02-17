@@ -22,6 +22,7 @@
               :introspect-environment
               :type-r
               :static-vectors
+              :log4cl
               :cffi)
  :serial t
  :components ((:module "lib"

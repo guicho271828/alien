@@ -130,7 +130,7 @@
               (iter (for e in geff)
                     (for i from 0)
                     (unless (member i reachable-effects)
-                      (format *error-output* "~&~a th effect ~a in op ~a was removed due to unreachable effect condition." i e `(,name ,@args)))
+                      (log:trace "op ~a:~%unreachable effect condition: ~a" `(,name ,@args) e))
                     (instantiate-effect e eff index trie))
               (setf eff (sort eff #'< :key #'effect-eff))
               (setf eff (delete-duplicates eff :test 'equalp))
@@ -147,10 +147,8 @@
                           (when (opposite-effect-p e1 e2)
                             (pushnew i blacklist)
                             (pushnew k blacklist)
-                            (format *error-output* "~&cancelling effects ~a in ~a"
-                                    (strips.lib:index-ref index (logabs (effect-eff e1)))
-                                    `(,name ,@args))
-                            ;; (format *error-output* "~& ~a ~a, ~a ~a" i e1 k e2)
+                            (log:trace "op ~a:~%cancelling effects: ~a" `(,name ,@args)
+                                       (strips.lib:index-ref index (logabs (effect-eff e1))))
                             (setf noop-found t))
                           (finally
                            (unless noop-found

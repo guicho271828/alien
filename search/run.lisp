@@ -23,13 +23,16 @@ instance-depdendent code should be compiled/loaded three times.
   (ematch search-engine
     ((searcher storage form)
      ;; second LOAD
+     (log:info "compiling instance-dependent code for packed structs")
      (let ((*features* (cons 'phase/packed-structs *features*)))
        (recompile-instance-dependent-code))
      ;; compile STATE-INFORMATION
      (let ((*package* (find-package :strips)))
        ;; because SYMBOLICATE interns in the current package
        (eval `(strips.lib:define-packed-struct state-information ,storage)))
+     (log:info (eval '(size-of 'state-information)))
      ;; third LOAD
+     (log:info "compiling instance-dependent code for functions")
      (let ((*features* (cons 'phase/full-compilation *features*)))
        (recompile-instance-dependent-code))
      (funcall (compile nil form)))))

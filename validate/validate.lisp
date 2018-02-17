@@ -67,60 +67,63 @@ It may be evaluated multiple times."
     `(let ((,var (uiop:run-program
                   (let ((,command (format nil "mktemp --tmpdir='~a' ~@[-d~*~] ~@[~a~]"
                                           ,tmpdir ,directory ,template)))
-                    (when ,debug
-                      (format *error-output* "~&; ~a~%" ,command))
+                    (log:debug "~a" ,command)
                     ,command)
                   :output '(:string :stripped t))))
        (unwind-protect
             (progn ,@body)
          (if ,debug
-             (format *error-output* "~&; not removing ~a for debugging~%" ,var)
+             (log:debug "not removing ~a for debugging" ,var)
              (uiop:run-program (format nil "rm -rf ~a" (namestring ,var)) :ignore-error-status t))))))
 
-(defgeneric validate-plan (domain problem plan &key verbose))
+(defgeneric validate-plan (domain problem plan))
 
-(defmethod validate-plan (domain problem (plan list) &key verbose)
-  (with-temp (planfile :debug verbose)
+(defmethod validate-plan (domain problem (plan list))
+  (with-temp (planfile :debug t)
     (with-open-file (s planfile :direction :output :if-exists :supersede)
       (print-plan plan s))
-    (validate-plan domain problem planfile :verbose verbose)))
+    (validate-plan domain problem planfile)))
 
-(defmethod validate-plan (domain (problem list) plan &key verbose)
-  (with-temp (problemfile :debug verbose)
+(defmethod validate-plan (domain (problem list) plan)
+  (with-temp (problemfile :debug t)
     (with-open-file (s problemfile :direction :output :if-exists :supersede)
       (format s "~:a" problem))
-    (validate-plan domain problemfile plan :verbose verbose)))
+    (validate-plan domain problemfile plan)))
 
-(defmethod validate-plan ((domain list) problem plan &key verbose)
-  (with-temp (domainfile :debug verbose)
+(defmethod validate-plan ((domain list) problem plan)
+  (with-temp (domainfile :debug t)
     (with-open-file (s domainfile :direction :output :if-exists :supersede)
       (format s "~:a" domain))
-    (validate-plan domainfile problem plan :verbose verbose)))
+    (validate-plan domainfile problem plan)))
 
-(defmethod validate-plan (domain problem (plan string) &key verbose)
-  (validate-plan domain problem (pathname plan) :verbose verbose))
+(defmethod validate-plan (domain problem (plan string))
+  (validate-plan domain problem (pathname plan)))
 
-(defmethod validate-plan (domain (problem string) plan &key verbose)
-  (validate-plan domain (pathname problem) plan :verbose verbose))
+(defmethod validate-plan (domain (problem string) plan)
+  (validate-plan domain (pathname problem) plan))
 
-(defmethod validate-plan ((domain string) problem plan &key verbose)
-  (validate-plan (pathname domain) problem plan :verbose verbose))
+(defmethod validate-plan ((domain string) problem plan)
+  (validate-plan (pathname domain) problem plan))
 
 (defmethod validate-plan ((domain pathname)
                           (problem pathname)
-                          (plan pathname)
-                          &key
-                            verbose)
+                          (plan pathname))
   (assert (probe-file domain))
   (assert (probe-file problem))
   (assert (probe-file plan))
-  (let* ((command (format nil "~a ~:[~;-v~] ~a ~a ~a"
-                          (or (validator)
-                              (return-from validate-plan t))
-                          verbose domain problem plan)))
-    (when verbose (format t "~&; ~a~%" command))
-    (zerop (nth-value 2 (uiop:run-program command
-                                          :output (if verbose t nil)
-                                          :error-output t :ignore-error-status t)))))
+  (let ((validator (validator)))
+    (if validator
+        (log:debug "validator found: ~a" validator)
+        (progn (log:warn "validator not found, validation is treating as a success")
+               (return-from validate-plan t)))
+    (let ((command (format nil "~a ~:[~;-v~] ~a ~a ~a"
+                           validator t domain problem plan)))
+      (log:debug command)
+      (multiple-value-bind (output error status)
+          (uiop:run-program command
+                            :output :string
+                            :error-output t :ignore-error-status t)
+        (log:info output)
+        (zerop status)))))
 
 
