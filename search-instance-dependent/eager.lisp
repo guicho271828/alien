@@ -21,7 +21,10 @@
          (state+axioms (initial-state+axioms))
          (child+axioms (make-state+axioms))
          (state (make-state))
-         (child (make-state)))
+         (child (make-state))
+         (expanded 0)
+         (evaluated 1)
+         (start (get-internal-real-time)))
     (replace state state+axioms)
     (let ((id (close-list-insert close-list state)))
       (funcall insert open-list id state+axioms))
@@ -51,6 +54,7 @@
                                  (collect (decode-op op-id))))))
                    (declare (dynamic-extent #'path))
                    (report-if-goal state+axioms #'path))
+                 (incf expanded)
                  
                  (iter (for op-id in-vector (applicable-ops *sg* state+axioms))
                        (for op = (aref *instantiated-ops* op-id))
@@ -63,6 +67,7 @@
                        (let ((id2 (close-list-insert close-list child)))
                          (packed-aref db 'state-information id2 info)
                          (when (= +new+ (state-information-status info))
+                           (incf evaluated)
                            (setf (state-information-facts info) child
                                  (state-information-parent info) id
                                  (state-information-op info) op-id
@@ -72,7 +77,13 @@
                (rec)))
       ;; (declare (inline rec))
       ;; loop unrolling
-      (rec))))
+      (unwind-protect
+           (rec)
+        (log:info "expanded:  ~a" expanded)
+        (log:info "evaluated: ~a" evaluated)
+        (log:info "generated: ~a" (close-list-counter close-list))
+        (log:info "eval/sec:  ~a" (/ (float (* internal-time-units-per-second evaluated))
+                                     (- (get-internal-real-time) start)))))))
 
 #-(or strips::phase/packed-structs strips::phase/full-compilation)
 (defun eager (open-list)
