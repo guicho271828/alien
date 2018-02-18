@@ -8,6 +8,7 @@
 
 (defun solve (path)
   (declare (optimize (debug 3) (speed 0)))
+  (log:info "Testing ~a" path)
   (recompile-instance-dependent-code)
   (let* ((path (%rel path))
          plan)
@@ -16,7 +17,6 @@
           (setf plan
                 (solve-once (find-domain path) path
                             (lambda ()
-                              (print (length *instantiated-ops*))
                               (strips:run
                                (eager
                                 (bucket-open-list
