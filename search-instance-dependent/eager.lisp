@@ -54,9 +54,8 @@
                  
                  (iter (for op-id in-vector (applicable-ops *sg* state+axioms))
                        (for op = (aref *instantiated-ops* op-id))
-                       (replace child state)
                        (fill child+axioms 0)
-                       (replace child+axioms child)
+                       (replace child+axioms state)
                        (apply-op op state+axioms child+axioms)
                        (apply-axioms child+axioms)
                        (replace child child+axioms)
