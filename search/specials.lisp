@@ -101,3 +101,12 @@
 (defstruct (open-list (:include builder)) constructor insert pop)
 
 (defstruct (searcher (:include builder)) form)
+
+
+;; (ftype* MAKE-STATE-INFORMATION &key (:static *))
+;; (ftype* MAKE-STATE-INFORMATION-ARRAY * &key (:static *))
+;; (ftype* STATE-INFORMATION-FACTS * &optional *)
+;; (ftype* STATE-INFORMATION-GOAL-COUNT *)
+;; (ftype* STATE-INFORMATION-OP *)
+;; (ftype* STATE-INFORMATION-PARENT *)
+;; (ftype* STATE-INFORMATION-STATUS *)
