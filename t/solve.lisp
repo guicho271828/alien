@@ -27,8 +27,7 @@
     (if plan
         (is-true (validate-plan (strips:find-domain path)
                                 path
-                                plan
-                                :verbose t))
+                                plan))
         (skip "No plan found, no validation performed"))))
 
 (test movie-basics

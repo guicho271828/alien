@@ -235,9 +235,8 @@
   `(,typename ,@(mapcar (lambda (form)
                           (handler-case (eval form)
                             (error (c)
-                              (format *error-output*
-                                      "~&~<; ~@;caught ~a:  ~a~%    Runtime type expansion failed at type ~a, using * instead~%~:>"
-                                      (list (type-of c) c form))
+                              (log:warn "caught ~a:  ~a" (type-of c) c)
+                              (log:warn "Runtime type expansion failed at type ~a, using * instead" form)
                               '*)))
                         args)))
 

@@ -5,13 +5,13 @@
 (in-package :strips)
 
 (defun find-domain (problem-path)
-  (format t "~&finding the domain file...")
+  (log:debug "finding the domain file...")
   (block nil
      (let ((dpath (make-pathname :defaults problem-path :name "domain")))
-       (when (probe-file dpath) (format t "found! ~a~%" dpath) (return dpath)))
+       (when (probe-file dpath) (log:debug "found! ~a" dpath) (return dpath)))
      (let ((dpath (make-pathname :defaults problem-path :name
                                  (format nil "~a-domain" (pathname-name problem-path)))))
-       (when (probe-file dpath) (format t "found! ~a~%" dpath) (return dpath)))
+       (when (probe-file dpath) (log:debug "found! ~a" dpath) (return dpath)))
      (error "~& Failed to infer the domain pathname from problem pathname!~%Problem: ~a~%Candidate: ~a~%Candidate: ~a"
             problem-path
             (make-pathname :defaults problem-path :name "domain")
@@ -216,7 +216,7 @@ Signals an error when the type is not connected to the root OBJECT type."
     (`(and ,@conditions)
       `(and ,@(mapcar #'flatten-types/effect conditions)))
     (`(increase ,@_)
-      ;; (format t "~&; skipping ~a" effect)
+      (log:trace "skipping ~a" effect)
       `(and))
     (_ effect)))
 
@@ -259,8 +259,7 @@ Signals an error when the type is not connected to the root OBJECT type."
               (iter (for condition in predicates)
                     (ematch condition
                       ((list* '= _)
-                       ;; (format t "~&; skipping ~a" condition)
-                       )
+                       (log:trace "skipping ~a" condition))
                       (_
                        (appending (flatten-types/predicate condition t))))))
      (setf *init* (remove-duplicates *init* :test 'equal)))))
