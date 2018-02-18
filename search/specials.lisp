@@ -2,7 +2,7 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defvar *memory-limit* 1073741 ; 1GB
+(defvar *memory-limit* 1000000 ; 1GB
   "maximum amount of memory in kB")
 
 (defvar *time-limit* 300
