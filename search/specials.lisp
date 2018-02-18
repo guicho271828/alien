@@ -90,6 +90,8 @@
 
 (define-condition goal-found (error) ())
 
+(define-condition close-list-full (error) ())
+
 (defun retrieve-path () (invoke-restart (find-restart 'retrieve-path)))
 
 (enumerate status +new+ +open+ +closed+ +dominated+)

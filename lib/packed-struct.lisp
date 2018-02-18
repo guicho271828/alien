@@ -589,18 +589,15 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
     (assert (= (length result) size))
     (replace result array :start2 begin)))
 
-#+(or)
 (define-compiler-macro packed-aref (&whole whole array packed-type index &optional result &environment env)
   (if (constantp packed-type env)
-      (match packed-type
-        ((or (list 'quote packed-type)
-             (keyword))
-         (let* ((layout (symbol-packed-struct-layout packed-type))
-                (size (size-of layout)))
-           (with-gensyms (begin)
-             `(the (simple-bit-vector ,size)
-                   (let ((,begin (* ,index ,size)))
-                      (subseq ,array ,begin (+ ,begin ,size))))))))
+      (let ((size (eval `(size-of ,packed-type))))
+        `(the (simple-bit-vector ,size)
+              (let* ((result ,(or result
+                                  `(make-array ,size :element-type 'bit))))
+                ,@(when result
+                    `((assert (= (length result) ,size))))
+                (replace result ,array :start2 (* ,index ,size)))))
       whole))
 
 (declaim (inline (setf packed-aref)))
