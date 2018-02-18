@@ -49,7 +49,7 @@
      (restart-bind ((continue (lambda (c)
                                 (log:warn "Substituting the size of ~a with 0" type)
                                 (return-from size-of 0))))
-       (match (introspect-environment:typexpand type)
+       (ematch (introspect-environment:typexpand type)
          ((type-r:integer-subtype low high)
           (if (minusp low)
               (1+ (integer-length high))
@@ -63,10 +63,7 @@
           (size-of `(integer ,(reduce #'min members)
                              ,(reduce #'max members))))
          ((type-r:array-subtype element-type dimensions)
-          (* (size-of element-type) (reduce #'* (ensure-list dimensions))))
-         (type
-          (log:warn "Unsupported type: ~a" type)
-          0))))))
+          (* (size-of element-type) (reduce #'* (ensure-list dimensions)))))))))
 
 ;; constant fold
 (define-compiler-macro size-of (&whole whole type &environment env)
