@@ -75,7 +75,7 @@
         ((list 'quote type)
          (handler-case (size-of type)
            (error (c)
-             (log:warn "caught ~a : ~a" (type-of c) c)
+             (log:warn "In compiler macro expansion of ~a,~_ caught ~a :~_ ~a" whole (type-of c) c)
              whole)))
         (_
          whole))
