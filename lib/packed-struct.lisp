@@ -497,9 +497,6 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                         "A namespace for the layout of the packed structure")
 
 (defmacro define-packed-struct (name (&rest supertypes) &body slots)
-  ;; (fresh-line *error-output*)
-  ;; (pprint-logical-block (*error-output* nil :per-line-prefix "; ")
-  ;;   (return-from define-packed-struct
   (let* ((slots (mapcar #'ensure-list slots))
          (layout (merge-packed-struct-layout
                   supertypes
@@ -531,9 +528,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                 (make-array (* length ,(size-of layout)) :element-type 'bit)))
           ,@(mapcar (curry #'%packed-accessor-def name)
                     names offsets sizes types)
-          ',name)))
-    ;; ))
-    ))
+          ',name)))))
 
 (defun %packed-accessor-def (struct-name slot-name offset size type)
   (let* ((type2 (handler-case
