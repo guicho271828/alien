@@ -8,6 +8,22 @@
 (defvar *time-limit* 300
   "runtime limit in sec")
 
+(declaim (fixnum *start-time* *last-milestone*))
+(defvar *start-time* 0
+  "internal-real-time when the planner has started")
+(defvar *last-milestone* 0
+  "internal-real-time of the last milestone")
+
+(defun log-milestone (tag)
+  (let ((new-milestone (get-internal-real-time)))
+    (log:info "[~,3fs] [+~,3fs] ~a"
+              (/ (float (- new-milestone *start-time*))
+                 internal-time-units-per-second)
+              (/ (float (- new-milestone *last-milestone*))
+                 internal-time-units-per-second)
+              tag)
+    (setf *last-milestone* new-milestone)))
+
 (defun recompile-instance-dependent-code ()
   (let ((sb-ext:*inline-expansion-limit* 10))
     (proclaim '(sb-ext:muffle-conditions style-warning sb-ext:compiler-note))
@@ -26,33 +42,42 @@
                      :if-does-not-exist :create)
     (print-plan (retrieve-path) s)))
 
+(defun solve-common (domain problem fn)
+  (log:info "[0.000s] [+0.000s] STARTED")
+  (let* ((*start-time* (get-internal-real-time))
+         (*last-milestone* *start-time*))
+    (with-parsed-information5 (-<> (parse problem domain)
+                                (prog1 arrow-macros:<> (log-milestone :parse))
+                                easy-invariant
+                                (prog1 arrow-macros:<> (log-milestone :easy-invariant))
+                                ground
+                                (prog1 arrow-macros:<> (log-milestone :ground))
+                                mutex-invariant
+                                (prog1 arrow-macros:<> (log-milestone :mutex-invariant))
+                                instantiate
+                                (prog1 arrow-macros:<> (log-milestone :intantiate)))
+      (funcall fn))))
+
 (defun solve-once (domain problem fn)
   "Solve the problem, return the first solution"
-  (with-parsed-information5 (-> (parse problem domain)
-                              easy-invariant
-                              ground
-                              mutex-invariant
-                              instantiate)
-    (handler-bind ((goal-found
-                    (lambda (c)
-                      (declare (ignore c))
-                      (return-from solve-once (retrieve-path)))))
-      (funcall fn))))
+  (solve-common domain problem
+                (lambda ()
+                  (handler-bind ((goal-found
+                                  (lambda (c)
+                                    (declare (ignore c))
+                                    (return-from solve-once (retrieve-path)))))
+                    (funcall fn)))))
 
 (defun solve-once-to-file (domain problem plan-output-file fn)
   "Solve the problem, return the first solution"
-  (with-parsed-information5 (-> (parse problem domain)
-                              easy-invariant
-                              ground
-                              mutex-invariant
-                              instantiate)
-    (recompile-instance-dependent-code)
-    (handler-bind ((goal-found
-                    (lambda (c)
-                      (declare (ignore c))
-                      (output-plan plan-output-file)
-                      (return-from solve-once-to-file))))
-      (funcall fn))))
+  (solve-common domain problem
+                (lambda ()
+                  (handler-bind ((goal-found
+                                  (lambda (c)
+                                    (declare (ignore c))
+                                    (output-plan plan-output-file)
+                                    (return-from solve-once-to-file))))
+                    (funcall fn)))))
 
 ;; TODO: solve-many with specifying N
 
