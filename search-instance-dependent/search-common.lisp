@@ -4,7 +4,7 @@
 
 (in-package :strips)
 
-#-strips::phase/full-compilation
+#-(or strips::phase/packed-structs strips::phase/full-compilation)
 (progn
   (ftype* initial-state+axioms *)
   (ftype* report-if-goal * * *)
@@ -13,6 +13,11 @@
   (ftype* apply-axiom-layer * * *)
   (ftype* apply-op * * * *)
   (ftype* apply-effect * * * *))
+
+#+strips::phase/packed-structs
+(deftype op-id ()
+  "maximum range (length *instantiated-ops*) is an invalid op for the initial state"
+  `(runtime integer 0 (length *instantiated-ops*)))
 
 #+strips::phase/full-compilation
 (progn
@@ -32,10 +37,6 @@
                (cerror "continue searching" 'goal-found))
              t)
       nil))
-
-(deftype op-id ()
-  "maximum range (length *instantiated-ops*) is an invalid op for the initial state"
-  `(runtime integer 0 (length *instantiated-ops*)))
 
 (ftype* applicable-ops sg state+axioms (array op-id))
 (defun applicable-ops (sg state)

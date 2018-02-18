@@ -28,7 +28,7 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 
 |#
 
-#-strips::phase/full-compilation
+#-(or strips::phase/packed-structs strips::phase/full-compilation)
 (progn
   (ftype* state-= * * *)
   (ftype* state-hash * *)
@@ -36,7 +36,7 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   (ftype* make-state+axioms *)
   (ftype* close-list-insert * * *))
 
-#+strips::phase/full-compilation
+#+strips::phase/packed-structs
 (progn
 (deftype state ()
   "bitvector representing a state, each bit is a proposition"
@@ -47,12 +47,20 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   `(runtime simple-bit-vector *state-size*))
 
 (defun max-state-id ()
-  (floor (* 1024 *memory-limit*)
-         (size-of 'state-information)))
+  (unless (or *compile-file-pathname*
+              *load-pathname*)
+    (log:warn "Slow function: Avoid calling this function in runtime, especially in inner loop!"))
+  (floor (* 8 1024 *memory-limit*) ; kB -> bit
+         ;; (size-of 'state-information) ; -- circular dependency
+         ;; using 64 bit as the lower bound
+         64))
 
 (deftype state-id ()
   `(runtime integer 0 (max-state-id)))
+)
 
+#+strips::phase/full-compilation
+(progn
 (ftype* state-= state state boolean)
 (defun state-= (s1 s2)
   (declare (optimize (speed 3) (safety 0) (debug 0)))
