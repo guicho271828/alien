@@ -17,7 +17,7 @@
                              (strips:run
                               (eager
                                (bucket-open-list
-                                (goal-count))))))))
+                                (blind))))))))
     (lambda () (validate-plan (strips:find-domain path)
                               path
                               plan))))
@@ -44,7 +44,7 @@
                                    "--plan-file" (namestring planfile)
                                    (namestring (find-domain path))
                                    (namestring path)
-                                   "--search" "eager(single_buckets(goalcount()))")
+                                   "--search" "eager(single_buckets(blind()))")
                              :output t))
       (strips::log-milestone :fd))))
 
@@ -72,21 +72,29 @@
   (solve "movie/p20.pddl"))
 
 (test demo
-  (solve "demo/sokoban/p01.pddl") ; 0.037 
-  (solve-fd "demo/sokoban/p01.pddl") ; 0.002
-  
-  (solve "demo/cavediving/p01.pddl") ;; 29
-  (solve-fd "demo/cavediving/p01.pddl") ;; 14.5886
-  
-  ;; (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
+  ;; (solve "demo/sokoban/p01.pddl")
+  ;; (solve-fd "demo/sokoban/p01.pddl")
+  ;; goal count:
+  ;; 0.037
+  ;; 0.002
 
-  (solve "demo/parkprinter/p00.pddl")   ;0.018
-  (solve-fd "demo/parkprinter/p00.pddl") ;0.000157598
-  (solve "demo/parkprinter/p01.pddl")    ;23.983
-  (solve-fd "demo/parkprinter/p01.pddl") ;0.000429445
-  (solve "demo/researchers/p01.pddl")    ;0.343s
-  (solve-fd "demo/researchers/p01.pddl") ;0.00746729
-  ;; (solve "demo/researchers-debug/p01.pddl")
+  ;; blind:
+  ;; 0.041
+  ;; 0.00589913
+  
+  ;; 
+  ;; (solve "demo/cavediving/p01.pddl") ;; 29
+  ;; (solve-fd "demo/cavediving/p01.pddl") ;; 14.5886
+  ;; 
+  ;; ;; (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
+  ;; 
+  ;; (solve "demo/parkprinter/p00.pddl")   ;0.018
+  ;; (solve-fd "demo/parkprinter/p00.pddl") ;0.000157598
+  ;; (solve "demo/parkprinter/p01.pddl")    ;23.983
+  ;; (solve-fd "demo/parkprinter/p01.pddl") ;0.000429445
+  ;; (solve "demo/researchers/p01.pddl")    ;0.343s
+  ;; (solve-fd "demo/researchers/p01.pddl") ;0.00746729
+  ;; ;; (solve "demo/researchers-debug/p01.pddl")
   )
 
 
