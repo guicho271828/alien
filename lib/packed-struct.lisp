@@ -167,13 +167,13 @@ size: number of bits for the structure"
                     newval)))))))
 
 #+(or)
+(progn
 (defun %packed-accessor-test0 ()
   (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 0))
   (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 1))
   (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 2))
   (print (SB-KERNEL:%VECTOR-RAW-BITS #*0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000 3)))
 
-#+(or)
 (defun %packed-accessor-test (vector)
   (declare (optimize (speed 3)))
   ;; (%packed-accessor-int vector 0 0)
@@ -195,8 +195,6 @@ size: number of bits for the structure"
 
 ;; checking the disassembly
 
-#+(or)
-(progn
 (defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 62 64))) ; 42
 (defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 62 65))) ; 45
 (defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 62 66))) ; 39
@@ -211,10 +209,9 @@ size: number of bits for the structure"
 (defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 63 65))) ; 45
 (defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 63 66))) ; 67
 (defun %packed-accessor-test1 (vector) (declare (optimize (speed 3))) (ldb (byte 62 0) (%packed-accessor-int vector 63 67))) ; 67
-)
+
 ;; checking the store/load
 
-#+(or)
 (defun %packed-accessor-test2 ()
   (declare (optimize (speed 3)))
   ;; length 64
@@ -238,8 +235,6 @@ size: number of bits for the structure"
 
 ;; checking type propagation
 
-#+(or)
-(progn
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 64)) ; 42
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 65)) ; 45
 (defun %packed-accessor-test3 (vector) (declare (optimize (speed 3))) (%packed-accessor-int vector 62 66)) ; 39
@@ -305,6 +300,7 @@ size: number of bits for the structure"
         (sb-kernel:double-float-high-bits newval)))
 
 #+(or)
+(progn
 (defun %packed-accessor-float-test ()
   ;; length 64
   (let ((b #*0000000000000000000000000000000000000000000000000000000000000000))
@@ -324,7 +320,6 @@ size: number of bits for the structure"
     (print (%packed-accessor-double-float b 64))
     (print b)))
 
-#+(or)
 (iter (for f in (map-product (lambda (&rest args) (apply #'symbolicate args))
                              '(most-positive
                                least-positive
@@ -341,7 +336,6 @@ size: number of bits for the structure"
         (format t "~d ~x ~o ~b~%" expon expon expon expon)
         (format t "~d ~x ~o ~b~%" sign sign sign sign)))
 
-#+(or)
 (multiple-value-bind (signif exponent sign) (integer-decode-float -0.005)
   (print (list signif exponent sign))
   (print (scale-float
@@ -350,8 +344,8 @@ size: number of bits for the structure"
                signif
                (- signif)))
           exponent)))
-
-;; (* sign (scale-float signif exponent))
+(* sign (scale-float signif exponent))
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -371,7 +365,7 @@ size: number of bits for the structure"
                    (setf (%packed-accessor-int result 64 pos1)
                          (%packed-accessor-int vector 64 pos2))
                    (rec (+ 64 pos1) (+ 64 pos2)))))
-        (declare (inline rec))
+        ;; (declare (inline rec))
         (setf (%packed-accessor-int result (- 64 offset-begin) 0)
               (%packed-accessor-int vector (- 64 offset-begin) position))
         (rec (- 64 offset-begin) (+ (- 64 offset-begin) position))
@@ -436,12 +430,13 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                          (setf (%packed-accessor-int vector offset-end vec-pos)
                                (+ (ldb (byte offset-end ~offset-begin) prev)
                                   (ash (ldb (byte ~offset-begin 0) now) offset-begin)))))))
-          (declare (inline rec))
+          ;; (declare (inline rec))
           (rec (- position offset-begin) 0
                (ash (%packed-accessor-int vector offset-begin (- position offset-begin))
                     ~offset-begin)))))))
 
 #+(or)
+(progn
 (defun packed-accessor-array-test1 ()
   (let ((b (make-array 32 :initial-element 0 :element-type 'bit)))
     (setf (%packed-accessor-array b 5 12)  #*11111)
@@ -468,13 +463,11 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
     (assert (equal b #*1010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010)))
   0)
 
-#+(or)
 (defun packed-accessor-array-test2 (b)
   (declare ((simple-bit-vector 32) b))
   (setf (%packed-accessor-array b 5 12)  #*11111)
   0)
 
-#+(or)
 (defun packed-accessor-array-test2b (b)
   (declare ((simple-bit-vector 256) b))
   (setf (%packed-accessor-array b 5 16)  #*11111)
@@ -482,12 +475,12 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
   (setf (%packed-accessor-array b 5 128)  #*11111)
   b)
 
-#+(or)
 (defun packed-accessor-array-test3 (b)
   (declare ((simple-bit-vector 256) b))
   (setf (%packed-accessor-array b 256 0)
         #*1010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010)
   0)
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
