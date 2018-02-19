@@ -608,20 +608,3 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
     (assert (= (length newval) size))
     (replace array newval :start1 begin)))
 
-(declaim (inline packed-ref))
-(defun packed-ref (packed-type index)
-  ;; size-of is constant folded by inlining
-  (* index (size-of packed-type)))
-
-;; this is not necessary (inlining does the job), but C-c C-m gives you a kind of relief
-#+(or)
-(define-compiler-macro packed-ref (&whole whole packed-type index &environment env)
-  (if (constantp packed-type env)
-      (match packed-type
-        ((or (list 'quote packed-type)
-             (keyword))
-         (let* ((layout (symbol-packed-struct-layout packed-type))
-                (size (size-of layout)))
-           `(* ,index ,size))))
-      whole))
-
