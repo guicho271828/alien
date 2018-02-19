@@ -77,30 +77,7 @@ You can mix both forms. "
                               digits2 count
                               type))))))))
 
-(defmacro inline-object (form &optional (default form))
-  "
- Evaluate the form in the null lexical environment and in the current dynamic environment in compile time,
-and leave the object in the code a.l.a load-time-value.
- If evaluating FORM failed, use the DEFAULT value instead. DEFAULT is set to FORM by default.
 
-Example:  (defun ... (inline-object *instantiated-axiom-layers*) ...)
-
-When this form is compiled, *INSTANTIATED-AXIOM-LAYERS* could be unbound.
-then (...) evaluates to a symbol *INSTANTIATED-AXIOM-LAYERS* which is a reference to the special variable,
-and the object is not inlined.
-
-On the other hand, when *INSTANTIATED-AXIOM-LAYERS* is indeed bound, the value
-in *INSTANTIATED-AXIOM-LAYERS* is directly inserted in the code."
-  #+(or)
-  `(load-time-value ;; this does not work ... hard to explain
-    (handler-case
-        ,form
-      (error ()
-        ,default)))
-  (handler-case
-      (eval form)
-    (error ()
-      form)))
 
 
 
