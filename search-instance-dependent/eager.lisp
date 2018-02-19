@@ -56,8 +56,10 @@
                    (report-if-goal state+axioms #'path))
                  (incf expanded)
                  
-                 (iter (for op-id in-vector (applicable-ops *sg* state+axioms))
-                       (for op = (aref *instantiated-ops* op-id))
+                 (iter (for op-id in-vector (applicable-ops (load-time-value *sg* t) state+axioms))
+                       ;; DONE: remove special variable references to *sg* and *instantiated-ops*
+                       ;; TODO: constant fold applicable-ops, apply-axioms
+                       (for op = (aref (load-time-value *instantiated-ops* t) op-id))
                        (fill child+axioms 0)
                        (replace child+axioms state)
                        (apply-op op state+axioms child+axioms)
