@@ -60,4 +60,35 @@
   0
   )
 
-;; ash
+;; Optimizing operations including BYTESPEC is impossible!
+
+(defun sbcl-failure (newval oldval offset size)
+  ;; SB-KERNEL:%DPB
+  ;; SB-C::%DEPOSIT-FIELD-DERIVE-TYPE-AUX
+  ;; note: unable to
+  ;;   convert to inline logical operations
+  ;; due to type uncertainty:
+  ;;   The result is a (VALUES (UNSIGNED-BYTE 126) &OPTIONAL), not a (VALUES (UNSIGNED-BYTE 64) &REST T).
+  (declare ((mod 64) offset size)
+           ((unsigned-byte 64) newval oldval)
+           (optimize (speed 3)))
+  (assert (< (+ offset size) 64))
+  (dpb newval (byte size offset) oldval))
+
+(defun sbcl-failure2 (newval oldval offset size)
+  (declare ((mod 64) offset size)
+           ((unsigned-byte 64) newval oldval)
+           (optimize (speed 3)))
+  (assert (< (+ offset size) 64))
+  (let ((size2 (+ offset size)))
+    (declare ((mod 64) size2))
+    (let ((size3 (- size2 offset)))
+      (dpb newval (byte size3 offset) oldval))))
+
+(defun sbcl-failure3 (newval oldval offset end)
+  (declare ((mod 64) offset end)
+           ((unsigned-byte 64) newval oldval)
+           (optimize (speed 3)))
+  (let ((size (- end offset)))
+    (dpb newval (byte size offset) oldval)))
+
