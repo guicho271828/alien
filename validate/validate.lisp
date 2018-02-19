@@ -119,7 +119,7 @@ It may be evaluated multiple times."
           (uiop:run-program command
                             :output :string
                             :error-output t :ignore-error-status t)
-        (log:info output)
+        (log:debug output)
         (zerop status)))))
 
 
