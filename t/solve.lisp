@@ -30,6 +30,19 @@
                                 plan))
         (skip "No plan found, no validation performed"))))
 
+(defun solve-fd (path)
+  (declare (optimize (debug 3) (speed 0)))
+  (log:info "Testing ~a" path)
+  (let* ((path (%rel path)))
+    (strips::with-temp (planfile :debug t)
+      (uiop:run-program (list (namestring (strips::fd-relative-pathname "fast-downward.py"))
+                              "--run-all"
+                              "--plan-file" (namestring planfile)
+                              (namestring (find-domain path))
+                              (namestring path)
+                              "--search" "eager(single_buckets(goalcount()))")
+                        :output t))))
+
 (test movie-basics
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")
                               parse
