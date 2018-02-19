@@ -10,6 +10,7 @@
 
 #+strips::phase/full-compilation
 (defun eager-search (open-list insert pop)
+  (declare (optimize (speed 3)))
   (let* ((db (make-state-information-array
               (max-state-id)))
          (close-list (make-close-list :key-function
@@ -25,6 +26,7 @@
          (expanded 0)
          (evaluated 1)
          (start (get-internal-real-time)))
+    (declare (fixnum expanded evaluated start))
     (replace state state+axioms)
     (let ((id (close-list-insert close-list state)))
       (funcall insert open-list id state+axioms))
