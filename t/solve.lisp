@@ -10,6 +10,7 @@
   (declare (optimize (debug 3) (speed 0)))
   (log:info "Testing ~a" path)
   (recompile-instance-dependent-code)
+  (sb-ext:gc :full t)
   (let* ((path (%rel path))
          plan)
     (handler-case
