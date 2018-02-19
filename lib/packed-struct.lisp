@@ -579,32 +579,27 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(declaim (inline packed-aref))
+(ftype* packed-aref simple-bit-vector symbol fixnum &optional (or null simple-bit-vector) simple-bit-vector)
 (defun packed-aref (array packed-type index &optional result)
-  (declare ((or null simple-bit-vector) result))
-  (let* ((size (size-of packed-type))
-         (begin (* index size))
-         (result (or result
-                     (make-array size :element-type 'bit))))
-    (assert (= (length result) size))
-    (replace result array :start2 begin)))
+  (declare (ignore array packed-type index result))
+  (error "slow runtime call to packed-aref!"))
 
-(define-compiler-macro packed-aref (&whole whole array packed-type index &optional result &environment env)
-  (if (constantp packed-type env)
-      (let ((size (eval `(size-of ,packed-type))))
-        `(the (simple-bit-vector ,size)
-              (let* ((result ,(or result
-                                  `(make-array ,size :element-type 'bit))))
-                ,@(when result
-                    `((assert (= (length result) ,size))))
-                (replace result ,array :start2 (* ,index ,size)))))
-      whole))
+(define-compiler-macro packed-aref (array packed-type index &optional result &environment env)
+  (assert (constantp packed-type env))
+  (let ((size (eval `(size-of ,packed-type))))
+    `(the (simple-bit-vector ,size)
+          (let* ((result ,(or result
+                              `(make-array ,size :element-type 'bit))))
+            ,@(when result
+                `((assert (= (length result) ,size))))
+            (replace result ,array :start2 (* ,index ,size))))))
 
-(declaim (inline (setf packed-aref)))
+(ftype* (setf packed-aref) simple-bit-vector simple-bit-vector symbol fixnum simple-bit-vector)
 (defun (setf packed-aref) (newval array packed-type index)
-  (declare (simple-bit-vector newval))
-  (let* ((size (size-of packed-type))
-         (begin (* index size)))
-    (assert (= (length newval) size))
-    (replace array newval :start1 begin)))
+  (declare (ignore array packed-type index result))
+  (error "slow runtime call to (setf packed-aref)!"))
 
+(define-compiler-macro (setf packed-aref) (newval array packed-type index &environment env)
+  (assert (constantp packed-type env))
+  (let ((size (eval `(size-of ,packed-type))))
+    `(replace ,array ,newval :start1 (* ,index ,size))))
