@@ -55,6 +55,10 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
          ;; using 64 bit as the lower bound
          64))
 
+(define-compiler-macro max-state-id (&whole whole)
+  (handler-case (max-state-id)
+    (error () whole)))
+
 (deftype state-id ()
   `(runtime integer 0 (max-state-id)))
 )
