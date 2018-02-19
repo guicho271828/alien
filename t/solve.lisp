@@ -30,7 +30,7 @@
     (error (c)
       (fail "in ~a:~%caused ~a:~% Reason: ~a" path (type-of c) c)
       (skip "No plan found, no validation performed"))))
-  
+
 (defun solve-fd (path)
   (declare (optimize (debug 3) (speed 0)))
   (log:info "Testing ~a" path)
