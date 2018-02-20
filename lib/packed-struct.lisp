@@ -14,6 +14,95 @@
 ;; The downside of this approach is that each bit-vector still consumes 2 words
 ;; for tagging. Do we need CFFI and alloc/free ?
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; VOP for pure SHL
+
+(sb-c:defknown <<64 ((unsigned-byte 64) (mod 64)) (unsigned-byte 64)
+    (sb-c::foldable
+     sb-c::flushable
+     sb-c::movable)
+  :overwrite-fndb-silently t)
+
+(in-package "SB-VM")
+
+
+#+(or)
+(define-vop (strips.lib::<<64)
+  ;; Turned out, this code is wrong because it allows several arguments to be
+  ;; assigned to the same register. See the failure example below.
+  
+  (:policy :fast-safe)
+  (:translate strips.lib::<<64)
+  (:args (int :scs (unsigned-reg) :target result)
+         (shift :scs (unsigned-reg) :target ecx))
+  (:arg-types unsigned-num unsigned-num)
+  (:temporary (:sc unsigned-reg :offset ecx-offset :from (:argument 1)) ecx)
+  (:results (result :scs (unsigned-reg)))
+  (:result-types unsigned-byte-64)
+  (:generator 4
+              (unless (location= result int)
+                (move result int))
+              (unless (location= ecx shift)
+                (move ecx shift))
+              (inst shl result :cl)))
+
+;; 125:       90               NOP
+;; 126:       90               NOP
+;; 127:       90               NOP
+;; 128:       488BD1           MOV RDX, RCX
+;; 12B:       488BCA           MOV RCX, RDX
+;; 12E:       90               NOP
+;; 12F:       90               NOP
+;; 130:       90               NOP
+;; 131:       48D3E2           SHL RDX, CL
+;; 134:       90               NOP
+;; 135:       90               NOP
+;; 136:       90               NOP
+
+(define-vop (strips.lib::<<64)
+  (:policy :fast-safe)
+  (:translate strips.lib::<<64)
+  (:args (number :scs (unsigned-reg) :target result
+                 ;; I do not understand what this code actually means, even
+                 ;; after I read the documentation of define-vop.
+                 :load-if (not (and (sc-is number unsigned-stack)
+                                    (sc-is result unsigned-stack)
+                                    (location= number result))))
+         (amount :scs (unsigned-reg) :target ecx))
+  (:arg-types unsigned-num unsigned-num)
+  (:temporary (:sc unsigned-reg :offset ecx-offset :from (:argument 1)) ecx)
+  (:results (result :scs (unsigned-reg) :from (:argument 0)
+                    :load-if (not (and (sc-is number unsigned-stack)
+                                       (sc-is result unsigned-stack)
+                                       (location= number result)))))
+  (:result-types unsigned-byte-64)
+  (:generator 4
+              (move result number)
+              (move ecx amount)
+              (inst shl result :cl)))
+
+(in-package :strips.lib)
+
+(defun <<64 (int shift)
+  "Shift the integer like ASH, but discards the bits where ASH would cons to a bignum."
+  (<<64 int shift))
+
+#+(or)
+(progn
+
+(defun <<64-notype-dispatch-test (a)
+  "12 is inlined"
+  (<<64 a 12))
+
+(defun <<64-folding-test ()
+  "constant folded"
+  (<<64 5 12))
+
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defstruct (packed-struct-layout (:constructor
                                     make-packed-struct-layout
