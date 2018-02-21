@@ -87,6 +87,7 @@
    #:print-values
    #:println
    #:find-domain
+   #:max-state-id
 
    ;; search external
    #:goal-found
