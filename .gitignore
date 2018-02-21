@@ -12,5 +12,5 @@
 *.out
 *.img
 rundir/
-/output
-/output.sas
+*output
+*output.sas
