@@ -24,6 +24,11 @@
      sb-c::movable)
   :overwrite-fndb-silently t)
 
+(sb-c:deftransform <<64 ((int shift) (* (eql 0)) *)
+  'int)
+
+;; (print (sb-int:info :function :info '<<64))
+
 (in-package "SB-VM")
 
 
