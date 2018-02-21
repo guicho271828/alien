@@ -122,6 +122,8 @@ If the secondary value is T, then the state is a duplicate."
          (values id t)
          ;; duplicate not found, return the current counter as an id and increment the counter
          (prog1 counter
+           (when (< (load-time-value (print (max-state-id)) t) counter)
+             (error 'close-list-full))
            (setf (gethash hash table)
                  (cons counter bag))
            (incf counter)))))))
