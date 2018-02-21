@@ -87,10 +87,12 @@
    #:print-values
    #:println
    #:find-domain
+   #:max-state-id
 
    ;; search external
    #:goal-found
    #:no-solution
+   #:close-list-full
    #:solve-once
    #:solve-once-to-file
    #:run

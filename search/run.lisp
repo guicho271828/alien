@@ -26,13 +26,22 @@ instance-depdendent code should be compiled/loaded three times.
      (log:info "compiling instance-dependent code for packed structs")
      (let ((*features* (cons 'phase/packed-structs *features*)))
        (recompile-instance-dependent-code))
+     (log-milestone :first-compilation)
      ;; compile STATE-INFORMATION
-     (let ((*package* (find-package :strips)))
+     (let ((*package* (find-package :strips))
+           ;; default value is 200, which consumes too much time for compilation
+           (sb-ext:*inline-expansion-limit* 10))
        ;; because SYMBOLICATE interns in the current package
        (eval `(strips.lib:define-packed-struct state-information ,storage)))
      (log:info (eval '(size-of 'state-information)))
+     (log-milestone :state-information)
      ;; third LOAD
      (log:info "compiling instance-dependent code for functions")
      (let ((*features* (cons 'phase/full-compilation *features*)))
        (recompile-instance-dependent-code))
-     (funcall (compile nil form)))))
+     (log-milestone :second-compilation)
+     (log:info "Search started")
+     (unwind-protect
+          (funcall (compile nil form))
+       (log-milestone :search)
+       (log:info "Search finished")))))

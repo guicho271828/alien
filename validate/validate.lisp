@@ -2,8 +2,6 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-;; old functions, not used now
-#+(or)
 (defun search-fd ()
   (labels ((rec (path)
              (let ((downward (merge-pathnames "downward/" path)))
@@ -16,7 +14,6 @@
     (rec
      (asdf:system-source-directory :strips))))
 
-#+(or)
 (defun fd-relative-pathname (path)
   (let ((path (merge-pathnames
                path
@@ -26,7 +23,6 @@
     (assert (probe-file path))
     path))
 
-#+(or)
 (defun fd-relative-pathname* (&rest paths)
   "returns the first match"
   (or (iter (for path in paths)
@@ -123,7 +119,7 @@ It may be evaluated multiple times."
           (uiop:run-program command
                             :output :string
                             :error-output t :ignore-error-status t)
-        (log:info output)
+        (log:debug output)
         (zerop status)))))
 
 

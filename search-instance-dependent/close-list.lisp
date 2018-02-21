@@ -28,7 +28,7 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 
 |#
 
-#-strips::phase/full-compilation
+#-(or strips::phase/packed-structs strips::phase/full-compilation)
 (progn
   (ftype* state-= * * *)
   (ftype* state-hash * *)
@@ -36,7 +36,7 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   (ftype* make-state+axioms *)
   (ftype* close-list-insert * * *))
 
-#+strips::phase/full-compilation
+#+strips::phase/packed-structs
 (progn
 (deftype state ()
   "bitvector representing a state, each bit is a proposition"
@@ -46,13 +46,12 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   "bitvector representing a state including the axiom bits, each bit is a proposition"
   `(runtime simple-bit-vector *state-size*))
 
-(defun max-state-id ()
-  (floor (* 1024 *memory-limit*)
-         (size-of 'state-information)))
-
 (deftype state-id ()
   `(runtime integer 0 (max-state-id)))
+)
 
+#+strips::phase/full-compilation
+(progn
 (ftype* state-= state state boolean)
 (defun state-= (s1 s2)
   (declare (optimize (speed 3) (safety 0) (debug 0)))
@@ -69,8 +68,10 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 (declaim (inline make-state make-state+axioms))
 (ftype* make-state state)
 (ftype* make-state+axioms state+axioms)
-(defun make-state        () (make-array *fact-size* :element-type 'bit))
-(defun make-state+axioms () (make-array *state-size* :element-type 'bit))
+(defun make-state        () (error "slow runtime call to make-state!"))
+(defun make-state+axioms () (error "slow runtime call to make-state+axioms!"))
+(define-compiler-macro make-state        () `(make-array ,*fact-size* :element-type 'bit))
+(define-compiler-macro make-state+axioms () `(make-array ,*state-size* :element-type 'bit))
 
 (defun fixnum-= (a b)
   (declare (optimize (speed 3) (safety 0))
@@ -121,6 +122,8 @@ If the secondary value is T, then the state is a duplicate."
          (values id t)
          ;; duplicate not found, return the current counter as an id and increment the counter
          (prog1 counter
+           (when (< (load-time-value (print (max-state-id)) t) counter)
+             (error 'close-list-full))
            (setf (gethash hash table)
                  (cons counter bag))
            (incf counter)))))))

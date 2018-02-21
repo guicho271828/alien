@@ -6,29 +6,48 @@
 (def-suite solve :in :strips)
 (in-suite solve)
 
-(defun solve (path)
+(defun solve-alien (path)
   (declare (optimize (debug 3) (speed 0)))
+  (log:info "Testing ~a" path)
   (recompile-instance-dependent-code)
+  (sb-ext:gc :full t)
   (let* ((path (%rel path))
-         plan)
-    (handler-case
-        (progn
-          (setf plan
-                (solve-once (find-domain path) path
-                            (lambda ()
-                              (print (length *instantiated-ops*))
-                              (strips:run
-                               (eager
-                                (bucket-open-list
-                                 (goal-count)))))))
-          (pass "plan found"))
-      (error (c)
-        (fail "in ~a:~%caused ~a:~% Reason: ~a" path (type-of c) c)))
-    (if plan
-        (is-true (validate-plan (strips:find-domain path)
-                                path
-                                plan))
-        (skip "No plan found, no validation performed"))))
+         (plan (solve-once (find-domain path) path
+                           (lambda ()
+                             (strips:run
+                              (eager
+                               (bucket-open-list
+                                (blind))))))))
+    (lambda () (validate-plan (strips:find-domain path)
+                              path
+                              plan))))
+
+(defun solve (path)
+  (handler-case
+      (let ((val (solve-alien path)))
+        (pass "plan found")
+        (is-true (funcall val)))
+    (error (c)
+      (fail "in ~a:~%caused ~a:~% Reason: ~a" path (type-of c) c)
+      (skip "No plan found, no validation performed"))))
+
+(defun solve-fd (path)
+  (declare (optimize (debug 3) (speed 0)))
+  (log:info "Testing ~a" path)
+  (let* ((path (%rel path))
+         (strips::*start-time* (get-internal-real-time))
+         (strips::*last-milestone* strips::*start-time*))
+    (unwind-protect
+         (strips::with-temp (planfile :debug t)
+           (uiop:run-program (list (namestring (strips::fd-relative-pathname "fast-downward.py"))
+                                   "--run-all"
+                                   "--overall-memory-limit" "1000"
+                                   "--plan-file" (namestring planfile)
+                                   (namestring (find-domain path))
+                                   (namestring path)
+                                   "--search" "eager(single_buckets(blind()))")
+                             :output t))
+      (strips::log-milestone :fd))))
 
 (test movie-basics
   (with-parsed-information5 (-> (%rel "movie/p01.pddl")
@@ -54,13 +73,34 @@
   (solve "movie/p20.pddl"))
 
 (test demo
-  (solve "demo/sokoban/p01.pddl")
-  (solve "demo/cavediving/p01.pddl")
-  ;; ;; (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
-  (solve "demo/parkprinter/p00.pddl")
-  (solve "demo/parkprinter/p01.pddl")
-  (solve "demo/researchers/p01.pddl")
-  (solve "demo/researchers-debug/p01.pddl"))
+  ;; (solve "demo/sokoban/p01.pddl")
+  ;; (solve-fd "demo/sokoban/p01.pddl")
+  ;; goal count:
+  ;; 0.037
+  ;; 0.002
+
+  ;; blind:
+  ;; 0.041
+  ;; 0.00589913
+  
+  ;; 
+  ;; (solve "demo/cavediving/p01.pddl")
+  ;; (solve-fd "demo/cavediving/p01.pddl")
+
+  ;; 
+  ;; (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
+  ;; (solve-fd "demo/citycar/p01.pddl") ; too difficult for goal-count
+  ;; 
+  ;; (solve "demo/parkprinter/p00.pddl")   ;0.018
+  ;; (solve-fd "demo/parkprinter/p00.pddl") ;0.000157598
+  ;; (solve "demo/parkprinter/p01.pddl")    ;23.983
+  ;; (solve-fd "demo/parkprinter/p01.pddl") ;0.000429445
+  ;; (solve "demo/researchers/p01.pddl")    ;0.343s
+  ;; (solve-fd "demo/researchers/p01.pddl") ;0.00746729
+  ;; ;; (solve "demo/researchers-debug/p01.pddl")
+  )
+
+
 
 (test demo-large
   ;; VAL doesnt work

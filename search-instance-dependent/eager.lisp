@@ -10,6 +10,7 @@
 
 #+strips::phase/full-compilation
 (defun eager-search (open-list insert pop)
+  (declare (optimize (speed 3)))
   (let* ((db (make-state-information-array
               (max-state-id)))
          (close-list (make-close-list :key-function
@@ -21,7 +22,11 @@
          (state+axioms (initial-state+axioms))
          (child+axioms (make-state+axioms))
          (state (make-state))
-         (child (make-state)))
+         (child (make-state))
+         (expanded 0)
+         (evaluated 1)
+         (start (get-internal-real-time)))
+    (declare (fixnum expanded evaluated start))
     (replace state state+axioms)
     (let ((id (close-list-insert close-list state)))
       (funcall insert open-list id state+axioms))
@@ -51,12 +56,14 @@
                                  (collect (decode-op op-id))))))
                    (declare (dynamic-extent #'path))
                    (report-if-goal state+axioms #'path))
+                 (incf expanded)
                  
-                 (iter (for op-id in-vector (applicable-ops *sg* state+axioms))
-                       (for op = (aref *instantiated-ops* op-id))
-                       (replace child state)
+                 (iter (for op-id in-vector (applicable-ops (load-time-value *sg* t) state+axioms))
+                       ;; DONE: remove special variable references to *sg* and *instantiated-ops*
+                       ;; TODO: constant fold applicable-ops, apply-axioms
+                       (for op = (aref (load-time-value *instantiated-ops* t) op-id))
                        (fill child+axioms 0)
-                       (replace child+axioms child)
+                       (replace child+axioms state)
                        (apply-op op state+axioms child+axioms)
                        (apply-axioms child+axioms)
                        (replace child child+axioms)
@@ -64,6 +71,7 @@
                        (let ((id2 (close-list-insert close-list child)))
                          (packed-aref db 'state-information id2 info)
                          (when (= +new+ (state-information-status info))
+                           (incf evaluated)
                            (setf (state-information-facts info) child
                                  (state-information-parent info) id
                                  (state-information-op info) op-id
@@ -73,7 +81,13 @@
                (rec)))
       ;; (declare (inline rec))
       ;; loop unrolling
-      (rec))))
+      (unwind-protect
+           (rec)
+        (log:info "expanded:  ~a" expanded)
+        (log:info "evaluated: ~a" evaluated)
+        (log:info "generated: ~a" (close-list-counter close-list))
+        (log:info "eval/sec:  ~a" (/ (float (* internal-time-units-per-second evaluated))
+                                     (- (get-internal-real-time) start)))))))
 
 #-(or strips::phase/packed-structs strips::phase/full-compilation)
 (defun eager (open-list)
