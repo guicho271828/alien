@@ -2,10 +2,10 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defvar *memory-limit* 1000000 ; 1GB
+(defparameter *memory-limit* 100000 ; 1GB
   "maximum amount of memory in kB")
 
-(defvar *time-limit* 300
+(defparameter *time-limit* 300
   "runtime limit in sec")
 
 (defun max-state-id ()
