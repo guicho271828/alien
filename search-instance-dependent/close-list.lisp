@@ -46,19 +46,6 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   "bitvector representing a state including the axiom bits, each bit is a proposition"
   `(runtime simple-bit-vector *state-size*))
 
-(defun max-state-id ()
-  (unless (or *compile-file-pathname*
-              *load-pathname*)
-    (log:warn "Slow function: Avoid calling this function in runtime, especially in inner loop!"))
-  (floor (* 8 1024 *memory-limit*) ; kB -> bit
-         ;; (size-of 'state-information) ; -- circular dependency
-         ;; using 64 bit as the lower bound
-         64))
-
-(define-compiler-macro max-state-id (&whole whole)
-  (handler-case (max-state-id)
-    (error () whole)))
-
 (deftype state-id ()
   `(runtime integer 0 (max-state-id)))
 )

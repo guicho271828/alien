@@ -8,6 +8,15 @@
 (defvar *time-limit* 300
   "runtime limit in sec")
 
+(defun max-state-id ()
+  (unless (or *compile-file-pathname*
+              *load-pathname*)
+    (log:warn "Slow function: Avoid calling this function in runtime, especially in inner loop!"))
+  (floor (* 8 1024 *memory-limit*) ; kB -> bit
+         ;; (size-of 'state-information) ; -- circular dependency
+         ;; using 64 bit as the lower bound
+         64))
+
 (declaim (fixnum *start-time* *last-milestone*))
 (defvar *start-time* 0
   "internal-real-time when the planner has started")
