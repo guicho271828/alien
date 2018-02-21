@@ -41,6 +41,7 @@
          (strips::with-temp (planfile :debug t)
            (uiop:run-program (list (namestring (strips::fd-relative-pathname "fast-downward.py"))
                                    "--run-all"
+                                   "--overall-memory-limit" "1000"
                                    "--plan-file" (namestring planfile)
                                    (namestring (find-domain path))
                                    (namestring path)
@@ -83,10 +84,12 @@
   ;; 0.00589913
   
   ;; 
-  ;; (solve "demo/cavediving/p01.pddl") ;; 29
-  ;; (solve-fd "demo/cavediving/p01.pddl") ;; 14.5886
+  ;; (solve "demo/cavediving/p01.pddl")
+  ;; (solve-fd "demo/cavediving/p01.pddl")
+
   ;; 
-  ;; ;; (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
+  ;; (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
+  ;; (solve-fd "demo/citycar/p01.pddl") ; too difficult for goal-count
   ;; 
   ;; (solve "demo/parkprinter/p00.pddl")   ;0.018
   ;; (solve-fd "demo/parkprinter/p00.pddl") ;0.000157598
