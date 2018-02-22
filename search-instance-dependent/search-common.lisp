@@ -61,10 +61,13 @@
 
 (ftype* apply-axioms state+axioms state+axioms)
 (defun apply-axioms (state)
+  #+(or)
   (map nil
        (lambda (layer)
          (apply-axiom-layer layer state))
        *instantiated-axiom-layers*)
+  (iter (for layer in-vector *instantiated-axiom-layers*)
+        (apply-axiom-layer layer state))
   state)
 
 (ftype* apply-axiom-layer axiom-layer state+axioms state+axioms)
@@ -122,7 +125,10 @@
 (defun apply-op (op state child)
   (ematch op
     ((op eff)
-     (map nil (lambda (e) (apply-effect e state child)) eff)
+     #+(or)
+     (map nil (lambda (e) (apply-effect e state child)) eff) ; somehow consing
+     (iter (for e in-vector eff)
+           (apply-effect e state child))
      child)))
 
 (ftype* apply-effect effect state+axioms state+axioms state+axioms)
