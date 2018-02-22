@@ -21,5 +21,18 @@
                :components ((:file "package")
                             (:file "instantiate")
                             (:file "solve"))))
- :perform (test-op :after (op c)
-           (eval (read-from-string "(5am:run! :strips)"))))
+ :defsystem-depends-on (:trivial-package-manager)
+ :perform
+ (load-op :before (op c)
+          (uiop:symbol-call :trivial-package-manager
+                            :ensure-program
+                            "validate"
+                            :env-alist `(("PATH" . ,(format nil "~a:~a"
+                                                            (asdf:system-relative-pathname :strips "VAL/")
+                                                            (uiop:getenv "PATH"))))
+                            :from-source (format nil "cd ~a; git submodule update --init; cd ~a ; make validate"
+                                                 (asdf:system-source-directory :strips)
+                                                 (asdf:system-relative-pathname :strips "VAL/"))))
+ :perform
+ (test-op :after (op c)
+          (eval (read-from-string "(5am:run! :strips)"))))
