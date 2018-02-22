@@ -6,4 +6,4 @@ test: planner.img
 	sudo ./singularity-test.sh
 
 clean:
-	sudo rm -rf *.img rundir
+	sudo rm -rf planner.img rundir
