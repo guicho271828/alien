@@ -31,11 +31,6 @@ From: ubuntu
    
     cd /planner
     
-    ## placeholder for initial submission
-    
-
-    # ( apt-get -y install cmake g++ make python flex bison ; cd downward ; ./build.py release64 )
-    
     ## Install all necessary dependencies.
     
     apt-get -y install build-essential automake libcurl4-openssl-dev
@@ -68,15 +63,6 @@ From: ubuntu
     ls -la
     ls -la /planner/.roswell/local-projects/guicho271828/strips
     
-    DOMAINFILE=$1
-    PROBLEMFILE=$2
-    PLANFILE=$3
-    # /planner/downward/fast-downward.py \
-    #     --build=release64 \
-    #     --plan-file $PLANFILE \
-    #     $DOMAINFILE \
-    #     $PROBLEMFILE \
-    #     --search "eager(single_buckets(ff()))"
     pwd
     env
     which alien
