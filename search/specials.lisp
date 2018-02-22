@@ -6,7 +6,7 @@
   "maximum amount of memory in kB")
 
 (defparameter *time-limit* 60
-  "runtime limit in sec")
+  "Search time limit in sec.")
 
 (defun max-state-id ()
   (unless (or *compile-file-pathname*
