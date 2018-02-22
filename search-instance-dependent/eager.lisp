@@ -87,7 +87,7 @@
         (log:info "evaluated: ~a" evaluated)
         (log:info "generated: ~a" (close-list-counter close-list))
         (log:info "eval/sec:  ~a" (/ (float (* internal-time-units-per-second evaluated))
-                                     (- (get-internal-real-time) start)))))))
+                                     (max 1 (- (get-internal-real-time) start))))))))
 
 #-(or strips::phase/packed-structs strips::phase/full-compilation)
 (defun eager (open-list)
