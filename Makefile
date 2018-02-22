@@ -4,6 +4,7 @@ planner.img: $(shell git ls-files)
 
 copy:
 	sudo cp planner0.img planner.img
+	touch Singularity
 
 test: planner.img
 	sudo ./singularity-test.sh
