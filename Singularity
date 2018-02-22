@@ -48,6 +48,7 @@ From: ubuntu
     fi
     
     ros install guicho271828/cl-prolog2
+    ros install guicho271828/type-r
     ros install guicho271828/trivial-package-manager
     if [ -d /planner/.roswell/local-projects/guicho271828/strips ] ; then (cd /planner/.roswell/local-projects/guicho271828/strips ; git fetch --all ; git checkout origin/master) ; fi
     ros install guicho271828/strips
