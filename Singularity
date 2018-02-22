@@ -46,19 +46,48 @@ From: ubuntu
         ros setup
         )
     fi
-    
+
+    # Dependent external libraries. They do not contain performance sensitive code.
+    # 
+    # These are general purpose and are submitted to / already part of quicklisp
+    # (quicklisp = library installation system similar to pip). I am the author of the library.
+    # Quicklisp libraries are verified by the quicklisp maintainers so that they build without errors.
+    # 
+    # Usually "ros install cl-prolog2" suffices (which pulls from quicklisp), but
+    # I specifically pull from github (guicho271828/cl-prolog2 etc) because I
+    # recently found a bug in them or they are still in the process of inclusion
+    # to quicklisp and quicklisp is updated only monthly.
+    # 
+    # For IPC I want to make sure it always pulls from the most up-to-date
+    # version.  but later, I can change it to "ros install cl-prolog2" and such,
+    # so that it pulls from quicklisp. (which pulls from my repository anyways, because I am the author,
+    # but in this case the library is verified by the quicklisp organization)
+    # 
     ros install guicho271828/cl-prolog2
     ros install guicho271828/type-r
     ros install guicho271828/trivial-package-manager
-    if [ -d /planner/.roswell/local-projects/guicho271828/strips ] ; then (cd /planner/.roswell/local-projects/guicho271828/strips ; git fetch --all ; git checkout origin/master) ; fi
+
+    # Another hack here.
+    # Two repositories, "guicho271828/alien" on bitbucket is merely a (possibly outdated) copy of "guicho271828/strips" on github.
+    # In the older commits of this Singularity file,
+    # I used to pull from github (i.e. download the same repository into a subdirectory) because of lazyness.
+    
+    # However, just to avoid fetching from external github,
+    # I make a symbolic link to the current directory (/planner)
+    # from the internal directory of quicklisp local-project (/planner/.roswell/local-projects).
+    # Now quicklisp recognizes the current directory.
+    ln -s /planner /planner/.roswell/local-projects/guicho271828/strips
+
+    # now quicklisp downloads all standard dependencies, and also recognize the script (alien.ros),
+    # put it in .roswell/bin .
     ros install guicho271828/strips
+
+    # alien.ros is not compiled. If you run it once, it self-compiles itself.
     alien
     
 %runscript
     ## The runscript is called whenever the container is used to solve
     ## an instance.
-
-    ## placeholder for initial submission
 
     ls -la
     ls -la /planner/.roswell/local-projects/guicho271828/strips
