@@ -28,7 +28,8 @@
       (let ((val (solve-alien path)))
         (pass "plan found")
         (is-true (funcall val)))
-    (error (c)
+    (serious-condition (c)
+      ;; for sb-ext:timeout
       (fail "in ~a:~%caused ~a:~% Reason: ~a" path (type-of c) c)
       (skip "No plan found, no validation performed"))))
 
