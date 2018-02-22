@@ -67,19 +67,6 @@ From: ubuntu
     ros install guicho271828/type-r
     ros install guicho271828/trivial-package-manager
 
-    # Another hack here.
-    # Two repositories, "guicho271828/alien" on bitbucket is merely a (possibly outdated) copy of "guicho271828/strips" on github.
-    # In the older commits of this Singularity file,
-    # I used to pull from github (i.e. download the same repository into a subdirectory) because of lazyness.
-    
-    # However, just to avoid fetching from external github,
-    # I make a symbolic link to the current directory (/planner)
-    # from the internal directory of quicklisp local-project (/planner/.roswell/local-projects).
-    # Now quicklisp recognizes the current directory.
-    #
-    # this has to be a hard link because quicklisp is confused by the truename.
-    ln /planner /planner/.roswell/local-projects/guicho271828/strips
-
     # now quicklisp downloads all standard dependencies, and also recognize the script (alien.ros),
     # put it in .roswell/bin .
     ros install guicho271828/strips
