@@ -15,7 +15,6 @@
               :trivia
               :trivia.quasiquote
               :arrow-macros
-              :cl-prolog2.swi
               :cl-prolog2.bprolog
               :bordeaux-threads
               :lisp-namespace
