@@ -11,7 +11,7 @@ From: ubuntu
 
     REPO_ROOT=`dirname $SINGULARITY_BUILDDEF`
     cp -r $REPO_ROOT/ $SINGULARITY_ROOTFS/planner
-
+    
 %environment
     
     export ROSWELL_HOME=/planner/.roswell
@@ -27,9 +27,11 @@ From: ubuntu
     ## once before the planner runs in this part of the script.
 
     apt-get update
-    apt-get -y install git curl
-   
+    apt-get -y install git curl zip
+
     cd /planner
+
+    if ! [ -d .roswell ] ; then cp -ru /planner /strips ; fi
     
     ## Install all necessary dependencies.
     
@@ -46,19 +48,28 @@ From: ubuntu
         ros setup
         )
     fi
+
+    # unpack the irregular dependencies to the directory recognized by quicklisp
+    unzip -u zip/type-r-master.zip     -d .roswell/local-projects/
+    unzip -u zip/cl-prolog2-master.zip -d .roswell/local-projects/
     
-    ros install guicho271828/cl-prolog2
-    ros install guicho271828/type-r
-    ros install guicho271828/trivial-package-manager
-    if [ -d /planner/.roswell/local-projects/guicho271828/strips ] ; then (cd /planner/.roswell/local-projects/guicho271828/strips ; git fetch --all ; git checkout origin/master) ; fi
-    ros install guicho271828/strips
+    # move the main source code to the directory recognized by quicklisp
+    if [ -d /strips ] ; then mv -ru /strips .roswell/local-projects/strips ; fi
+    
+    # this now downloads from quicklisp, not from github.
+    ros install trivial-package-manager
+    # Quicklisp downloads the rest of dependencies,
+    # recognize the roswell script (roswell/alien.ros) and copy it as an executable .roswell/bin/alien .
+    ros install strips
+    
+    # alien is not compiled. If you run it once, it self-compiles itself. The
+    # compilation of lisp code is quite, quite different from what you usually
+    # expect from C or C++. Don't ask.
     alien
     
 %runscript
     ## The runscript is called whenever the container is used to solve
     ## an instance.
-
-    ## placeholder for initial submission
 
     ls -la
     ls -la /planner/.roswell/local-projects/guicho271828/strips
