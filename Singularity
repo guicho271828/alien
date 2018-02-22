@@ -31,13 +31,6 @@ From: ubuntu
    
     cd /planner
     
-    ## placeholder for initial submission
-    
-    git submodule status
-    git submodule update --init
-
-    # ( apt-get -y install cmake g++ make python flex bison ; cd downward ; ./build.py release64 )
-    
     ## Install all necessary dependencies.
     
     apt-get -y install build-essential automake libcurl4-openssl-dev
@@ -54,8 +47,8 @@ From: ubuntu
         )
     fi
     
-    apt-get -y install software-properties-common python-software-properties g++ flex bison
     ros install guicho271828/cl-prolog2
+    ros install guicho271828/type-r
     ros install guicho271828/trivial-package-manager
     if [ -d /planner/.roswell/local-projects/guicho271828/strips ] ; then (cd /planner/.roswell/local-projects/guicho271828/strips ; git fetch --all ; git checkout origin/master) ; fi
     ros install guicho271828/strips
@@ -70,15 +63,6 @@ From: ubuntu
     ls -la
     ls -la /planner/.roswell/local-projects/guicho271828/strips
     
-    DOMAINFILE=$1
-    PROBLEMFILE=$2
-    PLANFILE=$3
-    # /planner/downward/fast-downward.py \
-    #     --build=release64 \
-    #     --plan-file $PLANFILE \
-    #     $DOMAINFILE \
-    #     $PROBLEMFILE \
-    #     --search "eager(single_buckets(ff()))"
     pwd
     env
     which alien

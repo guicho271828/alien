@@ -15,7 +15,6 @@
               :trivia
               :trivia.quasiquote
               :arrow-macros
-              :cl-prolog2.swi
               :cl-prolog2.bprolog
               :bordeaux-threads
               :lisp-namespace
@@ -58,16 +57,4 @@
               (:module "validate"
                :components ((:file "validate"))))
  :description "A STRIPS planner"
- :in-order-to ((test-op (test-op :strips.test)))
- :defsystem-depends-on (:trivial-package-manager)
- :perform
- (load-op :before (op c)
-          (uiop:symbol-call :trivial-package-manager
-                            :ensure-program
-                            "validate"
-                            :env-alist `(("PATH" . ,(format nil "~a:~a"
-                                                            (asdf:system-relative-pathname :strips "VAL/")
-                                                            (uiop:getenv "PATH"))))
-                            :from-source (format nil "cd ~a; git submodule update --init; cd ~a ; make validate"
-                                                 (asdf:system-source-directory :strips)
-                                                 (asdf:system-relative-pathname :strips "VAL/")))))
+ :in-order-to ((test-op (test-op :strips.test))))
