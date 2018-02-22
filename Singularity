@@ -76,7 +76,9 @@ From: ubuntu
     # I make a symbolic link to the current directory (/planner)
     # from the internal directory of quicklisp local-project (/planner/.roswell/local-projects).
     # Now quicklisp recognizes the current directory.
-    ln -s /planner /planner/.roswell/local-projects/guicho271828/strips
+    #
+    # this has to be a hard link because quicklisp is confused by the truename.
+    ln /planner /planner/.roswell/local-projects/guicho271828/strips
 
     # now quicklisp downloads all standard dependencies, and also recognize the script (alien.ros),
     # put it in .roswell/bin .
