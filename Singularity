@@ -33,8 +33,6 @@ From: ubuntu
     
     ## placeholder for initial submission
     
-    git submodule status
-    git submodule update --init
 
     # ( apt-get -y install cmake g++ make python flex bison ; cd downward ; ./build.py release64 )
     
