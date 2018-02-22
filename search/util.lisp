@@ -54,7 +54,7 @@ You can mix both forms. "
 (defun call-with-memory-usage-diff (spaces fn)
   (sb-ext:gc :full t)
   (let ((old (mapcar #'sb-vm::type-breakdown spaces)))
-    (prog1 (funcall fn)
+    (unwind-protect (funcall fn)
       (sb-ext:gc :full t)
       (let ((new (mapcar #'sb-vm::type-breakdown spaces)))
         (iter (for old-breakdown in old)
