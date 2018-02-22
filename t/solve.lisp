@@ -47,7 +47,8 @@
                                    (namestring (find-domain path))
                                    (namestring path)
                                    "--search" "eager(single_buckets(blind()))")
-                             :output t))
+                             :output t
+                             :ignore-error-status t))
       (strips::log-milestone :fd))))
 
 (test movie-basics
