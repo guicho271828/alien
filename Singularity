@@ -11,7 +11,7 @@ From: ubuntu
 
     REPO_ROOT=`dirname $SINGULARITY_BUILDDEF`
     cp -r $REPO_ROOT/ $SINGULARITY_ROOTFS/planner
-
+    
 %environment
     
     export ROSWELL_HOME=/planner/.roswell
@@ -27,8 +27,10 @@ From: ubuntu
     ## once before the planner runs in this part of the script.
 
     apt-get update
-    apt-get -y install git curl
-   
+    apt-get -y install git curl zip
+
+    mv /planner /strips
+    mkdir /planner
     cd /planner
     
     ## Install all necessary dependencies.
@@ -47,31 +49,19 @@ From: ubuntu
         )
     fi
 
-    # Dependent external libraries. They do not contain performance sensitive code.
-    # 
-    # These are general purpose and are submitted to / already part of quicklisp
-    # (quicklisp = library installation system similar to pip). I am the author of the library.
-    # Quicklisp libraries are verified by the quicklisp maintainers so that they build without errors.
-    # 
-    # Usually "ros install cl-prolog2" suffices (which pulls from quicklisp), but
-    # I specifically pull from github (guicho271828/cl-prolog2 etc) because I
-    # recently found a bug in them or they are still in the process of inclusion
-    # to quicklisp and quicklisp is updated only monthly.
-    # 
-    # For IPC I want to make sure it always pulls from the most up-to-date
-    # version.  but later, I can change it to "ros install cl-prolog2" and such,
-    # so that it pulls from quicklisp. (which pulls from my repository anyways, because I am the author,
-    # but in this case the library is verified by the quicklisp organization)
-    # 
-    ros install guicho271828/cl-prolog2
-    ros install guicho271828/type-r
-    ros install guicho271828/trivial-package-manager
-
-    # now quicklisp downloads all standard dependencies, and also recognize the script (alien.ros),
-    # put it in .roswell/bin .
-    ros install guicho271828/strips
-
-    # alien.ros is not compiled. If you run it once, it self-compiles itself.
+    # unpack the irregular dependencies to the directory recognized by quicklisp
+    if ! [ -d .roswell/local-projects/type-r-master     ] ; then unzip /strips/zip/type-r-master.zip     -d .roswell/local-projects/ ; fi
+    if ! [ -d .roswell/local-projects/cl-prolog2-master ] ; then unzip /strips/zip/cl-prolog2-master.zip -d .roswell/local-projects/ ; fi
+    # move the main source code to the directory recognized by quicklisp
+    mv /strips .roswell/local-projects/strips
+    
+    # Quicklisp downloads the rest of dependencies,
+    # recognize the roswell script (roswell/alien.ros) and copy it as an executable .roswell/bin/alien .
+    ros install strips
+    
+    # alien is not compiled. If you run it once, it self-compiles itself. The
+    # compilation of lisp code is quite, quite different from what you usually
+    # expect from C or C++. Don't ask.
     alien
     
 %runscript
