@@ -54,7 +54,9 @@ From: ubuntu
     if ! [ -d .roswell/local-projects/cl-prolog2-master ] ; then unzip /strips/zip/cl-prolog2-master.zip -d .roswell/local-projects/ ; fi
     # move the main source code to the directory recognized by quicklisp
     mv /strips .roswell/local-projects/strips
-    
+
+    # this now downloads from quicklisp, not from github.
+    ros install trivial-package-manager
     # Quicklisp downloads the rest of dependencies,
     # recognize the roswell script (roswell/alien.ros) and copy it as an executable .roswell/bin/alien .
     ros install strips
