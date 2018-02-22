@@ -15,9 +15,10 @@
          (plan (solve-once (find-domain path) path
                            (lambda ()
                              (strips:run
-                              (eager
-                               (bucket-open-list
-                                (blind))))))))
+                              (timeout
+                               (eager
+                                (bucket-open-list
+                                 (blind)))))))))
     (lambda () (validate-plan (strips:find-domain path)
                               path
                               plan))))
