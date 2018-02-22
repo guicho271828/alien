@@ -14,11 +14,12 @@
   (let* ((path (%rel path))
          (plan (solve-once (find-domain path) path
                            (lambda ()
-                             (strips:run
-                              (timeout
-                               (eager
-                                (bucket-open-list
-                                 (blind)))))))))
+                             (with-memory-usage-diff ()
+                               (strips:run
+                                (timeout
+                                 (eager
+                                  (bucket-open-list
+                                   (blind))))))))))
     (lambda () (validate-plan (strips:find-domain path)
                               path
                               plan))))
