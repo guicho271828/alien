@@ -41,12 +41,14 @@
 (ftype* applicable-ops sg state+axioms (array op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
-  (let ((results (make-a-array 32 :element-type 'op-id)))
+  (let ((results (load-time-value
+                  (make-a-array (length *instantiated-ops*) :element-type 'op-id))))
+    (setf (fill-pointer results) 0) 
     (labels ((rec (node)
                (ematch node
                  ((type list)
                   (dolist (op-id node)
-                    (linear-extend results op-id)))
+                    (vector-push op-id results)))
                  ((sg-node variable then else either)
                   (case (aref state variable)
                     (0 (rec else))
