@@ -516,7 +516,7 @@ size: number of bits for the structure"
                 (setf (%packed-accessor-int newval 64 new-pos)
                       (%packed-accessor-int vector 64 vec-pos))
                 (rec (+ 64 vec-pos) (+ 64 new-pos))))))
-    (declare (inline rec))
+    ;; (declare (inline rec))
     (rec position 0)
     newval))
 
@@ -544,7 +544,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                 (setf (%packed-accessor-int vector 64 vec-pos)
                       (%packed-accessor-int newval 64 new-pos))
                 (rec (+ 64 vec-pos) (+ 64 new-pos))))))
-    (declare (inline rec))
+    ;; (declare (inline rec))
     (rec position 0)
     newval))
 

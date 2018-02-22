@@ -48,6 +48,7 @@
                             (:file "blind")
                             (:file "bucket-open-list")
                             (:file "run")
+                            (:file "timeout")
                             (:module "heuristics"
                              :components ())
                             (:module "searchers"

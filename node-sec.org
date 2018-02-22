@@ -1,5 +1,5 @@
 
-blind search
+blind search on Phenom II X6
 
 | eval/sec | commit  |   states | comment                   | date            |
 |----------+---------+----------+---------------------------+-----------------|
@@ -18,3 +18,79 @@ blind search
 |   348261 |         | 12800001 | citycar p01      --- bug? |                 |
 |   134448 |         | 12800001 | parkprinter p01  --- bug? |                 |
 |     8506 |         |     3275 | researcher p01            |                 |
+
+blind search on Intel(R) Celeron(R) 2980U @ 1.60GHz
+
+|                                        |      FD | ALIEN 6de04ed |        |
+|----------------------------------------+---------+---------------+--------|
+| ipc2006-optsat/openstacks/p01.pddl     |  279688 |     174142.86 |   0.62 |
+| ipc2006-optsat/pathways/p01.pddl       |  263487 |      174000.0 |   0.66 |
+| ipc2006-optsat/pipesworld/p01.pddl     |  190889 |      203000.0 |   1.06 |
+| ipc2006-optsat/rovers/p01.pddl         |  318368 |     723.78516 | 2.3e-3 |
+| ipc2006-optsat/tpp/p01.pddl            | 30437.2 |        7000.0 |   0.23 |
+| ipc2006-optsat/trucks/p01.pddl         |  285772 |     194188.53 |   0.68 |
+|----------------------------------------+---------+---------------+--------|
+| ipc2008-opt/elevators-opt08/p01.pddl   |  165975 |     359405.66 |   2.17 |
+| ipc2008-opt/openstacks-opt08/p01.pddl  |  302519 |      170875.0 |   0.56 |
+| ipc2008-opt/parcprinter-opt08/p01.pddl |  116005 |       13000.0 |   0.11 |
+| ipc2008-opt/pegsol-opt08/p01.pddl      | 60298.6 |       13000.0 |   0.22 |
+| ipc2008-opt/scanalyzer-opt08/p01.pddl  |  230945 |      217000.0 |   0.94 |
+| ipc2008-opt/sokoban-opt08/p01.pddl     |  214095 |      173250.0 |   0.81 |
+| ipc2008-opt/transport-opt08/p01.pddl   |  238743 |      212000.0 |   0.89 |
+| ipc2008-opt/woodworking-opt08/p01.pddl |  233753 |      91346.16 |   0.39 |
+|----------------------------------------+---------+---------------+--------|
+| ipc2011-opt/barman-opt11/p01.pddl      |  176256 |     141987.36 |   0.81 |
+| ipc2011-opt/elevators-opt11/p01.pddl   |  142871 |     277579.44 |   1.94 |
+| ipc2011-opt/floortile-opt11/p01.pddl   |       - |     108012.85 | #ERROR |
+| ipc2011-opt/nomystery-opt11/p01.pddl   |  432300 |      273000.0 |   0.63 |
+| ipc2011-opt/openstacks-opt11/p01.pddl  |  163241 |      85262.66 |   0.52 |
+| ipc2011-opt/parcprinter-opt11/p01.pddl |  276610 |     164398.67 |   0.59 |
+| ipc2011-opt/parking-opt11/p01.pddl     |       - |      23137.03 | #ERROR |
+| ipc2011-opt/pegsol-opt11/p01.pddl      |  244183 |      101500.0 |   0.42 |
+| ipc2011-opt/scanalyzer-opt11/p01.pddl  |  108091 |       10000.0 |   0.09 |
+| ipc2011-opt/sokoban-opt11/p01.pddl     |  191606 |     198180.84 |   1.03 |
+| ipc2011-opt/tidybot-opt11/p01.pddl     | 58772.2 |     282.25806 | 4.8e-3 |
+| ipc2011-opt/transport-opt11/p01.pddl   |  290719 |     319888.22 |   1.10 |
+| ipc2011-opt/visitall-opt11/p01.pddl    | 38579.1 |        8000.0 |   0.21 |
+| ipc2011-opt/woodworking-opt11/p01.pddl |  147536 |     43002.066 |   0.29 |
+#+TBLFM: $4=$-1/$-2;f2::
+
+phenom II X6 --- some instances are not good for perf testing, especially
+instances that are too small
+
+when eval/sec ends with 000, it means that it finished in 1msec and thus it
+defaults to just multiplying eval by 1000
+
+|                                        |      FD | ALIEN 6de04ed |        |
+|----------------------------------------+---------+---------------+--------|
+| ipc2006-optsat/openstacks/p01.pddl     |  418618 |      51872.34 |   0.12 |
+| ipc2006-optsat/pathways/p01.pddl       |  272757 |       11600.0 |   0.04 |
+| ipc2006-optsat/pipesworld/p01.pddl     |  294290 |     13533.333 |   0.05 |
+| ipc2006-optsat/rovers/p01.pddl         |  472020 |       17687.5 |   0.04 |
+| ipc2006-optsat/tpp/p01.pddl            | 32180.4 |     318.18182 | 9.9e-3 |
+| ipc2006-optsat/trucks/p01.pddl         |  321091 |     211526.78 |   0.66 |
+|----------------------------------------+---------+---------------+--------|
+| ipc2008-opt/elevators-opt08/p01.pddl   |  217667 |     290816.78 |   1.34 |
+| ipc2008-opt/openstacks-opt08/p01.pddl  |  268080 |     62136.363 |   0.23 |
+| ipc2008-opt/parcprinter-opt08/p01.pddl | 92685.3 |       13000.0 |   0.14 |
+| ipc2008-opt/pegsol-opt08/p01.pddl      |   60620 |      866.6667 |   0.01 |
+| ipc2008-opt/scanalyzer-opt08/p01.pddl  |  331146 |       27125.0 |   0.08 |
+| ipc2008-opt/sokoban-opt08/p01.pddl     |  221584 |      231000.0 |   1.04 |
+| ipc2008-opt/transport-opt08/p01.pddl   |  345166 |     14133.333 |   0.04 |
+| ipc2008-opt/woodworking-opt08/p01.pddl |  320031 |      91346.16 |   0.29 |
+|----------------------------------------+---------+---------------+--------|
+| ipc2011-opt/barman-opt11/p01.pddl      |  238788 |     180531.63 |   0.76 |
+| ipc2011-opt/elevators-opt11/p01.pddl   |  184094 |     295596.75 |   1.61 |
+| ipc2011-opt/floortile-opt11/p01.pddl   |       - |      135164.5 | #ERROR |
+| ipc2011-opt/nomystery-opt11/p01.pddl   |  425045 |      48176.47 |   0.11 |
+| ipc2011-opt/openstacks-opt11/p01.pddl  |  228045 |     110166.14 |   0.48 |
+| ipc2011-opt/parcprinter-opt11/p01.pddl |  358235 |     204479.34 |   0.57 |
+| ipc2011-opt/parking-opt11/p01.pddl     |       - |     23839.395 | #ERROR |
+| ipc2011-opt/pegsol-opt11/p01.pddl      |  356834 |      203000.0 |   0.57 |
+| ipc2011-opt/scanalyzer-opt11/p01.pddl  |  193567 |       10000.0 |   0.05 |
+| ipc2011-opt/sokoban-opt11/p01.pddl     |  268390 |     190091.84 |   0.71 |
+| ipc2011-opt/tidybot-opt11/p01.pddl     |  117527 |       35000.0 |   0.30 |
+| ipc2011-opt/transport-opt11/p01.pddl   |  412285 |     397214.16 |   0.96 |
+| ipc2011-opt/visitall-opt11/p01.pddl    | 67668.2 |        8000.0 |   0.12 |
+| ipc2011-opt/woodworking-opt11/p01.pddl |  202798 |      57126.95 |   0.28 |
+#+TBLFM: $4=$-1/$-2;f2

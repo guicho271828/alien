@@ -54,13 +54,13 @@ You can mix both forms. "
 (defun call-with-memory-usage-diff (spaces fn)
   (sb-ext:gc :full t)
   (let ((old (mapcar #'sb-vm::type-breakdown spaces)))
-    (prog1 (funcall fn)
+    (unwind-protect (funcall fn)
       (sb-ext:gc :full t)
       (let ((new (mapcar #'sb-vm::type-breakdown spaces)))
         (iter (for old-breakdown in old)
               (for new-breakdown in new)
               (for space in spaces)
-              (format t "~&Memory consumption in ~a:~%" space)
+              (log:info "Memory consumption in ~a:" space)
               (let ((diff (iter (for (byte count type) in new-breakdown)
                                 (for (obyte ocount otype) = (find type old-breakdown :key #'third))
                                 (unless otype
@@ -72,10 +72,10 @@ You can mix both forms. "
                                            (reduce #'max (mapcar #'first diff)))))
                       (with digits2 = (1+ (sb-ext:decimal-with-grouped-digits-width
                                            (reduce #'max (mapcar #'second diff)))))
-                      (format t "~v@:d bytes for ~v@:d ~a objects~%"
-                              digits1 byte
-                              digits2 count
-                              type))))))))
+                      (format t "~&~v@:d bytes for ~v@:d ~a objects"
+                                digits1 byte
+                                digits2 count
+                                type))))))))
 
 
 

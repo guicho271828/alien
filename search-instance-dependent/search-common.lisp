@@ -41,12 +41,14 @@
 (ftype* applicable-ops sg state+axioms (array op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
-  (let ((results (make-a-array 32 :element-type 'op-id)))
+  (let ((results (load-time-value
+                  (make-a-array (length *instantiated-ops*) :element-type 'op-id))))
+    (setf (fill-pointer results) 0) 
     (labels ((rec (node)
                (ematch node
                  ((type list)
                   (dolist (op-id node)
-                    (linear-extend results op-id)))
+                    (vector-push op-id results)))
                  ((sg-node variable then else either)
                   (case (aref state variable)
                     (0 (rec else))
@@ -59,10 +61,13 @@
 
 (ftype* apply-axioms state+axioms state+axioms)
 (defun apply-axioms (state)
+  #+(or)
   (map nil
        (lambda (layer)
          (apply-axiom-layer layer state))
        *instantiated-axiom-layers*)
+  (iter (for layer in-vector *instantiated-axiom-layers*)
+        (apply-axiom-layer layer state))
   state)
 
 (ftype* apply-axiom-layer axiom-layer state+axioms state+axioms)
@@ -120,7 +125,10 @@
 (defun apply-op (op state child)
   (ematch op
     ((op eff)
-     (map nil (lambda (e) (apply-effect e state child)) eff)
+     #+(or)
+     (map nil (lambda (e) (apply-effect e state child)) eff) ; somehow consing
+     (iter (for e in-vector eff)
+           (apply-effect e state child))
      child)))
 
 (ftype* apply-effect effect state+axioms state+axioms state+axioms)

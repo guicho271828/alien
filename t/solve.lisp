@@ -14,10 +14,12 @@
   (let* ((path (%rel path))
          (plan (solve-once (find-domain path) path
                            (lambda ()
-                             (strips:run
-                              (eager
-                               (bucket-open-list
-                                (blind))))))))
+                             (with-memory-usage-diff ()
+                               (strips:run
+                                (timeout
+                                 (eager
+                                  (bucket-open-list
+                                   (blind))))))))))
     (lambda () (validate-plan (strips:find-domain path)
                               path
                               plan))))
@@ -27,7 +29,8 @@
       (let ((val (solve-alien path)))
         (pass "plan found")
         (is-true (funcall val)))
-    (error (c)
+    (serious-condition (c)
+      ;; for sb-ext:timeout
       (fail "in ~a:~%caused ~a:~% Reason: ~a" path (type-of c) c)
       (skip "No plan found, no validation performed"))))
 
@@ -42,11 +45,13 @@
            (uiop:run-program (list (namestring (strips::fd-relative-pathname "fast-downward.py"))
                                    "--run-all"
                                    "--overall-memory-limit" "1000"
+                                   "--search-time-limit" "60"
                                    "--plan-file" (namestring planfile)
                                    (namestring (find-domain path))
                                    (namestring path)
                                    "--search" "eager(single_buckets(blind()))")
-                             :output t))
+                             :output t
+                             :ignore-error-status t))
       (strips::log-milestone :fd))))
 
 (test movie-basics
@@ -128,34 +133,62 @@
   ;; (solve "downward/benchmarks/trucks-strips/domain_p01.pddl")
   ;; (solve "downward/benchmarks/trucks-strips/p01.pddl")
 
+  (solve-fd "ipc2006-optsat/openstacks/p01.pddl")
   (solve "ipc2006-optsat/openstacks/p01.pddl")
+  (solve-fd "ipc2006-optsat/pathways/p01.pddl")
   (solve "ipc2006-optsat/pathways/p01.pddl")
+  (solve-fd "ipc2006-optsat/pipesworld/p01.pddl")
   (solve "ipc2006-optsat/pipesworld/p01.pddl")
+  (solve-fd "ipc2006-optsat/rovers/p01.pddl")
   (solve "ipc2006-optsat/rovers/p01.pddl")
   ;; (solve "ipc2006-optsat/storage/p01.pddl") ; EITHER type
+  (solve-fd "ipc2006-optsat/tpp/p01.pddl")
   (solve "ipc2006-optsat/tpp/p01.pddl")
+  (solve-fd "ipc2006-optsat/trucks/p01.pddl")
   (solve "ipc2006-optsat/trucks/p01.pddl")
+  (solve-fd "ipc2008-opt/elevators-opt08/p01.pddl")
   (solve "ipc2008-opt/elevators-opt08/p01.pddl")
+  (solve-fd "ipc2008-opt/openstacks-opt08/p01.pddl")
   (solve "ipc2008-opt/openstacks-opt08/p01.pddl")
+  (solve-fd "ipc2008-opt/parcprinter-opt08/p01.pddl")
   (solve "ipc2008-opt/parcprinter-opt08/p01.pddl")
+  (solve-fd "ipc2008-opt/pegsol-opt08/p01.pddl")
   (solve "ipc2008-opt/pegsol-opt08/p01.pddl")
+  (solve-fd "ipc2008-opt/scanalyzer-opt08/p01.pddl")
   (solve "ipc2008-opt/scanalyzer-opt08/p01.pddl")
+  (solve-fd "ipc2008-opt/sokoban-opt08/p01.pddl")
   (solve "ipc2008-opt/sokoban-opt08/p01.pddl")
+  (solve-fd "ipc2008-opt/transport-opt08/p01.pddl")
   (solve "ipc2008-opt/transport-opt08/p01.pddl")
+  (solve-fd "ipc2008-opt/woodworking-opt08/p01.pddl")
   (solve "ipc2008-opt/woodworking-opt08/p01.pddl")
+  (solve-fd "ipc2011-opt/barman-opt11/p01.pddl")
   (solve "ipc2011-opt/barman-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/elevators-opt11/p01.pddl")
   (solve "ipc2011-opt/elevators-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/floortile-opt11/p01.pddl")
   (solve "ipc2011-opt/floortile-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/nomystery-opt11/p01.pddl")
   (solve "ipc2011-opt/nomystery-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/openstacks-opt11/p01.pddl")
   (solve "ipc2011-opt/openstacks-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/parcprinter-opt11/p01.pddl")
   (solve "ipc2011-opt/parcprinter-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/parking-opt11/p01.pddl")
   (solve "ipc2011-opt/parking-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/pegsol-opt11/p01.pddl")
   (solve "ipc2011-opt/pegsol-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/scanalyzer-opt11/p01.pddl")
   (solve "ipc2011-opt/scanalyzer-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/sokoban-opt11/p01.pddl")
   (solve "ipc2011-opt/sokoban-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/tidybot-opt11/p01.pddl")
   (solve "ipc2011-opt/tidybot-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/transport-opt11/p01.pddl")
   (solve "ipc2011-opt/transport-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/visitall-opt11/p01.pddl")
   (solve "ipc2011-opt/visitall-opt11/p01.pddl")
+  (solve-fd "ipc2011-opt/woodworking-opt11/p01.pddl")
   (solve "ipc2011-opt/woodworking-opt11/p01.pddl")
   ;; (solve "ipc2014-agl/barman-agl14/p01.pddl")
   ;; (solve "ipc2014-agl/cavediving-agl14/p01.pddl")
