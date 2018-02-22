@@ -29,9 +29,9 @@ From: ubuntu
     apt-get update
     apt-get -y install git curl zip
 
-    mv /planner /strips
-    mkdir /planner
     cd /planner
+
+    if ! [ -d .roswell ] ; then cp -ru /planner /strips ; fi
     
     ## Install all necessary dependencies.
     
@@ -50,11 +50,12 @@ From: ubuntu
     fi
 
     # unpack the irregular dependencies to the directory recognized by quicklisp
-    if ! [ -d .roswell/local-projects/type-r-master     ] ; then unzip /strips/zip/type-r-master.zip     -d .roswell/local-projects/ ; fi
-    if ! [ -d .roswell/local-projects/cl-prolog2-master ] ; then unzip /strips/zip/cl-prolog2-master.zip -d .roswell/local-projects/ ; fi
+    unzip -u zip/type-r-master.zip     -d .roswell/local-projects/
+    unzip -u zip/cl-prolog2-master.zip -d .roswell/local-projects/
+    
     # move the main source code to the directory recognized by quicklisp
-    mv /strips .roswell/local-projects/strips
-
+    if [ -d /strips ] ; then mv -ru /strips .roswell/local-projects/strips ; fi
+    
     # this now downloads from quicklisp, not from github.
     ros install trivial-package-manager
     # Quicklisp downloads the rest of dependencies,
