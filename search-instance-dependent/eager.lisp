@@ -57,8 +57,9 @@
                    (declare (dynamic-extent #'path))
                    (report-if-goal state+axioms #'path))
                  (incf expanded)
-                 
-                 (iter (for op-id in-vector (applicable-ops/fast state+axioms))
+
+                 (multiple-value-bind (ops len) (applicable-ops/fast state+axioms)
+                 (iter (for op-id in-vector ops with-index i below len)
                        ;; DONE: remove special variable references to *sg* and *instantiated-ops*
                        ;; TODO: constant fold applicable-ops, apply-axioms
                        (for op = (aref (load-time-value *instantiated-ops* t) op-id))
@@ -77,7 +78,7 @@
                                  (state-information-op info) op-id
                                  (state-information-status info) +open+
                                  (packed-aref db 'state-information id2) info)
-                           (funcall insert open-list id2 child+axioms)))))
+                           (funcall insert open-list id2 child+axioms))))))
                (rec)))
       ;; (declare (inline rec))
       ;; loop unrolling

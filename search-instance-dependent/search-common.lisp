@@ -148,7 +148,7 @@
 
 #+strips::phase/packed-structs
 (progn
-(ftype* applicable-ops/fast state+axioms (array op-id))
+(ftype* applicable-ops/fast state+axioms (values (runtime simple-array 'op-id (list (length *instantiated-ops*))) op-id))
 (defun applicable-ops/fast (state)
   #+(or)
   (in-compile-time (env)
@@ -159,11 +159,12 @@
         (vector-push op-id results))))
     nil)
   (let ((results (load-time-value
-                  (make-a-array (length *instantiated-ops*) :element-type 'op-id))))
-    (setf (fill-pointer results) 0)
+                  (make-array (length *instantiated-ops*) :element-type 'op-id)))
+        (c 0))
     (do-leaf (op-id state #.*sg*)
-      (vector-push op-id results))
-    results))
+      (setf (aref results c) op-id)
+      (incf c))
+    (values results c)))
 
 (print-function-size #'applicable-ops/fast)
 
