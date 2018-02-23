@@ -80,4 +80,9 @@ You can mix both forms. "
 
 
 
+(defun print-function-size (fn)
+  "Print the binary size of a function. Used to check the size of compiled SG etc."
+  (log:info "Segment size of ~a: ~a bytes"
+            fn
+            (reduce #'+ (sb-disassem:get-fun-segments fn) :key #'sb-disassem:seg-length)))
 
