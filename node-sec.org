@@ -27,7 +27,7 @@ blind search on Phenom II X6
 |   138725 |         | 12800001 | parkprinter p01           |                 |
 |     8026 |         |     3275 | researcher p01            |                 |
 |----------+---------+----------+---------------------------+-----------------|
-|          |         |          | Alien: compiled sg        |                 |
+|          | fe1ca31 |          | Alien: compiled sg        | <2018-02-23 金> |
 |    68333 |         |     1205 | sokoban p01               |                 |
 |   232140 |         |  3580298 | cavediving p01            |                 |
 |   386485 |         | 12800001 | citycar p01               |                 |
