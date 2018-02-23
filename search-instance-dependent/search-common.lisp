@@ -154,13 +154,13 @@
     ;; checking macroexpansion (disabled)
     (print
      (macroexpand
-      '(do-leaf (op-id state #.*sg*)
+      '(do-leaf (op-id state)
         (vector-push op-id results))))
     nil)
   (let ((results (load-time-value
                   (make-array (length *instantiated-ops*) :element-type 'op-id)))
         (c 0))
-    (do-leaf (op-id state #.*sg*)
+    (do-leaf (op-id state)
       (setf (aref results c) op-id)
       (incf c))
     (values results c)))
