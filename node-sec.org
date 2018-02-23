@@ -18,6 +18,13 @@ blind search on Phenom II X6
 |   348261 |         | 12800001 | citycar p01      --- bug? |                 |
 |   134448 |         | 12800001 | parkprinter p01  --- bug? |                 |
 |     8506 |         |     3275 | researcher p01            |                 |
+|----------+---------+----------+---------------------------+-----------------|
+|          | d0852de |          | Alien: re: disbale VOP    | <2018-02-23 金> |
+|   199392 |         |  3580298 | cavediving p01            |                 |
+|   246000 |         |     1205 | sokoban p01               |                 |
+|   336913 |         | 12800001 | citycar p01               |                 |
+|   138725 |         | 12800001 | parkprinter p01           |                 |
+|     8026 |         |     3275 | researcher p01            |                 |
 
 blind search on Intel(R) Celeron(R) 2980U @ 1.60GHz
 

@@ -17,7 +17,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; VOP for pure SHL
-
+#+(or)
+(progn
 (sb-c:defknown <<64 ((unsigned-byte 64) (mod 64)) (unsigned-byte 64)
     (sb-c::foldable
      sb-c::flushable
@@ -92,6 +93,15 @@
 (defun <<64 (int shift)
   "Shift the integer like ASH, but discards the bits where ASH would cons to a bignum."
   (<<64 int shift))
+)
+
+(progn
+(ftype* <<64 (unsigned-byte 64) (mod 64) (unsigned-byte 64))
+(declaim (inline <<64))
+(defun <<64 (int shift)
+  "Shift the integer like ASH, but discards the bits where ASH would cons to a bignum."
+  (mask-field (byte 64 0) (ash int shift)))
+)
 
 #+(or)
 (progn
@@ -516,7 +526,7 @@ size: number of bits for the structure"
                 (setf (%packed-accessor-int newval 64 new-pos)
                       (%packed-accessor-int vector 64 vec-pos))
                 (rec (+ 64 vec-pos) (+ 64 new-pos))))))
-    ;; (declare (inline rec))
+    (declare (inline rec))
     (rec position 0)
     newval))
 
@@ -544,7 +554,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
                 (setf (%packed-accessor-int vector 64 vec-pos)
                       (%packed-accessor-int newval 64 new-pos))
                 (rec (+ 64 vec-pos) (+ 64 new-pos))))))
-    ;; (declare (inline rec))
+    (declare (inline rec))
     (rec position 0)
     newval))
 
