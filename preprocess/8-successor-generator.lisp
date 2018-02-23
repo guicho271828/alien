@@ -81,4 +81,22 @@ A generator node is just a list containing operator indices."
                            (sg-node variable then else (rec either con-index)))))))))))
        (rec current 0)))))
 
+(defmacro do-leaf ((op-id state sg) &body body &environment env)
+  (once-only (state)
+    (compile-iteration-over-leaf op-id state sg body)))
 
+(defun compile-iteration-over-leaf (op-id-sym state-sym sg body)
+  "Returns a program that iterates over the leaf of sg, inlining constants, and execute BODY on each loop."
+  (ematch sg
+    ((sg-node variable then else either)
+     `(progn
+        (if (= 1 (aref ,state-sym ,variable))
+            ,(compile-iteration-over-leaf op-id-sym state-sym then body)
+            ,(compile-iteration-over-leaf op-id-sym state-sym else body))
+        ,(compile-iteration-over-leaf op-id-sym state-sym either body)))
+    ((list* op-ids)
+     `(progn
+        ,@(iter (for id in op-ids)
+                (collecting
+                 `(let ((,op-id-sym ,id))
+                    ,@body)))))))
