@@ -62,10 +62,9 @@
                  (iter (for op-id in-vector ops with-index i below len)
                        ;; DONE: remove special variable references to *sg* and *instantiated-ops*
                        ;; TODO: constant fold applicable-ops, apply-axioms
-                       (for op = (aref (load-time-value *instantiated-ops* t) op-id))
                        (fill child+axioms 0)
                        (replace child+axioms state)
-                       (apply-op op state+axioms child+axioms)
+                       (apply-op/fast op-id state+axioms child+axioms)
                        (apply-axioms child+axioms)
                        (replace child child+axioms)
                        

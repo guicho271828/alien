@@ -168,4 +168,18 @@
 
 (print-function-size #'applicable-ops/fast)
 
+
+(ftype* apply-op/fast op-id state+axioms state+axioms state+axioms)
+(defun apply-op/fast (op-id state child)
+  #+(or)
+  (in-compile-time (env)
+    ;; checking macroexpansion (disabled)
+    (print
+     (macroexpand
+      '(compiled-apply-op op-id state child)))
+    nil)
+  (compiled-apply-op op-id state child)
+  child)
 )
+
+
