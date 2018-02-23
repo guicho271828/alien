@@ -1,0 +1,76 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros --dynamic-space-size=8000 -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  #+quicklisp (ql:quickload '(:alexandria :trivia :iterate :introspect-environment) :silent t))
+
+(defpackage :ros.script.case.3724474528
+  (:use :cl :alexandria :trivia :iterate :introspect-environment))
+(in-package :ros.script.case.3724474528)
+
+(defun test (fn x)
+  (print
+   (time
+    (let (tem)
+      (dotimes (i 1000000 tem)
+        (setq tem (funcall fn x)))))))
+
+;; lambda+vector+load time value, variables are declared
+
+(defmacro fcase8 (i (&rest vars) &body body)
+  `(funcall
+    (svref (load-time-value (vector
+                             ,@(iter (for b in body)
+                                     (for j from 0)
+                                     (collecting
+                                      `(lambda (,i ,@vars) (locally (declare ((eql ,j) ,i)) ,b)))))
+                            t)
+           ,i)
+    ,i ,@vars))
+
+(defun 4096way/fcase8 (i)
+  (let ((rand (random 10)))
+    (fcase8 i (rand)
+      . #.(loop :for x :from 0 :repeat 4096
+             :collect `(progn (* i rand))))))
+
+(print :fcase8)
+(test #'4096way/fcase8 4095) ; 0.051sec
+(test #'4096way/fcase8 0)    ; 0.053sec
+
+;; lambda+vector+load time value, variables are automatically obtained from the environment
+
+(defmacro fcase9 (i &body body &environment env)
+  (let ((vars (find-lexical-variables env)))
+    `(funcall
+      (svref (load-time-value (vector
+                               ,@(iter (for b in body)
+                                       (for j from 0)
+                                       (collecting
+                                        `(lambda (,@vars) (locally (declare ((eql ,j) ,i)) ,b)))))
+                              t)
+             ,i)
+      ,@vars)))
+
+(defun find-lexical-variables (env)
+  (mapcar #'car
+          (sb-c::lexenv-vars
+           (sb-c::coerce-to-lexenv env))))
+
+(defun 4096way/fcase9 (i)
+  (let ((rand (random 10)))
+    (fcase9 i
+      . #.(loop :for x :from 0 :repeat 4096
+             :collect `(progn (* i rand))))))
+
+(print :fcase9)
+(test #'4096way/fcase9 4095) ; 0.050 sec
+(test #'4096way/fcase9 0)    ; 0.050 sec
+
+(defun main (&rest argv)
+  (declare (ignorable argv)))
+;;; vim: set ft=lisp lisp:
+

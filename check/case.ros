@@ -26,6 +26,7 @@ exec ros -Q -- $0 "$@"
       (dotimes (i 1000000 tem)
         (setq tem (funcall fn x)))))))
 
+(print :case)
 (test #'256way/case 255) ; 0.232 sec 4809bytes
 (test #'256way/case 0)   ; 0.050 sec
 
@@ -43,6 +44,7 @@ exec ros -Q -- $0 "$@"
       . #.(loop :for x :from 0 :repeat 256
              :collect `(progn (* i rand))))))
 
+(print :fcase)
 (test #'256way/fcase 255) ; 4.3sec 10,255,897,520 bytes consed
 (test #'256way/fcase 0)   ; 4.3sec 10,255,902,528 bytes consed
 
@@ -66,6 +68,7 @@ exec ros -Q -- $0 "$@"
       . #.(loop :for x :from 0 :repeat 256
              :collect `(progn (* i rand))))))
 
+(print :fcase2)
 (test #'256way/fcase2 255) ; 4.3sec 10,255,887,264 bytes consed
 (test #'256way/fcase2 0)   ; 4.4sec 10,255,902,256 bytes consed
 
@@ -89,6 +92,7 @@ exec ros -Q -- $0 "$@"
       . #.(loop :for x :from 0 :repeat 256
              :collect `(progn (* i rand))))))
 
+(print :fcase3)
 (test #'256way/fcase3 255) ; 1.192 sec 0 bytes consed
 (test #'256way/fcase3 0)
 
@@ -112,6 +116,7 @@ exec ros -Q -- $0 "$@"
       . #.(loop :for x :from 0 :repeat 256
              :collect `(progn (* i rand))))))
 
+(print :fcase3t)
 (test #'256way/fcase3t 255) ; 1.192 sec 0 bytes consed
 (test #'256way/fcase3t 0)   ; 1.187 sec 0 bytes consed
 
@@ -184,6 +189,7 @@ exec ros -Q -- $0 "$@"
       . #.(loop :for x :from 0 :repeat 256
              :collect `(progn (* i rand))))))
 
+(print :fcase6)
 (test #'256way/fcase6 255) ; 1.06sec 0 bytes
 (test #'256way/fcase6 0)   ; 1.075sec 0 bytes
 
@@ -213,6 +219,7 @@ exec ros -Q -- $0 "$@"
       . #.(loop :for x :from 0 :repeat 256
              :collect `(progn (* i rand))))))
 
+(print :fcase7)
 (test #'256way/fcase7 255) ; 0.102 0 bytes
 (test #'256way/fcase7 0)   ; 0.102 0 bytes
 
@@ -230,10 +237,11 @@ exec ros -Q -- $0 "$@"
       . #.(loop :for x :from 0 :repeat 4096
              :collect `(progn (* i rand))))))
 
-(test #'4096way/case 4095)   ; 8.9sec
-(test #'4096way/case 0)      ; 0.044sec
-(test #'4096way/fcase7 4095) ; 0.128sec
-(test #'4096way/fcase7 0)    ; 0.129sec
+;; (print :fcase7-4096)
+;; (test #'4096way/case 4095)   ; 8.9sec
+;; (test #'4096way/case 0)      ; 0.044sec
+;; (test #'4096way/fcase7 4095) ; 0.128sec
+;; (test #'4096way/fcase7 0)    ; 0.129sec
 
 ;; lambda+vector+load time value, variables are declared
 
@@ -260,6 +268,7 @@ exec ros -Q -- $0 "$@"
       . #.(loop :for x :from 0 :repeat 4096
              :collect `(progn (* i rand))))))
 
+(print :fcase8)
 (test #'4096way/fcase8 4095) ; 0.051sec
 (test #'4096way/fcase8 0)    ; 0.053sec
 
@@ -294,6 +303,7 @@ exec ros -Q -- $0 "$@"
       . #.(loop :for x :from 0 :repeat 4096
              :collect `(progn (* i rand))))))
 
+(print :fcase9)
 (test #'4096way/fcase9 4095) ; 0.050 sec
 (test #'4096way/fcase9 0)    ; 0.050 sec
 
