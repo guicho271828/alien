@@ -144,3 +144,27 @@
            (setf (aref child eff) 1)))))
   child)
 )
+
+
+#+strips::phase/packed-structs
+(progn
+(ftype* applicable-ops/fast state+axioms (array op-id))
+(defun applicable-ops/fast (state)
+  #+(or)
+  (in-compile-time (env)
+    ;; checking macroexpansion (disabled)
+    (print
+     (macroexpand
+      '(do-leaf (op-id state #.*sg*)
+        (vector-push op-id results))))
+    nil)
+  (let ((results (load-time-value
+                  (make-a-array (length *instantiated-ops*) :element-type 'op-id))))
+    (setf (fill-pointer results) 0)
+    (do-leaf (op-id state #.*sg*)
+      (vector-push op-id results))
+    results))
+
+(print-function-size #'applicable-ops/fast)
+
+)
