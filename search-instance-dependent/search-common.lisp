@@ -38,24 +38,25 @@
              t)
       nil))
 
-(ftype* applicable-ops sg state+axioms (array op-id))
+(ftype* applicable-ops sg state+axioms (values (runtime simple-array 'op-id (list (length *instantiated-ops*))) op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
   (let ((results (load-time-value
-                  (make-a-array (length *instantiated-ops*) :element-type 'op-id))))
-    (setf (fill-pointer results) 0) 
+                  (make-array (length *instantiated-ops*) :element-type 'op-id)))
+        (c 0))
     (labels ((rec (node)
                (ematch node
                  ((type list)
                   (dolist (op-id node)
-                    (vector-push op-id results)))
+                    (setf (aref results c) op-id)
+                    (incf c)))
                  ((sg-node variable then else either)
-                  (case (aref state variable)
-                    (0 (rec else))
-                    (1 (rec then)))
+                  (if (= 1 (aref state variable))
+                      (rec then)
+                      (rec else))
                   (rec either)))))
-      (rec sg)
-      results)))
+      (rec sg))
+    (values results c)))
 
 ;; these functions are all destructive.
 
