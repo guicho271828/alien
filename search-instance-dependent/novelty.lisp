@@ -1,18 +1,18 @@
 (in-package :strips)
 
-#+strips::phase/packed-structs
-(strips.lib:define-packed-struct novelty ()
-  (novelty 0 (runtime integer 0 *state-size*)))
+(in-compilation-phase (phase/packed-structs)
+  (strips.lib:define-packed-struct novelty ()
+    (novelty 0 (runtime integer 0 *state-size*))))
 
-#+strips::phase/full-compilation
-(ftype* novelty-heuristics state+axioms (runtime integer 0 *state-size*))
-#+strips::phase/full-compilation
-(defun novelty-heuristics (state)
+(in-compilation-phase (phase/full-compilation)
+  (ftype* novelty-heuristics state+axioms (runtime integer 0 *state-size*))
+  (defun novelty-heuristics (state)
 
-  )
+    ))
 
-#-(or strips::phase/packed-structs strips::phase/full-compilation)
-(defun novelty ()
-  (make-evaluator
-   :storage '(novelty)
-   :function 'novelty-heuristics))
+(in-compilation-phase ((not (or phase/packed-structs
+                                phase/full-compilation)))
+  (defun novelty ()
+    (make-evaluator
+     :storage '(novelty)
+     :function 'novelty-heuristics)))

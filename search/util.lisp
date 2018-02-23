@@ -86,3 +86,8 @@ You can mix both forms. "
             fn
             (reduce #'+ (sb-disassem:get-fun-segments fn) :key #'sb-disassem:seg-length)))
 
+
+
+(defmacro in-compilation-phase ((phase) &body body)
+  (when (featurep phase)
+    `(progn ,@body)))

@@ -1,14 +1,14 @@
 
 (in-package :strips)
 
-#+strips::phase/packed-structs
+(in-compilation-phase (phase/packed-structs)
 (strips.lib:define-packed-struct eager ()
   (facts 0 state)
   (parent 0 state-id)
   (op 0 op-id)
-  (status +new+ status))
+  (status +new+ status)))
 
-#+strips::phase/full-compilation
+(in-compilation-phase (phase/full-compilation)
 (defun eager-search (open-list insert pop)
   (declare (optimize (speed 3)))
   (let* ((db (make-state-information-array
@@ -87,9 +87,9 @@
         (log:info "evaluated: ~a" evaluated)
         (log:info "generated: ~a" (close-list-counter close-list))
         (log:info "eval/sec:  ~a" (/ (float (* internal-time-units-per-second evaluated))
-                                     (max 1 (- (get-internal-real-time) start))))))))
+                                     (max 1 (- (get-internal-real-time) start)))))))))
 
-#-(or strips::phase/packed-structs strips::phase/full-compilation)
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
 (defun eager (open-list)
   (ematch open-list
     ((open-list storage constructor insert pop)
@@ -99,3 +99,4 @@
                (eager-search #',constructor
                              #',insert
                              #',pop))))))
+)

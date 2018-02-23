@@ -26,7 +26,7 @@ instance-depdendent code should be compiled/loaded three times.
      (log:info "compiling instance-dependent code for packed structs")
      (let ((*features* (cons 'phase/packed-structs *features*)))
        (recompile-instance-dependent-code))
-     (log-milestone :first-compilation)
+     (log-milestone :secondary-compilation)
      ;; compile STATE-INFORMATION
      (let ((*package* (find-package :strips))
            ;; default value is 200, which consumes too much time for compilation
@@ -39,7 +39,7 @@ instance-depdendent code should be compiled/loaded three times.
      (log:info "compiling instance-dependent code for functions")
      (let ((*features* (cons 'phase/full-compilation *features*)))
        (recompile-instance-dependent-code))
-     (log-milestone :second-compilation)
+     (log-milestone :tertiery-compilation)
      (log:info "Search started")
      (unwind-protect
           (funcall (compile nil form))

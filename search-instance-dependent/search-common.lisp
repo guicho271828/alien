@@ -4,8 +4,7 @@
 
 (in-package :strips)
 
-#-(or strips::phase/packed-structs strips::phase/full-compilation)
-(progn
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
   (ftype* initial-state+axioms *)
   (ftype* report-if-goal * * *)
   (ftype* applicable-ops * * *)
@@ -14,13 +13,13 @@
   (ftype* apply-op * * * *)
   (ftype* apply-effect * * * *))
 
-#+strips::phase/packed-structs
+(in-compilation-phase (phase/packed-structs)
 (deftype op-id ()
   "maximum range (length *instantiated-ops*) is an invalid op for the initial state"
   `(runtime integer 0 (length *instantiated-ops*)))
+)
 
-#+strips::phase/full-compilation
-(progn
+(in-compilation-phase (phase/full-compilation)
 
 (ftype* initial-state+axioms state+axioms)
 (defun initial-state+axioms ()
@@ -147,8 +146,7 @@
 )
 
 
-#+strips::phase/packed-structs
-(progn
+(in-compilation-phase (phase/packed-structs)
 (ftype* applicable-ops/fast state+axioms (values (runtime simple-array 'op-id (list (length *instantiated-ops*))) op-id))
 (defun applicable-ops/fast (state)
   #+(or)
