@@ -44,12 +44,12 @@
          (strips::with-temp (planfile :debug t)
            (uiop:run-program (list (namestring (strips::fd-relative-pathname "fast-downward.py"))
                                    "--run-all"
-                                   "--overall-memory-limit" "1000"
-                                   "--search-time-limit" "60"
+                                   "--overall-memory-limit" (princ-to-string (floor *memory-limit* 1000))
+                                   "--search-time-limit" (princ-to-string *time-limit*)
                                    "--plan-file" (namestring planfile)
                                    (namestring (find-domain path))
                                    (namestring path)
-                                   "--search" "eager(single_buckets(blind()))")
+                                   "--search" "eager(single_buckets(blind(),queue_type=LIFO),cost_type=ONE)")
                              :output t
                              :ignore-error-status t))
       (strips::log-milestone :fd))))
