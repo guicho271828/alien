@@ -89,14 +89,51 @@ A generator node is just a list containing operator indices."
   "Returns a program that iterates over the leaf of sg, inlining constants, and execute BODY on each loop."
   (ematch sg
     ((sg-node variable then else either)
+     #+(or)
      `(progn
+        ;; this is OK but the expansion becomes longer and difficult to debug
         (if (= 1 (aref ,state-sym ,variable))
             ,(compile-iteration-over-leaf op-id-sym state-sym then body)
             ,(compile-iteration-over-leaf op-id-sym state-sym else body))
-        ,(compile-iteration-over-leaf op-id-sym state-sym either body)))
+        ,(compile-iteration-over-leaf op-id-sym state-sym either body))
+     
+     (flet ((ok (form)
+              (not (equal form '(progn)))))
+       (let* ((then-form (compile-iteration-over-leaf op-id-sym state-sym then body))
+              (else-form (compile-iteration-over-leaf op-id-sym state-sym else body))
+              (either-form (compile-iteration-over-leaf op-id-sym state-sym either body))
+              (conditional-form
+               (match* ((ok then-form) (ok else-form))
+                 ((t t)
+                  `(if (= 1 (aref ,state-sym ,variable))
+                       ,then-form
+                       ,else-form))
+                 ((t nil) `(if (= 1 (aref ,state-sym ,variable)) ,then-form))
+                 ((nil t) `(if (= 0 (aref ,state-sym ,variable)) ,else-form))
+                 ((nil nil)
+                  ;; equal to (progn)
+                  then-form))))
+         (match* ((ok conditional-form) (ok either-form))
+           ((t t)
+            `(progn ,conditional-form ,either-form))
+           ((t nil) conditional-form)
+           ((nil t) either-form)
+           ((nil nil)
+            ;; equal to (progn)
+            then-form)))))
+    ((list id)
+     ;; special case for single element
+     (compile-leaf id op-id-sym body))
     ((list* op-ids)
      `(progn
         ,@(iter (for id in op-ids)
                 (collecting
-                 `(let ((,op-id-sym ,id))
-                    ,@body)))))))
+                 (compile-leaf id op-id-sym body)))))))
+
+(defun compile-leaf (id op-id-sym body)
+  ;; I don't do this usually, but only for now
+  ;; `(let ((,op-id-sym ,id)) ,@body)
+  (let ((result (subst id op-id-sym body)))
+    (if (second result)
+        `(progn ,@result)
+        (first result))))
