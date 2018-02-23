@@ -31,8 +31,6 @@ From: ubuntu
 
     cd /planner
 
-    if ! [ -d .roswell ] ; then cp -ru /planner /strips ; fi
-    
     ## Install all necessary dependencies.
     
     apt-get -y install build-essential automake libcurl4-openssl-dev
@@ -54,7 +52,8 @@ From: ubuntu
     unzip -u zip/cl-prolog2-master.zip -d .roswell/local-projects/
     
     # move the main source code to the directory recognized by quicklisp
-    if [ -d /strips ] ; then mv -ru /strips .roswell/local-projects/strips ; fi
+    git clone . .roswell/local-projects/strips/ || true # fails if it already exists
+    (cd .roswell/local-projects/strips/ ; git fetch --all ; git checkout origin )
     
     # this now downloads from quicklisp, not from github.
     ros install trivial-package-manager
