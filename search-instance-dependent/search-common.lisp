@@ -160,7 +160,7 @@
   (let ((results (load-time-value
                   (make-array (length *instantiated-ops*) :element-type 'op-id)))
         (c 0))
-    (do-leaf (op-id state)
+    (do-leaf (op-id state *sg*)
       (setf (aref results c) op-id)
       (incf c))
     (values results c)))

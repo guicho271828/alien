@@ -87,12 +87,13 @@ A generator node is just a list containing operator indices."
 (defparameter *sg-compilation-threashold* 3000
   "threashold for the number of operators, determining whether it should compile the successor generator")
 
-(defmacro do-leaf ((op-id state) &body body &environment env)
+(defmacro do-leaf ((op-id state sg) &body body &environment env)
   (assert (symbolp state))
   (assert (symbolp op-id))
+  (assert (symbolp sg))
   (if (< *sg-compilation-threashold* (length *instantiated-ops*))
-      (interpret-iteration-over-leaf op-id state *sg* body)
-      (compile-iteration-over-leaf op-id state *sg* body)))
+      (interpret-iteration-over-leaf op-id state (symbol-value sg) body)
+      (compile-iteration-over-leaf op-id state (symbol-value sg) body)))
 
 (defun compile-iteration-over-leaf (op-id-sym state-sym sg body)
   "Returns a program that iterates over the leaf of sg, inlining constants, and execute BODY on each loop."
