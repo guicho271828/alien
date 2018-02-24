@@ -165,8 +165,8 @@
       (incf c))
     (values results c)))
 
-(print-function-size #'applicable-ops/fast)
-
+(eval-when (:compile-toplevel)
+  (print-function-size #'applicable-ops/fast))
 
 (ftype* apply-op/fast op-id state+axioms state+axioms state+axioms)
 (defun apply-op/fast (op-id state child)
