@@ -176,7 +176,7 @@
      (macroexpand
       '(compiled-apply-op op-id state child)))
     nil)
-  (compiled-apply-op op-id state child))
+  (compiled-apply-op op-id state child *instantiated-ops*))
 
 (print-function-size 'apply-op/fast)
 )

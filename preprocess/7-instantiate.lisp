@@ -281,15 +281,16 @@ See https://gist.github.com/guicho271828/707be5ad51edb858ff751d954e37c267 for su
              :collect `(progn (* i rand))))))
 
 (defparameter *effect-compilation-threashold* 3000)
-(defmacro compiled-apply-op (op-id state child)
+(defmacro compiled-apply-op (op-id state child ops)
+  (assert (symbolp ops))
   (if (< (length *instantiated-ops*) *effect-compilation-threashold*)
-      (%compiled-apply-op op-id state child)
-      (%interpret-apply-op op-id state child)))
+      (%compiled-apply-op op-id state child ops)
+      (%interpret-apply-op op-id state child ops)))
 
-(defun %compiled-apply-op (op-id state child)
+(defun %compiled-apply-op (op-id state child ops)
   `(progn
      (fcase9 ,op-id
-       ,@(iter (for op in-vector *instantiated-ops*)
+       ,@(iter (for op in-vector (symbol-value ops))
                (collecting
                 `(progn
                    ,@(compile-apply-op op state child)))))
@@ -319,10 +320,10 @@ See https://gist.github.com/guicho271828/707be5ad51edb858ff751d954e37c267 for su
            `(when ,condition-form
               ,effect-form))))))
 
-(defun %interpret-apply-op (op-id state child)
+(defun %interpret-apply-op (op-id state child ops)
   (log:warn "falling back to the interpretation based apply-op")
   `(progn
-     (ematch (aref (load-time-value *instantiated-ops* t) ,op-id)
+     (ematch (aref (load-time-value ,ops t) ,op-id)
        ((op eff)
         (iter (for e in-vector eff)
               (apply-effect e ,state ,child))))
