@@ -280,7 +280,7 @@ See https://gist.github.com/guicho271828/707be5ad51edb858ff751d954e37c267 for su
       . #.(loop :for x :from 0 :repeat 256
              :collect `(progn (* i rand))))))
 
-(defvar *effect-compilation-threashold* 3000)
+(defparameter *effect-compilation-threashold* 3000)
 (defmacro compiled-apply-op (op-id state child)
   (if (< (length *instantiated-ops*) *effect-compilation-threashold*)
       (%compiled-apply-op op-id state child)
