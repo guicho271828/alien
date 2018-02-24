@@ -122,10 +122,10 @@
               (dolist (c (remove-duplicates gpre :test 'equal))
                 (if (positive c)
                     (unless (static-p c)
-                      (linear-extend pre (strips.lib:index-id index c)))
+                      (linear-extend pre (strips.lib:index-id index c) most-positive-fixnum))
                     (let ((i (strips.lib:index-id index (second c))))
                       (when i ; otherwise unreachable
-                        (linear-extend pre (lognot i))))))
+                        (linear-extend pre (lognot i) most-positive-fixnum)))))
               (sort pre #'<)
               (iter (for e in geff)
                     (for i from 0)
@@ -189,10 +189,10 @@
        (iter (for c in (remove-duplicates ground-conditions :test 'equal))
              (if (positive c)
                  (unless (static-p c)
-                   (linear-extend con (strips.lib:index-id index c)))
+                   (linear-extend con (strips.lib:index-id index c) most-positive-fixnum))
                  (let ((i (strips.lib:index-id index (second c))))
                    (when i ; otherwise unreachable
-                     (linear-extend con (lognot i))))))
+                     (linear-extend con (lognot i) most-positive-fixnum)))))
        (sort con #'<)
        (when (positive atom)
          (strips.lib:query-trie

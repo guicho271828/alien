@@ -198,8 +198,15 @@
               :initial-element initial-element))
 
 (declaim (inline linear-extend))
-(defun linear-extend (vector element)
-  (vector-push-extend element vector (array-total-size vector)))
+(defun linear-extend (vector element &optional (initial-element nil initial-element-supplied-p))
+  (if-let ((result (vector-push element vector)))
+    result
+    (progn
+      (log:trace "extending array: ~a -> ~a" (array-total-size vector) (* 2 (array-total-size vector)))
+      (if initial-element-supplied-p
+          (adjust-array vector (* 2 (array-total-size vector)) :initial-element initial-element)
+          (adjust-array vector (* 2 (array-total-size vector))))
+      (vector-push element vector))))
 
 (defun safe-aref (vector i &optional (initial-element nil initial-element-supplied-p))
   (when (not (array-in-bounds-p vector i))
