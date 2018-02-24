@@ -1,14 +1,14 @@
 
 (in-package :strips)
 
-#+strips::phase/packed-structs
+(in-compilation-phase (phase/packed-structs)
 (strips.lib:define-packed-struct eager ()
   (facts 0 state)
   (parent 0 state-id)
   (op 0 op-id)
-  (status +new+ status))
+  (status +new+ status)))
 
-#+strips::phase/full-compilation
+(in-compilation-phase (phase/full-compilation)
 (defun eager-search (open-list insert pop)
   (declare (optimize (speed 3)))
   (let* ((db (make-state-information-array
@@ -57,14 +57,14 @@
                    (declare (dynamic-extent #'path))
                    (report-if-goal state+axioms #'path))
                  (incf expanded)
-                 
-                 (iter (for op-id in-vector (applicable-ops (load-time-value *sg* t) state+axioms))
+
+                 (multiple-value-bind (ops len) (applicable-ops/fast state+axioms)
+                 (iter (for op-id in-vector ops with-index i below len)
                        ;; DONE: remove special variable references to *sg* and *instantiated-ops*
                        ;; TODO: constant fold applicable-ops, apply-axioms
-                       (for op = (aref (load-time-value *instantiated-ops* t) op-id))
                        (fill child+axioms 0)
                        (replace child+axioms state)
-                       (apply-op op state+axioms child+axioms)
+                       (apply-op/fast op-id state+axioms child+axioms)
                        (apply-axioms child+axioms)
                        (replace child child+axioms)
                        
@@ -77,7 +77,7 @@
                                  (state-information-op info) op-id
                                  (state-information-status info) +open+
                                  (packed-aref db 'state-information id2) info)
-                           (funcall insert open-list id2 child+axioms)))))
+                           (funcall insert open-list id2 child+axioms))))))
                (rec)))
       ;; (declare (inline rec))
       ;; loop unrolling
@@ -87,9 +87,9 @@
         (log:info "evaluated: ~a" evaluated)
         (log:info "generated: ~a" (close-list-counter close-list))
         (log:info "eval/sec:  ~a" (/ (float (* internal-time-units-per-second evaluated))
-                                     (max 1 (- (get-internal-real-time) start))))))))
+                                     (max 1 (- (get-internal-real-time) start)))))))))
 
-#-(or strips::phase/packed-structs strips::phase/full-compilation)
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
 (defun eager (open-list)
   (ematch open-list
     ((open-list storage constructor insert pop)
@@ -99,3 +99,4 @@
                (eager-search #',constructor
                              #',insert
                              #',pop))))))
+)

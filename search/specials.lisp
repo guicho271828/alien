@@ -53,6 +53,7 @@
 
 (defun solve-common (domain problem fn)
   (log:info "[0.000s] [+0.000s] STARTED")
+  (log:info "Solving ~a" problem)
   (let* ((*start-time* (get-internal-real-time))
          (*last-milestone* *start-time*))
     (with-parsed-information5 (-<> (parse problem domain)
@@ -65,7 +66,14 @@
                                 (prog1 arrow-macros:<> (log-milestone :mutex-invariant))
                                 instantiate
                                 (prog1 arrow-macros:<> (log-milestone :intantiate)))
-      (funcall fn))))
+
+      (log:info "       facts: ~A" *fact-size*)
+      (log:info "      axioms: ~A" (length *ground-axioms*))
+      (log:info "         ops: ~A" (length *instantiated-ops*))
+      (log:info "axiom layers: ~A" (length *instantiated-axiom-layers*))
+      (unwind-protect
+           (funcall fn)
+        (log:info "Finished on ~a" problem)))))
 
 (defun solve-once (domain problem fn)
   "Solve the problem, return the first solution"

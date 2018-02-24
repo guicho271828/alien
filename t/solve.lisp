@@ -44,12 +44,12 @@
          (strips::with-temp (planfile :debug t)
            (uiop:run-program (list (namestring (strips::fd-relative-pathname "fast-downward.py"))
                                    "--run-all"
-                                   "--overall-memory-limit" "1000"
-                                   "--search-time-limit" "60"
+                                   "--overall-memory-limit" (princ-to-string (floor *memory-limit* 1000))
+                                   "--search-time-limit" (princ-to-string *time-limit*)
                                    "--plan-file" (namestring planfile)
                                    (namestring (find-domain path))
                                    (namestring path)
-                                   "--search" "eager(single_buckets(blind()))")
+                                   "--search" "eager(single_buckets(blind(),queue_type=LIFO),cost_type=ONE)")
                              :output t
                              :ignore-error-status t))
       (strips::log-milestone :fd))))
@@ -78,7 +78,9 @@
   (solve "movie/p20.pddl"))
 
 (test demo
-  ;; (solve "demo/sokoban/p01.pddl")
+  ;; demo problems for IPC submission
+  ;; 
+  (solve "demo/sokoban/p01.pddl")
   ;; (solve-fd "demo/sokoban/p01.pddl")
   ;; goal count:
   ;; 0.037
@@ -89,18 +91,18 @@
   ;; 0.00589913
   
   ;; 
-  ;; (solve "demo/cavediving/p01.pddl")
+  (solve "demo/cavediving/p01.pddl")
   ;; (solve-fd "demo/cavediving/p01.pddl")
 
   ;; 
-  ;; (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
+  (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
   ;; (solve-fd "demo/citycar/p01.pddl") ; too difficult for goal-count
   ;; 
   ;; (solve "demo/parkprinter/p00.pddl")   ;0.018
   ;; (solve-fd "demo/parkprinter/p00.pddl") ;0.000157598
-  ;; (solve "demo/parkprinter/p01.pddl")    ;23.983
+  (solve "demo/parkprinter/p01.pddl")    ;23.983
   ;; (solve-fd "demo/parkprinter/p01.pddl") ;0.000429445
-  ;; (solve "demo/researchers/p01.pddl")    ;0.343s
+  (solve "demo/researchers/p01.pddl")    ;0.343s
   ;; (solve-fd "demo/researchers/p01.pddl") ;0.00746729
   ;; ;; (solve "demo/researchers-debug/p01.pddl")
   )

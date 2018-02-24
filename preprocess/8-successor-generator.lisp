@@ -26,6 +26,9 @@ A generator node is just a list containing operator indices."
   (else nil :type (or sg-node list))
   (either nil :type (or sg-node list)))
 
+(defmethod make-load-form ((sg sg-node) &optional env)
+  (make-load-form-saving-slots sg :environment env))
+
 (deftype sg () '(or list sg-node))
 
 (defun generate-sg (instantiated-ops)
@@ -81,4 +84,65 @@ A generator node is just a list containing operator indices."
                            (sg-node variable then else (rec either con-index)))))))))))
        (rec current 0)))))
 
+(defvar *sg-compilation-threashold* 3000
+  "threashold for the number of operators, determining whether it should compile the successor generator")
 
+(defmacro do-leaf ((op-id state) &body body &environment env)
+  (assert (symbolp state))
+  (assert (symbolp op-id))
+  (if (< *sg-compilation-threashold* (length *instantiated-ops*))
+      (interpret-iteration-over-leaf op-id state *sg* body)
+      (compile-iteration-over-leaf op-id state *sg* body)))
+
+(defun compile-iteration-over-leaf (op-id-sym state-sym sg body)
+  "Returns a program that iterates over the leaf of sg, inlining constants, and execute BODY on each loop."
+  (let ()
+    (labels ((as-form (body)
+               "list of forms -> (progn forms), single list of form -> form itself"
+               (if (second body)
+                   `((progn ,@body))
+                   body))
+             (assemble-bodies (variable then-body else-body either-body)
+               "construct a compact form for three bodies"
+               (let ((conditional
+                      (cond (then-body
+                             `((if (= 1 (aref ,state-sym ,variable))
+                                   ,@(as-form then-body)
+                                   ,@(as-form else-body))))
+                            (else-body
+                             `((if (= 0 (aref ,state-sym ,variable))
+                                   ,@(as-form else-body))))
+                            (t nil))))
+                 (if conditional
+                     `(,@conditional ,@either-body)
+                     either-body)))
+             (rec (sg)
+               (ematch sg
+                 ((sg-node variable then else either)
+                  (assemble-bodies variable
+                                   (rec then)
+                                   (rec else)
+                                   (rec either)))
+                 ((list* op-ids)
+                  (iter (for id in op-ids)
+                        (appending
+                         (compile-leaf id op-id-sym body)))))))
+      `(progn ,@(rec sg)))))
+
+(defun compile-leaf (id op-id-sym body)
+  ;; I don't do this usually, but only for now
+  (subst id op-id-sym body))
+
+(defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
+  (log:warn "falling back to the interpretation based successor generation")
+  `(labels ((rec (node)
+              (ematch node
+                ((type list)
+                 (dolist (,op-id-sym node)
+                   ,@body))
+                ((sg-node variable then else either)
+                 (if (= 1 (aref ,state-sym variable))
+                     (rec then)
+                     (rec else))
+                 (rec either)))))
+     (rec ,sg)))

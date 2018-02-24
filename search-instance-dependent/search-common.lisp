@@ -4,8 +4,7 @@
 
 (in-package :strips)
 
-#-(or strips::phase/packed-structs strips::phase/full-compilation)
-(progn
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
   (ftype* initial-state+axioms *)
   (ftype* report-if-goal * * *)
   (ftype* applicable-ops * * *)
@@ -14,13 +13,13 @@
   (ftype* apply-op * * * *)
   (ftype* apply-effect * * * *))
 
-#+strips::phase/packed-structs
+(in-compilation-phase (phase/packed-structs)
 (deftype op-id ()
   "maximum range (length *instantiated-ops*) is an invalid op for the initial state"
   `(runtime integer 0 (length *instantiated-ops*)))
+)
 
-#+strips::phase/full-compilation
-(progn
+(in-compilation-phase (phase/full-compilation)
 
 (ftype* initial-state+axioms state+axioms)
 (defun initial-state+axioms ()
@@ -38,24 +37,25 @@
              t)
       nil))
 
-(ftype* applicable-ops sg state+axioms (array op-id))
+(ftype* applicable-ops sg state+axioms (values (runtime simple-array 'op-id (list (length *instantiated-ops*))) op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
   (let ((results (load-time-value
-                  (make-a-array (length *instantiated-ops*) :element-type 'op-id))))
-    (setf (fill-pointer results) 0) 
+                  (make-array (length *instantiated-ops*) :element-type 'op-id)))
+        (c 0))
     (labels ((rec (node)
                (ematch node
                  ((type list)
                   (dolist (op-id node)
-                    (vector-push op-id results)))
+                    (setf (aref results c) op-id)
+                    (incf c)))
                  ((sg-node variable then else either)
-                  (case (aref state variable)
-                    (0 (rec else))
-                    (1 (rec then)))
+                  (if (= 1 (aref state variable))
+                      (rec then)
+                      (rec else))
                   (rec either)))))
-      (rec sg)
-      results)))
+      (rec sg))
+    (values results c)))
 
 ;; these functions are all destructive.
 
@@ -144,3 +144,40 @@
            (setf (aref child eff) 1)))))
   child)
 )
+
+
+(in-compilation-phase (phase/full-compilation)
+(ftype* applicable-ops/fast state+axioms (values (runtime simple-array 'op-id (list (length *instantiated-ops*))) op-id))
+(defun applicable-ops/fast (state)
+  #+(or)
+  (in-compile-time (env)
+    ;; checking macroexpansion (disabled)
+    (print
+     (macroexpand
+      '(do-leaf (op-id state)
+        (vector-push op-id results))))
+    nil)
+  (let ((results (load-time-value
+                  (make-array (length *instantiated-ops*) :element-type 'op-id)))
+        (c 0))
+    (do-leaf (op-id state)
+      (setf (aref results c) op-id)
+      (incf c))
+    (values results c)))
+
+(eval-when (:compile-toplevel)
+  (print-function-size 'applicable-ops/fast))
+
+(ftype* apply-op/fast op-id state+axioms state+axioms state+axioms)
+(defun apply-op/fast (op-id state child)
+  #+(or)
+  (in-compile-time (env)
+    ;; checking macroexpansion (disabled)
+    (print
+     (macroexpand
+      '(compiled-apply-op op-id state child)))
+    nil)
+  (compiled-apply-op op-id state child))
+)
+
+
