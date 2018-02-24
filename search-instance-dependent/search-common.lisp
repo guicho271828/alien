@@ -178,6 +178,9 @@
       '(compiled-apply-op op-id state child)))
     nil)
   (compiled-apply-op op-id state child))
+
+(eval-when (:compile-toplevel)
+  (print-function-size 'apply-op/fast))
 )
 
 
