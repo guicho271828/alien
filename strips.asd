@@ -46,6 +46,7 @@
                             (:file "specials")
                             (:file "blind")
                             (:file "bucket-open-list")
+                            (:file "delete-relaxation")
                             (:file "run")
                             (:file "timeout")
                             (:module "heuristics"

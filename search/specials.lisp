@@ -2,17 +2,17 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defparameter *memory-limit* 100000 ; 1GB
-  "maximum amount of memory in kB")
+(defparameter *memory-limit* 1000 ; 1GB
+  "maximum amount of memory in MB")
 
-(defparameter *time-limit* 60
+(defparameter *time-limit* 20
   "Search time limit in sec.")
 
 (defun max-state-id ()
   (unless (or *compile-file-pathname*
               *load-pathname*)
     (log:warn "Slow function: Avoid calling this function in runtime, especially in inner loop!"))
-  (floor (* 8 1024 *memory-limit*) ; kB -> bit
+  (floor (* 8 1024 1024 *memory-limit*) ; MB -> bit
          ;; (size-of 'state-information) ; -- circular dependency
          ;; using 64 bit as the lower bound
          64))
