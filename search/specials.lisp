@@ -5,7 +5,7 @@
 (defparameter *memory-limit* 100000 ; 1GB
   "maximum amount of memory in kB")
 
-(defparameter *time-limit* 60
+(defparameter *time-limit* 20
   "Search time limit in sec.")
 
 (defun max-state-id ()
