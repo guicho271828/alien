@@ -128,6 +128,8 @@
    #:make-state+axioms
    #:recompile-instance-dependent-code
    #:do-leaf
-   #:bell))
+   #:bell
+   #:*sg-compilation-threashold*
+   #:*effect-compilation-threashold*))
 
 (setf trivia:*arity-check-by-test-call* nil)
