@@ -258,7 +258,7 @@
   "Jump-table based CASE implementation by myself
 See https://gist.github.com/guicho271828/707be5ad51edb858ff751d954e37c267 for summary"
   (let* ((vars (find-lexical-variables env))
-         (types (mapcar #'introspect-environment:variable-type vars)))
+         (types (mapcar (rcurry #'introspect-environment:variable-type env) vars)))
     `(funcall
       (the (function ,types *)
            (svref (the (simple-vector ,(length body))
