@@ -81,6 +81,9 @@ A generator node is just a list containing operator indices."
                            (sg-node variable then else (rec either con-index)))))))))))
        (rec current 0)))))
 
+(defvar *sg-compilation-threashold* 10000
+  "threashold for the number of operators, determining whether it should compile the successor generator")
+
 (defmacro do-leaf ((op-id state) &body body &environment env)
   (once-only (state)
     (compile-iteration-over-leaf op-id state *sg* body)))
@@ -137,3 +140,16 @@ A generator node is just a list containing operator indices."
     (if (second result)
         `(progn ,@result)
         (first result))))
+
+(defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
+  `(labels ((rec (node)
+              (ematch node
+                ((type list)
+                 (dolist (,op-id-sym node)
+                   ,@body))
+                ((sg-node variable then else either)
+                 (if (= 1 (aref ,state-sym variable))
+                     (rec then)
+                     (rec else))
+                 (rec either)))))
+     (rec ,sg)))
