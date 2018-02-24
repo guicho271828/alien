@@ -26,6 +26,9 @@ A generator node is just a list containing operator indices."
   (else nil :type (or sg-node list))
   (either nil :type (or sg-node list)))
 
+(defmethod make-load-form ((sg sg-node) &optional env)
+  (make-load-form-saving-slots sg :environment env))
+
 (deftype sg () '(or list sg-node))
 
 (defun generate-sg (instantiated-ops)
@@ -81,12 +84,15 @@ A generator node is just a list containing operator indices."
                            (sg-node variable then else (rec either con-index)))))))))))
        (rec current 0)))))
 
-(defvar *sg-compilation-threashold* 10000
+(defvar *sg-compilation-threashold* 3000
   "threashold for the number of operators, determining whether it should compile the successor generator")
 
 (defmacro do-leaf ((op-id state) &body body &environment env)
-  (once-only (state)
-    (compile-iteration-over-leaf op-id state *sg* body)))
+  (assert (symbolp state))
+  (assert (symbolp op-id))
+  (if (< *sg-compilation-threashold* (length *instantiated-ops*))
+      (interpret-iteration-over-leaf op-id state *sg* body)
+      (compile-iteration-over-leaf op-id state *sg* body)))
 
 (defun compile-iteration-over-leaf (op-id-sym state-sym sg body)
   "Returns a program that iterates over the leaf of sg, inlining constants, and execute BODY on each loop."
@@ -128,6 +134,7 @@ A generator node is just a list containing operator indices."
   (subst id op-id-sym body))
 
 (defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
+  (log:warn "falling back to the interpretation based successor generation")
   `(labels ((rec (node)
               (ematch node
                 ((type list)
