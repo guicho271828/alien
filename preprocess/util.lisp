@@ -203,7 +203,7 @@
 
 (defun safe-aref (vector i &optional (initial-element nil initial-element-supplied-p))
   (when (not (array-in-bounds-p vector i))
-    (format t "extending array: ~a -> ~a~%" (array-total-size vector) (* 2 (array-total-size vector)))
+    (log:trace "extending array: ~a -> ~a" (array-total-size vector) (* 2 (array-total-size vector)))
     (if initial-element-supplied-p
         (adjust-array vector (* 2 (array-total-size vector)) :initial-element initial-element)
         (adjust-array vector (* 2 (array-total-size vector)))))
