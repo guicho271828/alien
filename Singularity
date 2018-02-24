@@ -76,7 +76,7 @@ From: ubuntu
     pwd
     env
     which alien
-    alien $1 $2 $3
+    alien -m 8000 -t 300 $1 $2 $3
     ls
 
 
