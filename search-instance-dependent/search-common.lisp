@@ -177,8 +177,7 @@
      (macroexpand
       '(compiled-apply-op op-id state child)))
     nil)
-  (compiled-apply-op op-id state child)
-  child)
+  (compiled-apply-op op-id state child))
 )
 
 

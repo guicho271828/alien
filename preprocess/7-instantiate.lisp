@@ -280,12 +280,20 @@ See https://gist.github.com/guicho271828/707be5ad51edb858ff751d954e37c267 for su
       . #.(loop :for x :from 0 :repeat 256
              :collect `(progn (* i rand))))))
 
+(defvar *effect-compilation-threashold* 3000)
 (defmacro compiled-apply-op (op-id state child)
-  `(fcase9 ,op-id
-     ,@(iter (for op in-vector *instantiated-ops*)
-             (collecting
-              `(progn
-                 ,@(compile-apply-op op state child))))))
+  (if (< (length *instantiated-ops*) *effect-compilation-threashold*)
+      (%compiled-apply-op op-id state child)
+      (%interpret-apply-op op-id state child)))
+
+(defun %compiled-apply-op (op-id state child)
+  `(progn
+     (fcase9 ,op-id
+       ,@(iter (for op in-vector *instantiated-ops*)
+               (collecting
+                `(progn
+                   ,@(compile-apply-op op state child)))))
+     ,child))
 
 (defun compile-apply-op (op state child)
   (ematch op
@@ -311,3 +319,11 @@ See https://gist.github.com/guicho271828/707be5ad51edb858ff751d954e37c267 for su
            `(when ,condition-form
               ,effect-form))))))
 
+(defun %interpret-apply-op (op-id state child)
+  (log:warn "falling back to the interpretation based apply-op")
+  `(progn
+     (ematch (aref (load-time-value *instantiated-ops* t) ,op-id)
+       ((op eff)
+        (iter (for e in-vector eff)
+              (apply-effect e ,state ,child))))
+     ,child))
