@@ -130,6 +130,7 @@
    #:do-leaf
    #:bell
    #:*sg-compilation-threashold*
-   #:*effect-compilation-threashold*))
+   #:*effect-compilation-threashold*
+   #:solve-common))
 
 (setf trivia:*arity-check-by-test-call* nil)
