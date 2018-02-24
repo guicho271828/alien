@@ -51,6 +51,17 @@ blind search on Phenom II X6
 |        - |         |        - | researchers p01 heap exhauset     |                 |
 |          |         |          | during compilation                |                 |
 |----------+---------+----------+-----------------------------------+-----------------|
+|          | cfbdc6f |          | falls back when too many ops      | <2018-02-24 土> |
+|    72352 |         |     1230 | sokoban p01                       |                 |
+|    58571 |         |          | take 2                            |                 |
+|   283880 |         |  3580298 | cavediving p01                    |                 |
+|   285852 |         |          | take 2                            |                 |
+|   465895 |         | 12800001 | citycar p01                       |                 |
+|   480624 |         |          | take 2                            |                 |
+|   174018 |         | 10478707 | parkprinter p01                   |                 |
+|   176333 |         |          | take 2                            |                 |
+|     7949 |         |     3275 | researchers p01                   |                 |
+|     8146 |         |          | take 2                            |                 |
 
 
 blind search on Intel(R) Celeron(R) 2980U @ 1.60GHz
