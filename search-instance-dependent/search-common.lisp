@@ -146,7 +146,7 @@
 )
 
 
-(in-compilation-phase (phase/packed-structs)
+(in-compilation-phase (phase/full-compilation)
 (ftype* applicable-ops/fast state+axioms (values (runtime simple-array 'op-id (list (length *instantiated-ops*))) op-id))
 (defun applicable-ops/fast (state)
   #+(or)
