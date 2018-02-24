@@ -127,6 +127,7 @@
    #:blind
    #:make-state+axioms
    #:recompile-instance-dependent-code
-   #:do-leaf))
+   #:do-leaf
+   #:bell))
 
 (setf trivia:*arity-check-by-test-call* nil)

@@ -255,3 +255,10 @@
                         (collect `(list ,arg)))
                 ',last-form (list ,last))
          ,last))))
+
+(defun bell ()
+  "This is a function I use for 'ringing a bell' from the shell,
+so that I am noticed when a long computation finishes."
+  (uiop:run-program "bell"))
+
+(define-symbol-macro bell (bell))
