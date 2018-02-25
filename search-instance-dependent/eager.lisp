@@ -29,7 +29,8 @@
     (declare (fixnum expanded evaluated start))
     (replace state state+axioms)
     (let ((id (close-list-insert close-list state)))
-      (funcall insert open-list id state+axioms))
+      (log:info "Initial heuristic value: ~a"
+                (funcall insert open-list id state+axioms)))
     (setf (state-information-facts info) state
           (state-information-status info) +open+
           (state-information-op info) *op-size*
