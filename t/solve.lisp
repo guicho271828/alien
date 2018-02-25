@@ -6,35 +6,47 @@
 (def-suite solve :in :strips)
 (in-suite solve)
 
-(defun solve-alien (path)
+(defun solve-alien-common (path fn)
   (declare (optimize (debug 3) (speed 0)))
   (log:info "Testing ~a" path)
   (recompile-instance-dependent-code)
   (sb-ext:gc :full t)
-  (let* ((path (%rel path))
-         (plan (solve-once (find-domain path) path
-                           (lambda ()
-                             (with-memory-usage-diff ()
-                               (strips:run
-                                (timeout
-                                 (eager
-                                  (bucket-open-list
-                                   (blind))))))))))
-    (lambda () (validate-plan (strips:find-domain path)
-                              path
-                              plan))))
+  (let* ((path (%rel path)))
+    (strips::with-temp (planfile :debug t)
+      (solve-once-to-file (find-domain path) path planfile fn)
+      planfile)))
 
-(defun solve (path)
-  (handler-case
-      (let ((val (solve-alien path)))
-        (pass "plan found")
-        (is-true (funcall val)))
-    (serious-condition (c)
-      ;; for sb-ext:timeout
-      (fail "in ~a:~%caused ~a:~% Reason: ~a" path (type-of c) c)
-      (skip "No plan found, no validation performed"))))
+(defun solve-alien-blind (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            (eager
+                             (bucket-open-list
+                              (blind)))))))))
 
-(defun solve-fd (path)
+(defun solve-alien-gc (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            (eager
+                             (bucket-open-list
+                              (goal-count)))))))))
+
+(defun solve-alien-ff/rpg (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            (eager
+                             (bucket-open-list
+                              (ff/rpg)))))))))
+
+(defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
   (log:info "Testing ~a" path)
   (let* ((path (%rel path))
@@ -49,10 +61,38 @@
                                    "--plan-file" (namestring planfile)
                                    (namestring (find-domain path))
                                    (namestring path)
-                                   "--search" "eager(single_buckets(blind(),queue_type=LIFO),cost_type=ONE)")
+                                   "--translate-options" "--invariant-generation-max-candidates" "0"
+                                   "--search-options" "--search" option)
                              :output t
-                             :ignore-error-status t))
+                             :ignore-error-status t)
+           planfile)
       (strips::log-milestone :fd))))
+
+(defun solve-fd-blind (path)
+  (solve-fd-common path "eager(single_buckets(blind(),queue_type=LIFO),cost_type=ONE)"))
+
+(defun solve-fd-ff (path)
+  (solve-fd-common path "eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)"))
+
+(defvar *solver* #'solve-alien-blind)
+(defun solve (path &optional (fn *solver*))
+  (handler-case
+      (let ((planfile (funcall fn path))
+            (path (%rel path)))
+        (is-true (validate-plan (strips:find-domain path)
+                                path
+                                planfile)))
+    ((or sb-ext:timeout error) (c)
+      ;; for 
+      (fail "While ~a in ~a:~%caused ~a:~% Reason: ~a" fn path (type-of c) c)
+      (skip "No plan found, no validation performed"))))
+
+(test instance-depdenent
+  (finishes
+    (print
+     (eager
+      (bucket-open-list
+       (blind))))))
 
 (test movie-basics
   (solve-alien-common
@@ -86,44 +126,11 @@
 
 (test demo
   ;; demo problems for IPC submission
-  ;; 
   (solve "demo/sokoban/p01.pddl")
-  ;; (solve-fd "demo/sokoban/p01.pddl")
-  ;; goal count:
-  ;; 0.037
-  ;; 0.002
-
-  ;; blind:
-  ;; 0.041
-  ;; 0.00589913
-  
-  ;; 
   (solve "demo/cavediving/p01.pddl")
-  ;; (solve-fd "demo/cavediving/p01.pddl")
-
-  ;; 
-  (solve "demo/citycar/p01.pddl") ; too difficult for goal-count
-  ;; (solve-fd "demo/citycar/p01.pddl") ; too difficult for goal-count
-  ;; 
-  ;; (solve "demo/parkprinter/p00.pddl")   ;0.018
-  ;; (solve-fd "demo/parkprinter/p00.pddl") ;0.000157598
-  (solve "demo/parkprinter/p01.pddl")    ;23.983
-  ;; (solve-fd "demo/parkprinter/p01.pddl") ;0.000429445
-  (solve "demo/researchers/p01.pddl")    ;0.343s
-  ;; (solve-fd "demo/researchers/p01.pddl") ;0.00746729
-  ;; ;; (solve "demo/researchers-debug/p01.pddl")
-  )
-
-(test movie-ff/rpg
-  (solve-alien-common
-   "movie/p01.pddl"
-   (lambda ()
-     (ff/rpg)
-     (strips:run
-      (strips::make-searcher
-       :storage nil
-       :form `(lambda ()
-                (is (= 7 (uiop:symbol-call :strips :ff-heuristic/rpg #*00000000)))))))))
+  (solve "demo/citycar/p01.pddl")
+  (solve "demo/parkprinter/p01.pddl")
+  (solve "demo/researchers/p01.pddl"))
 
 (test demo-large
   ;; VAL doesnt work
@@ -151,62 +158,34 @@
   ;; (solve "downward/benchmarks/trucks-strips/domain_p01.pddl")
   ;; (solve "downward/benchmarks/trucks-strips/p01.pddl")
 
-  (solve-fd "ipc2006-optsat/openstacks/p01.pddl")
   (solve "ipc2006-optsat/openstacks/p01.pddl")
-  (solve-fd "ipc2006-optsat/pathways/p01.pddl")
   (solve "ipc2006-optsat/pathways/p01.pddl")
-  (solve-fd "ipc2006-optsat/pipesworld/p01.pddl")
   (solve "ipc2006-optsat/pipesworld/p01.pddl")
-  (solve-fd "ipc2006-optsat/rovers/p01.pddl")
   (solve "ipc2006-optsat/rovers/p01.pddl")
   ;; (solve "ipc2006-optsat/storage/p01.pddl") ; EITHER type
-  (solve-fd "ipc2006-optsat/tpp/p01.pddl")
   (solve "ipc2006-optsat/tpp/p01.pddl")
-  (solve-fd "ipc2006-optsat/trucks/p01.pddl")
   (solve "ipc2006-optsat/trucks/p01.pddl")
-  (solve-fd "ipc2008-opt/elevators-opt08/p01.pddl")
   (solve "ipc2008-opt/elevators-opt08/p01.pddl")
-  (solve-fd "ipc2008-opt/openstacks-opt08/p01.pddl")
   (solve "ipc2008-opt/openstacks-opt08/p01.pddl")
-  (solve-fd "ipc2008-opt/parcprinter-opt08/p01.pddl")
   (solve "ipc2008-opt/parcprinter-opt08/p01.pddl")
-  (solve-fd "ipc2008-opt/pegsol-opt08/p01.pddl")
   (solve "ipc2008-opt/pegsol-opt08/p01.pddl")
-  (solve-fd "ipc2008-opt/scanalyzer-opt08/p01.pddl")
   (solve "ipc2008-opt/scanalyzer-opt08/p01.pddl")
-  (solve-fd "ipc2008-opt/sokoban-opt08/p01.pddl")
   (solve "ipc2008-opt/sokoban-opt08/p01.pddl")
-  (solve-fd "ipc2008-opt/transport-opt08/p01.pddl")
   (solve "ipc2008-opt/transport-opt08/p01.pddl")
-  (solve-fd "ipc2008-opt/woodworking-opt08/p01.pddl")
   (solve "ipc2008-opt/woodworking-opt08/p01.pddl")
-  (solve-fd "ipc2011-opt/barman-opt11/p01.pddl")
   (solve "ipc2011-opt/barman-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/elevators-opt11/p01.pddl")
   (solve "ipc2011-opt/elevators-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/floortile-opt11/p01.pddl")
   (solve "ipc2011-opt/floortile-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/nomystery-opt11/p01.pddl")
   (solve "ipc2011-opt/nomystery-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/openstacks-opt11/p01.pddl")
   (solve "ipc2011-opt/openstacks-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/parcprinter-opt11/p01.pddl")
   (solve "ipc2011-opt/parcprinter-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/parking-opt11/p01.pddl")
   (solve "ipc2011-opt/parking-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/pegsol-opt11/p01.pddl")
   (solve "ipc2011-opt/pegsol-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/scanalyzer-opt11/p01.pddl")
   (solve "ipc2011-opt/scanalyzer-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/sokoban-opt11/p01.pddl")
   (solve "ipc2011-opt/sokoban-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/tidybot-opt11/p01.pddl")
   (solve "ipc2011-opt/tidybot-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/transport-opt11/p01.pddl")
   (solve "ipc2011-opt/transport-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/visitall-opt11/p01.pddl")
   (solve "ipc2011-opt/visitall-opt11/p01.pddl")
-  (solve-fd "ipc2011-opt/woodworking-opt11/p01.pddl")
   (solve "ipc2011-opt/woodworking-opt11/p01.pddl")
   ;; (solve "ipc2014-agl/barman-agl14/p01.pddl")
   ;; (solve "ipc2014-agl/cavediving-agl14/p01.pddl")
@@ -224,10 +203,16 @@
   ;; (solve "ipc2014-agl/visitall-agl14/p01.pddl")
   )
 
+(test movie-ff/rpg
+  (solve-alien-common
+   "movie/p01.pddl"
+   (lambda ()
+     (ff/rpg)
+     (strips:run
+      (strips::make-searcher
+       :storage nil
+       :form `(lambda ()
+                (is (= 7 (uiop:symbol-call :strips :ff-heuristic/rpg #*00000000)))))))))
 
-(test instance-depdenent
-  (finishes
-    (print
-     (eager
-      (bucket-open-list
-       (blind))))))
+(test demo-ff/rpg (let ((*solver* #'solve-alien-ff/rpg)) (run! 'demo)))
+(test demo-fd-ff  (let ((*solver* #'solve-fd-ff))        (run! 'demo)))
