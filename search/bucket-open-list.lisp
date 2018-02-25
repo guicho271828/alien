@@ -14,7 +14,8 @@
   (match open
     ((bucket-open-list buckets :min-key (place min-key))
      (unless (array-in-bounds-p buckets key)
-       (adjust-array buckets (max (length buckets) (expt 2 (integer-length key)))))
+       (adjust-array buckets (max (length buckets) (expt 2 (integer-length key)))
+                     :initial-element nil))
      (push element (aref buckets key))
      (minf min-key key))))
 
