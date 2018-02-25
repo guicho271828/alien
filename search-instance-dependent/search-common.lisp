@@ -17,6 +17,11 @@
 (deftype op-id ()
   "maximum range *op-size* is an invalid op for the initial state"
   `(runtime integer 0 *op-size*))
+
+(declaim (inline goalp))
+(ftype* goalp state+axioms boolean)
+(defun goalp (state+axioms)
+  (= 1 (aref state+axioms (maybe-inline-obj *instantiated-goal*))))
 )
 
 (in-compilation-phase (phase/full-compilation)
@@ -31,7 +36,7 @@
 
 (ftype* report-if-goal state+axioms (function (&rest *) *) boolean)
 (defun report-if-goal (state callback)
-  (if (= 1 (aref state *instantiated-goal*))
+  (if (goalp state)
       (progn (restart-bind ((retrieve-path callback))
                (cerror "continue searching" 'goal-found))
              t)
