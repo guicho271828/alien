@@ -90,6 +90,7 @@ You can mix both forms. "
 
 
 (defmacro in-compilation-phase ((phase) &body body)
+  "Utility macro: has the same effect as writing #+PHASE, but does not clutter the editor highlightation"
   (when (featurep phase)
     `(progn ,@body)))
 
