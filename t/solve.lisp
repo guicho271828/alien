@@ -216,3 +216,5 @@
 
 (test demo-ff/rpg (let ((*solver* #'solve-alien-ff/rpg)) (run! 'demo)))
 (test demo-fd-ff  (let ((*solver* #'solve-fd-ff))        (run! 'demo)))
+
+(defparameter *solver* #'solve-alien-ff/rpg)
