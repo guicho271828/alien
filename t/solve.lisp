@@ -114,7 +114,16 @@
   ;; ;; (solve "demo/researchers-debug/p01.pddl")
   )
 
-
+(test movie-ff/rpg
+  (solve-alien-common
+   "movie/p01.pddl"
+   (lambda ()
+     (ff/rpg)
+     (strips:run
+      (strips::make-searcher
+       :storage nil
+       :form `(lambda ()
+                (is (= 7 (uiop:symbol-call :strips :ff-heuristic/rpg #*00000000)))))))))
 
 (test demo-large
   ;; VAL doesnt work

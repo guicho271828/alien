@@ -16,6 +16,7 @@
                :components ((:file "close-list")
                             (:file "search-common")
                             (:file "eager")
+                            (:file "ff")
                             (:file "goal-count")
                             (:module "heuristics"
                              :components ())

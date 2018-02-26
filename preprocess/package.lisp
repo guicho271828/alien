@@ -125,6 +125,7 @@
    ;; heuristics
    #:goal-count
    #:blind
+   #:ff/rpg
    #:make-state+axioms
    #:recompile-instance-dependent-code
    #:do-leaf
