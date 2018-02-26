@@ -12,11 +12,16 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
 (defun show-doc (specs)
   (iter (for (key arg variable) in specs)
         (format *error-output*
-                "  ~(~{~a~^ | ~}~) ~a ~50t: ~a~%"
-                (ensure-list key)
-                arg
-                (or (documentation variable 'variable) "undocumented"))))
+                "~@{~50@a: ~a~%~}"
+                (format nil "~(~{~a~^ | ~}~) ~a" (ensure-list key) arg)
+                (or (documentation variable 'variable) "undocumented")
+                "default value"
+                (if (boundp variable)
+                    (symbol-value variable)
+                    "unspecified"))))
 
+(defvar *search-option* '(eager (bucket-open-list (ff/rpg)))
+  "search configurations.")
 
 (defun main (&rest argv)
   (declare (ignorable argv))
@@ -27,20 +32,16 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
       (lambda ()
         (with-memory-usage-diff ()
           (run
-           (eager
-            (bucket-open-list
-             (goal-count))))))))
-    ((list* (or "-t" "--time-limit") (read limit) rest)
-     (setf *time-limit* limit)
+           (eval *search-option*))))))
+    ((list* (or "-t" "--time-limit") (read *time-limit*) rest)
      (apply #'main rest))
-    ((list* (or "-t" "--memory-limit") (read limit) rest)
-     (setf *memory-limit* limit)
+    ((list* (or "-t" "--memory-limit") (read *memory-limit*) rest)
      (apply #'main rest))
-    ((list* "--sg-compilation-threashold" (read limit) rest)
-     (setf *sg-compilation-threashold* limit)
+    ((list* "--sg-compilation-threashold" (read *sg-compilation-threashold*) rest)
      (apply #'main rest))
-    ((list* "--effect-compilation-threashold" (read limit) rest)
-     (setf *effect-compilation-threashold* mem)
+    ((list* "--effect-compilation-threashold" (read *effect-compilation-threashold*) rest)
+     (apply #'main rest))
+    ((list* "--search-option" (read *search-option*) rest)
      (apply #'main rest))
     (_
      (format *error-output* "Usage: alien.ros [options] domain problem plan-output-file~%")
@@ -48,5 +49,6 @@ exec ros -L sbcl-bin -m alien -Q -- $0 "$@"
       `(((-t --time-limit) sec *time-limit*)
         ((-m --memory-limit) kbyte *memory-limit*)
         (--sg-compilation-threashold limit *sg-compilation-threashold*)
-        (--effect-compilation-threashold limit *effect-compilation-threashold*))))))
+        (--effect-compilation-threashold limit *effect-compilation-threashold*)
+        (--search-option SEXP *search-option*))))))
 ;;; vim: set ft=lisp lisp:
