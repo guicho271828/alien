@@ -1,14 +1,14 @@
 
 (in-package :strips)
 
-(in-compilation-phase (phase/packed-structs)
+(in-compilation-phase ((and eager phase/packed-structs))
 (strips.lib:define-packed-struct eager ()
   (facts 0 state)
   (parent 0 state-id)
   (op 0 op-id)
   (status +new+ status)))
 
-(in-compilation-phase (phase/full-compilation)
+(in-compilation-phase ((and eager phase/full-compilation))
 (defun eager-search (open-list insert pop)
   (declare (optimize (speed 3)))
   (let* ((db (make-state-information-array
@@ -91,6 +91,7 @@
 
 (in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
 (defun eager (open-list)
+  (push 'eager *optional-features*)
   (ematch open-list
     ((open-list storage constructor insert pop)
      (make-searcher
