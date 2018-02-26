@@ -24,7 +24,8 @@ instance-depdendent code should be compiled/loaded three times.
     ((searcher storage form)
      ;; second LOAD
      (log:info "compiling instance-dependent code for packed structs")
-     (let ((*features* (cons 'phase/packed-structs *features*)))
+     (let ((*features* (cons 'phase/packed-structs
+                             (append *optional-features* *features*))))
        (recompile-instance-dependent-code))
      (log-milestone :secondary-compilation)
      ;; compile STATE-INFORMATION
@@ -37,7 +38,8 @@ instance-depdendent code should be compiled/loaded three times.
      (log-milestone :state-information)
      ;; third LOAD
      (log:info "compiling instance-dependent code for functions")
-     (let ((*features* (cons 'phase/full-compilation *features*)))
+     (let ((*features* (cons 'phase/full-compilation
+                             (append *optional-features* *features*))))
        (recompile-instance-dependent-code))
      (log-milestone :tertiery-compilation)
      (log:info "Search started")

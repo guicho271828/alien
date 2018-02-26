@@ -51,6 +51,11 @@
                      :if-does-not-exist :create)
     (print-plan (retrieve-path) s)))
 
+(defvar *optional-features* nil
+  "Features added during the full-compilation phase.
+Each search specification function should add a corresponding flag to this variable.
+See also: function RUN, function SOLVE-COMMON")
+
 (defun solve-common (domain problem fn)
   (log:info "[0.000s] [+0.000s] STARTED")
   (log:info "Solving ~a" problem)
@@ -72,7 +77,8 @@
       (log:info "         ops: ~A" *op-size*)
       (log:info "axiom layers: ~A" (length *instantiated-axiom-layers*))
       (unwind-protect
-           (funcall fn)
+           (let (*optional-features*)
+             (funcall fn))
         (log:info "Finished on ~a" problem)))))
 
 (defun solve-once (domain problem fn)
