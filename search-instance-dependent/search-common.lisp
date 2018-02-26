@@ -18,6 +18,10 @@
   "maximum range *op-size* is an invalid op for the initial state"
   `(runtime integer 0 *op-size*))
 
+(deftype fact-id ()
+  "Including axioms. Maximum range *state-size* is an invalid fact"
+  `(runtime integer 0 *state-size*))
+
 (declaim (inline goalp))
 (ftype* goalp state+axioms boolean)
 (defun goalp (state+axioms)
