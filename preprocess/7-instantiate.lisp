@@ -85,11 +85,33 @@
     (values i fact-size trie)))
 
 (defun instantiate-ops (index trie)
-  (values (let ((i (strips.lib:make-index :test 'equal)))
-            (dolist (o *ops* i)
-              (strips.lib:index-insert i o)))
-          (coerce (map 'vector (lambda (op) (instantiate-op op index trie)) *ops*)
-                  '(simple-array op))))
+  (let ((ops (map 'vector (lambda (op-sexp) (instantiate-op op-sexp index trie)) *ops*))
+        (op-sexp-index (strips.lib:make-index :test 'equal))
+        (op-index      (strips.lib:make-index))
+        (op-sexp-index2 (strips.lib:make-index :test 'equal))
+        (op-index2      (strips.lib:make-index)))
+    (log:info "Making a operator index")
+    (iter (for op in-vector ops)
+          (strips.lib:index-insert op-index op))
+    (dolist (o *ops*)
+      (strips.lib:index-insert op-sexp-index o))
+
+    (let ((length-before (length ops)))
+      (log:info "Removing duplicate operators")
+      (setf ops (delete-duplicates ops :test #'equalp))
+      (log:info "Removing duplicate operators: ~a -> ~a" length-before (length ops)))
+
+    (setf *ops*
+          (iter (for op in-vector ops)
+                (for id = (strips.lib:index-id op-index op))
+                (collecting (strips.lib:index-ref op-sexp-index id))))
+
+    (dolist (o *ops*)
+      (strips.lib:index-insert op-sexp-index2 o))
+
+    (values op-sexp-index2
+            (coerce ops
+                    '(simple-array op)))))
 
 (defun opposite-effect-p (a b)
   (match* (a b)
