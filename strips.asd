@@ -46,6 +46,7 @@
                             (:file "specials")
                             (:file "blind")
                             (:file "bucket-open-list")
+                            (:file "non-axiom-goals")
                             (:file "delete-relaxation")
                             (:file "run")
                             (:file "timeout")

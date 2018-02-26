@@ -55,22 +55,29 @@
       (strips::log-milestone :fd))))
 
 (test movie-basics
-  (with-parsed-information5 (-> (%rel "movie/p01.pddl")
-                              parse
-                              easy-invariant
-                              ground
-                              mutex-invariant
-                              instantiate)
-    (print
-     (decode-state #*11111111))
-    (let ((s (make-state+axioms)))
-      (replace s #*11111110)
-      (is (equal #*11111111
-                 (apply-axioms s))))
-    (signals goal-found
-      (report-if-goal #*11111111 (lambda ())))
-    (signals goal-found
-      (report-if-goal #*00000001 (lambda ())))))
+  (solve-alien-common
+   "movie/p01.pddl"
+   (lambda ()
+     (strips:run
+      (strips::make-searcher
+       :storage nil
+       :form `(lambda ()
+                (print
+                 (decode-state #*11111111))
+                (let ((s (make-state+axioms)))
+                  (replace s #*11111110)
+                  (is (equal #*11111111
+                             (apply-axioms s))))
+                (is-true (strips::goalp #*11111111))
+                (is-true (strips::goalp #*00000001))
+                (signals goal-found
+                  (report-if-goal #*11111111 (lambda ())))
+                (signals goal-found
+                  (report-if-goal #*00000001 (lambda ())))
+                (is (equal #*11111110
+                           (strips::goals)))
+                (is (equal #*11111110
+                           (strips::non-axiom-goals)))))))))
 
 (test movie
   (solve "movie/p01.pddl")
