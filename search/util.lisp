@@ -92,3 +92,15 @@ You can mix both forms. "
 (defmacro in-compilation-phase ((phase) &body body)
   (when (featurep phase)
     `(progn ,@body)))
+
+
+(defmacro maybe-inline-obj (form)
+  "If the form evaluates successfully in compile-time, then make the form into a load-time-value
+(because laod-time-value should also succeed).
+Otherwise leave the form as it is."
+  (handler-case (progn
+                  (eval form)
+                  `(load-time-value ,form))
+    (error (c)
+      (log:warn "failed to inine a form due to: ~a~%~a~% form: ~a" (type-of c) c form)
+      form)))
