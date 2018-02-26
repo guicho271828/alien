@@ -33,9 +33,9 @@ exec ros dynamic-space-size=16000 -L sbcl-bin -m alien -Q -- $0 "$@"
         (with-memory-usage-diff ()
           (run
            (eval *search-option*))))))
-    ((list* (or "-t" "--time-limit") (read *time-limit*) rest)
+    ((list* "-t" (read *time-limit*) rest)
      (apply #'main rest))
-    ((list* (or "-t" "--memory-limit") (read *memory-limit*) rest)
+    ((list* "-m" (read *memory-limit*) rest)
      (apply #'main rest))
     ((list* "--sg-compilation-threashold" (read *sg-compilation-threashold*) rest)
      (apply #'main rest))
@@ -46,8 +46,8 @@ exec ros dynamic-space-size=16000 -L sbcl-bin -m alien -Q -- $0 "$@"
     (_
      (format *error-output* "Usage: alien.ros [options] domain problem plan-output-file~%")
      (show-doc
-      `(((-t --time-limit) sec *time-limit*)
-        ((-m --memory-limit) kbyte *memory-limit*)
+      `((-t sec *time-limit*)
+        (-m kbyte *memory-limit*)
         (--sg-compilation-threashold limit *sg-compilation-threashold*)
         (--effect-compilation-threashold limit *effect-compilation-threashold*)
         (--search-option SEXP *search-option*))))))
