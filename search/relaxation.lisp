@@ -55,10 +55,6 @@ Operators with no effects are removed from the results and does not belong to th
                result-type vector)))))
    '(simple-array effect)))
 
-(defvar *delete-relaxed-sg* nil "Relaxed successor generators.")
-(defvar *delete-relaxed-ops* nil "Relaxed operators.")
-(defvar *delete-relaxed-op-size* nil "Relaxed operator size.")
-
 (defun ensure-delete-relaxed-sg ()
   (unless (symbol-value '*delete-relaxed-sg*)
     (setf (values *delete-relaxed-sg*

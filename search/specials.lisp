@@ -56,6 +56,12 @@
 Each search specification function should add a corresponding flag to this variable.
 See also: function RUN, function SOLVE-COMMON")
 
+;; these definitions should come before solve-common,
+;; otherwise with-parsed-information5 does not know it should be treated as a special variable
+(defvar *delete-relaxed-sg* nil "Relaxed successor generators.")
+(defvar *delete-relaxed-ops* nil "Relaxed operators.")
+(defvar *delete-relaxed-op-size* nil "Relaxed operator size.")
+
 (defun solve-common (domain problem fn)
   (log:info "[0.000s] [+0.000s] STARTED")
   (log:info "Solving ~a" problem)
