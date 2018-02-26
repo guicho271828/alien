@@ -15,9 +15,11 @@
  :components ((:module "search-instance-dependent"
                :components ((:file "close-list")
                             (:file "search-common")
+                            (:file "alien")
                             (:file "eager")
                             (:file "ff")
                             (:file "goal-count")
+                            (:file "novelty")
                             (:module "heuristics"
                              :components ())
                             (:module "searchers"
