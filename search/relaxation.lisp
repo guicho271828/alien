@@ -28,10 +28,9 @@ Operators with no effects are removed from the results and does not belong to th
                              (fill-pointer relaxed-ops))
                             (linear-extend relaxed-ops relaxed-op))))))))
       (values (rec sg)
-              (copy-array relaxed-ops
+              (make-array (fill-pointer relaxed-ops)
                           :element-type 'op
-                          :fill-pointer nil
-                          :adjustable nil)))))
+                          :initial-contents relaxed-ops)))))
 
 (ftype* delete-relax-op op op)
 (defun delete-relax-op (op)

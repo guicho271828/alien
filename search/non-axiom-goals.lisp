@@ -35,29 +35,31 @@ The mark does not include the goal axiom itself.
              (fill mask 1 :end *fact-size*))))
 
 
-(defun compress-array/integer (array)
+(defun compress-array/integer (list)
   "compress the given array to its smallest specialized element type"
-  (if (emptyp array)
-      array
-      (iter (for i below (array-total-size array))
-            (for elem = (row-major-aref array i))
+  (if (emptyp list)
+      (make-array 0 :element-type 'nil)
+      (iter (for elem in list)
+            (for i from 1)
             (minimizing elem into min)
             (maximizing elem into max)
             (finally
              (return
-               (copy-array array :element-type `(integer ,min ,max)))))))
+               (make-array i
+                           :element-type `(integer ,min ,max)
+                           :initial-contents list))))))
 
 (defun goals-as-indices ()
   (compress-array/integer
    (iter (for goal? in-vector (goals) with-index i)
          (when (= 1 goal?)
-           (collect i result-type vector)))))
+           (collect i)))))
 
 (defun non-axiom-goals-as-indices ()
   (compress-array/integer
    (iter (for goal? in-vector (non-axiom-goals) with-index i)
          (when (= 1 goal?)
-           (collect i result-type vector)))))
+           (collect i)))))
 
 
 (defun achievers (fact-id ops)
@@ -67,4 +69,4 @@ The mark does not include the goal axiom itself.
          (when (iter (for effect in-vector (op-eff op))
                      (thereis
                       (= fact-id (effect-eff effect))))
-           (collecting op-id result-type vector)))))
+           (collecting op-id)))))
