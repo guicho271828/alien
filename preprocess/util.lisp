@@ -134,6 +134,7 @@
            (*state-size* (getf ,info :state-size))
            (*op-index* (getf ,info :op-index))
            (*instantiated-ops* (getf ,info :instantiated-ops))
+           (*op-size* (length (getf ,info :instantiated-ops)))
            (*sg* (getf ,info :successor-generator))
            (*instantiated-axiom-layers* (getf ,info :instantiated-axiom-layers))
            (*instantiated-init* (getf ,info :instantiated-init))

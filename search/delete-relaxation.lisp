@@ -10,7 +10,7 @@ delete-relaxed operators.
 
 (ftype* relax-sg sg (values sg (simple-array op)))
 (defun relax-sg (sg)
-  (let ((relaxed-ops (make-a-array (length *instantiated-ops*))))
+  (let ((relaxed-ops (make-a-array *op-size*)))
     (labels ((rec (sg)
                (ematch sg
                  ((sg-node variable then else either)

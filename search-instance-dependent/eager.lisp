@@ -32,7 +32,7 @@
       (funcall insert open-list id state+axioms))
     (setf (state-information-facts info) state
           (state-information-status info) +open+
-          (state-information-op info) (length *instantiated-ops*)
+          (state-information-op info) *op-size*
           (packed-aref db 'state-information 0) info)
 
     (labels ((rec ()
@@ -52,7 +52,7 @@
                            (iter (for pid initially id then (state-information-parent info))
                                  (packed-aref db 'state-information pid info)
                                  (for op-id = (state-information-op info))
-                                 (until (= op-id (length *instantiated-ops*)))
+                                 (until (= op-id *op-size*))
                                  (collect (decode-op op-id))))))
                    (declare (dynamic-extent #'path))
                    (report-if-goal state+axioms #'path))

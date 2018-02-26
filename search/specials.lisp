@@ -69,7 +69,7 @@
 
       (log:info "       facts: ~A" *fact-size*)
       (log:info "      axioms: ~A" (length *ground-axioms*))
-      (log:info "         ops: ~A" (length *instantiated-ops*))
+      (log:info "         ops: ~A" *op-size*)
       (log:info "axiom layers: ~A" (length *instantiated-axiom-layers*))
       (unwind-protect
            (funcall fn)

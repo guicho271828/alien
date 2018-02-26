@@ -15,8 +15,8 @@
 
 (in-compilation-phase (phase/packed-structs)
 (deftype op-id ()
-  "maximum range (length *instantiated-ops*) is an invalid op for the initial state"
-  `(runtime integer 0 (length *instantiated-ops*)))
+  "maximum range *op-size* is an invalid op for the initial state"
+  `(runtime integer 0 *op-size*))
 )
 
 (in-compilation-phase (phase/full-compilation)
@@ -37,11 +37,11 @@
              t)
       nil))
 
-(ftype* applicable-ops sg state+axioms (values (runtime simple-array 'op-id (list (length *instantiated-ops*))) op-id))
+(ftype* applicable-ops sg state+axioms (values (runtime simple-array 'op-id (list *op-size*)) op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
   (let ((results (load-time-value
-                  (make-array (length *instantiated-ops*) :element-type 'op-id)))
+                  (make-array *op-size* :element-type 'op-id)))
         (c 0))
     (labels ((rec (node)
                (ematch node
@@ -147,7 +147,7 @@
 
 
 (in-compilation-phase (phase/full-compilation)
-(ftype* applicable-ops/fast state+axioms (values (runtime simple-array 'op-id (list (length *instantiated-ops*))) op-id))
+(ftype* applicable-ops/fast state+axioms (values (runtime simple-array 'op-id (list *op-size*)) op-id))
 (defun applicable-ops/fast (state)
   #+(or)
   (in-compile-time (env)
@@ -158,7 +158,7 @@
         (vector-push op-id results))))
     nil)
   (let ((results (load-time-value
-                  (make-array (length *instantiated-ops*) :element-type 'op-id)))
+                  (make-array *op-size* :element-type 'op-id)))
         (c 0))
     (do-leaf (op-id state *sg*)
       (setf (aref results c) op-id)

@@ -10,6 +10,7 @@
 (defvar *state-size*)
 (defvar *op-index*)
 (defvar *instantiated-ops*)
+(defvar *op-size*)
 (defvar *instantiated-axiom-layers*)
 (defvar *instantiated-init*)
 (defvar *instantiated-goal*)
@@ -36,7 +37,7 @@
   '(array effect))
 
 (declaim (strips.lib:index *fact-index* *op-index*))
-(declaim (fixnum *fact-size* *state-size*))
+(declaim (fixnum *fact-size* *state-size* *op-size*))
 (declaim (cons *fact-trie*))
 (declaim ((array op) *instantiated-ops*))
 (declaim ((array axiom-layer) *instantiated-axiom-layers*))
