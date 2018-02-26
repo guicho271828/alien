@@ -47,7 +47,7 @@
                             (:file "blind")
                             (:file "bucket-open-list")
                             (:file "non-axiom-goals")
-                            (:file "delete-relaxation")
+                            (:file "relaxation")
                             (:file "run")
                             (:file "timeout")
                             (:module "heuristics"

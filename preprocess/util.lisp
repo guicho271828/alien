@@ -152,7 +152,11 @@
            (*init* (getf ,info :init))
            (*goal* (getf ,info :goal))
            (*axioms* (getf ,info :axioms))
-           (*actions* (getf ,info :actions)))
+           (*actions* (getf ,info :actions))
+
+           *delete-relaxed-sg*
+           *delete-relaxed-ops*
+           *delete-relaxed-op-size*)
        ,@body)))
 
 (defun positive (form)
