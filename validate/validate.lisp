@@ -119,6 +119,7 @@ It may be evaluated multiple times."
           (uiop:run-program command
                             :output :string
                             :error-output t :ignore-error-status t)
+        (declare (ignorable error))
         (log:debug output)
         (zerop status)))))
 
