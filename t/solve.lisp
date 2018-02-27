@@ -60,7 +60,9 @@
            (uiop:run-program (list (namestring (strips::fd-relative-pathname "fast-downward.py"))
                                    "--run-all"
                                    "--overall-memory-limit" (princ-to-string *memory-limit*)
-                                   "--search-time-limit" (princ-to-string *time-limit*)
+                                   "--translate-time-limit"  (princ-to-string *time-limit*)
+                                   "--preprocess-time-limit" (princ-to-string *time-limit*)
+                                   "--search-time-limit"     (princ-to-string *time-limit*)
                                    "--plan-file" (namestring planfile)
                                    (namestring (find-domain path))
                                    (namestring path)
