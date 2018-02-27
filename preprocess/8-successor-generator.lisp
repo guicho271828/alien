@@ -143,10 +143,9 @@ nil                                           *
                                    (rec either)))
                  ((list* op-ids)
                   (iter (for id in op-ids)
-                        (collecting
-                         `(,fn ,id)))))))
-      `(flet ((,fn (,op-id-sym) ,@body))
-         ,(postprocess-iteration-over-leaf `(progn ,@(rec sg)))))))
+                        (appending
+                         (subst id op-id-sym body)))))))
+      (postprocess-iteration-over-leaf `(progn ,@(rec sg))))))
 
 (defvar *packed-conditions*)
 
