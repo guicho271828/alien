@@ -12,25 +12,28 @@
 Returns two values: a relaxed SG and a vector of relaxed ops.
 The original SG and operators are not destructively modified.
 Operators with no effects are removed from the results and does not belong to the SG."
-  (let ((relaxed-ops (make-a-array *op-size*)))
+  (let ((relaxed-ops (strips.lib:make-index :test 'equalp)))
     (labels ((rec (sg)
                (ematch sg
                  ((sg-node variable then else either)
-                  (sg-node variable
-                           (rec then)
-                           (rec else)
-                           (rec either)))
+                  (let ((then (rec then))
+                        (else (rec else))
+                        (either (rec either)))
+                    (when (or then else either)
+                      ;; unless, prune node
+                      (sg-node variable then else either))))
                  ((list* op-ids)
                   (iter (for id in op-ids)
                         (let ((relaxed-op (funcall relaxer (aref ops id))))
-                          (unless (emptyp (op-eff relaxed-op))
-                            (collecting
-                             (fill-pointer relaxed-ops))
-                            (linear-extend relaxed-ops relaxed-op))))))))
+                          (unless (emptyp (op-eff relaxed-op)) ; prune node
+                            (unless (strips.lib:index-id relaxed-ops relaxed-op) ; remove duplicates
+                              (collecting
+                               (strips.lib:index-insert relaxed-ops relaxed-op))))))))))
       (values (rec sg)
-              (make-array (fill-pointer relaxed-ops)
-                          :element-type 'op
-                          :initial-contents relaxed-ops)))))
+              (coerce (coerce (coerce (strips.lib:index-array relaxed-ops)
+                                      'list)
+                              'vector)
+                      '(simple-array op))))))
 
 (ftype* delete-relax-op op op)
 (defun delete-relax-op (op)
