@@ -63,4 +63,6 @@ Operators with no effects are removed from the results and does not belong to th
                   *delete-relaxed-ops*)
           (relax-sg *sg* *instantiated-ops* #'delete-relax-op)
           *delete-relaxed-op-size*
-          (length *delete-relaxed-ops*))))
+          (length *delete-relaxed-ops*))
+    (log:info "~11@a: ~a" "op" (length *instantiated-ops*))
+    (log:info "~11@a: ~a" "relaxed op" (length *delete-relaxed-ops*))))
