@@ -47,25 +47,29 @@
       nil))
 )
 
+;; slow functions
 (in-compilation-phase (phase/full-compilation)
 
 (ftype* applicable-ops sg state+axioms (values (runtime simple-array 'op-id (list *op-size*)) op-id))
 (defun applicable-ops (sg state)
   "Parse the successor generator. slow version"
+  (declare (optimize (speed 3) (debug 0) (safety 0)))
   (let ((results (load-time-value
                   (make-array *op-size* :element-type 'op-id)))
         (c 0))
+    (declare (op-id c)
+             ((runtime simple-array 'op-id (list *op-size*)) results))
     (labels ((rec (node)
                (ematch node
-                 ((type list)
-                  (dolist (op-id node)
-                    (setf (aref results c) op-id)
-                    (incf c)))
                  ((sg-node variable then else either)
                   (if (= 1 (aref state variable))
                       (rec then)
                       (rec else))
-                  (rec either)))))
+                  (rec either))
+                 ((type list)
+                  (dolist (op-id node)
+                    (setf (aref results c) op-id)
+                    (incf c))))))
       (rec sg))
     (values results c)))
 
@@ -73,17 +77,20 @@
 
 (ftype* apply-axioms state+axioms state+axioms)
 (defun apply-axioms (state)
+  (declare (optimize (speed 3) (debug 0) (safety 0)))
   #+(or)
   (map nil
        (lambda (layer)
          (apply-axiom-layer layer state))
        *instantiated-axiom-layers*)
-  (iter (for layer in-vector *instantiated-axiom-layers*)
+  (iter (declare (iterate:declare-variables))
+        (for layer in-vector *instantiated-axiom-layers*)
         (apply-axiom-layer layer state))
   state)
 
 (ftype* apply-axiom-layer axiom-layer state+axioms state+axioms)
 (defun apply-axiom-layer (axioms state) 
+  (declare (optimize (speed 3) (debug 0) (safety 0)))
   (let* ((len (length axioms))
          (counters (make-array len :element-type 'fixnum)))
     ;; considered axioms get the counter value of -1
@@ -135,16 +142,19 @@
 
 (ftype* apply-op op state+axioms state+axioms state+axioms)
 (defun apply-op (op state child)
+  (declare (optimize (speed 3) (debug 0) (safety 0)))
   (ematch op
     ((op eff)
      #+(or)
      (map nil (lambda (e) (apply-effect e state child)) eff) ; somehow consing
      (iter (for e in-vector eff)
+           (declare (iterate:declare-variables))
            (apply-effect e state child))
      child)))
 
 (ftype* apply-effect effect state+axioms state+axioms state+axioms)
 (defun apply-effect (effect state child)
+  (declare (optimize (speed 3) (debug 0) (safety 0)))
   (ematch effect
     ((effect con eff)
      (when (every (lambda (i) (or (and (minusp i)
@@ -161,6 +171,7 @@
 (in-compilation-phase (phase/full-compilation)
 (ftype* applicable-ops/fast state+axioms (values (runtime simple-array 'op-id (list *op-size*)) op-id))
 (defun applicable-ops/fast (state)
+  (declare (optimize (speed 3) (debug 0) (safety 0)))
   #+(or)
   (in-compile-time (env)
     ;; checking macroexpansion (disabled)
@@ -172,6 +183,8 @@
   (let ((results (load-time-value
                   (make-array *op-size* :element-type 'op-id)))
         (c 0))
+    (declare (op-id c)
+             ((runtime simple-array 'op-id (list *op-size*)) results))
     (do-leaf (op-id state *sg*)
       (setf (aref results c) op-id)
       (incf c))
@@ -181,6 +194,7 @@
 
 (ftype* apply-op/fast op-id state+axioms state+axioms state+axioms)
 (defun apply-op/fast (op-id state child)
+  (declare (optimize (speed 3) (debug 0) (safety 0)))
   #+(or)
   (in-compile-time (env)
     ;; checking macroexpansion (disabled)
