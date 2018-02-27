@@ -8,6 +8,8 @@
    #:index-insert
    #:index-ref
    #:index-size
+   #:index-array
+   #:index-hash
    #:make-trie
    #:trie-insert
    #:trie-member
