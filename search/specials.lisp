@@ -13,9 +13,11 @@
               *load-pathname*)
     (log:warn "Slow function: Avoid calling this function in runtime, especially in inner loop!"))
   (floor (* 8 1024 1024 *memory-limit*) ; MB -> bit
-         ;; (size-of 'state-information) ; -- circular dependency
-         ;; using 64 bit as the lower bound
-         64))
+         (handler-case
+             (size-of 'state-information)
+           (error ()
+             ;; using 64 bit as the lower bound
+             64))))
 
 (declaim (fixnum *start-time* *last-milestone*))
 (defvar *start-time* 0
