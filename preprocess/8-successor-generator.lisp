@@ -95,44 +95,44 @@ A generator node is just a list containing operator indices."
       (interpret-iteration-over-leaf op-id state (symbol-value sg) body)
       (compile-iteration-over-leaf op-id state (symbol-value sg) body)))
 
+(defun as-form (body)
+  "list of forms -> (progn forms), single list of form -> form itself"
+  (if (second body)
+      `((progn ,@body))
+      body))
+
+(defun assemble-bodies (variable state-sym then-body else-body either-body)
+  "construct a compact form for three bodies"
+  (let ((conditional
+         (cond (then-body
+                `((if (= 1 (aref ,state-sym ,variable))
+                      ,@(as-form then-body)
+                      ,@(as-form else-body))))
+               (else-body
+                `((if (= 0 (aref ,state-sym ,variable))
+                      ,@(as-form else-body))))
+               (t nil))))
+    (if conditional
+        `(,@conditional ,@either-body)
+        either-body)))
+
 (defun compile-iteration-over-leaf (op-id-sym state-sym sg body)
   "Returns a program that iterates over the leaf of sg, inlining constants, and execute BODY on each loop."
-  (let ()
-    (labels ((as-form (body)
-               "list of forms -> (progn forms), single list of form -> form itself"
-               (if (second body)
-                   `((progn ,@body))
-                   body))
-             (assemble-bodies (variable then-body else-body either-body)
-               "construct a compact form for three bodies"
-               (let ((conditional
-                      (cond (then-body
-                             `((if (= 1 (aref ,state-sym ,variable))
-                                   ,@(as-form then-body)
-                                   ,@(as-form else-body))))
-                            (else-body
-                             `((if (= 0 (aref ,state-sym ,variable))
-                                   ,@(as-form else-body))))
-                            (t nil))))
-                 (if conditional
-                     `(,@conditional ,@either-body)
-                     either-body)))
-             (rec (sg)
+  (with-gensyms (fn)
+    (labels ((rec (sg)
                (ematch sg
                  ((sg-node variable then else either)
                   (assemble-bodies variable
+                                   state-sym
                                    (rec then)
                                    (rec else)
                                    (rec either)))
                  ((list* op-ids)
                   (iter (for id in op-ids)
-                        (appending
-                         (compile-leaf id op-id-sym body)))))))
-      `(progn ,@(rec sg)))))
-
-(defun compile-leaf (id op-id-sym body)
-  ;; I don't do this usually, but only for now
-  (subst id op-id-sym body))
+                        (collecting
+                         `(,fn ,id)))))))
+      `(flet ((,fn (,op-id-sym) ,@body))
+         ,@(rec sg)))))
 
 (defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
   (log:warn "falling back to the interpretation based successor generation")
