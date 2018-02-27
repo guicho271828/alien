@@ -15,7 +15,7 @@
         (h (index-hash index)))
     (if-let ((index (gethash element h)))
       index
-      (prog1 (values (setf (gethash element h) (fill-pointer a)) t)
+      (multiple-value-prog1 (values (setf (gethash element h) (fill-pointer a)) t)
         (vector-push-extend element a (array-total-size a))))))
 
 (ftype* index-id index t (values (or array-index null) boolean))
