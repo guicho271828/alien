@@ -134,5 +134,5 @@
     (ensure-delete-relaxed-sg)
     (push 'ff/rpg *optional-features*)
     (make-evaluator
-     :storage '(ff)
+     :storage '() ; no cache
      :function 'ff-heuristic/rpg)))
