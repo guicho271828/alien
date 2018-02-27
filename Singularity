@@ -51,9 +51,15 @@ From: ubuntu
     unzip -u zip/type-r-master.zip     -d .roswell/local-projects/
     unzip -u zip/cl-prolog2-master.zip -d .roswell/local-projects/
     
-    # move the main source code to the directory recognized by quicklisp
-    git clone . .roswell/local-projects/strips/ || true # fails if it already exists
-    (cd .roswell/local-projects/strips/ ; git fetch --all ; git checkout origin )
+    (
+       # cloning /planner to /planner/.roswell/local-projects/strips (the directory recognized by quicklisp)
+       cd .roswell/local-projects/
+       git clone /planner strips || true  # continue if it fails (already exists)
+       cd strips
+       git fetch --all        # fetch from /planner
+       git checkout origin
+       # the reason I do this is to maintain the idempotency of MAKE and reduce the build time on my side
+    )
     
     # this now downloads from quicklisp, not from github.
     ros install trivial-package-manager
