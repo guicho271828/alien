@@ -45,6 +45,9 @@
                (cerror "continue searching" 'goal-found))
              t)
       nil))
+)
+
+(in-compilation-phase (phase/full-compilation)
 
 (ftype* applicable-ops sg state+axioms (values (runtime simple-array 'op-id (list *op-size*)) op-id))
 (defun applicable-ops (sg state)
