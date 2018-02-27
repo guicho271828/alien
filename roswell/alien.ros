@@ -12,13 +12,14 @@ exec ros dynamic-space-size=16000 -L sbcl-bin -m alien -Q -- $0 "$@"
 (defun show-doc (specs)
   (iter (for (key arg variable) in specs)
         (format *error-output*
-                "~@{~50@a: ~a~%~}"
+                "~@{~40@a : ~a~%~}"
                 (format nil "~(~{~a~^ | ~}~) ~a" (ensure-list key) arg)
                 (or (documentation variable 'variable) "undocumented")
-                "default value"
-                (if (boundp variable)
-                    (symbol-value variable)
-                    "unspecified"))))
+                ""
+                (format nil "  default value: ~a"
+                        (if (boundp variable)
+                            (symbol-value variable)
+                            "unspecified")))))
 
 (defvar *search-option* '(eager (bucket-open-list (ff/rpg)))
   "search configurations.")
