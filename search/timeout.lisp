@@ -1,11 +1,11 @@
 
 (in-package :strips)
 
-(defun timeout (searcher)
+(defun timeout (time searcher)
   (ematch searcher
     ((searcher storage form)
      (make-searcher
       :storage storage
       :form `(lambda ()
-               (bt:with-timeout (*time-limit*)
+               (bt:with-timeout (,time)
                  (funcall ,form)))))))

@@ -22,6 +22,7 @@
                         (with-memory-usage-diff ()
                           (strips:run
                            (timeout
+                            *time-limit*
                             (eager
                              (bucket-open-list
                               (blind)))))))))
@@ -32,6 +33,7 @@
                         (with-memory-usage-diff ()
                           (strips:run
                            (timeout
+                            *time-limit*
                             (eager
                              (bucket-open-list
                               (goal-count)))))))))
@@ -42,6 +44,7 @@
                         (with-memory-usage-diff ()
                           (strips:run
                            (timeout
+                            *time-limit*
                             (eager
                              (bucket-open-list
                               (ff/rpg)))))))))

@@ -33,7 +33,12 @@ exec ros dynamic-space-size=16000 -L sbcl-bin -m alien -Q -- $0 "$@"
       (lambda ()
         (with-memory-usage-diff ()
           (run
-           (eval *search-option*))))))
+           (timeout
+            (- *time-limit*
+               ;; subtract the current runtime
+               (/ (- (get-internal-real-time) *start-time*)
+                  internal-time-units-per-second))
+            (eval *search-option*)))))))
     ((list* "-t" (read *time-limit*) rest)
      (apply #'main rest))
     ((list* "-m" (read *memory-limit*) rest)
