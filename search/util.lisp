@@ -5,7 +5,7 @@
 ;; decoding state
 
 (defun decode-fact (index)
-  (strips.lib:index-ref *fact-index* index))
+  (strips.lib:index-ref *fact-index* (logabs index)))
 
 (defun decode-state (state)
   (iter (for b in-vector state with-index i)
