@@ -2,10 +2,8 @@
 
 #|
 
-Performs a randomized blind search on the delete-relaxed state space, then
-count the number of successfully reaching the goal.
-
-
+Performs some blind search on the semi-relaxed state space, then
+count the number of cases successfully reaching the goal.
 
 |#
 
