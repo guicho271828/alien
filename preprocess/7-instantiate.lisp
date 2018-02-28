@@ -89,11 +89,14 @@
   (let ((op-sexp-index (strips.lib:make-index :test 'equal))
         (op-index      (strips.lib:make-index :test 'equalp)))
     (log:info "Making an operator index")
-    (dolist (o *ops*)
-      (multiple-value-bind (id inserted) (strips.lib:index-insert op-index (instantiate-op o index trie))
-        (declare (ignore id))
-        (when inserted
-          (strips.lib:index-insert op-sexp-index o))))
+    (dolist (op-sexp *ops*)
+      (catch 'contradiction
+        ;; op with conflicting precond should be pruned
+        (let ((op (instantiate-op op-sexp index trie)))
+          (multiple-value-bind (id inserted) (strips.lib:index-insert op-index op)
+            (declare (ignore id))
+            (when inserted
+              (strips.lib:index-insert op-sexp-index op-sexp))))))
 
     (log:info "Removed duplicated operators: ~a -> ~a" (length *ops*) (strips.lib:index-size op-index))
 
@@ -131,19 +134,26 @@
 
            (match op
              ((op pre :eff (place eff))
-              (dolist (c (remove-duplicates gpre :test 'equal))
-                (if (positive c)
-                    (unless (static-p c)
-                      (linear-extend pre (strips.lib:index-id index c) most-positive-fixnum))
-                    (let ((i (strips.lib:index-id index (second c))))
-                      (when i ; otherwise unreachable
-                        (linear-extend pre (lognot i) most-positive-fixnum)))))
+              (let ((gpre (remove-duplicates gpre :test 'equal)))
+                (dolist (c gpre)
+                  (if (positive c)
+                      (unless (static-p c)
+                        (linear-extend pre (strips.lib:index-id index c) most-positive-fixnum))
+                      (if (member (second c) gpre :test 'equal)
+                          ;; Note: the precondition contains a contradiction, i.e. X and (not X).
+                          ;; This cannot be checked during grounding because
+                          ;; it ignores all negative preconditions.
+                          (throw 'contradiction nil)
+                          (let ((i (strips.lib:index-id index (second c))))
+                            (when i ; otherwise unreachable
+                              (linear-extend pre (lognot i) most-positive-fixnum)))))))
               (sort pre #'<)
               (iter (for e in geff)
                     (for i from 0)
                     (unless (member i reachable-effects)
                       (log:trace "op ~a:~%unreachable effect condition: ~a" `(,name ,@args) e))
-                    (instantiate-effect e eff index trie))
+                    (catch 'contradiction
+                      (instantiate-effect e eff index trie)))
               (setf eff (sort eff #'< :key #'effect-eff))
               (setf eff (delete-duplicates eff :test 'equalp))
               ;; postprocessing: when the effect-conditions are equivalent for the
@@ -198,13 +208,21 @@
   (let ((e (make-effect)))
     (ematch e
       ((effect con :eff (place eff))
-       (iter (for c in (remove-duplicates ground-conditions :test 'equal))
-             (if (positive c)
-                 (unless (static-p c)
-                   (linear-extend con (strips.lib:index-id index c) most-positive-fixnum))
-                 (let ((i (strips.lib:index-id index (second c))))
-                   (when i ; otherwise unreachable
-                     (linear-extend con (lognot i) most-positive-fixnum)))))
+       
+       (let ((gcon (remove-duplicates ground-conditions :test 'equal)))
+         (dolist (c gcon)
+           (if (positive c)
+               (unless (static-p c)
+                 (linear-extend con (strips.lib:index-id index c) most-positive-fixnum))
+               (if (member (second c) gcon :test 'equal)
+                   ;; Note: this precondition contains a contradiction, i.e. X and (not X).
+                   ;; This cannot be checked during grounding because
+                   ;; it ignores all negative preconditions.
+                   (throw 'contradiction nil)
+                   (let ((i (strips.lib:index-id index (second c))))
+                     (when i ; otherwise unreachable
+                       (linear-extend con (lognot i) most-positive-fixnum)))))))
+       
        (sort con #'<)
        (when (positive atom)
          (strips.lib:query-trie
@@ -324,9 +342,10 @@ See https://gist.github.com/guicho271828/707be5ad51edb858ff751d954e37c267 for su
                 `(setf (aref ,child ,eff) 1)))
            (condition-form
             `(and ,@(iter (for i in-vector con)
-                          (if (minusp i)
-                              `(= 0 (aref ,state ,(lognot i)))
-                              `(= 1 (aref ,state i)))))))
+                          (collecting
+                           (if (minusp i)
+                               `(= 0 (aref ,state ,(lognot i)))
+                               `(= 1 (aref ,state ,i))))))))
        (if (zerop (length con))
            effect-form
            `(when ,condition-form
