@@ -71,7 +71,7 @@ From: ubuntu
     ## an instance.
 
     ls -la
-    ls -la /planner/.roswell/local-projects/guicho271828/strips
+    ls -la /planner/.roswell/local-projects/strips
     
     pwd
     env
