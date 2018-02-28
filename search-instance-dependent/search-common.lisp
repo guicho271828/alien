@@ -92,7 +92,8 @@
 (defun apply-axiom-layer (axioms state) 
   (declare (optimize (speed 3) (debug 0) (safety 0)))
   (let* ((len (length axioms))
-         (counters (make-array len :element-type 'fixnum)))
+         (counters (load-time-value (make-array (length *ground-axioms*)
+                                                :element-type 'fixnum))))
     ;; considered axioms get the counter value of -1
     ;; TODO: make it a load-time-value vector or make it dynamic-extent
     ;; (declare (dynamic-extent counters))
@@ -102,7 +103,8 @@
                      (= 1 (aref state v)))
                  (1- counter)
                  counter)))
-      
+
+      ;; initializing
       (dotimes (i len)
         (ematch (aref axioms i)
           ((effect con)
@@ -112,6 +114,7 @@
               do
                 (setf counter (decrement v counter))
               finally
+              ;; I is below LEN
                 (setf (aref counters i) counter)))))
 
       (let ((open nil))
