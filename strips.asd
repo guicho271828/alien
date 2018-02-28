@@ -40,7 +40,8 @@
                             (:file "5-grounding-prolog-3")
                             (:file "6-invariant")
                             (:file "7-instantiate")
-                            (:file "8-successor-generator")))
+                            (:file "8-successor-generator")
+                            (:file "9-effect-compiler")))
               (:module "search"
                :components ((:file "util")
                             (:file "specials")
