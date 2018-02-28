@@ -68,6 +68,12 @@ blind search on Phenom II X6
 |   105482 |         |  2109856 | citycar p01                       |                 |
 |    55140 |         |  1102803 | parkprinter p01                   |                 |
 |    54200 |         |     3275 | researchers p01                   |                 |
+|----------+---------+----------+-----------------------------------+-----------------|
+|    87857 |         |     1230 | sokoban p01                       | <2018-02-28 水> |
+|    62884 |         |  1186835 | cavediving p01                    |                 |
+|   116865 |         |  2109856 | citycar p01                       |                 |
+|    59921 |         |  1102803 | parkprinter p01                   |                 |
+|    57052 |         |     3275 | researchers p01                   |                 |
 
 blind search on Intel(R) Celeron(R) 2980U @ 1.60GHz
 
