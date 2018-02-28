@@ -25,6 +25,10 @@
              (apply-axioms child+axioms)
 
              (format s "~a : ~a, id: ~a~%" i (decode-op op-id) op-id)
+             (let ((*package* (find-package :pddl)))
+               (format s "     ~s~%" (match (strips.lib:index-ref *op-index* op-id)
+                                       ((list (list* name _) _)
+                                        (find name *actions* :key #'second)))))
              (format s "     ~a~%" (aref *instantiated-ops* op-id))
              (format s "      ~a~%" state+axioms)
              (format s "      ~a~%" child+axioms)
