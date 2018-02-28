@@ -1,0 +1,1363 @@
+(let ((*time-limit* 300)) (run! 'demo-ff/rpg))
+ Running test DEMO-FF/RPG 
+ Running test DEMO 
+ <INFO> [19:18:52] strips.test solve.lisp (solve-alien-common) - Testing demo/sokoban/p01.pddl
+ <INFO> [19:18:52] strips specials.lisp (solve-common) - [0.000s] [+0.000s] STARTED
+ <INFO> [19:18:52] strips specials.lisp (solve-common) - Solving /home/guicho/repos/lisp/strips/demo/sokoban/p01.pddl
+ <INFO> [19:18:52] strips specials.lisp (log-milestone) - [0.004s] [+0.004s] PARSE
+ <INFO> [19:18:52] strips specials.lisp (log-milestone) - [0.004s] [+0.000s] EASY-INVARIANT
+ <INFO> [19:18:52] strips specials.lisp (log-milestone) - [0.226s] [+0.222s] GROUND
+ <INFO> [19:18:53] strips specials.lisp (log-milestone) - [0.419s] [+0.193s] MUTEX-INVARIANT
+ <INFO> [19:18:53] strips 7-instantiate.lisp (instantiate-ops) - Instantiating operator objects
+ <INFO> [19:18:53] strips 7-instantiate.lisp (instantiate-ops) - Making an operator index
+ <INFO> [19:18:53] strips 7-instantiate.lisp (instantiate-ops) - Removed duplicated operators: 78 -> 78
+ <INFO> [19:18:53] strips specials.lisp (log-milestone) - [0.422s] [+0.003s] INTANTIATE
+ <INFO> [19:18:53] strips specials.lisp (solve-common) -        facts: 64
+ <INFO> [19:18:53] strips specials.lisp (solve-common) -       axioms: 1
+ <INFO> [19:18:53] strips specials.lisp (solve-common) -          ops: 78
+ <INFO> [19:18:53] strips specials.lisp (solve-common) - axiom layers: 2
+ <INFO> [19:18:53] strips relaxation.lisp (ensure-delete-relaxed-sg) -          op: 78
+ <INFO> [19:18:53] strips relaxation.lisp (ensure-delete-relaxed-sg) -  relaxed op: 78
+ <INFO> [19:18:53] strips run.lisp (run) - compiling instance-dependent code for packed structs
+ <INFO> [19:18:53] strips specials.lisp (log-milestone) - [0.965s] [+0.543s] SECONDARY-COMPILATION
+ <WARN> [19:18:53] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <WARN> [19:18:53] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:18:53] strips run.lisp (run) - (EVAL '(STRIPS.LIB:SIZE-OF 'STRIPS::STATE-INFORMATION)): 100 
+ <INFO> [19:18:53] strips specials.lisp (log-milestone) - [1.022s] [+0.057s] STATE-INFORMATION
+ <INFO> [19:18:53] strips run.lisp (run) - compiling instance-dependent code for functions
+ <INFO> [19:18:53] strips close-list.lisp () - (MAX-STATE-ID): 67650064 
+ <INFO> [19:18:54] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 41 preconditions
+ <INFO> [19:18:54] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 4757 bytes
+ <INFO> [19:18:54] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 73 bytes
+ <INFO> [19:18:54] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 41 preconditions
+ <WARN> [19:18:54] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <WARN> [19:18:54] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <INFO> [19:18:54] strips specials.lisp (log-milestone) - [2.137s] [+1.115s] TERTIERY-COMPILATION
+ <INFO> [19:18:54] strips run.lisp (run) - compiling main function
+ <INFO> [19:18:54] strips specials.lisp (log-milestone) - [2.139s] [+0.002s] MAIN-FUNCTION-COMPILATION
+ <INFO> [19:18:54] strips run.lisp (run) - garbage collection
+ <INFO> [19:18:55] strips specials.lisp (log-milestone) - [2.251s] [+0.112s] GC
+ <INFO> [19:18:55] strips run.lisp (run) - Search started
+ <WARN> [19:18:55] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:18:55] strips eager.lisp (eager-search) - Initial heuristic value: 9
+ <INFO> [19:18:55] strips eager.lisp (eager-search rec path) - Goal found!
+ <INFO> [19:18:55] strips eager.lisp (eager-search cleanup-fun-56) - expanded:  82
+ <INFO> [19:18:55] strips eager.lisp (eager-search cleanup-fun-56) - evaluated: 111
+ <INFO> [19:18:55] strips eager.lisp (eager-search cleanup-fun-56) - generated: 111
+ <INFO> [19:18:55] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  37000.0
+ <INFO> [19:18:55] strips specials.lisp (log-milestone) - [2.263s] [+0.012s] SEARCH
+ <INFO> [19:18:55] strips run.lisp (run cleanup-fun-34) - Search finished
+ <INFO> [19:18:55] strips util.lisp (call-with-memory-usage-diff cleanup-fun-0) - Memory consumption in DYNAMIC:
++845,618,352 bytes for -220 SIMPLE-BIT-VECTOR objects
+  +1,037,920 bytes for -220 SIMPLE-VECTOR objects
+     -24,144 bytes for -355 INSTANCE objects
+      +6,736 bytes for +421 CONS objects
+  +2,097,232 bytes for   +3 SIMPLE-ARRAY-UNSIGNED-BYTE-64 objects
+      -3,888 bytes for  -81 SIMPLE-ARRAY-UNSIGNED-BYTE-8 objects
+      +3,280 bytes for  +42 SIMPLE-BASE-STRING objects
+        +912 bytes for   +5 SIMPLE-CHARACTER-STRING objects
+          +0 bytes for   +1 BIGNUM objects
+        +112 bytes for   +3 CLOSURE objects
+        -192 bytes for   -6 SIMPLE-ARRAY-UNSIGNED-BYTE-32 objects
+         +32 bytes for   +1 SIMPLE-ARRAY-UNSIGNED-BYTE-16 objects
+      -3,312 bytes for   +1 CODE objects
+      -2,400 bytes for  -75 SIMPLE-ARRAY-SIGNED-BYTE-8 objects
+        -256 bytes for  +20 SIMPLE-ARRAY-FIXNUM objects
+        +160 bytes for   +2 ARRAY-HEADER objects
+         +32 bytes for   +1 SIMPLE-ARRAY-SIGNED-BYTE-32 objects
+      -3,136 bytes for   +6 SIMPLE-ARRAY-UNSIGNED-BYTE-7 objects
+         -32 bytes for   -1 SIMPLE-ARRAY-UNSIGNED-BYTE-4 objects
+         -32 bytes for   -1 SIMPLE-ARRAY-UNSIGNED-BYTE-2 objects
+        -240 bytes for  -15 SIMPLE-ARRAY-NIL objects
+ <INFO> [19:18:55] strips specials.lisp (solve-common cleanup-fun-20) -
+  Finished on /home/guicho/repos/lisp/strips/demo/sokoban/p01.pddl
+.
+ <INFO> [19:18:55] strips.test solve.lisp (solve-alien-common) - Testing demo/cavediving/p01.pddl
+ <INFO> [19:18:55] strips specials.lisp (solve-common) - [0.000s] [+0.000s] STARTED
+ <INFO> [19:18:55] strips specials.lisp (solve-common) -
+  Solving /home/guicho/repos/lisp/strips/demo/cavediving/p01.pddl
+ <INFO> [19:18:55] strips specials.lisp (log-milestone) - [0.003s] [+0.003s] PARSE
+ <INFO> [19:18:55] strips specials.lisp (log-milestone) - [0.003s] [+0.000s] EASY-INVARIANT
+ <INFO> [19:18:55] strips specials.lisp (log-milestone) - [0.267s] [+0.264s] GROUND
+ <INFO> [19:18:56] strips specials.lisp (log-milestone) - [0.478s] [+0.211s] MUTEX-INVARIANT
+ <INFO> [19:18:56] strips 7-instantiate.lisp (instantiate-ops) - Instantiating operator objects
+ <INFO> [19:18:56] strips 7-instantiate.lisp (instantiate-ops) - Making an operator index
+ <INFO> [19:18:56] strips 7-instantiate.lisp (instantiate-ops) - Removed duplicated operators: 496 -> 496
+ <INFO> [19:18:56] strips specials.lisp (log-milestone) - [0.490s] [+0.012s] INTANTIATE
+ <INFO> [19:18:56] strips specials.lisp (solve-common) -        facts: 76
+ <INFO> [19:18:56] strips specials.lisp (solve-common) -       axioms: 1
+ <INFO> [19:18:56] strips specials.lisp (solve-common) -          ops: 496
+ <INFO> [19:18:56] strips specials.lisp (solve-common) - axiom layers: 2
+ <INFO> [19:18:56] strips relaxation.lisp (ensure-delete-relaxed-sg) -          op: 496
+ <INFO> [19:18:56] strips relaxation.lisp (ensure-delete-relaxed-sg) -  relaxed op: 496
+ <INFO> [19:18:56] strips run.lisp (run) - compiling instance-dependent code for packed structs
+ <INFO> [19:18:56] strips specials.lisp (log-milestone) - [1.161s] [+0.671s] SECONDARY-COMPILATION
+ <WARN> [19:18:56] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <WARN> [19:18:56] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:18:56] strips run.lisp (run) - (EVAL '(STRIPS.LIB:SIZE-OF 'STRIPS::STATE-INFORMATION)): 114 
+ <INFO> [19:18:56] strips specials.lisp (log-milestone) - [1.276s] [+0.115s] STATE-INFORMATION
+ <INFO> [19:18:56] strips run.lisp (run) - compiling instance-dependent code for functions
+ <INFO> [19:18:57] strips close-list.lisp () - (MAX-STATE-ID): 67650064 
+ <INFO> [19:18:57] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 100 preconditions
+ <INFO> [19:18:59] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 20608 bytes
+ <INFO> [19:18:59] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 73 bytes
+ <INFO> [19:19:00] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 100 preconditions
+ <WARN> [19:19:00] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <WARN> [19:19:00] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <INFO> [19:19:05] strips specials.lisp (log-milestone) - [10.001s] [+8.725s] TERTIERY-COMPILATION
+ <INFO> [19:19:05] strips run.lisp (run) - compiling main function
+ <INFO> [19:19:05] strips specials.lisp (log-milestone) - [10.003s] [+0.002s] MAIN-FUNCTION-COMPILATION
+ <INFO> [19:19:05] strips run.lisp (run) - garbage collection
+ <INFO> [19:19:05] strips specials.lisp (log-milestone) - [10.147s] [+0.144s] GC
+ <INFO> [19:19:05] strips run.lisp (run) - Search started
+ <WARN> [19:19:05] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:19:05] strips eager.lisp (eager-search) - Initial heuristic value: 10
+ <INFO> [19:19:50] strips eager.lisp (eager-search rec path) - Goal found!
+ <INFO> [19:19:50] strips eager.lisp (eager-search cleanup-fun-56) - expanded:  3615002
+ <INFO> [19:19:50] strips eager.lisp (eager-search cleanup-fun-56) - evaluated: 3623724
+ <INFO> [19:19:50] strips eager.lisp (eager-search cleanup-fun-56) - generated: 3623724
+ <INFO> [19:19:50] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  81788.56
+ <INFO> [19:19:50] strips specials.lisp (log-milestone) - [54.462s] [+44.315s] SEARCH
+ <INFO> [19:19:50] strips run.lisp (run cleanup-fun-34) - Search finished
+ <INFO> [19:19:51] strips util.lisp (call-with-memory-usage-diff cleanup-fun-0) - Memory consumption in DYNAMIC:
++964,017,728 bytes for         +7 SIMPLE-BIT-VECTOR objects
++100,663,344 bytes for         +3 SIMPLE-ARRAY-UNSIGNED-BYTE-64 objects
+ +67,205,760 bytes for     +2,103 SIMPLE-VECTOR objects
+ +58,130,464 bytes for +3,633,154 CONS objects
+    +234,384 bytes for     +4,406 INSTANCE objects
+     +68,816 bytes for     +1,694 SIMPLE-ARRAY-UNSIGNED-BYTE-8 objects
+      +3,184 bytes for        +43 SIMPLE-BASE-STRING objects
+         +48 bytes for         +5 SIMPLE-CHARACTER-STRING objects
+         +64 bytes for         +1 BIGNUM objects
+        +112 bytes for         +3 CLOSURE objects
+        +192 bytes for         +6 SIMPLE-ARRAY-UNSIGNED-BYTE-32 objects
+         +32 bytes for         +1 SIMPLE-ARRAY-UNSIGNED-BYTE-16 objects
+      +5,168 bytes for         +1 CODE objects
+     +53,536 bytes for     +1,673 SIMPLE-ARRAY-SIGNED-BYTE-8 objects
+     +33,376 bytes for     +1,218 SIMPLE-ARRAY-FIXNUM objects
+        +160 bytes for         +2 ARRAY-HEADER objects
+     +31,248 bytes for        -51 SIMPLE-ARRAY-UNSIGNED-BYTE-7 objects
+         +32 bytes for         +1 SIMPLE-ARRAY-SIGNED-BYTE-32 objects
+      +6,032 bytes for        +68 SIMPLE-ARRAY-UNSIGNED-BYTE-15 objects
+         +16 bytes for         +1 VALUE-CELL objects
+         -32 bytes for         -1 SIMPLE-ARRAY-UNSIGNED-BYTE-2 objects
+         +16 bytes for         +1 SIMPLE-ARRAY-NIL objects
+        -256 bytes for         -8 SIMPLE-ARRAY-UNSIGNED-BYTE-4 objects
+ <INFO> [19:19:51] strips specials.lisp (solve-common cleanup-fun-20) -
+  Finished on /home/guicho/repos/lisp/strips/demo/cavediving/p01.pddl
+.
+ <INFO> [19:19:51] strips.test solve.lisp (solve-alien-common) - Testing demo/citycar/p01.pddl
+ <INFO> [19:19:52] strips specials.lisp (solve-common) - [0.000s] [+0.000s] STARTED
+ <INFO> [19:19:52] strips specials.lisp (solve-common) - Solving /home/guicho/repos/lisp/strips/demo/citycar/p01.pddl
+ <INFO> [19:19:52] strips specials.lisp (log-milestone) - [0.001s] [+0.001s] PARSE
+ <INFO> [19:19:52] strips specials.lisp (log-milestone) - [0.001s] [+0.000s] EASY-INVARIANT
+ <INFO> [19:19:52] strips specials.lisp (log-milestone) - [0.238s] [+0.237s] GROUND
+ <INFO> [19:19:52] strips specials.lisp (log-milestone) - [0.439s] [+0.201s] MUTEX-INVARIANT
+ <INFO> [19:19:52] strips 7-instantiate.lisp (instantiate-ops) - Instantiating operator objects
+ <INFO> [19:19:52] strips 7-instantiate.lisp (instantiate-ops) - Making an operator index
+ <INFO> [19:19:52] strips 7-instantiate.lisp (instantiate-ops) - Removed duplicated operators: 346 -> 298
+ <INFO> [19:19:52] strips specials.lisp (log-milestone) - [0.452s] [+0.013s] INTANTIATE
+ <INFO> [19:19:52] strips specials.lisp (solve-common) -        facts: 86
+ <INFO> [19:19:52] strips specials.lisp (solve-common) -       axioms: 1
+ <INFO> [19:19:52] strips specials.lisp (solve-common) -          ops: 298
+ <INFO> [19:19:52] strips specials.lisp (solve-common) - axiom layers: 2
+ <INFO> [19:19:53] strips relaxation.lisp (ensure-delete-relaxed-sg) -          op: 298
+ <INFO> [19:19:53] strips relaxation.lisp (ensure-delete-relaxed-sg) -  relaxed op: 298
+ <INFO> [19:19:53] strips run.lisp (run) - compiling instance-dependent code for packed structs
+ <INFO> [19:19:53] strips specials.lisp (log-milestone) - [1.054s] [+0.602s] SECONDARY-COMPILATION
+ <WARN> [19:19:53] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <WARN> [19:19:53] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:19:53] strips run.lisp (run) - (EVAL '(STRIPS.LIB:SIZE-OF 'STRIPS::STATE-INFORMATION)): 124 
+ <INFO> [19:19:53] strips specials.lisp (log-milestone) - [1.171s] [+0.117s] STATE-INFORMATION
+ <INFO> [19:19:53] strips run.lisp (run) - compiling instance-dependent code for functions
+ <INFO> [19:19:53] strips close-list.lisp () - (MAX-STATE-ID): 73584280 
+ <INFO> [19:19:53] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 0 preconditions
+ <INFO> [19:19:55] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 11612 bytes
+ <INFO> [19:19:55] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 73 bytes
+ <INFO> [19:19:55] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 0 preconditions
+ <WARN> [19:19:55] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <WARN> [19:19:55] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <INFO> [19:19:57] strips specials.lisp (log-milestone) - [5.207s] [+4.036s] TERTIERY-COMPILATION
+ <INFO> [19:19:57] strips run.lisp (run) - compiling main function
+ <INFO> [19:19:57] strips specials.lisp (log-milestone) - [5.208s] [+0.001s] MAIN-FUNCTION-COMPILATION
+ <INFO> [19:19:57] strips run.lisp (run) - garbage collection
+ <INFO> [19:19:57] strips specials.lisp (log-milestone) - [5.345s] [+0.137s] GC
+ <INFO> [19:19:57] strips run.lisp (run) - Search started
+ <WARN> [19:19:57] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:19:57] strips eager.lisp (eager-search) - Initial heuristic value: 11
+ <INFO> [19:19:57] strips eager.lisp (eager-search rec path) - Goal found!
+ <INFO> [19:19:57] strips eager.lisp (eager-search cleanup-fun-56) - expanded:  10
+ <INFO> [19:19:57] strips eager.lisp (eager-search cleanup-fun-56) - evaluated: 284
+ <INFO> [19:19:57] strips eager.lisp (eager-search cleanup-fun-56) - generated: 284
+ <INFO> [19:19:57] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  35500.0
+ <INFO> [19:19:57] strips specials.lisp (log-milestone) - [5.362s] [+0.017s] SEARCH
+ <INFO> [19:19:57] strips run.lisp (run cleanup-fun-34) - Search finished
+ <INFO> [19:19:57] strips util.lisp (call-with-memory-usage-diff cleanup-fun-0) - Memory consumption in DYNAMIC:
++1,140,555,056 bytes for     +7 SIMPLE-BIT-VECTOR objects
+    +1,010,800 bytes for   -986 SIMPLE-VECTOR objects
+       -77,104 bytes for -1,489 INSTANCE objects
+       +18,288 bytes for +1,143 CONS objects
+    +2,097,232 bytes for     +3 SIMPLE-ARRAY-UNSIGNED-BYTE-64 objects
+       -26,480 bytes for   -744 SIMPLE-ARRAY-UNSIGNED-BYTE-8 objects
+        +3,296 bytes for    +44 SIMPLE-BASE-STRING objects
+        +1,984 bytes for     +7 SIMPLE-CHARACTER-STRING objects
+           +32 bytes for     +1 BIGNUM objects
+          +112 bytes for     +3 CLOSURE objects
+           -32 bytes for     -1 SIMPLE-ARRAY-UNSIGNED-BYTE-32 objects
+        +3,072 bytes for    +96 SIMPLE-ARRAY-UNSIGNED-BYTE-16 objects
+          +928 bytes for     +1 CODE objects
+       -25,344 bytes for   -792 SIMPLE-ARRAY-SIGNED-BYTE-8 objects
+       -17,632 bytes for   -702 SIMPLE-ARRAY-FIXNUM objects
+          +160 bytes for     +2 ARRAY-HEADER objects
+       -12,464 bytes for     -6 SIMPLE-ARRAY-UNSIGNED-BYTE-7 objects
+           +32 bytes for     +1 SIMPLE-ARRAY-SIGNED-BYTE-32 objects
+           +16 bytes for     +1 VALUE-CELL objects
+        -2,320 bytes for    -29 SIMPLE-ARRAY-UNSIGNED-BYTE-15 objects
+           +48 bytes for     +3 SIMPLE-ARRAY-NIL objects
+ <INFO> [19:19:57] strips specials.lisp (solve-common cleanup-fun-20) -
+  Finished on /home/guicho/repos/lisp/strips/demo/citycar/p01.pddl
+.
+ <INFO> [19:19:58] strips.test solve.lisp (solve-alien-common) - Testing demo/parkprinter/p01.pddl
+ <INFO> [19:19:58] strips specials.lisp (solve-common) - [0.000s] [+0.000s] STARTED
+ <INFO> [19:19:58] strips specials.lisp (solve-common) -
+  Solving /home/guicho/repos/lisp/strips/demo/parkprinter/p01.pddl
+ <INFO> [19:19:58] strips specials.lisp (log-milestone) - [0.002s] [+0.002s] PARSE
+ <INFO> [19:19:58] strips specials.lisp (log-milestone) - [0.003s] [+0.001s] EASY-INVARIANT
+ <INFO> [19:19:58] strips specials.lisp (log-milestone) - [0.243s] [+0.240s] GROUND
+ <INFO> [19:19:58] strips specials.lisp (log-milestone) - [0.459s] [+0.216s] MUTEX-INVARIANT
+ <INFO> [19:19:58] strips 7-instantiate.lisp (instantiate-ops) - Instantiating operator objects
+ <INFO> [19:19:58] strips 7-instantiate.lisp (instantiate-ops) - Making an operator index
+ <INFO> [19:19:58] strips 7-instantiate.lisp (instantiate-ops) - Removed duplicated operators: 100 -> 97
+ <INFO> [19:19:58] strips specials.lisp (log-milestone) - [0.468s] [+0.009s] INTANTIATE
+ <INFO> [19:19:58] strips specials.lisp (solve-common) -        facts: 84
+ <INFO> [19:19:58] strips specials.lisp (solve-common) -       axioms: 1
+ <INFO> [19:19:58] strips specials.lisp (solve-common) -          ops: 97
+ <INFO> [19:19:58] strips specials.lisp (solve-common) - axiom layers: 2
+ <INFO> [19:19:59] strips relaxation.lisp (ensure-delete-relaxed-sg) -          op: 97
+ <INFO> [19:19:59] strips relaxation.lisp (ensure-delete-relaxed-sg) -  relaxed op: 97
+ <INFO> [19:19:59] strips run.lisp (run) - compiling instance-dependent code for packed structs
+ <INFO> [19:19:59] strips specials.lisp (log-milestone) - [1.046s] [+0.578s] SECONDARY-COMPILATION
+ <WARN> [19:19:59] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <WARN> [19:19:59] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:19:59] strips run.lisp (run) - (EVAL '(STRIPS.LIB:SIZE-OF 'STRIPS::STATE-INFORMATION)): 120 
+ <INFO> [19:19:59] strips specials.lisp (log-milestone) - [1.159s] [+0.113s] STATE-INFORMATION
+ <INFO> [19:19:59] strips run.lisp (run) - compiling instance-dependent code for functions
+ <INFO> [19:19:59] strips close-list.lisp () - (MAX-STATE-ID): 73584280 
+ <INFO> [19:19:59] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 55 preconditions
+ <INFO> [19:20:00] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 5486 bytes
+ <INFO> [19:20:00] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 73 bytes
+ <INFO> [19:20:00] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 55 preconditions
+ <WARN> [19:20:00] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <WARN> [19:20:00] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <INFO> [19:20:00] strips specials.lisp (log-milestone) - [2.405s] [+1.246s] TERTIERY-COMPILATION
+ <INFO> [19:20:00] strips run.lisp (run) - compiling main function
+ <INFO> [19:20:00] strips specials.lisp (log-milestone) - [2.407s] [+0.002s] MAIN-FUNCTION-COMPILATION
+ <INFO> [19:20:00] strips run.lisp (run) - garbage collection
+ <INFO> [19:20:00] strips specials.lisp (log-milestone) - [2.522s] [+0.115s] GC
+ <INFO> [19:20:00] strips run.lisp (run) - Search started
+ <WARN> [19:20:00] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:20:00] strips eager.lisp (eager-search) - Initial heuristic value: 31
+ <INFO> [19:20:20] strips eager.lisp (eager-search cleanup-fun-56) - expanded:  1381511
+ <INFO> [19:20:20] strips eager.lisp (eager-search cleanup-fun-56) - evaluated: 1405550
+ <INFO> [19:20:20] strips eager.lisp (eager-search cleanup-fun-56) - generated: 1405550
+ <INFO> [19:20:20] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  70309.13
+ <INFO> [19:20:20] strips specials.lisp (log-milestone) - [22.523s] [+20.001s] SEARCH
+ <INFO> [19:20:20] strips run.lisp (run cleanup-fun-34) - Search finished
+ <INFO> [19:20:21] strips util.lisp (call-with-memory-usage-diff cleanup-fun-0) - Memory consumption in DYNAMIC:
++1,103,762,576 bytes for        +18 SIMPLE-BIT-VECTOR objects
+   +50,331,696 bytes for         +3 SIMPLE-ARRAY-UNSIGNED-BYTE-64 objects
+   +33,510,976 bytes for       -997 SIMPLE-VECTOR objects
+   +22,878,336 bytes for +1,429,896 CONS objects
+       -82,496 bytes for     -1,532 INSTANCE objects
+       -37,168 bytes for       -841 SIMPLE-ARRAY-UNSIGNED-BYTE-8 objects
+        +3,248 bytes for        +42 SIMPLE-BASE-STRING objects
+          +976 bytes for         +2 SIMPLE-CHARACTER-STRING objects
+           +32 bytes for         +1 BIGNUM objects
+          +144 bytes for         +4 CLOSURE objects
+           +32 bytes for         +1 SIMPLE-ARRAY-UNSIGNED-BYTE-32 objects
+        -3,008 bytes for        -94 SIMPLE-ARRAY-UNSIGNED-BYTE-16 objects
+          +928 bytes for         +1 CODE objects
+       -25,664 bytes for       -802 SIMPLE-ARRAY-SIGNED-BYTE-8 objects
+       -15,488 bytes for       -536 SIMPLE-ARRAY-FIXNUM objects
+           +80 bytes for         +1 ARRAY-HEADER objects
+           +32 bytes for         +1 SIMPLE-ARRAY-SIGNED-BYTE-32 objects
+       -15,648 bytes for        +51 SIMPLE-ARRAY-UNSIGNED-BYTE-7 objects
+           -16 bytes for         -1 VALUE-CELL objects
+          +288 bytes for         +9 SIMPLE-ARRAY-UNSIGNED-BYTE-4 objects
+          +176 bytes for        +11 SIMPLE-ARRAY-NIL objects
+           +64 bytes for         +2 SIMPLE-ARRAY-UNSIGNED-BYTE-2 objects
+        -3,712 bytes for        -39 SIMPLE-ARRAY-UNSIGNED-BYTE-15 objects
+ <INFO> [19:20:21] strips specials.lisp (solve-common cleanup-fun-20) -
+  Finished on /home/guicho/repos/lisp/strips/demo/parkprinter/p01.pddl
+fss
+ <INFO> [19:20:21] strips.test solve.lisp (solve-alien-common) - Testing demo/researchers/p01.pddl
+ <INFO> [19:20:21] strips specials.lisp (solve-common) - [0.000s] [+0.000s] STARTED
+ <INFO> [19:20:21] strips specials.lisp (solve-common) -
+  Solving /home/guicho/repos/lisp/strips/demo/researchers/p01.pddl
+ <INFO> [19:20:21] strips specials.lisp (log-milestone) - [0.004s] [+0.004s] PARSE
+ <INFO> [19:20:21] strips specials.lisp (log-milestone) - [0.004s] [+0.000s] EASY-INVARIANT
+ <INFO> [19:20:25] strips specials.lisp (log-milestone) - [3.582s] [+3.578s] GROUND
+ <INFO> [19:20:25] strips specials.lisp (log-milestone) - [3.830s] [+0.248s] MUTEX-INVARIANT
+ <INFO> [19:20:25] strips 7-instantiate.lisp (instantiate-ops) - Instantiating operator objects
+ <INFO> [19:20:25] strips 7-instantiate.lisp (instantiate-ops) - Making an operator index
+ <INFO> [19:20:27] strips 7-instantiate.lisp (instantiate-ops) - Removed duplicated operators: 19883 -> 686
+ <INFO> [19:20:27] strips specials.lisp (log-milestone) - [5.632s] [+1.802s] INTANTIATE
+ <INFO> [19:20:27] strips specials.lisp (solve-common) -        facts: 98
+ <INFO> [19:20:27] strips specials.lisp (solve-common) -       axioms: 1
+ <INFO> [19:20:27] strips specials.lisp (solve-common) -          ops: 686
+ <INFO> [19:20:27] strips specials.lisp (solve-common) - axiom layers: 2
+ <INFO> [19:20:27] strips relaxation.lisp (ensure-delete-relaxed-sg) -          op: 686
+ <INFO> [19:20:27] strips relaxation.lisp (ensure-delete-relaxed-sg) -  relaxed op: 686
+ <INFO> [19:20:27] strips run.lisp (run) - compiling instance-dependent code for packed structs
+ <INFO> [19:20:28] strips specials.lisp (log-milestone) - [6.441s] [+0.809s] SECONDARY-COMPILATION
+ <WARN> [19:20:28] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <WARN> [19:20:28] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:20:28] strips run.lisp (run) - (EVAL '(STRIPS.LIB:SIZE-OF 'STRIPS::STATE-INFORMATION)): 137 
+ <INFO> [19:20:28] strips specials.lisp (log-milestone) - [6.560s] [+0.119s] STATE-INFORMATION
+ <INFO> [19:20:28] strips run.lisp (run) - compiling instance-dependent code for functions
+ <INFO> [19:20:28] strips close-list.lisp () - (MAX-STATE-ID): 73584280 
+ <INFO> [19:20:28] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 1287 preconditions
+ <INFO> [19:20:43] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 37978 bytes
+ <INFO> [19:20:43] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 73 bytes
+ <INFO> [19:20:54] strips 8-successor-generator.lisp (postprocess-iteration-over-leaf) - packed 1287 preconditions
+ <WARN> [19:20:55] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <WARN> [19:20:55] strips util.lisp (fun2) - failed to inine a form due to: SIMPLE-ERROR
+slow runtime call to make-state+axioms!
+ form: (MAKE-STATE+AXIOMS)
+ <INFO> [19:21:02] strips specials.lisp (log-milestone) - [40.277s] [+33.717s] TERTIERY-COMPILATION
+ <INFO> [19:21:02] strips run.lisp (run) - compiling main function
+ <INFO> [19:21:02] strips specials.lisp (log-milestone) - [40.279s] [+0.002s] MAIN-FUNCTION-COMPILATION
+ <INFO> [19:21:02] strips run.lisp (run) - garbage collection
+ <INFO> [19:21:02] strips specials.lisp (log-milestone) - [40.566s] [+0.287s] GC
+ <INFO> [19:21:02] strips run.lisp (run) - Search started
+ <WARN> [19:21:02] strips specials.lisp (max-state-id) -
+  Slow function: Avoid calling this function in runtime, especially in inner loop!
+ <INFO> [19:21:02] strips eager.lisp (eager-search) - Initial heuristic value: 26
+ <INFO> [19:21:02] strips eager.lisp (eager-search rec path) - Goal found!
+ <INFO> [19:21:02] strips eager.lisp (eager-search cleanup-fun-56) - expanded:  15
+ <INFO> [19:21:02] strips eager.lisp (eager-search cleanup-fun-56) - evaluated: 659
+ <INFO> [19:21:02] strips eager.lisp (eager-search cleanup-fun-56) - generated: 659
+ <INFO> [19:21:02] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  4279.2207
+ <INFO> [19:21:02] strips specials.lisp (log-milestone) - [40.730s] [+0.164s] SEARCH
+ <INFO> [19:21:02] strips run.lisp (run cleanup-fun-34) - Search finished
+ <INFO> [19:21:02] strips util.lisp (call-with-memory-usage-diff cleanup-fun-0) - Memory consumption in DYNAMIC:
++1,260,138,144 bytes for      -2 SIMPLE-BIT-VECTOR objects
+       +35,264 bytes for  +2,204 CONS objects
+    +1,217,696 bytes for  +2,951 SIMPLE-VECTOR objects
+      +530,496 bytes for +12,039 INSTANCE objects
+    +2,097,232 bytes for      +3 SIMPLE-ARRAY-UNSIGNED-BYTE-64 objects
+       +95,584 bytes for  +2,365 SIMPLE-ARRAY-UNSIGNED-BYTE-8 objects
+        +3,232 bytes for     +43 SIMPLE-BASE-STRING objects
+            +0 bytes for      +4 SIMPLE-CHARACTER-STRING objects
+           +32 bytes for      +1 BIGNUM objects
+      +149,472 bytes for  +6,637 SIMPLE-ARRAY-FIXNUM objects
+          +112 bytes for      +3 CLOSURE objects
+           +32 bytes for      +1 SIMPLE-ARRAY-UNSIGNED-BYTE-16 objects
+          +160 bytes for      +2 ARRAY-HEADER objects
+          +944 bytes for      +1 CODE objects
+       +75,424 bytes for  +2,357 SIMPLE-ARRAY-SIGNED-BYTE-8 objects
+       +57,888 bytes for     -49 SIMPLE-ARRAY-UNSIGNED-BYTE-7 objects
+       +18,400 bytes for     +98 SIMPLE-ARRAY-UNSIGNED-BYTE-15 objects
+           +32 bytes for      +1 SIMPLE-ARRAY-SIGNED-BYTE-32 objects
+           -64 bytes for      -2 SIMPLE-ARRAY-UNSIGNED-BYTE-2 objects
+          -272 bytes for     -17 SIMPLE-ARRAY-NIL objects
+          -288 bytes for      -9 SIMPLE-ARRAY-UNSIGNED-BYTE-4 objects
+ <INFO> [19:21:02] strips specials.lisp (solve-common cleanup-fun-20) -
+  Finished on /home/guicho/repos/lisp/strips/demo/researchers/p01.pddl
+.
+ Did 6 checks.
+    Pass: 4 (66%)
+    Skip: 1 (16%)
+    Fail: 1 (16%)
+ Failure Details:
+ --------------------------------
+ DEMO []: 
+      While #<FUNCTION SOLVE-ALIEN-FF/RPG> in demo/parkprinter/p01.pddl:
+caused TIMEOUT:
+ Reason: Timeout occurred..
+ --------------------------------
+ Skip Details:
+ DEMO []: 
+     No plan found, no validation performed.
+ Didn't run anything...huh?
+T
+NIL
+TEST> (let ((*time-limit* 300)) (run! 'demo-fd-ff))
+ Running test DEMO-FD-FF 
+ Running test DEMO 
+ <INFO> [19:21:08] strips.test solve.lisp (solve-fd-common) - Testing demo/sokoban/p01.pddl
+INFO     Running translator.
+INFO     translator input: ['/home/guicho/repos/lisp/strips/demo/sokoban/domain.pddl', '/home/guicho/repos/lisp/strips/demo/sokoban/p01.pddl']
+INFO     translator arguments: ['--invariant-generation-max-candidates', '0']
+INFO     translator time limit: 300s
+INFO     translator memory limit: 1000 MB
+INFO     callstring: /usr/bin/python /home/guicho/repos/lisp/strips/downward/builds/release32/bin/translate/translate.py /home/guicho/repos/lisp/strips/demo/sokoban/domain.pddl /home/guicho/repos/lisp/strips/demo/sokoban/p01.pddl --invariant-generation-max-candidates 0
+time limit 300.00 -> (300, 301)
+Parsing...
+Parsing: [0.000s CPU, 0.005s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.010s CPU, 0.003s wall-clock]
+Preparing model... [0.000s CPU, 0.003s wall-clock]
+Generated 38 rules.
+Computing model... [0.010s CPU, 0.014s wall-clock]
+375 relevant atoms
+528 auxiliary atoms
+903 final queue length
+1060 total queue pushes
+Completing instantiation... [0.010s CPU, 0.007s wall-clock]
+Instantiating: [0.030s CPU, 0.029s wall-clock]
+Computing fact groups...
+Finding invariants...
+0 initial candidates
+Finding invariants: [0.000s CPU, 0.001s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.000s wall-clock]
+Choosing groups...
+64 uncovered facts
+Choosing groups: [0.000s CPU, 0.000s wall-clock]
+Building translation key... [0.000s CPU, 0.000s wall-clock]
+Computing fact groups: [0.000s CPU, 0.002s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.000s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Processing axioms: [0.000s CPU, 0.000s wall-clock]
+Translating task: [0.010s CPU, 0.008s wall-clock]
+230 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+4 propositions removed
+Detecting unreachable propositions: [0.010s CPU, 0.005s wall-clock]
+Translator variables: 62
+Translator derived variables: 0
+Translator facts: 124
+Translator goal facts: 2
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 78
+Translator axioms: 0
+Translator task size: 894
+Translator peak memory: 30140 KB
+Writing output... [0.000s CPU, 0.003s wall-clock]
+Done! [0.050s CPU, 0.052s wall-clock]
+INFO     Running preprocessor (release32).
+INFO     preprocessor input: output.sas
+INFO     preprocessor arguments: []
+INFO     preprocessor time limit: 300s
+INFO     preprocessor memory limit: 1000 MB
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/preprocess < output.sas
+time limit 300.00 -> (300, 301)
+INFO     Running search (release32).
+INFO     search input: output
+INFO     search arguments: ['--search', 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)']
+INFO     search time limit: 300s
+INFO     search memory limit: 1000 MB
+INFO     search executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward --search 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)' --internal-plan-file /tmp/tmp.U0CG60oCLX < output
+time limit 300.00 -> (300, 301)
+reading input... [t=8.1148e-05 (sec)]
+done reading input! [t=0.00178746 (sec)]
+packing state variables...done! [t=0.00180529 (sec)]
+Variables: 52
+Facts: 104
+Bytes per state: 8
+Building successor generator...done! [t=0.00222706 (sec)]
+done initalizing global data [t=0.00223624 (sec)]
+Conducting best first search without reopening closed nodes, (real) bound = 2147483647
+Initializing FF heuristic...
+Initializing additive heuristic...
+Simplifying 420 unary operators... done! [420 unary operators]
+New best heuristic value for ff(cost_type = one): 9
+[g=0, 1 evaluated, 0 expanded, t=0.00336488 (sec), 4532 KB]
+Initial heuristic value for ff(cost_type = one): 9
+New best heuristic value for ff(cost_type = one): 8
+[g=1, 2 evaluated, 1 expanded, t=0.00346896 (sec), 4532 KB]
+New best heuristic value for ff(cost_type = one): 7
+[g=2, 3 evaluated, 2 expanded, t=0.00352533 (sec), 4532 KB]
+New best heuristic value for ff(cost_type = one): 6
+[g=3, 4 evaluated, 3 expanded, t=0.00357901 (sec), 4532 KB]
+New best heuristic value for ff(cost_type = one): 5
+[g=4, 5 evaluated, 4 expanded, t=0.00363075 (sec), 4532 KB]
+New best heuristic value for ff(cost_type = one): 4
+[g=5, 7 evaluated, 5 expanded, t=0.00369734 (sec), 4532 KB]
+New best heuristic value for ff(cost_type = one): 3
+[g=31, 62 evaluated, 46 expanded, t=0.00474991 (sec), 4532 KB]
+New best heuristic value for ff(cost_type = one): 2
+[g=49, 131 evaluated, 99 expanded, t=0.00597371 (sec), 4532 KB]
+New best heuristic value for ff(cost_type = one): 1
+[g=50, 132 evaluated, 100 expanded, t=0.00603646 (sec), 4532 KB]
+New best heuristic value for ff(cost_type = one): 0
+[g=51, 133 evaluated, 101 expanded, t=0.00607822 (sec), 4532 KB]
+Solution found!
+Actual search time: 0.00267299 (sec) [t=0.00611454 (sec)]
+move player-01 pos-6-4 pos-6-3 dir-up (0)
+move player-01 pos-6-3 pos-6-2 dir-up (0)
+move player-01 pos-6-2 pos-5-2 dir-left (0)
+move player-01 pos-5-2 pos-4-2 dir-left (0)
+move player-01 pos-4-2 pos-3-2 dir-left (0)
+move player-01 pos-3-2 pos-2-2 dir-left (0)
+move player-01 pos-2-2 pos-2-3 dir-down (0)
+move player-01 pos-2-3 pos-2-4 dir-down (0)
+move player-01 pos-2-4 pos-3-4 dir-right (0)
+move player-01 pos-3-4 pos-3-5 dir-down (0)
+move player-01 pos-3-5 pos-4-5 dir-right (0)
+push-to-nongoal player-01 stone-01 pos-4-5 pos-4-4 pos-4-3 dir-up (1)
+move player-01 pos-4-4 pos-3-4 dir-left (0)
+move player-01 pos-3-4 pos-2-4 dir-left (0)
+move player-01 pos-2-4 pos-2-3 dir-up (0)
+move player-01 pos-2-3 pos-2-2 dir-up (0)
+move player-01 pos-2-2 pos-3-2 dir-right (0)
+move player-01 pos-3-2 pos-4-2 dir-right (0)
+move player-01 pos-4-2 pos-5-2 dir-right (0)
+move player-01 pos-5-2 pos-6-2 dir-right (0)
+move player-01 pos-6-2 pos-6-3 dir-down (0)
+move player-01 pos-6-3 pos-6-4 dir-down (0)
+push-to-nongoal player-01 stone-02 pos-6-4 pos-5-4 pos-4-4 dir-left (1)
+push-to-nongoal player-01 stone-02 pos-5-4 pos-4-4 pos-3-4 dir-left (1)
+push-to-goal player-01 stone-02 pos-4-4 pos-3-4 pos-2-4 dir-left (1)
+move player-01 pos-3-4 pos-4-4 dir-right (0)
+move player-01 pos-4-4 pos-5-4 dir-right (0)
+move player-01 pos-5-4 pos-6-4 dir-right (0)
+move player-01 pos-6-4 pos-6-3 dir-up (0)
+move player-01 pos-6-3 pos-6-2 dir-up (0)
+move player-01 pos-6-2 pos-5-2 dir-left (0)
+move player-01 pos-5-2 pos-4-2 dir-left (0)
+push-to-nongoal player-01 stone-01 pos-4-2 pos-4-3 pos-4-4 dir-down (1)
+move player-01 pos-4-3 pos-4-2 dir-up (0)
+move player-01 pos-4-2 pos-5-2 dir-right (0)
+move player-01 pos-5-2 pos-6-2 dir-right (0)
+move player-01 pos-6-2 pos-6-3 dir-down (0)
+move player-01 pos-6-3 pos-6-4 dir-down (0)
+move player-01 pos-6-4 pos-5-4 dir-left (0)
+push-to-nongoal player-01 stone-01 pos-5-4 pos-4-4 pos-3-4 dir-left (1)
+move player-01 pos-4-4 pos-4-5 dir-down (0)
+move player-01 pos-4-5 pos-3-5 dir-left (0)
+move player-01 pos-3-5 pos-2-5 dir-left (0)
+push-to-nongoal player-01 stone-02 pos-2-5 pos-2-4 pos-2-3 dir-up (1)
+push-to-nongoal player-01 stone-01 pos-2-4 pos-3-4 pos-4-4 dir-right (1)
+push-to-goal player-01 stone-01 pos-3-4 pos-4-4 pos-5-4 dir-right (1)
+move player-01 pos-4-4 pos-4-3 dir-up (0)
+move player-01 pos-4-3 pos-4-2 dir-up (0)
+move player-01 pos-4-2 pos-3-2 dir-left (0)
+move player-01 pos-3-2 pos-2-2 dir-left (0)
+push-to-goal player-01 stone-02 pos-2-2 pos-2-3 pos-2-4 dir-down (1)
+Plan length: 51 step(s).
+Plan cost: 10
+Expanded 102 state(s).
+Reopened 0 state(s).
+Evaluated 133 state(s).
+Evaluations: 133
+Generated 233 state(s).
+Dead ends: 13 state(s).
+Number of registered states: 133
+Search time: 0.0036067 (sec)
+Total time: 0.00611754 (sec)
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval/sec: 36875.8
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval: 133
+Solution found.
+Peak memory: 4532 KB
+INFO     Running validate.
+INFO     validate input: ['/home/guicho/repos/lisp/strips/demo/sokoban/domain.pddl', '/home/guicho/repos/lisp/strips/demo/sokoban/p01.pddl', '/tmp/tmp.U0CG60oCLX']
+INFO     validate arguments: []
+INFO     validate time limit: None
+INFO     validate memory limit: None
+INFO     validate executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate /home/guicho/repos/lisp/strips/demo/sokoban/domain.pddl /home/guicho/repos/lisp/strips/demo/sokoban/p01.pddl /tmp/tmp.U0CG60oCLX
+Checking plan: /tmp/tmp.U0CG60oCLX
+Plan executed successfully - checking goal
+Plan valid
+Final value: 10 
+Successful plans:
+Value: 10
+ /tmp/tmp.U0CG60oCLX 10 
+ <INFO> [19:21:08] strips specials.lisp (log-milestone) - [0.237s] [+0.237s] FD
+.
+ <INFO> [19:21:09] strips.test solve.lisp (solve-fd-common) - Testing demo/cavediving/p01.pddl
+INFO     Running translator.
+INFO     translator input: ['/home/guicho/repos/lisp/strips/demo/cavediving/domain.pddl', '/home/guicho/repos/lisp/strips/demo/cavediving/p01.pddl']
+INFO     translator arguments: ['--invariant-generation-max-candidates', '0']
+INFO     translator time limit: 300s
+INFO     translator memory limit: 1000 MB
+INFO     callstring: /usr/bin/python /home/guicho/repos/lisp/strips/downward/builds/release32/bin/translate/translate.py /home/guicho/repos/lisp/strips/demo/cavediving/domain.pddl /home/guicho/repos/lisp/strips/demo/cavediving/p01.pddl --invariant-generation-max-candidates 0
+time limit 300.00 -> (300, 301)
+Parsing...
+Parsing: [0.000s CPU, 0.005s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.010s CPU, 0.004s wall-clock]
+Preparing model... [0.000s CPU, 0.002s wall-clock]
+Generated 59 rules.
+Computing model... [0.020s CPU, 0.018s wall-clock]
+644 relevant atoms
+587 auxiliary atoms
+1231 final queue length
+2162 total queue pushes
+Completing instantiation... [0.040s CPU, 0.040s wall-clock]
+Instantiating: [0.070s CPU, 0.066s wall-clock]
+Computing fact groups...
+Finding invariants...
+0 initial candidates
+Finding invariants: [0.000s CPU, 0.001s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.000s wall-clock]
+Choosing groups...
+76 uncovered facts
+Choosing groups: [0.000s CPU, 0.000s wall-clock]
+Building translation key... [0.000s CPU, 0.001s wall-clock]
+Computing fact groups: [0.000s CPU, 0.003s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.000s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Processing axioms: [0.000s CPU, 0.002s wall-clock]
+Translating task: [0.040s CPU, 0.042s wall-clock]
+947 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+0 propositions removed
+Detecting unreachable propositions: [0.020s CPU, 0.023s wall-clock]
+Translator variables: 76
+Translator derived variables: 0
+Translator facts: 152
+Translator goal facts: 3
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 496
+Translator axioms: 0
+Translator task size: 4154
+Translator peak memory: 32972 KB
+Writing output... [0.010s CPU, 0.008s wall-clock]
+Done! [0.150s CPU, 0.150s wall-clock]
+INFO     Running preprocessor (release32).
+INFO     preprocessor input: output.sas
+INFO     preprocessor arguments: []
+INFO     preprocessor time limit: 300s
+INFO     preprocessor memory limit: 1000 MB
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/preprocess < output.sas
+time limit 300.00 -> (300, 301)
+INFO     Running search (release32).
+INFO     search input: output
+INFO     search arguments: ['--search', 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)']
+INFO     search time limit: 300s
+INFO     search memory limit: 1000 MB
+INFO     search executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward --search 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)' --internal-plan-file /tmp/tmp.2OLJ6PbrpL < output
+time limit 300.00 -> (300, 301)
+reading input... [t=6.4092e-05 (sec)]
+done reading input! [t=0.0063062 (sec)]
+packing state variables...done! [t=0.0063335 (sec)]
+Variables: 73
+Facts: 146
+Bytes per state: 12
+Building successor generator...done! [t=0.00914147 (sec)]
+done initalizing global data [t=0.0091522 (sec)]
+Conducting best first search without reopening closed nodes, (real) bound = 2147483647
+Initializing FF heuristic...
+Initializing additive heuristic...
+Simplifying 1913 unary operators... done! [1829 unary operators]
+New best heuristic value for ff(cost_type = one): 11
+[g=0, 1 evaluated, 0 expanded, t=0.0133831 (sec), 5012 KB]
+Initial heuristic value for ff(cost_type = one): 11
+New best heuristic value for ff(cost_type = one): 9
+[g=1, 3 evaluated, 1 expanded, t=0.0135659 (sec), 5012 KB]
+New best heuristic value for ff(cost_type = one): 8
+[g=2, 4 evaluated, 2 expanded, t=0.0136782 (sec), 5012 KB]
+New best heuristic value for ff(cost_type = one): 7
+[g=3, 6 evaluated, 3 expanded, t=0.0137885 (sec), 5012 KB]
+New best heuristic value for ff(cost_type = one): 6
+[g=5, 12 evaluated, 5 expanded, t=0.0139796 (sec), 5012 KB]
+New best heuristic value for ff(cost_type = one): 5
+[g=6, 14 evaluated, 6 expanded, t=0.0140434 (sec), 5012 KB]
+New best heuristic value for ff(cost_type = one): 4
+[g=7, 15 evaluated, 7 expanded, t=0.0140932 (sec), 5012 KB]
+New best heuristic value for ff(cost_type = one): 3
+[g=14, 3344 evaluated, 1207 expanded, t=0.0743539 (sec), 5012 KB]
+New best heuristic value for ff(cost_type = one): 2
+[g=42, 1872743 evaluated, 1114493 expanded, t=37.8506 (sec), 101088 KB]
+New best heuristic value for ff(cost_type = one): 1
+[g=43, 1872747 evaluated, 1114494 expanded, t=37.8508 (sec), 101088 KB]
+New best heuristic value for ff(cost_type = one): 0
+[g=44, 1872751 evaluated, 1114495 expanded, t=37.8509 (sec), 101088 KB]
+Solution found!
+Actual search time: 37.8374 (sec) [t=37.8509 (sec)]
+hire-diver d1 (63)
+prepare-tank d1 t0 t1 three four (1)
+prepare-tank d1 t1 t2 two three (1)
+prepare-tank d1 t2 t3 one two (1)
+enter-water d1 l0 (1)
+swim d1 t0 l0 l1 (1)
+drop-tank d1 t1 l1 one two (1)
+drop-tank d1 t0 l1 two three (1)
+swim d1 t2 l1 l0 (1)
+decompress d1 l0 (1)
+hire-diver d0 (10)
+prepare-tank d0 t3 t4 three four (1)
+prepare-tank d0 t4 t5 two three (1)
+prepare-tank d0 t5 t6 one two (1)
+prepare-tank d0 t6 dummy zero one (1)
+enter-water d0 l0 (1)
+swim d0 t6 l0 l1 (1)
+drop-tank d0 t6 l1 zero one (1)
+drop-tank d0 t5 l1 one two (1)
+drop-tank d0 t4 l1 two three (1)
+pickup-tank d0 t6 l1 two three (1)
+pickup-tank d0 t1 l1 one two (1)
+drop-tank d0 t3 l1 one two (1)
+drop-tank d0 t6 l1 two three (1)
+pickup-tank d0 t5 l1 two three (1)
+drop-tank d0 t1 l1 two three (1)
+pickup-tank d0 t6 l1 two three (1)
+pickup-tank d0 t0 l1 one two (1)
+pickup-tank d0 t4 l1 zero one (1)
+drop-tank d0 t6 l1 zero one (1)
+drop-tank d0 t5 l1 one two (1)
+pickup-tank d0 t1 l1 one two (1)
+pickup-tank d0 t3 l1 zero one (1)
+drop-tank d0 t4 l1 zero one (1)
+pickup-tank d0 t5 l1 zero one (1)
+swim d0 t5 l1 l2 (1)
+photograph d0 l2 t3 (1)
+drop-tank d0 t5 l2 zero one (1)
+drop-tank d0 t3 l2 one two (1)
+drop-tank d0 t0 l2 two three (1)
+swim d0 t1 l2 l1 (1)
+pickup-tank d0 t4 l1 two three (1)
+swim d0 t4 l1 l0 (1)
+decompress d0 l0 (1)
+Plan length: 44 step(s).
+Plan cost: 115
+Expanded 1114496 state(s).
+Reopened 0 state(s).
+Evaluated 1872753 state(s).
+Evaluations: 1872753
+Generated 6092883 state(s).
+Dead ends: 736911 state(s).
+Number of registered states: 1872753
+Search time: 37.8415 (sec)
+Total time: 37.8509 (sec)
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval/sec: 49489.4
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval: 1872753
+Solution found.
+Peak memory: 101088 KB
+INFO     Running validate.
+INFO     validate input: ['/home/guicho/repos/lisp/strips/demo/cavediving/domain.pddl', '/home/guicho/repos/lisp/strips/demo/cavediving/p01.pddl', '/tmp/tmp.2OLJ6PbrpL']
+INFO     validate arguments: []
+INFO     validate time limit: None
+INFO     validate memory limit: None
+INFO     validate executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate /home/guicho/repos/lisp/strips/demo/cavediving/domain.pddl /home/guicho/repos/lisp/strips/demo/cavediving/p01.pddl /tmp/tmp.2OLJ6PbrpL
+Checking plan: /tmp/tmp.2OLJ6PbrpL
+Plan executed successfully - checking goal
+Plan valid
+Final value: 115 
+Successful plans:
+Value: 115
+ /tmp/tmp.2OLJ6PbrpL 115 
+ <INFO> [19:21:47] strips specials.lisp (log-milestone) - [38.232s] [+38.232s] FD
+.
+ <INFO> [19:21:47] strips.test solve.lisp (solve-fd-common) - Testing demo/citycar/p01.pddl
+INFO     Running translator.
+INFO     translator input: ['/home/guicho/repos/lisp/strips/demo/citycar/domain.pddl', '/home/guicho/repos/lisp/strips/demo/citycar/p01.pddl']
+INFO     translator arguments: ['--invariant-generation-max-candidates', '0']
+INFO     translator time limit: 300s
+INFO     translator memory limit: 1000 MB
+INFO     callstring: /usr/bin/python /home/guicho/repos/lisp/strips/downward/builds/release32/bin/translate/translate.py /home/guicho/repos/lisp/strips/demo/citycar/domain.pddl /home/guicho/repos/lisp/strips/demo/citycar/p01.pddl --invariant-generation-max-candidates 0
+time limit 300.00 -> (300, 301)
+Parsing...
+Parsing: [0.010s CPU, 0.004s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.000s CPU, 0.003s wall-clock]
+Preparing model... [0.000s CPU, 0.002s wall-clock]
+Generated 47 rules.
+Computing model... [0.020s CPU, 0.013s wall-clock]
+431 relevant atoms
+410 auxiliary atoms
+841 final queue length
+1327 total queue pushes
+Completing instantiation... [0.010s CPU, 0.020s wall-clock]
+Instantiating: [0.040s CPU, 0.038s wall-clock]
+Computing fact groups...
+Finding invariants...
+0 initial candidates
+Finding invariants: [0.000s CPU, 0.001s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.000s wall-clock]
+Choosing groups...
+82 uncovered facts
+Choosing groups: [0.000s CPU, 0.000s wall-clock]
+Building translation key... [0.000s CPU, 0.001s wall-clock]
+Computing fact groups: [0.000s CPU, 0.003s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.000s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Processing axioms: [0.000s CPU, 0.001s wall-clock]
+Translating task: [0.020s CPU, 0.025s wall-clock]
+492 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+0 propositions removed
+Detecting unreachable propositions: [0.020s CPU, 0.014s wall-clock]
+Translator variables: 82
+Translator derived variables: 0
+Translator facts: 164
+Translator goal facts: 2
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 298
+Translator axioms: 0
+Translator task size: 2508
+Translator peak memory: 31556 KB
+Writing output... [0.010s CPU, 0.005s wall-clock]
+Done! [0.100s CPU, 0.090s wall-clock]
+INFO     Running preprocessor (release32).
+INFO     preprocessor input: output.sas
+INFO     preprocessor arguments: []
+INFO     preprocessor time limit: 300s
+INFO     preprocessor memory limit: 1000 MB
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/preprocess < output.sas
+time limit 300.00 -> (300, 301)
+INFO     Running search (release32).
+INFO     search input: output
+INFO     search arguments: ['--search', 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)']
+INFO     search time limit: 300s
+INFO     search memory limit: 1000 MB
+INFO     search executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward --search 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)' --internal-plan-file /tmp/tmp.v0UIVtaUfj < output
+time limit 300.00 -> (300, 301)
+reading input... [t=9.3053e-05 (sec)]
+done reading input! [t=0.00345433 (sec)]
+packing state variables...done! [t=0.00347317 (sec)]
+Variables: 76
+Facts: 152
+Bytes per state: 12
+Building successor generator...done! [t=0.00546861 (sec)]
+done initalizing global data [t=0.00548282 (sec)]
+Conducting best first search without reopening closed nodes, (real) bound = 2147483647
+Initializing FF heuristic...
+Initializing additive heuristic...
+Simplifying 984 unary operators... done! [664 unary operators]
+New best heuristic value for ff(cost_type = one): 13
+[g=0, 1 evaluated, 0 expanded, t=0.00888295 (sec), 4812 KB]
+Initial heuristic value for ff(cost_type = one): 13
+New best heuristic value for ff(cost_type = one): 12
+[g=1, 2 evaluated, 1 expanded, t=0.00903422 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 11
+[g=1, 4 evaluated, 1 expanded, t=0.00916758 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 10
+[g=1, 12 evaluated, 1 expanded, t=0.0095175 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 9
+[g=2, 52 evaluated, 2 expanded, t=0.0110593 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 8
+[g=3, 90 evaluated, 3 expanded, t=0.0125551 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 7
+[g=4, 116 evaluated, 4 expanded, t=0.0135868 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 6
+[g=5, 131 evaluated, 5 expanded, t=0.0141678 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 5
+[g=6, 145 evaluated, 6 expanded, t=0.0147311 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 4
+[g=7, 162 evaluated, 7 expanded, t=0.0153857 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 3
+[g=8, 176 evaluated, 8 expanded, t=0.0159468 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 2
+[g=9, 193 evaluated, 9 expanded, t=0.016405 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 1
+[g=10, 207 evaluated, 10 expanded, t=0.0166665 (sec), 4812 KB]
+New best heuristic value for ff(cost_type = one): 0
+[g=11, 235 evaluated, 11 expanded, t=0.017119 (sec), 4812 KB]
+Solution found!
+Actual search time: 0.00816796 (sec) [t=0.017142 (sec)]
+build_straight_oneway junction1-0 junction1-1 road0 (20)
+build_diagonal_oneway junction0-0 junction1-1 road1 (30)
+build_diagonal_oneway junction0-1 junction1-0 road3 (30)
+car_start junction0-0 car1 garage0 (0)
+move_car_in_road junction0-0 junction1-1 car1 road1 (1)
+move_car_out_road junction0-0 junction1-1 car1 road1 (1)
+car_arrived junction1-1 car1 (0)
+car_start junction0-1 car0 garage1 (0)
+move_car_in_road junction0-1 junction1-0 car0 road3 (1)
+move_car_out_road junction0-1 junction1-0 car0 road3 (1)
+car_arrived junction1-0 car0 (0)
+Plan length: 11 step(s).
+Plan cost: 84
+Expanded 12 state(s).
+Reopened 0 state(s).
+Evaluated 235 state(s).
+Evaluations: 235
+Generated 240 state(s).
+Dead ends: 2 state(s).
+Number of registered states: 235
+Search time: 0.0112876 (sec)
+Total time: 0.017144 (sec)
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval/sec: 20819.4
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval: 235
+Solution found.
+Peak memory: 4812 KB
+INFO     Running validate.
+INFO     validate input: ['/home/guicho/repos/lisp/strips/demo/citycar/domain.pddl', '/home/guicho/repos/lisp/strips/demo/citycar/p01.pddl', '/tmp/tmp.v0UIVtaUfj']
+INFO     validate arguments: []
+INFO     validate time limit: None
+INFO     validate memory limit: None
+INFO     validate executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate /home/guicho/repos/lisp/strips/demo/citycar/domain.pddl /home/guicho/repos/lisp/strips/demo/citycar/p01.pddl /tmp/tmp.v0UIVtaUfj
+Checking plan: /tmp/tmp.v0UIVtaUfj
+Plan executed successfully - checking goal
+Plan valid
+Final value: 84 
+Successful plans:
+Value: 84
+ /tmp/tmp.v0UIVtaUfj 84 
+ <INFO> [19:21:47] strips specials.lisp (log-milestone) - [0.304s] [+0.304s] FD
+.
+ <INFO> [19:21:47] strips.test solve.lisp (solve-fd-common) - Testing demo/parkprinter/p01.pddl
+INFO     Running translator.
+INFO     translator input: ['/home/guicho/repos/lisp/strips/demo/parkprinter/domain.pddl', '/home/guicho/repos/lisp/strips/demo/parkprinter/p01.pddl']
+INFO     translator arguments: ['--invariant-generation-max-candidates', '0']
+INFO     translator time limit: 300s
+INFO     translator memory limit: 1000 MB
+INFO     callstring: /usr/bin/python /home/guicho/repos/lisp/strips/downward/builds/release32/bin/translate/translate.py /home/guicho/repos/lisp/strips/demo/parkprinter/domain.pddl /home/guicho/repos/lisp/strips/demo/parkprinter/p01.pddl --invariant-generation-max-candidates 0
+time limit 300.00 -> (300, 301)
+Parsing...
+Parsing: [0.010s CPU, 0.011s wall-clock]
+Normalizing task... [0.000s CPU, 0.001s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.002s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.010s CPU, 0.007s wall-clock]
+Preparing model... [0.010s CPU, 0.006s wall-clock]
+Generated 211 rules.
+Computing model... [0.010s CPU, 0.009s wall-clock]
+295 relevant atoms
+424 auxiliary atoms
+719 final queue length
+920 total queue pushes
+Completing instantiation... [0.000s CPU, 0.008s wall-clock]
+Instantiating: [0.030s CPU, 0.032s wall-clock]
+Computing fact groups...
+Finding invariants...
+0 initial candidates
+Finding invariants: [0.010s CPU, 0.001s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.000s wall-clock]
+Choosing groups...
+84 uncovered facts
+Choosing groups: [0.000s CPU, 0.000s wall-clock]
+Building translation key... [0.000s CPU, 0.001s wall-clock]
+Computing fact groups: [0.010s CPU, 0.003s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.000s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Processing axioms: [0.000s CPU, 0.000s wall-clock]
+Translating task: [0.010s CPU, 0.008s wall-clock]
+154 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+2 propositions removed
+Detecting unreachable propositions: [0.000s CPU, 0.005s wall-clock]
+Translator variables: 83
+Translator derived variables: 0
+Translator facts: 166
+Translator goal facts: 18
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 100
+Translator axioms: 0
+Translator task size: 975
+Translator peak memory: 30396 KB
+Writing output... [0.000s CPU, 0.002s wall-clock]
+Done! [0.060s CPU, 0.064s wall-clock]
+INFO     Running preprocessor (release32).
+INFO     preprocessor input: output.sas
+INFO     preprocessor arguments: []
+INFO     preprocessor time limit: 300s
+INFO     preprocessor memory limit: 1000 MB
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/preprocess < output.sas
+time limit 300.00 -> (300, 301)
+INFO     Running search (release32).
+INFO     search input: output
+INFO     search arguments: ['--search', 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)']
+INFO     search time limit: 300s
+INFO     search memory limit: 1000 MB
+INFO     search executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward --search 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)' --internal-plan-file /tmp/tmp.bP28MQmvQv < output
+time limit 300.00 -> (300, 301)
+reading input... [t=7.9031e-05 (sec)]
+done reading input! [t=0.00197968 (sec)]
+packing state variables...done! [t=0.00200117 (sec)]
+Variables: 67
+Facts: 134
+Bytes per state: 12
+Building successor generator...done! [t=0.00240346 (sec)]
+done initalizing global data [t=0.0024098 (sec)]
+Conducting best first search without reopening closed nodes, (real) bound = 2147483647
+Initializing FF heuristic...
+Initializing additive heuristic...
+Simplifying 297 unary operators... done! [189 unary operators]
+New best heuristic value for ff(cost_type = one): 31
+[g=0, 1 evaluated, 0 expanded, t=0.00335458 (sec), 4536 KB]
+Initial heuristic value for ff(cost_type = one): 31
+New best heuristic value for ff(cost_type = one): 30
+[g=1, 2 evaluated, 1 expanded, t=0.00345775 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 29
+[g=2, 3 evaluated, 2 expanded, t=0.00352159 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 27
+[g=3, 6 evaluated, 3 expanded, t=0.00361485 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 26
+[g=4, 10 evaluated, 4 expanded, t=0.00372694 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 24
+[g=4, 11 evaluated, 4 expanded, t=0.00377863 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 23
+[g=5, 14 evaluated, 5 expanded, t=0.00387015 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 22
+[g=6, 18 evaluated, 6 expanded, t=0.00398096 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 21
+[g=6, 20 evaluated, 6 expanded, t=0.00404761 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 20
+[g=7, 23 evaluated, 7 expanded, t=0.00413835 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 18
+[g=7, 24 evaluated, 7 expanded, t=0.00418835 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 17
+[g=8, 28 evaluated, 8 expanded, t=0.00429428 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 16
+[g=9, 33 evaluated, 9 expanded, t=0.00441396 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 15
+[g=9, 37 evaluated, 9 expanded, t=0.00450909 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 14
+[g=10, 39 evaluated, 10 expanded, t=0.00457906 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 13
+[g=10, 42 evaluated, 10 expanded, t=0.00465858 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 11
+[g=11, 46 evaluated, 11 expanded, t=0.00475843 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 10
+[g=12, 51 evaluated, 12 expanded, t=0.0048768 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 9
+[g=13, 57 evaluated, 13 expanded, t=0.00500908 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 8
+[g=14, 63 evaluated, 14 expanded, t=0.00514199 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 7
+[g=15, 70 evaluated, 15 expanded, t=0.0052878 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 6
+[g=16, 75 evaluated, 16 expanded, t=0.00541099 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 5
+[g=17, 79 evaluated, 17 expanded, t=0.00550344 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 4
+[g=18, 84 evaluated, 18 expanded, t=0.00560661 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 3
+[g=19, 86 evaluated, 19 expanded, t=0.00566389 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 2
+[g=20, 89 evaluated, 20 expanded, t=0.00573375 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 1
+[g=21, 91 evaluated, 21 expanded, t=0.00579032 (sec), 4536 KB]
+New best heuristic value for ff(cost_type = one): 0
+[g=22, 92 evaluated, 22 expanded, t=0.00583318 (sec), 4536 KB]
+Solution found!
+Actual search time: 0.00243782 (sec) [t=0.00586807 (sec)]
+initialize  (0)
+fe1-feed-letter sheet1 (224)
+hw1-leftentrytobottomleftexit-letter sheet1 (1499)
+lc1-inverttoime-letter sheet1 back front (9999)
+fe1-feed-letter sheet2 (224)
+hw1-leftentrytotopleftexit-letter sheet2 (1499)
+uc1-inverttoime-letter sheet2 back front (8000)
+fe1-feed-letter sheet3 (224)
+hw1-leftentrytotopleftexit-letter sheet3 (1499)
+uc1-inverttoime-letter sheet3 back front (8000)
+uime-simplex-letter sheet3 front image-3 (127790)
+lime-simplex-letter sheet1 front image-1 (212790)
+lc1-fromime-letter sheet1 (4999)
+hw1-bottomrightentrytorightexit-letter sheet1 (1499)
+sys-stack-letter sheet1 dummy-sheet (1499)
+uc1-fromime-letter sheet3 (2999)
+hw1-toprightentrytorightexit-letter sheet3 (1499)
+uime-simplex-letter sheet2 front image-2 (127790)
+uc1-fromime-letter sheet2 (2999)
+hw1-toprightentrytorightexit-letter sheet2 (1499)
+sys-stack-letter sheet2 sheet1 (1499)
+sys-stack-letter sheet3 sheet2 (1499)
+Plan length: 22 step(s).
+Plan cost: 519529
+Expanded 23 state(s).
+Reopened 0 state(s).
+Evaluated 92 state(s).
+Evaluations: 92
+Generated 111 state(s).
+Dead ends: 20 state(s).
+Number of registered states: 92
+Search time: 0.00318474 (sec)
+Total time: 0.00587103 (sec)
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval/sec: 28887.8
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval: 92
+Solution found.
+Peak memory: 4536 KB
+INFO     Running validate.
+INFO     validate input: ['/home/guicho/repos/lisp/strips/demo/parkprinter/domain.pddl', '/home/guicho/repos/lisp/strips/demo/parkprinter/p01.pddl', '/tmp/tmp.bP28MQmvQv']
+INFO     validate arguments: []
+INFO     validate time limit: None
+INFO     validate memory limit: None
+INFO     validate executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate /home/guicho/repos/lisp/strips/demo/parkprinter/domain.pddl /home/guicho/repos/lisp/strips/demo/parkprinter/p01.pddl /tmp/tmp.bP28MQmvQv
+Checking plan: /tmp/tmp.bP28MQmvQv
+Plan executed successfully - checking goal
+Plan valid
+Final value: 519529 
+Successful plans:
+Value: 519529
+ /tmp/tmp.bP28MQmvQv 519529 
+ <INFO> [19:21:47] strips specials.lisp (log-milestone) - [0.249s] [+0.249s] FD
+.
+ <INFO> [19:21:47] strips.test solve.lisp (solve-fd-common) - Testing demo/researchers/p01.pddl
+INFO     Running translator.
+INFO     translator input: ['/home/guicho/repos/lisp/strips/demo/researchers/domain.pddl', '/home/guicho/repos/lisp/strips/demo/researchers/p01.pddl']
+INFO     translator arguments: ['--invariant-generation-max-candidates', '0']
+INFO     translator time limit: 300s
+INFO     translator memory limit: 1000 MB
+INFO     callstring: /usr/bin/python /home/guicho/repos/lisp/strips/downward/builds/release32/bin/translate/translate.py /home/guicho/repos/lisp/strips/demo/researchers/domain.pddl /home/guicho/repos/lisp/strips/demo/researchers/p01.pddl --invariant-generation-max-candidates 0
+time limit 300.00 -> (300, 301)
+Parsing...
+Parsing: [0.000s CPU, 0.008s wall-clock]
+Normalizing task... [0.000s CPU, 0.001s wall-clock]
+Instantiating...
+Generating Datalog program... [0.010s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.010s CPU, 0.013s wall-clock]
+Preparing model... [0.000s CPU, 0.005s wall-clock]
+Generated 201 rules.
+Computing model... [3.480s CPU, 3.486s wall-clock]
+30035 relevant atoms
+30385 auxiliary atoms
+60420 final queue length
+717281 total queue pushes
+Completing instantiation... [7.380s CPU, 7.392s wall-clock]
+Instantiating: [10.910s CPU, 10.932s wall-clock]
+Computing fact groups...
+Finding invariants...
+0 initial candidates
+Finding invariants: [0.020s CPU, 0.015s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.000s wall-clock]
+Choosing groups...
+98 uncovered facts
+Choosing groups: [0.000s CPU, 0.000s wall-clock]
+Building translation key... [0.000s CPU, 0.001s wall-clock]
+Computing fact groups: [0.020s CPU, 0.017s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.000s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Processing axioms: [0.370s CPU, 0.368s wall-clock]
+Translating task: [6.250s CPU, 6.256s wall-clock]
+104524 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+0 propositions removed
+Detecting unreachable propositions: [3.060s CPU, 3.062s wall-clock]
+Translator variables: 98
+Translator derived variables: 0
+Translator facts: 196
+Translator goal facts: 10
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 19883
+Translator axioms: 0
+Translator task size: 471552
+Translator peak memory: 577520 KB
+Writing output... [0.900s CPU, 0.900s wall-clock]
+Done! [21.520s CPU, 21.552s wall-clock]
+INFO     Running preprocessor (release32).
+INFO     preprocessor input: output.sas
+INFO     preprocessor arguments: []
+INFO     preprocessor time limit: 300s
+INFO     preprocessor memory limit: 1000 MB
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/preprocess < output.sas
+time limit 300.00 -> (300, 301)
+INFO     Running search (release32).
+INFO     search input: output
+INFO     search arguments: ['--search', 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)']
+INFO     search time limit: 300s
+INFO     search memory limit: 1000 MB
+INFO     search executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/downward --search 'eager(single_buckets(ff(cost_type=ONE),queue_type=LIFO),cost_type=ONE)' --internal-plan-file /tmp/tmp.X4QxeyAyfx < output
+time limit 300.00 -> (300, 301)
+reading input... [t=6.7333e-05 (sec)]
+done reading input! [t=0.234424 (sec)]
+packing state variables...done! [t=0.234454 (sec)]
+Variables: 59
+Facts: 118
+Bytes per state: 8
+Building successor generator...done! [t=0.300245 (sec)]
+done initalizing global data [t=0.300274 (sec)]
+Conducting best first search without reopening closed nodes, (real) bound = 2147483647
+Initializing FF heuristic...
+Initializing additive heuristic...
+Simplifying 51509 unary operators... done! [2449 unary operators]
+New best heuristic value for ff(cost_type = one): 20
+[g=0, 1 evaluated, 0 expanded, t=0.335692 (sec), 19288 KB]
+Initial heuristic value for ff(cost_type = one): 20
+New best heuristic value for ff(cost_type = one): 19
+[g=1, 4 evaluated, 1 expanded, t=0.336107 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 18
+[g=2, 50 evaluated, 2 expanded, t=0.340764 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 17
+[g=3, 96 evaluated, 3 expanded, t=0.345396 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 16
+[g=4, 141 evaluated, 4 expanded, t=0.349959 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 15
+[g=5, 184 evaluated, 5 expanded, t=0.354398 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 14
+[g=6, 226 evaluated, 6 expanded, t=0.35867 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 13
+[g=7, 266 evaluated, 7 expanded, t=0.362743 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 12
+[g=8, 305 evaluated, 8 expanded, t=0.366795 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 11
+[g=9, 344 evaluated, 9 expanded, t=0.370829 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 10
+[g=10, 382 evaluated, 10 expanded, t=0.374697 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 9
+[g=11, 418 evaluated, 11 expanded, t=0.378435 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 8
+[g=12, 453 evaluated, 12 expanded, t=0.381948 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 7
+[g=13, 486 evaluated, 13 expanded, t=0.385398 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 6
+[g=14, 518 evaluated, 14 expanded, t=0.388628 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 5
+[g=15, 551 evaluated, 15 expanded, t=0.391973 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 4
+[g=15, 571 evaluated, 15 expanded, t=0.393993 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 3
+[g=16, 576 evaluated, 16 expanded, t=0.394695 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 2
+[g=17, 598 evaluated, 17 expanded, t=0.397187 (sec), 19288 KB]
+New best heuristic value for ff(cost_type = one): 0
+[g=18, 636 evaluated, 18 expanded, t=0.400901 (sec), 19288 KB]
+Solution found!
+Actual search time: 0.0654602 (sec) [t=0.401251 (sec)]
+meet-at-institution-2 researcher6 researcher7 institution1 (1)
+publish-paper-2 researcher6 researcher7 (1)
+meet-at-institution-2 researcher5 researcher7 institution1 (1)
+publish-paper-2 researcher5 researcher7 (1)
+meet-at-institution-2 researcher4 researcher6 institution1 (1)
+publish-paper-2 researcher4 researcher6 (1)
+meet-at-institution-2 researcher4 researcher5 institution1 (1)
+publish-paper-2 researcher4 researcher5 (1)
+meet-at-institution-2 researcher3 researcher7 institution1 (1)
+publish-paper-2 researcher3 researcher7 (1)
+meet-at-institution-2 researcher3 researcher5 institution1 (1)
+publish-paper-3 researcher3 researcher5 researcher7 (1)
+meet-at-institution-2 researcher2 researcher6 institution1 (1)
+beers-after-conference-m3-c2 researcher5 researcher2 researcher7 researcher4 researcher6 (1)
+publish-paper-5 researcher2 researcher4 researcher5 researcher6 researcher7 (1)
+meet-at-institution-2 researcher1 researcher5 institution1 (1)
+beers-after-conference-m2-c3 researcher5 researcher7 researcher4 researcher1 researcher6 (1)
+publish-paper-5 researcher1 researcher4 researcher5 researcher6 researcher7 (1)
+Plan length: 18 step(s).
+Plan cost: 18
+Expanded 19 state(s).
+Reopened 0 state(s).
+Evaluated 638 state(s).
+Evaluations: 638
+Generated 2938 state(s).
+Dead ends: 0 state(s).
+Number of registered states: 638
+Search time: 0.100458 (sec)
+Total time: 0.401254 (sec)
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval/sec: 6350.9
+ <INFO> [00:00:00] fastdownward (planner.cc) - [0.000s] [+0.000s] eval: 638
+Solution found.
+Peak memory: 19288 KB
+INFO     Running validate.
+INFO     validate input: ['/home/guicho/repos/lisp/strips/demo/researchers/domain.pddl', '/home/guicho/repos/lisp/strips/demo/researchers/p01.pddl', '/tmp/tmp.X4QxeyAyfx']
+INFO     validate arguments: []
+INFO     validate time limit: None
+INFO     validate memory limit: None
+INFO     validate executable: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate
+INFO     callstring: /home/guicho/repos/lisp/strips/downward/builds/release32/bin/validate /home/guicho/repos/lisp/strips/demo/researchers/domain.pddl /home/guicho/repos/lisp/strips/demo/researchers/p01.pddl /tmp/tmp.X4QxeyAyfx
+Checking plan: /tmp/tmp.X4QxeyAyfx
+Plan executed successfully - checking goal
+Plan valid
+Final value: 18 
+Successful plans:
+Value: 18
+ /tmp/tmp.X4QxeyAyfx 18 
+ <INFO> [19:22:11] strips specials.lisp (log-milestone) - [23.872s] [+23.872s] FD
+.
+ Did 5 checks.
+    Pass: 5 (100%)
+    Skip: 0 ( 0%)
+    Fail: 0 ( 0%)
+ Didn't run anything...huh?
+T
+NIL
