@@ -155,10 +155,18 @@
                     (catch 'contradiction
                       (instantiate-effect e eff index trie)))
               (setf eff (sort eff #'< :key #'effect-eff))
-              (setf eff (delete-duplicates eff :test 'equalp))
+              (setf eff (delete-duplicates eff :test 'equalp)) ; there are no duplicates below here.
               ;; postprocessing: when the effect-conditions are equivalent for the
               ;; positive and negative effect of the same literal, the effect should
               ;; be removed.
+              (setf eff
+                    (iter (for e1 in-vector eff with-index i)
+                          (if (iter (for e2 in-vector eff with-index j)
+                                    (thereis (opposite-effect-p e1 e2)))
+                              (log:trace "op ~a:~%cancelling effects: ~a" `(,name ,@args)
+                                         (strips.lib:index-ref index (logabs (effect-eff e1))))
+                              (collect e1 result-type vector))))
+              #+(or)
               (iter (with blacklist = nil)
                     (for e1 in-vector eff with-index i)
                     (generate j from 0)
