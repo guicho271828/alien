@@ -4,10 +4,13 @@
 
 ;; decoding state
 
+(defun decode-fact (index)
+  (strips.lib:index-ref *fact-index* index))
+
 (defun decode-state (state)
   (iter (for b in-vector state with-index i)
         (when (= 1 b)
-          (collect (strips.lib:index-ref *fact-index* i)))))
+          (collect (decode-fact i)))))
 
 (defun decode-op (op)
   (ematch op
