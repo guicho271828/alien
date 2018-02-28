@@ -152,8 +152,7 @@
                     (for i from 0)
                     (unless (member i reachable-effects)
                       (log:trace "op ~a:~%unreachable effect condition: ~a" `(,name ,@args) e))
-                    (catch 'contradiction
-                      (instantiate-effect e eff index trie)))
+                    (instantiate-effect e eff index trie))
               (setf eff (sort eff #'< :key #'effect-eff))
               (setf eff (delete-duplicates eff :test 'equalp)) ; there are no duplicates below here.
               ;; postprocessing: when the effect-conditions are equivalent for the
@@ -226,7 +225,7 @@
                    ;; Note: this precondition contains a contradiction, i.e. X and (not X).
                    ;; This cannot be checked during grounding because
                    ;; it ignores all negative preconditions.
-                   (throw 'contradiction nil)
+                   (return-from instantiate-effect-aux2)
                    (let ((i (strips.lib:index-id index (second c))))
                      (when i ; otherwise unreachable
                        (linear-extend con (lognot i) most-positive-fixnum)))))))
