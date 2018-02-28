@@ -27,12 +27,13 @@
              (format s "     ~a~%" (aref *instantiated-ops* op-id))
              (format s "      ~a~%" state+axioms)
              (format s "      ~a~%" child+axioms)
-             (format s "~:{      ~a : ~a~%~}"
-                     (mapcar #'list
-                             (iter (for b in-vector child+axioms with-index i)
-                                   (when (= 1 b)
-                                     (collect i)))
-                             (decode-state child+axioms)))
+             (iter (for b1 in-vector state+axioms with-index i)
+                   (for b2 in-vector child+axioms)
+                   (match* (b1 b2)
+                     ((0 0))
+                     ((1 0) (format s "      ~3a : -~a~%" i (decode-fact i)))
+                     ((0 1) (format s "      ~3a : +~a~%" i (decode-fact i)))
+                     ((1 1) (format s "      ~3a :  ~a~%" i (decode-fact i)))))
              (replace state+axioms child+axioms))))))
 
 (in-compilation-phase ((and eager phase/full-compilation))
