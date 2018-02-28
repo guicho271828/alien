@@ -11,6 +11,7 @@
 (in-compilation-phase ((and eager phase/full-compilation))
   (defun print-plan-simulation (op-ids)
     (log:debug
+     "~a"
      (with-output-to-string (s)
        (iter (for op-id in op-ids)
              (for i from 0) 
@@ -34,6 +35,26 @@
                      ((1 0) (format s "      ~3a : -~a~%" i (decode-fact i)))
                      ((0 1) (format s "      ~3a : +~a~%" i (decode-fact i)))
                      ((1 1) (format s "      ~3a :  ~a~%" i (decode-fact i)))))
+             
+             (format s "      other conditions~%")
+
+             ;; others that are mentioned
+             (let ((all (bit-ior state+axioms child+axioms))
+                   acc)
+               (match (aref *instantiated-ops* op-id)
+                 ((op pre eff)
+                  (iter (for i in-vector pre) (push (logabs i) acc))
+                  (iter outer
+                        (for e in-vector eff)
+                        (match e
+                          ((effect con eff)
+                           (iter (for i in-vector con) (push (logabs i) acc))
+                           (push (logabs eff) acc))))))
+               (dolist (var (remove-duplicates acc))
+                 (ignore-errors
+                   (unless (= 1 (aref all var))
+                     (format s "      ~3a : ~a~%" var (decode-fact var))))))
+             
              (replace state+axioms child+axioms))))))
 
 (in-compilation-phase ((and eager phase/full-compilation))
