@@ -30,9 +30,18 @@
                             :env-alist `(("PATH" . ,(format nil "~a:~a"
                                                             (asdf:system-relative-pathname :strips "VAL/")
                                                             (uiop:getenv "PATH"))))
-                            :from-source (format nil "cd ~a; git submodule update --init; cd ~a ; make validate"
+                            :from-source (format nil "cd ~a; git clone https://github.com/guicho271828/VAL.git; cd ~a ; make validate"
                                                  (asdf:system-source-directory :strips)
-                                                 (asdf:system-relative-pathname :strips "VAL/"))))
+                                                 (asdf:system-relative-pathname :strips "VAL/")))
+          (uiop:symbol-call :trivial-package-manager
+                            :ensure-program
+                            "fast-downward.py"
+                            :env-alist `(("PATH" . ,(format nil "~a:~a"
+                                                            (asdf:system-relative-pathname :strips "downward/")
+                                                            (uiop:getenv "PATH"))))
+                            :from-source (format nil "cd ~a; git clone https://github.com/guicho271828/FastDownward.git downward; cd ~a ; ./build.py"
+                                                 (asdf:system-source-directory :strips)
+                                                 (asdf:system-relative-pathname :strips "downward/"))))
  :perform
  (test-op :after (op c)
           (eval (read-from-string "(5am:run! :strips)"))))
