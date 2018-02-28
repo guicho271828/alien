@@ -9,6 +9,25 @@
   (status +new+ status)))
 
 (in-compilation-phase ((and eager phase/full-compilation))
+  (defun print-plan-simulation (op-ids)
+    (iter (for op-id in op-ids)
+          (with state+axioms = (initial-state+axioms))
+          (with child+axioms = (initial-state+axioms))
+          (when (first-iteration-p)
+            (format t "~3%      ~a~%" state+axioms)
+            (format t "      ~a~%" (decode-state state+axioms)))
+          
+          (apply-op/fast op-id state+axioms child+axioms)
+          (apply-axioms child+axioms)
+
+          (format t "~a : ~a~%" op-id (decode-op op-id))
+          (format t "~a : ~a~%" op-id (aref *instantiated-ops* op-id))
+          (format t "      ~a~%" state+axioms)
+          (format t "      ~a~%" child+axioms)
+          (format t "      ~a~%" (decode-state child+axioms))
+          (replace state+axioms child+axioms))))
+
+(in-compilation-phase ((and eager phase/full-compilation))
 (defun eager-search (open-list insert pop)
   (declare (optimize (speed 3)))
   (let* ((db (make-state-information-array
@@ -50,13 +69,15 @@
                  (apply-axioms state+axioms)
                  
                  (flet ((path ()
-                          (declare (optimize (debug 3)))
-                          (nreverse
-                           (iter (for pid initially id then (state-information-parent info))
-                                 (packed-aref db 'state-information pid info)
-                                 (for op-id = (state-information-op info))
-                                 (until (= op-id *op-size*))
-                                 (collect (decode-op op-id))))))
+                          (let ((op-ids (nreverse
+                                         (iter (for pid initially id then (state-information-parent info))
+                                               (packed-aref db 'state-information pid info)
+                                               (for op-id = (state-information-op info))
+                                               (until (= op-id *op-size*))
+                                               (collect op-id)))))
+                            #+(or)
+                            (print-plan-simulation op-ids)
+                            (mapcar #'decode-op op-ids))))
                    (declare (dynamic-extent #'path))
                    (report-if-goal state+axioms #'path))
                  (incf expanded)
