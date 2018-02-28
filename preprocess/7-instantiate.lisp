@@ -234,16 +234,13 @@
        
        (sort con #'<)
        (when (positive atom)
-         (strips.lib:query-trie
-          (lambda (c) (setf eff (strips.lib:index-id index c)))
-          trie atom))
+         (assert (notany #'variablep atom))
+         (setf eff (strips.lib:index-id index atom)))
        (when (negative atom)
-         (strips.lib:query-trie
-          (lambda (c)
-            (let ((i (strips.lib:index-id index c))) ;; note: don't have to call SECOND
-              (when i ; otherwise unreachable      ;       |  because it is done already
-                (setf eff (lognot i)))))           ;       |
-          trie (second atom)))                     ; <--- here
+         (assert (notany #'variablep (second atom)))
+         (let ((i (strips.lib:index-id index (second atom))))
+           (when i ; otherwise unreachable
+             (setf eff (lognot i)))))
        ;; note: ignoring action cost at the moment
        ))
     (linear-extend effects e)))
