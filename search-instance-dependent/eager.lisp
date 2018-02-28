@@ -13,6 +13,7 @@
     (log:debug
      (with-output-to-string (s)
        (iter (for op-id in op-ids)
+             (for i from 0) 
              (with state+axioms = (initial-state+axioms))
              (with child+axioms = (initial-state+axioms))
              (when (first-iteration-p)
@@ -22,11 +23,16 @@
              (apply-op/fast op-id state+axioms child+axioms)
              (apply-axioms child+axioms)
 
-             (format s "~a : ~a~%" op-id (decode-op op-id))
-             (format s "~a : ~a~%" op-id (aref *instantiated-ops* op-id))
+             (format s "~a : ~a, id: ~a~%" i (decode-op op-id) op-id)
+             (format s "     ~a~%" (aref *instantiated-ops* op-id))
              (format s "      ~a~%" state+axioms)
              (format s "      ~a~%" child+axioms)
-             (format s "      ~a~%" (decode-state child+axioms))
+             (format s "~:{      ~a : ~a~%~}"
+                     (mapcar #'list
+                             (iter (for b in-vector child+axioms with-index i)
+                                   (when (= 1 b)
+                                     (collect i)))
+                             (decode-state child+axioms)))
              (replace state+axioms child+axioms))))))
 
 (in-compilation-phase ((and eager phase/full-compilation))
