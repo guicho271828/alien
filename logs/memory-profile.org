@@ -1,0 +1,59 @@
+demo/citycar/p01.pddl
+
+| seconds |    gc |        consed |    calls | sec/call | name                                     |
+|---------+-------+---------------+----------+----------+------------------------------------------|
+|   0.001 | 0.000 |         32736 |        9 | 0.000111 | STRIPS::SIMPLIFY-EFFECT                  |
+|   0.000 | 0.000 |         32736 |      338 | 0.000000 | STRIPS::ASSEMBLE-BODIES                  |
+|   0.000 | 0.000 |         32752 |        1 | 0.000000 | STRIPS::REGISTER-OPS                     |
+|   0.001 | 0.000 |         32768 |      346 | 0.000004 | STRIPS::EXTEND-SG                        |
+|   0.001 | 0.000 |         32768 |        1 | 0.001000 | STRIPS:%REL                              |
+|   0.001 | 0.000 |         32768 |        1 | 0.000914 | STRIPS:AXIOM-LAYERS                      |
+|   0.001 | 0.000 |         32768 |      131 | 0.000006 | STRIPS::NORMALIZE-FACT-TERM              |
+|   0.000 | 0.000 |         32768 |       48 | 0.000000 | STRIPS::TABLED                           |
+|   0.000 | 0.000 |         32768 |       36 | 0.000000 | STRIPS::REMOVE-FORALL/EFFECT             |
+|   0.000 | 0.000 |         32768 |       63 | 0.000000 | STRIPS::REGISTER                         |
+|   0.000 | 0.413 |         32768 |        1 | 0.000000 | STRIPS::CALL-WITH-MEMORY-USAGE-DIFF      |
+|   0.000 | 0.000 |         32768 |        1 | 0.000000 | STRIPS:SOLVE-COMMON                      |
+|   0.005 | 0.000 |         65536 |        1 | 0.004631 | STRIPS:GROUND                            |
+|   0.000 | 0.000 |         65536 |        1 | 0.000340 | STRIPS::COMPILE-ITERATION-OVER-LEAF      |
+|   0.000 | 0.000 |         65536 |       48 | 0.000000 | STRIPS::FLATTEN-TYPES/ARGUMENT           |
+|   0.000 | 0.000 |         93904 |        1 | 0.000000 | STRIPS:INSTANTIATE-OPS                   |
+|   0.001 | 0.000 |         98272 |        1 | 0.001000 | STRIPS::POSTPROCESS-ITERATION-OVER-LEAF  |
+|   0.000 | 0.000 |        130976 |     3369 | 0.000000 | STRIPS::SG-NODE                          |
+|   0.000 | 0.000 |        163328 |     1573 | 0.000000 | STRIPS::INSTANTIATE-EFFECT-AUX           |
+|   0.000 | 0.000 |        163568 |      346 | 0.000000 | STRIPS::MAKE-OP                          |
+|   0.000 | 0.000 |        163744 |     1086 | 0.000000 | STRIPS::COMPILE-APPLY-EFFECT             |
+|   0.005 | 0.000 |        424784 |     1087 | 0.000004 | STRIPS::INSTANTIATE-EFFECT-AUX2          |
+|   0.000 | 0.000 |        425264 |     1087 | 0.000000 | STRIPS::MAKE-EFFECT                      |
+|   0.001 | 0.000 |        450096 |      346 | 0.000004 | STRIPS::INSTANTIATE-OP                   |
+|   0.118 | 0.000 |       2621648 |        1 | 0.117914 | STRIPS::%AXIOM-LAYERS                    |
+|   0.001 | 0.000 |       3145840 |        1 | 0.001000 | STRIPS::MAKE-CLOSE-LIST                  |
+|   0.135 | 0.000 |       3206640 |        1 | 0.134631 | STRIPS::%GROUND                          |
+|   0.000 | 0.126 |      21571536 |        1 | 0.000000 | STRIPS:RUN                               |
+|   0.702 | 0.000 |  103MB 612240 |  1463631 | 0.000000 | STRIPS::CLOSE-LIST-INSERT                |
+|   2.323 | 0.000 |  335MB 845792 |        3 | 0.774466 | STRIPS:RECOMPILE-INSTANCE-DEPENDENT-CODE |
+|   0.000 | 0.009 | 1048MB 603744 |        1 | 0.000000 | STRIPS::EAGER-SEARCH                     |
+|---------+-------+---------------+----------+----------+------------------------------------------|
+|   4.650 | 0.548 |    1521311120 | 15025633 |          | Total                                    |
+
+ <INFO> [11:48:38] strips util.lisp (call-with-memory-usage-diff cleanup-fun-0) - Memory consumption in DYNAMIC:
+
++1,048,576,240 bytes for         +8 SIMPLE-BIT-VECTOR objects
+   +24,692,576 bytes for +1,543,286 CONS objects
+   +16,817,552 bytes for       +839 SIMPLE-VECTOR objects
+   +25,166,320 bytes for        +13 SIMPLE-ARRAY-UNSIGNED-BYTE-64 objects
+       +84,832 bytes for     +1,313 INSTANCE objects
+       +38,032 bytes for       +874 SIMPLE-ARRAY-UNSIGNED-BYTE-8 objects
+        +4,256 bytes for        +69 SIMPLE-BASE-STRING objects
+        +5,520 bytes for        +22 SIMPLE-CHARACTER-STRING objects
+          +272 bytes for         +7 BIGNUM objects
+          +240 bytes for         +5 SYMBOL objects
+          +208 bytes for         +5 CLOSURE objects
+          +480 bytes for        +15 SIMPLE-ARRAY-UNSIGNED-BYTE-32 objects
+        +1,216 bytes for        +38 SIMPLE-ARRAY-UNSIGNED-BYTE-16 objects
+       +14,336 bytes for        +11 CODE objects
+       +23,296 bytes for       +728 SIMPLE-ARRAY-SIGNED-BYTE-8 objects
+           +32 bytes for         +1 SIMPLE-ARRAY-FIXNUM objects
+           +80 bytes for         +1 ARRAY-HEADER objects
+           +32 bytes for         +1 SIMPLE-ARRAY-SIGNED-BYTE-32 objects
+        +1,440 bytes for         +2 SIMPLE-ARRAY-UNSIGNED-BYTE-15 objects
