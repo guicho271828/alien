@@ -69,6 +69,7 @@
                  (apply-axioms state+axioms)
                  
                  (flet ((path ()
+                          (log:info "Goal found!")
                           (let ((op-ids (nreverse
                                          (iter (for pid initially id then (state-information-parent info))
                                                (packed-aref db 'state-information pid info)
