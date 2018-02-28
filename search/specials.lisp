@@ -8,6 +8,7 @@
 (defparameter *time-limit* 20
   "Search time limit in sec.")
 
+(ftype* max-state-id fixnum)
 (defun max-state-id ()
   (unless (or *compile-file-pathname*
               *load-pathname*)

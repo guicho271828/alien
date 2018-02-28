@@ -57,6 +57,7 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   ;; additionally, length comparison etc. are removed by the runtime type
   (equal s1 s2))
 
+(declaim (inline state-hash))
 (ftype* state-hash state fixnum)
 (defun state-hash (s)
   (declare (optimize (speed 3) (safety 0) (debug 0)))
@@ -85,6 +86,7 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
   (counter       0
                  :type fixnum)
   (table (apply #'make-hash-table
+                :size 65536
                 :allow-other-keys t
                 ;; assumes the keys are already hash values
                 :test 'fixnum-=
@@ -105,13 +107,15 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 (defun close-list-insert (close-list thing)
   "Inserts THING to the close-list under duplicate detection. Returns two values: an ID and a boolean.
 If the secondary value is T, then the state is a duplicate."
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
   (ematch close-list
     ((close-list table
                  key-function
-                 (counter (place counter)))
+                 (counter (place counter-place counter)))
      
      (let* ((hash (state-hash thing))
             (bag (gethash hash table)))
+       (declare (list bag))
        (if-let ((id (find thing bag
                           :key key-function
                           :test #'state-=)))
@@ -122,8 +126,9 @@ If the secondary value is T, then the state is a duplicate."
            (when (< (load-time-value (max-state-id) t) counter)
              (error 'close-list-full))
            (setf (gethash hash table)
-                 (cons counter bag))
-           (incf counter)))))))
+                 (cons counter bag)
+                 counter-place
+                 (1+ counter))))))))
 
 (log:info (max-state-id))
 )
