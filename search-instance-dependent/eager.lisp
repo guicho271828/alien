@@ -12,7 +12,7 @@
 (defun eager-search (open-list insert pop)
   (declare (optimize (speed 3)))
   (let* ((db (make-state-information-array
-              (max-state-id) :static t))
+              (max-state-id)))
          (close-list (make-close-list :key-function
                                       (let ((info (make-state-information))
                                             (state (make-state)))
@@ -86,7 +86,6 @@
       ;; loop unrolling
       (unwind-protect
            (rec)
-        (static-vectors:free-static-vector db)
         (log:info "expanded:  ~a" expanded)
         (log:info "evaluated: ~a" evaluated)
         (log:info "generated: ~a" (close-list-counter close-list))
