@@ -14,9 +14,11 @@
   (let* ((db (make-state-information-array
               (max-state-id) :static t))
          (close-list (make-close-list :key-function
-                                      (lambda (id)
-                                        (let ((info (packed-aref db 'state-information id)))
-                                          (state-information-facts info)))))
+                                      (let ((info (make-state-information))
+                                            (state (make-state)))
+                                        (lambda (id)
+                                          (packed-aref db 'state-information id info)
+                                          (state-information-facts info state)))))
          (open-list (funcall open-list))
          (info (make-state-information))
          (state+axioms (initial-state+axioms))
