@@ -1,5 +1,6 @@
 
-# Strips - A STRIPS planner
+# ~~Strips - A STRIPS planner~~
+# Alien  - The Return of the Alien Technology to Classical Planning
 
 ## Usage
 
