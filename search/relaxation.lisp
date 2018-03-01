@@ -12,28 +12,11 @@
 Returns two values: a relaxed SG and a vector of relaxed ops.
 The original SG and operators are not destructively modified.
 Operators with no effects are removed from the results and does not belong to the SG."
-  (let ((relaxed-ops (strips.lib:make-index :test 'equalp)))
-    (labels ((rec (sg)
-               (ematch sg
-                 ((sg-node variable then else either)
-                  (let ((then (rec then))
-                        (else (rec else))
-                        (either (rec either)))
-                    (when (or then else either)
-                      ;; unless, prune node
-                      (sg-node variable then else either))))
-                 ((list* op-ids)
-                  (iter (for id in op-ids)
-                        (let ((relaxed-op (funcall relaxer (aref ops id))))
-                          (unless (emptyp (op-eff relaxed-op)) ; prune node
-                            (unless (strips.lib:index-id relaxed-ops relaxed-op) ; remove duplicates
-                              (collecting
-                               (strips.lib:index-insert relaxed-ops relaxed-op))))))))))
-      (values (rec sg)
-              (coerce (coerce (coerce (strips.lib:index-array relaxed-ops)
-                                      'list)
-                              'vector)
-                      '(simple-array op))))))
+  (let ((relaxed-ops (map 'vector relaxer ops)))
+    (setf relaxed-ops (delete-duplicates relaxed-ops :test #'equalp))
+    (values (generate-sg relaxed-ops)
+            (coerce relaxed-ops
+                    '(simple-array op)))))
 
 (ftype* delete-relax-op op op)
 (defun delete-relax-op (op)
