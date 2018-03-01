@@ -92,28 +92,55 @@ A generator node is just a list containing operator indices."
                                       (end (min *state-size* (+ start 64)))
                                       (width (- end start)))
   "Returns a program that iterates over the leaf of sg, inlining constants, and execute BODY on each loop."
-  (with-gensyms (fn)
-    (labels ((rec (sg)
+  (with-gensyms (pack)
+    (labels ((rec (sg binding)
                (ematch sg
                  ((sg-node variable then else either)
-                  (assemble-bodies variable
-                                   state-sym
-                                   (rec then)
-                                   (rec else)
-                                   (rec either)))
+                  (if (< variable end)
+                      (if (and then else)
+                          `((if (= 1 (aref ,state-sym ,variable))
+                                ;; already checked this variable, so no longer to extend the binding
+                                (progn ,@(rec then binding))
+                                (progn ,@(rec else binding)))
+                            ,@(rec either binding))
+                          (append (rec then (cons (cons variable t) binding))
+                                  (rec else (cons (cons variable nil) binding))
+                                  (rec either binding)))
+                      (wrap-check
+                       binding
+                       (lambda ()
+                         (list (compile-iteration-over-leaf op-id-sym state-sym sg body end))))))
                  ((list* op-ids)
-                  (if (< (length op-ids) 4)
-                      (iter (for id in op-ids)
-                            (appending
-                             (subst id op-id-sym body))) 
-                      (with-gensyms (i)
-                        `((dotimes (,i ,(length op-ids))
-                            (let ((,op-id-sym (aref ,(make-array (length op-ids)
-                                                                 :element-type 'op-id
-                                                                 :initial-contents op-ids)
-                                                    ,i)))
-                              ,@body)))))))))
-      (postprocess-iteration-over-leaf `(progn ,@(rec sg))))))
+                  (wrap-check
+                   binding
+                   (lambda ()
+                     (when op-ids
+                       (if (< (length op-ids) 4)
+                           (iter (for id in op-ids)
+                                 (appending
+                                  (subst id op-id-sym body))) 
+                           (with-gensyms (i)
+                             `((dotimes (,i ,(length op-ids))
+                                 (let ((,op-id-sym (aref ,(make-array (length op-ids)
+                                                                      :element-type 'op-id
+                                                                      :initial-contents op-ids)
+                                                         ,i)))
+                                   ,@body)))))))))))
+             (wrap-check (binding cont)
+               (when-let ((branches (funcall cont)))
+                 (if binding
+                     (let ((mask 0) (compare 0))
+                       ;; pack 64bit masked comparison
+                       (iter (for (var . val) in binding)
+                             (for offset = (- var start))
+                             (setf (ldb (byte 1 offset) mask) 1)
+                             (when val
+                               (setf (ldb (byte 1 offset) compare) 1)))
+                       `((when (= 0 (logand ,mask (logxor ,compare ,pack)))
+                           ,@branches)))
+                     branches))))
+      `(let ((,pack (strips.lib::%packed-accessor-int ,state-sym ,width ,start)))
+         ,@(rec sg nil)))))
 
 (defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
   (log:warn "falling back to the interpretation based successor generation")
