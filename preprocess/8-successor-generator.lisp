@@ -133,9 +133,17 @@ nil                                           *
                                    (rec else)
                                    (rec either)))
                  ((list* op-ids)
-                  (iter (for id in op-ids)
-                        (appending
-                         (subst id op-id-sym body)))))))
+                  (if (< (length op-ids) 4)
+                      (iter (for id in op-ids)
+                            (appending
+                             (subst id op-id-sym body))) 
+                      (with-gensyms (i)
+                        `((dotimes (,i ,(length op-ids))
+                            (let ((,op-id-sym (aref ,(make-array (length op-ids)
+                                                                 :element-type 'op-id
+                                                                 :initial-contents op-ids)
+                                                    ,i)))
+                              ,@body)))))))))
       (postprocess-iteration-over-leaf `(progn ,@(rec sg))))))
 
 (defvar *packed-conditions*)
