@@ -86,41 +86,6 @@ A generator node is just a list containing operator indices."
       (interpret-iteration-over-leaf op-id state (symbol-value sg) body)
       (compile-iteration-over-leaf op-id state (symbol-value sg) body)))
 
-(defun as-form (body)
-  "list of forms -> (progn forms), single list of form -> form itself"
-  (if (second body)
-      `((progn ,@body))
-      body))
-
-(defun assemble-bodies (variable state-sym then-body else-body either-body)
-  "construct a compact form for three bodies"
-  (let ((conditional
-         (cond (then-body
-                `((if (= 1 (aref ,state-sym ,variable))
-                      ,@(as-form then-body)
-                      ,@(as-form else-body))))
-               (else-body
-                `((if (= 0 (aref ,state-sym ,variable))
-                      ,@(as-form else-body))))
-               (t nil))))
-    (if conditional
-        `(,@conditional ,@either-body)
-        either-body)))
-
-#|
-returns one of:
-
-((if (= 1 (aref state var)) then else) either)
-((if (= 1 (aref state var)) then) either)
-(if (= 1 (aref state var)) then else)
-(if (= 1 (aref state var)) then)              * --- starred versions can be fused
-((if (= 0 (aref state var)) else) either)
-either                                        *
-(if (= 0 (aref state var)) else)              *
-nil                                           *
-
-|#
-
 (defun compile-iteration-over-leaf (op-id-sym state-sym sg body
                                     &optional (start 0)
                                     &aux
@@ -132,10 +97,16 @@ nil                                           *
                (ematch sg
                  ((sg-node variable then else either)
                   (if (< variable end)
-                      (append (rec then (cons (cons variable t) binding))
-                              (rec else (cons (cons variable nil) binding))
-                              (rec either binding))
-                      (compile-iteration-over-leaf op-id-sym state-sym sg body end)))
+                      (if (and then else)
+                          `((if (= 1 (aref ,state-sym ,variable))
+                                ;; already checked this variable, so no longer to extend the binding
+                                (progn ,@(rec then binding))
+                                (progn ,@(rec else binding)))
+                            ,@(rec either binding))
+                          (append (rec then (cons (cons variable t) binding))
+                                  (rec else (cons (cons variable nil) binding))
+                                  (rec either binding)))
+                      (list (compile-iteration-over-leaf op-id-sym state-sym sg body end))))
                  ((list* op-ids)
                   (when op-ids
                     (let ((mask 0) (compare 0))
@@ -159,87 +130,6 @@ nil                                           *
                                         ,@body)))))))))))))
       `(let ((,pack (strips.lib::%packed-accessor-int ,state-sym ,width ,start)))
          ,@(rec sg nil)))))
-
-(defvar *packed-conditions*)
-
-(defun postprocess-iteration-over-leaf (body)
-  (labels ((r (body)
-             (ematch body
-               ;; assemble-bodies returns one of these forms:
-               (`(progn ,@body)
-                 ;; no optimization
-                 `(progn ,@(mapcar #'r body)))
-
-               (`(if ,cond ,then ,else)
-                 ;; no optimization
-                 `(if ,cond ,(r then) ,(r else)))
-               
-               (`(if (= ,val (aref ,state ,var)) ,then)
-                 ;; optimize
-                 (r2 then state (- var (mod var 64)) (list (cons var val))))
-               
-               (_ body)))
-           (r2 (body state start vars)
-             "start: 64bit aligned variable name"
-             (ematch body
-               (`(if (= ,val (aref ,state ,var)) ,then)
-                 (if (< var (+ start 64))
-                     ;; continue to optimize in this iteration
-                     (r2 then state start (cons (cons var val) vars))
-                     (pack-conditions-and-continue body state start vars)))
-               (_
-                (ematch vars
-                  ((list (cons var val)) ; if length is 1
-                   `(if (= ,val (aref ,state ,var)) ,(r body)))
-                  (_
-                   (pack-conditions-and-continue body state start vars))))))
-           (pack-conditions-and-continue (body state start vars)
-             (let ((mask 0)
-                   (compare 0)
-                   (width (- (min *state-size* (+ start 64))
-                             start)))
-               (iter (for (var . val) in vars)
-                     (for offset = (- var start))
-                     (setf (ldb (byte 1 offset) mask) 1)
-                     (incf *packed-conditions*)
-                     (when (= 1 val)
-                       (setf (ldb (byte 1 offset) compare) 1)))
-               `(if (= 0 (logand ,mask
-                                 (logxor ,compare
-                                         (strips.lib::%packed-accessor-int ,state ,width ,start))))
-                    ,(r body)))))
-    (let ((*packed-conditions* 0))
-      (prog1 (r body)
-        (log:info "packed ~a preconditions" *packed-conditions*)))))
-
-#+(or)
-(progn
-  (print
-   (postprocess-iteration-over-leaf
-    '(progn (if (= 1 (aref state var)) then else) either)))
-
-  (print
-   (let ((*state-size* 64))
-     (postprocess-iteration-over-leaf
-      `(if (= 1 (aref state 0))
-           (if (= 1 (aref state 1))
-               then)))))
-
-  (print
-   (let ((*state-size* 5))
-     (postprocess-iteration-over-leaf
-      `(if (= 1 (aref state 0))
-           (if (= 1 (aref state 1))
-               then)))))
-
-  (print
-   (let ((*state-size* 128))
-     (postprocess-iteration-over-leaf
-      `(if (= 1 (aref state 0))
-           (if (= 1 (aref state 1))
-               (if (= 1 (aref state 64))
-                   (if (= 1 (aref state 65))
-                       then))))))))
 
 (defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
   (log:warn "falling back to the interpretation based successor generation")
