@@ -55,15 +55,6 @@ A generator node is just a list containing operator indices."
                             (cons index current)))
                        ((sg-node variable then else either) ; inner node
                         (sg-node variable then else (rec either (1+ con-index))))))
-                    
-                    ((null current)
-                     (cond
-                       ((minusp condition)
-                        ;; negative condition
-                        (sg-node var nil (rec nil (1+ con-index)) nil))
-                       (t
-                        ;; positive condition
-                        (sg-node var (rec nil (1+ con-index)) nil nil))))
                     (t
                      (ematch current
                        ((type list)
