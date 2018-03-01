@@ -86,50 +86,77 @@ A generator node is just a list containing operator indices."
       (interpret-iteration-over-leaf op-id state (symbol-value sg) body)
       (compile-iteration-over-leaf op-id state (symbol-value sg) body)))
 
+
+(defvar *var-table*)
+(defun ensure-variable (state-sym start width)
+  (ensure-gethash start *var-table*
+                  (with-gensyms (pack)
+                    `(,pack (strips.lib::%packed-accessor-int ,state-sym ,width ,start)))))
+
 (defun compile-iteration-over-leaf (op-id-sym state-sym sg body
-                                    &optional (start 0)
                                     &aux
-                                      (end (min *state-size* (+ start 64)))
-                                      (width (- end start)))
+                                      (width (min *state-size* 64)))
+  (let ((*var-table* (make-hash-table)))
+    (let ((body (%compile-iteration-over-leaf op-id-sym state-sym sg body 0)))
+      `(let ,(hash-table-values *var-table*)
+         ,@body))))
+
+(defun %compile-iteration-over-leaf (op-id-sym state-sym sg body start
+                                     &aux
+                                       (end   (min *state-size* (+ start 64)))
+                                       (width (- end start)))
   "Returns a program that iterates over the leaf of sg, inlining constants, and execute BODY on each loop."
-  (with-gensyms (pack)
-    (labels ((rec (sg binding)
-               (ematch sg
-                 ((sg-node variable then else either)
-                  (if (< variable end)
-                      (if (and then else)
-                          `((if (= 1 (aref ,state-sym ,variable))
+  (labels ((rec (sg binding)
+             (ematch sg
+               ((sg-node variable then else either)
+                (if (< variable end)
+                    (if (and then else)
+                        (progn
+                          (ensure-variable state-sym start width)
+                          `((if (logbitp ,(first (gethash start *var-table*)) ,(- variable start))
                                 ;; already checked this variable, so no longer to extend the binding
                                 (progn ,@(rec then binding))
                                 (progn ,@(rec else binding)))
-                            ,@(rec either binding))
-                          (append (rec then (cons (cons variable t) binding))
-                                  (rec else (cons (cons variable nil) binding))
-                                  (rec either binding)))
-                      (list (compile-iteration-over-leaf op-id-sym state-sym sg body end))))
-                 ((list* op-ids)
-                  (when op-ids
-                    (let ((mask 0) (compare 0))
-                      ;; pack 64bit masked comparison
-                      (iter (for (var . val) in binding)
-                            (for offset = (- var start))
-                            (setf (ldb (byte 1 offset) mask) 1)
-                            (when val
-                              (setf (ldb (byte 1 offset) compare) 1)))
-                      `((when (= 0 (logand ,mask (logxor ,compare ,pack)))
-                          ,@(if (< (length op-ids) 4)
-                                (iter (for id in op-ids)
-                                      (appending
-                                       (subst id op-id-sym body))) 
-                                (with-gensyms (i)
-                                  `((dotimes (,i ,(length op-ids))
-                                      (let ((,op-id-sym (aref ,(make-array (length op-ids)
-                                                                           :element-type 'op-id
-                                                                           :initial-contents op-ids)
-                                                              ,i)))
-                                        ,@body)))))))))))))
-      `(let ((,pack (strips.lib::%packed-accessor-int ,state-sym ,width ,start)))
-         ,@(rec sg nil)))))
+                            ,@(rec either binding)))
+                        (append (rec then (cons (cons variable t) binding))
+                                (rec else (cons (cons variable nil) binding))
+                                (rec either binding)))
+                    (wrap-check
+                     binding
+                     (lambda ()
+                       (%compile-iteration-over-leaf op-id-sym state-sym sg body end)))))
+               ((list* op-ids)
+                (wrap-check
+                 binding
+                 (lambda ()
+                   (when op-ids
+                     (if (< (length op-ids) 3)
+                         (iter (for id in op-ids)
+                               (appending
+                                (subst id op-id-sym body))) 
+                         (with-gensyms (i)
+                           `((dotimes (,i ,(length op-ids))
+                               (let ((,op-id-sym (aref ,(make-array (length op-ids)
+                                                                    :element-type 'op-id
+                                                                    :initial-contents op-ids)
+                                                       ,i)))
+                                 ,@body)))))))))))
+           (wrap-check (binding cont)
+             (let ((branches (funcall cont)))
+               (when branches
+                 (if binding
+                     (let ((mask 0) (compare 0))
+                       ;; pack 64bit masked comparison
+                       (iter (for (var . val) in binding)
+                             (for offset = (- var start))
+                             (setf (ldb (byte 1 offset) mask) 1)
+                             (when val
+                               (setf (ldb (byte 1 offset) compare) 1)))
+                       (ensure-variable state-sym start width)
+                       `((when (= 0 (logand ,mask (logxor ,compare ,(first (gethash start *var-table*)))))
+                           ,@branches)))
+                     branches)))))
+    (rec sg nil)))
 
 (defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
   (log:warn "falling back to the interpretation based successor generation")
