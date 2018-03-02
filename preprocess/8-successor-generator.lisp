@@ -30,9 +30,10 @@
   (/= +id-none+ (aref sg-leaf 0)))
 
 (defun sg-leaf-to-list (sg-leaf)
-  (iter (for id in-vector sg-leaf)
-        (until (= id +id-none+))
-        (collect id)))
+  (when sg-leaf ; otherwise NIL
+    (iter (for id in-vector sg-leaf)
+          (until (= id +id-none+))
+          (collect id))))
 
 (defstruct (sg-node (:constructor sg-node (variable then else either))
                     (:constructor make-sg-node))
@@ -41,17 +42,17 @@ THEN/ELSE/EITHER are child nodes correspinding to the condition for variable V b
 A child node is a generator node or a sg node.
 A generator node is just a list containing operator indices."
   (variable -1 :type fixnum)
-  (then   (sg-leaf) :type (or sg-node sg-leaf))
-  (else   (sg-leaf) :type (or sg-node sg-leaf))
-  (either (sg-leaf) :type (or sg-node sg-leaf)))
+  (then   nil :type (or sg-node sg-leaf null))
+  (else   nil :type (or sg-node sg-leaf null))
+  (either nil :type (or sg-node sg-leaf null)))
 
 (defmethod make-load-form ((sg sg-node) &optional env)
   (make-load-form-saving-slots sg :environment env))
 
-(deftype sg () '(or sg-leaf sg-node))
+(deftype sg () '(or sg-leaf sg-node null))
 
 (defun generate-sg (instantiated-ops)
-  (let ((current (sg-leaf)))
+  (let ((current nil))
     (iter (for op in-vector instantiated-ops with-index i)
           (setf current (extend-sg current op i)))
     current))
@@ -82,14 +83,22 @@ A generator node is just a list containing operator indices."
                                   (replace new current)
                                   (setf (aref new (length current)) index)
                                   new))))
+                       (nil
+                        (let ((new (sg-leaf)))
+                          (setf (aref new 0) index)
+                          new))
                        ((sg-node variable then else either) ; inner node
                         (sg-node variable then else (rec either (1+ con-index))))))
                     (t
                      (ematch current
+                       (nil
+                        (if (minusp condition)
+                            (sg-node var nil (rec nil (1+ con-index)) current)
+                            (sg-node var (rec nil (1+ con-index)) nil current)))
                        ((type sg-leaf)
                         (if (minusp condition)
-                            (sg-node var (sg-leaf) (rec (sg-leaf) (1+ con-index)) current)
-                            (sg-node var (rec (sg-leaf) (1+ con-index)) (sg-leaf) current)))
+                            (sg-node var nil (rec nil (1+ con-index)) current)
+                            (sg-node var (rec nil (1+ con-index)) nil current)))
                        ((sg-node variable then else either)
                         (cond
                           ((= var variable)
@@ -98,8 +107,8 @@ A generator node is just a list containing operator indices."
                                (sg-node var (rec then (1+ con-index)) else either)))
                           ((< var variable)
                            (if (minusp condition)
-                               (sg-node var (sg-leaf) (rec (sg-leaf) (1+ con-index)) current)
-                               (sg-node var (rec (sg-leaf) (1+ con-index)) (sg-leaf) current)))
+                               (sg-node var nil (rec nil (1+ con-index)) current)
+                               (sg-node var (rec nil (1+ con-index)) nil current)))
                           ((< variable var)
                            (sg-node variable then else (rec either con-index)))))))))))
        (rec current 0)))))
@@ -193,6 +202,7 @@ A generator node is just a list containing operator indices."
   (log:warn "falling back to the interpretation based successor generation")
   `(labels ((rec (node)
               (ematch node
+                (nil nil)
                 ((sg-node variable then else either)
                  (if (= 1 (aref ,state-sym variable))
                      (rec then)
