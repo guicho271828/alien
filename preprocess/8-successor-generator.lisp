@@ -83,7 +83,7 @@ A generator node is just a list containing operator indices."
   (assert (symbolp op-id))
   (assert (symbolp sg))
   (if (< *sg-compilation-threashold* (length *instantiated-ops*))
-      (interpret-iteration-over-leaf op-id state (symbol-value sg) body)
+      (interpret-iteration-over-leaf op-id state sg body)
       (compile-iteration-over-leaf op-id state (symbol-value sg) body)))
 
 
@@ -170,4 +170,4 @@ A generator node is just a list containing operator indices."
                      (rec then)
                      (rec else))
                  (rec either)))))
-     (rec ,sg)))
+     (rec (load-time-value ,sg))))
