@@ -1,0 +1,36 @@
+
+(let ((*sg-compilation-threashold* 0)) (run! 'demo))
+
+citycar list-based
+74842.63
+ <INFO> [09:57:37] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 6734 bytes ???
+ <INFO> [09:57:58] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  75032.21
+ <INFO> [09:58:06] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 302 bytes
+ <INFO> [09:58:12] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  150398.73
+ <INFO> [09:58:38] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  156726.52
+ <INFO> [10:03:33] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  159627.88
+ <INFO> [10:03:44] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  155289.14
+ <INFO> [10:03:54] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  157868.95
+
+citycar list-based load-time-value
+
+ <INFO> [09:55:35] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 473 bytes
+ <INFO> [09:55:42] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  156122.22
+ <INFO> [09:56:17] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 473 bytes
+ <INFO> [09:56:24] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  145624.55
+
+ <INFO> [10:05:33] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  154979.03
+ <INFO> [10:05:42] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  149122.34
+ <INFO> [10:05:51] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  154927.47
+
+citycar array-based
+ <INFO> [09:59:57] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 432 bytes
+ <INFO> [10:00:09] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  142625.5
+ <INFO> [10:00:36] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  138582.73
+ <INFO> [10:00:57] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  140973.47
+ <INFO> [10:02:53] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  128486.82
+
+citycar array+list
+ <INFO> [10:19:30] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  153247.9
+ <INFO> [10:19:47] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  148783.6
+ <INFO> [10:20:12] strips eager.lisp (eager-search cleanup-fun-56) - eval/sec:  153384.88
