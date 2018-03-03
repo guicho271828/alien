@@ -63,7 +63,7 @@ You can mix both forms. "
         (iter (for old-breakdown in old)
               (for new-breakdown in new)
               (for space in spaces)
-              (log:info "Memory consumption in ~a:" space)
+              (format t "; Memory consumption in ~a:~%" space)
               (let ((diff (iter (for (byte count type) in new-breakdown)
                                 (for (obyte ocount otype) = (find type old-breakdown :key #'third))
                                 (unless otype
@@ -75,7 +75,7 @@ You can mix both forms. "
                                            (reduce #'max (mapcar #'first diff)))))
                       (with digits2 = (1+ (sb-ext:decimal-with-grouped-digits-width
                                            (reduce #'max (mapcar #'second diff)))))
-                      (format t "~&~v@:d bytes for ~v@:d ~a objects"
+                      (format t "~&; ~v@:d bytes for ~v@:d ~a objects"
                                 digits1 byte
                                 digits2 count
                                 type))))))))
