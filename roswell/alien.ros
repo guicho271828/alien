@@ -36,6 +36,8 @@ exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
 
 (defun main (&rest argv)
   (declare (ignorable argv))
+  (setf *terminal-io* *error-output*)
+  (log:config :sane)
   (ematch argv
     ((list* "-t" (read *time-limit*) rest)
      (apply #'main rest))
