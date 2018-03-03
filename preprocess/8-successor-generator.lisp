@@ -129,18 +129,47 @@ A generator node is just a list containing operator indices."
              (wrap-check (binding cont)
                (when-let ((branches (funcall cont)))
                  (if binding
-                     (let ((mask 0) (compare 0))
+                     (let ((mask 0) (compare 0) (negative-condition nil))
                        ;; pack 64bit masked comparison
                        (iter (for (var . val) in binding)
                              (for offset = (- var start))
                              (setf (ldb (byte 1 offset) mask) 1)
-                             (when val
-                               (setf (ldb (byte 1 offset) compare) 1)))
-                       `((when (= 0 (logand ,mask (logxor ,compare ,pack)))
-                           ,@branches)))
+                             (if val
+                                 (setf (ldb (byte 1 offset) compare) 1)
+                                 (setf negative-condition t)))
+                       (if negative-condition
+                           ;; see note below
+                           `((when (= 0 (logand ,mask (logxor ,compare ,pack)))
+                               ,@branches))
+                           `((when (= 0 (logand ,compare (lognot ,pack)))
+                               ,@branches))))
                      branches))))
       `(let ((,pack (strips.lib::%packed-accessor-int ,state-sym ,width ,start)))
          ,@(rec sg nil)))))
+
+;; note : logand+lognot saves additional storage for mask
+
+;; (defun fn (x) (declare ((unsigned-byte 64) x)) (= 0 (LOGAND 35459518431232 (LOGNOT x))))
+;; 
+;; disassembly for FN
+;; Size: 50 bytes. Origin: #x1001F40F64
+;; ...
+;; 6D:       488D141B         LEA RDX, [RBX+RBX]
+;; 71:       4883F2FE         XOR RDX, -2
+;; 75:       48231554FFFFFF   AND RDX, [RIP-172]               ; [#x1001F40ED0] = #x408020000000
+;; 7C:       4885D2           TEST RDX, RDX
+;; ...
+
+;; (defun fn2 (x) (declare ((unsigned-byte 64) x)) (= 0 (logand 35459518431232 (LOGxor 35459518431232 x))))
+;; 
+;; disassembly for FN2
+;; Size: 53 bytes. Origin: #x1001F40E78
+;; 81:       488D141B         LEA RDX, [RBX+RBX]
+;; 85:       48331554FFFFFF   XOR RDX, [RIP-172]               ; [#x1001F40DE0] = #x408020000000
+;; 8C:       4823154DFFFFFF   AND RDX, [RIP-179]               ; [#x1001F40DE0] = #x408020000000
+;; 93:       4885D2           TEST RDX, RDX
+;; ...
+
 
 (defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
   (log:warn "falling back to the interpretation based successor generation")
