@@ -24,21 +24,19 @@ exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
 (defvar *search-option* '(eager (bucket-open-list (ff/rpg)))
   "search configurations.")
 
+(defun main-search ()
+  (with-memory-usage-diff ()
+    (run
+     (timeout
+      (- *time-limit*
+         ;; subtract the current runtime
+         (/ (- (get-internal-real-time) *start-time*)
+            internal-time-units-per-second))
+      (eval *search-option*)))))
+
 (defun main (&rest argv)
   (declare (ignorable argv))
   (ematch argv
-    ((list domain problem plan-output-file)
-     (solve-once-to-file
-      domain problem plan-output-file
-      (lambda ()
-        (with-memory-usage-diff ()
-          (run
-           (timeout
-            (- *time-limit*
-               ;; subtract the current runtime
-               (/ (- (get-internal-real-time) *start-time*)
-                  internal-time-units-per-second))
-            (eval *search-option*)))))))
     ((list* "-t" (read *time-limit*) rest)
      (apply #'main rest))
     ((list* "-m" (read *memory-limit*) rest)
@@ -47,8 +45,21 @@ exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
      (apply #'main rest))
     ((list* "--search-option" (read *search-option*) rest)
      (apply #'main rest))
+    
+    ((list problem)
+     (print-plan
+      (solve-once
+       (find-domain problem) problem #'main-search)))
+    
+    ((list domain problem)
+     (print-plan
+      (solve-once domain problem #'main-search)))
+    
+    ((list domain problem plan-output-file)
+     (solve-once-to-file
+      domain problem plan-output-file #'main-search))
     (_
-     (format *error-output* "Usage: alien.ros [options] domain problem plan-output-file~%")
+     (format *error-output* "Usage: alien.ros [options] [domain] problem [plan-output-file]~%")
      (format *error-output* "Got ARGV: ~a~%" argv)
      (show-doc
       `((-t sec *time-limit*)
