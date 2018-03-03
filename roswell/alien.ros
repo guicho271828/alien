@@ -43,7 +43,7 @@ exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
      (apply #'main rest))
     ((list* "-m" (read *memory-limit*) rest)
      (apply #'main rest))
-    ((list* "--sg-compilation-threashold" (read *sg-compilation-threashold*) rest)
+    ((list* "--sg-compiled-branch-limit" (read *sg-compiled-branch-limit*) rest)
      (apply #'main rest))
     ((list* "--effect-compilation-threashold" (read *effect-compilation-threashold*) rest)
      (apply #'main rest))
@@ -54,7 +54,7 @@ exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
      (show-doc
       `((-t sec *time-limit*)
         (-m kbyte *memory-limit*)
-        (--sg-compilation-threashold limit *sg-compilation-threashold*)
+        (--sg-compiled-branch-limit limit *sg-compiled-branch-limit*)
         (--effect-compilation-threashold limit *effect-compilation-threashold*)
         (--search-option SEXP *search-option*))))))
 ;;; vim: set ft=lisp lisp:

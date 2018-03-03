@@ -130,7 +130,7 @@
    #:recompile-instance-dependent-code
    #:do-leaf
    #:bell
-   #:*sg-compilation-threashold*
+   #:*sg-compiled-branch-limit*
    #:*effect-compilation-threashold*
    #:solve-common))
 
