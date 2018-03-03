@@ -84,7 +84,17 @@ A generator node is just a list containing operator indices."
   (assert (symbolp sg))
   (if (< *sg-compilation-threashold* (length *instantiated-ops*))
       (interpret-iteration-over-leaf op-id state (symbol-value sg) body)
-      (compile-iteration-over-leaf op-id state (symbol-value sg) body)))
+      `(labels ((interpret (node)
+                  (ematch node
+                    ((type list)
+                     (dolist (,op-id node)
+                       ,@body))
+                    ((sg-node variable then else either)
+                     (if (= 1 (aref ,state variable))
+                         (interpret then)
+                         (interpret else))
+                     (interpret either)))))
+         ,(compile-iteration-over-leaf op-id state (symbol-value sg) body))))
 
 (defun compile-iteration-over-leaf (op-id-sym state-sym sg body
                                     &optional (start 0)
