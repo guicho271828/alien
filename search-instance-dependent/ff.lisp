@@ -128,11 +128,4 @@
                                   (aref marker layer-1 add) 1)))))
         cost))))
 
-(in-compilation-phase ((not (or phase/packed-structs
-                                phase/full-compilation)))
-  (defun ff/rpg ()
-    (ensure-delete-relaxed-sg)
-    (push 'ff/rpg *optional-features*)
-    (make-evaluator
-     :storage '() ; no cache
-     :function 'ff-heuristic/rpg)))
+

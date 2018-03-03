@@ -15,11 +15,4 @@ count the number of cases successfully reaching the goal.
   (ftype* alien-heuristics state+axioms (runtime integer 0 *state-size*))
   (defun alien-heuristics (state) 0))
 
-(in-compilation-phase ((not (or phase/packed-structs
-                                phase/full-compilation)))
-  (defun alien ()
-    (push 'alien *optional-features*)
-    (ensure-delete-relaxed-sg)
-    (make-evaluator
-     :storage '(alien)
-     :function 'alien-heuristics)))
+

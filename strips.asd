@@ -48,6 +48,7 @@
                             (:file "specials")
                             (:file "blind")
                             (:file "bucket-open-list")
+                            (:file "builders")
                             (:file "non-axiom-goals")
                             (:file "relaxation")
                             (:file "run")

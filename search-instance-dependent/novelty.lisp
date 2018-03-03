@@ -13,11 +13,4 @@
   (ftype* novelty-heuristics state+axioms (runtime integer 0 *state-size*))
   (defun novelty-heuristics (state) 0))
 
-(in-compilation-phase ((not (or phase/packed-structs
-                                phase/full-compilation)))
-  (defun novelty ()
-    (push 'novelty *optional-features*)
-    (ensure-relaxed-sg)
-    (make-evaluator
-     :storage '(novelty)
-     :function 'novelty-heuristics)))
+

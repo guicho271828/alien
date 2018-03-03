@@ -149,15 +149,4 @@
         (log:info "eval/sec:  ~a" (/ (float (* internal-time-units-per-second evaluated))
                                      (max 1 (- (get-internal-real-time) start)))))))))
 
-(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
-(defun eager (open-list)
-  (push 'eager *optional-features*)
-  (ematch open-list
-    ((open-list storage constructor insert pop)
-     (make-searcher
-      :storage (cons 'eager storage)
-      :form `(lambda ()
-               (eager-search #',constructor
-                             #',insert
-                             #',pop))))))
-)
+

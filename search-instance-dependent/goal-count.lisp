@@ -15,10 +15,4 @@
                        (load-time-value (make-state+axioms))))))
 )
 
-(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
-(defun goal-count ()
-  (push 'goal-count *optional-features*)
-  (make-evaluator
-   :storage '(goal-count)
-   :function 'goal-count-heuristics))
-)
+
