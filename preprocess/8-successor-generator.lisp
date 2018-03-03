@@ -78,23 +78,50 @@ A generator node is just a list containing operator indices."
 (defparameter *sg-compilation-threashold* 3000
   "threashold for the number of operators, determining whether it should compile the successor generator")
 
+(defvar *sg-compiled-branch-limit* 1000) ; this roughly keeps the generator within 20k bytes
+;; (setf *sg-compiled-branch-limit* 1000)
+(defvar *sg-compiled-depth-limit*)
+(defvar *sg-compiled-branches*)
+(defvar *sg-next-limit*)
+
 (defmacro do-leaf ((op-id state sg) &body body &environment env)
   (assert (symbolp state))
   (assert (symbolp op-id))
   (assert (symbolp sg))
-  (if (< *sg-compilation-threashold* (length *instantiated-ops*))
-      (interpret-iteration-over-leaf op-id state (symbol-value sg) body)
-      `(labels ((interpret (node)
-                  (ematch node
-                    ((type list)
-                     (dolist (,op-id node)
-                       ,@body))
-                    ((sg-node variable then else either)
-                     (if (= 1 (aref ,state variable))
-                         (interpret then)
-                         (interpret else))
-                     (interpret either)))))
-         ,(compile-iteration-over-leaf op-id state (symbol-value sg) body))))
+  (log:info "compiled branch limit: ~a" *sg-compiled-branch-limit*)
+  `(labels ((interpret (node)
+              (ematch node
+                ((type list)
+                 (dolist (,op-id node)
+                   ,@body))
+                ((sg-node variable then else either)
+                 (if (= 1 (aref ,state variable))
+                     (interpret then)
+                     (interpret else))
+                 (interpret either)))))
+     ;; count the number of branches with iterative deepening...
+     ;; very dumb thing to do, but singe *sg-compiled-branch-limit* is not high, this is acceptable
+     ,(iter (for *sg-compiled-depth-limit*
+                 initially 32
+                 then (max *sg-next-limit*
+                           (+ *sg-compiled-depth-limit* 32)))
+            (for *sg-compiled-branches* = 0)
+            (for *sg-next-limit* = *state-size*)
+            (for form = (compile-iteration-over-leaf op-id state (symbol-value sg) body))
+            (for prev-form previous form)
+            (log:info "depth limit: ~a" *sg-compiled-depth-limit*)
+            (log:trace "next  limit: ~a" *sg-next-limit*)
+            (log:info "compiled branches: ~a : ~a" *sg-compiled-branches*
+                       (if (<= *sg-compiled-branches* *sg-compiled-branch-limit*)
+                           :ok :ng))
+            (log:trace "form ~% ~a" (subst-if 'SG #'sg-node-p form))
+            ;; *sg-next-limit*, *sg-compiled-branches* is modified
+            (when (or (<= *sg-compiled-branch-limit* *sg-compiled-branches*)
+                      (<= *state-size* *sg-compiled-depth-limit*))
+              (return
+                (or prev-form
+                    ;; for the case when even depth=0 failed
+                    form))))))
 
 (defun compile-iteration-over-leaf (op-id-sym state-sym sg body
                                     &optional (start 0)
@@ -106,24 +133,32 @@ A generator node is just a list containing operator indices."
     (labels ((rec (sg binding)
                (ematch sg
                  ((sg-node variable then else either)
-                  (if (< variable end)
-                      (if (and then else)
-                          `((if (= 1 (aref ,state-sym ,variable))
-                                ;; already checked this variable, so no longer to extend the binding
-                                (progn ,@(rec then binding))
-                                (progn ,@(rec else binding)))
-                            ,@(rec either binding))
-                          (append (rec then (cons (cons variable t) binding))
-                                  (rec else (cons (cons variable nil) binding))
-                                  (rec either binding)))
+                  (if (<= variable *sg-compiled-depth-limit*)
+                      (if (< variable end)
+                          (if (and then else)
+                              `((if (= 1 (aref ,state-sym ,variable))
+                                    ;; already checked this variable, so no longer to extend the binding
+                                    (progn ,@(rec then binding))
+                                    (progn ,@(rec else binding)))
+                                ,@(rec either binding))
+                              (append (rec then (cons (cons variable t) binding))
+                                      (rec else (cons (cons variable nil) binding))
+                                      (rec either binding)))
+                          (wrap-check
+                           binding
+                           (lambda ()
+                             (list (compile-iteration-over-leaf op-id-sym state-sym sg body end)))))
                       (wrap-check
                        binding
                        (lambda ()
-                         (list (compile-iteration-over-leaf op-id-sym state-sym sg body end))))))
+                         (incf *sg-compiled-branches*)
+                         (minf *sg-next-limit* variable)
+                         `((interpret ,sg))))))
                  ((list* op-ids)
                   (wrap-check
                    binding
                    (lambda ()
+                     (incf *sg-compiled-branches*)
                      (when op-ids
                        (if (< (length op-ids) 4)
                            (iter (for id in op-ids)
@@ -211,7 +246,7 @@ A generator node is just a list containing operator indices."
 
 
 (defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
-  (log:warn "falling back to the interpretation based successor generation")
+  ;; (log:warn "falling back to the interpretation based successor generation")
   `(labels ((rec (node)
               (ematch node
                 ((type list)
