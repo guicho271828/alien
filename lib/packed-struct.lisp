@@ -268,12 +268,8 @@ WARNING: this version does not mask the bits outside SIZE."
   (declare (fixnum position)
            ((integer 0 64) size)
            (simple-bit-vector vector))
-  (assert (<= (+ size position) (length vector)) nil
-          "in %packed-accessor-int: (<= (+ size position)=~a (length vector)=~a)"
-          (+ size position) (length vector))
   (multiple-value-bind (index-begin offset-begin) (floor position 64)
-    (let (;; (size (max 0 (min size (- (length vector) position))))
-          (remaining (- 64 offset-begin)))
+    (let ((remaining (- 64 offset-begin)))
       ;; offset-begin: 0-63
       ;; remaining:    1-64
       (cond
@@ -333,6 +329,38 @@ size: number of bits for the structure"
                     (sb-kernel:%vector-raw-bits vector index-begin))
                (ldb (byte remaining 0)
                     newval))
+         (setf (sb-kernel:%vector-raw-bits vector index-begin)
+               (let ((int (sb-kernel:%vector-raw-bits vector index-begin))
+                     (newval (ldb (byte remaining 0) newval)))
+                 (let ((mask (ldb (byte remaining 0) -1)))
+                   (logior (<<64 (logand newval mask) offset-begin)
+                           (logand int (lognot (ash mask offset-begin)))))))
+         (print-when-debug :write-int-two-words2)
+         (setf (ldb (byte (- size remaining) 0)
+                    (sb-kernel:%vector-raw-bits vector (1+ index-begin)))
+               (ldb (byte (- size remaining) remaining)
+                    newval)))))))
+
+(declaim (inline (setf %packed-accessor-int-unsafe)))
+(defun (setf %packed-accessor-int-unsafe) (newval vector size position)
+  "position: number of bits from the beginning of the structure
+size: number of bits for the structure"
+  (declare (fixnum position)
+           ((integer 0 64) size)
+           ((unsigned-byte 64) newval)
+           (simple-bit-vector vector))
+  (multiple-value-bind (index-begin offset-begin) (floor position 64)
+    (let ((remaining (- 64 offset-begin)))
+      (cond
+        ((<= size remaining)
+         (print-when-debug :write-int-one-word)
+         (setf (sb-kernel:%vector-raw-bits vector index-begin)
+               (let ((int (sb-kernel:%vector-raw-bits vector index-begin)))
+                 (let ((mask (ldb (byte size 0) -1)))
+                   (logior (<<64 (logand newval mask) offset-begin)
+                           (logand int (lognot (ash mask offset-begin))))))))
+        (t
+         (print-when-debug :write-int-two-words1)
          (setf (sb-kernel:%vector-raw-bits vector index-begin)
                (let ((int (sb-kernel:%vector-raw-bits vector index-begin))
                      (newval (ldb (byte remaining 0) newval)))
