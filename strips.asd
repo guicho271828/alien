@@ -22,6 +22,7 @@
               :type-r
               :static-vectors
               :log4cl
+              :priority-queue
               :cffi)
  :serial t
  :components ((:module "lib"
