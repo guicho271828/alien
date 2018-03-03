@@ -171,9 +171,11 @@ A generator node is just a list containing operator indices."
                                   (subst id op-id-sym body))) 
                            (with-gensyms (i)
                              `((dotimes (,i ,(length op-ids))
-                                 (let ((,op-id-sym (aref ,(make-array (length op-ids)
+                                 (let ((,op-id-sym (aref (load-time-value
+                                                          (make-array ,(length op-ids)
                                                                       :element-type 'op-id
-                                                                      :initial-contents op-ids)
+                                                                      :initial-contents ',op-ids)
+                                                          t)
                                                          ,i)))
                                    ,@body)))))))))))
              (wrap-check (binding cont)
