@@ -56,11 +56,13 @@
          `(defun ,(symbolicate name '- slotname) (soa-obj id)
             (aref (,(symbolicate '% name '- slotname) soa-obj) id)))))
 
+#+(or)
 (defstruct-of-array x
   a
   (b 0)
   (c 0 :type fixnum))
 
+#+(or)
 (let ((*x* (make-x-array)))
   (print *x*)
   (dotimes (i 32)

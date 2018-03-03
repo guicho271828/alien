@@ -97,6 +97,7 @@ Symbols whose name starts from ? are regarded as variable."
       (rec trie query)
       nil)))
 
+#+(or)
 (let ((trie nil))
   (setf trie (trie-insert trie '(a b c)))
   (print trie)

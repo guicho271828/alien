@@ -151,6 +151,7 @@
          (size-of (symbol-packed-struct-layout type))))
      ;; common lisp type
      (restart-bind ((continue (lambda (c)
+                                (declare (ignorable))
                                 (log:warn "Substituting the size of ~a with 0" type)
                                 (return-from size-of 0))))
        (ematch (introspect-environment:typexpand type)
@@ -831,7 +832,7 @@ If NEWVAL length is larger than the size, then the remaining portion of the vect
 
 (ftype* (setf packed-aref) simple-bit-vector simple-bit-vector symbol fixnum simple-bit-vector)
 (defun (setf packed-aref) (newval array packed-type index)
-  (declare (ignore array packed-type index result))
+  (declare (ignore array packed-type index newval))
   (error "slow runtime call to (setf packed-aref)!"))
 
 (define-compiler-macro (setf packed-aref) (newval array packed-type index &environment env)

@@ -50,7 +50,7 @@
   "Returns a plist from each variable to a constant"
   (declare (equivalence ec))
   (ematch ec
-    ((equivalence hash :obsolete (place obsolete) :groups groups)
+    ((equivalence :obsolete (place obsolete) :groups groups)
      (let ((mapping nil))
        ;; find the representative
        (iter (for elems in-vector groups with-index class)

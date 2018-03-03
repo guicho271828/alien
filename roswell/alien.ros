@@ -3,6 +3,7 @@
 #|
 exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
 |#
+(declaim (sb-ext:muffle-conditions sb-ext:compiler-note style-warning))
 (progn ;;init forms
   (ros:ensure-asdf)
   #+quicklisp (ql:quickload '(:strips) :silent t))
