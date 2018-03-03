@@ -5,7 +5,7 @@ planner.img: $(shell git ls-files)
 backup: 
 	cp planner.img planner0.img
 
-copy:
+restore:
 	sudo cp planner0.img planner.img
 	touch Singularity
 
