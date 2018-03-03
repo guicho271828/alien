@@ -15,7 +15,8 @@
     (log:warn "Slow function: Avoid calling this function in runtime, especially in inner loop!"))
   (floor (* 8 1024 1024 *memory-limit*) ; MB -> bit
          (handler-case
-             (size-of 'state-information)
+             (max 64 ; for avoiding division-by-zero
+                  (size-of 'state-information))
            (error ()
              ;; using 64 bit as the lower bound
              64))))
