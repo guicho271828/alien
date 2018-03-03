@@ -129,20 +129,26 @@ A generator node is just a list containing operator indices."
              (wrap-check (binding cont)
                (when-let ((branches (funcall cont)))
                  (if binding
-                     (let ((mask 0) (compare 0) (negative-condition nil))
-                       ;; pack 64bit masked comparison
-                       (iter (for (var . val) in binding)
-                             (for offset = (- var start))
-                             (setf (ldb (byte 1 offset) mask) 1)
-                             (if val
-                                 (setf (ldb (byte 1 offset) compare) 1)
-                                 (setf negative-condition t)))
-                       (if negative-condition
-                           ;; see note below
-                           `((when (= 0 (logand ,mask (logxor ,compare ,pack)))
-                               ,@branches))
-                           `((when (= 0 (logand ,compare (lognot ,pack)))
-                               ,@branches))))
+                     (if (second binding)
+                         (let ((mask 0) (compare 0) (negative-condition nil))
+                           ;; pack 64bit masked comparison
+                           (iter (for (var . val) in binding)
+                                 (for offset = (- var start))
+                                 (setf (ldb (byte 1 offset) mask) 1)
+                                 (if val
+                                     (setf (ldb (byte 1 offset) compare) 1)
+                                     (setf negative-condition t)))
+                           (if negative-condition
+                               ;; see note below
+                               `((when (= 0 (logand ,mask (logxor ,compare ,pack)))
+                                   ,@branches))
+                               `((when (= 0 (logand ,compare (lognot ,pack)))
+                                   ,@branches))))
+                         (ematch binding
+                           ((list (cons var val))
+                            ;; special case for a single condition, see note 2 below
+                            `((,(if val 'when 'unless) (logbitp ,(- var start) ,pack)
+                                ,@branches)))))
                      branches))))
       `(let ((,pack (strips.lib::%packed-accessor-int ,state-sym ,width ,start)))
          ,@(rec sg nil)))))
@@ -169,6 +175,29 @@ A generator node is just a list containing operator indices."
 ;; 8C:       4823154DFFFFFF   AND RDX, [RIP-179]               ; [#x1001F40DE0] = #x408020000000
 ;; 93:       4885D2           TEST RDX, RDX
 ;; ...
+
+;; note 2, when testing a single condition, logbitp is more compact
+
+;; 52B6: L631: 48D1E1           SHL RCX, 1
+;; 52B9:       4883F1FE         XOR RCX, -2
+;; 52BD:       48230D5CC4FFFF   AND RCX, [RIP-15268]           ;; [#x225D1720] = #x41000000000
+;; 52C4:       4885C9           TEST RCX, RCX
+;; 52C7:       0F8444010000 JEQ L649
+
+;; 3+4+7+3+6 = 23 byte / condition
+
+;; 52CD: L632: 8B4805           MOV ECX, [RAX+5]
+;; 52D0:       C1E909           SHR ECX, 9
+;; 52D3:       83E102           AND ECX, 2
+;; 52D6:       4883F902         CMP RCX, 2
+;; 52DA:       0F841E010000     JEQ L648
+
+;; 3+3+4+6 = 16 byte / condition
+
+;; 9E1E: L632: 480FBAE12A       BT RCX, 42
+;; 9E23:       0F82F2000000     JB L648
+
+;; 11 byte / condition
 
 
 (defun interpret-iteration-over-leaf (op-id-sym state-sym sg body)
