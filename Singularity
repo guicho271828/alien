@@ -56,8 +56,8 @@ From: ubuntu
        cd .roswell/local-projects/
        git clone /planner strips || true  # continue if it fails (already exists)
        cd strips
-       git fetch --all        # fetch from /planner
-       git checkout origin
+       git fetch /planner        # fetch from /planner
+       git checkout FETCH_HEAD
        # the reason I do this is to maintain the idempotency of MAKE and reduce the build time on my side
     )
     
