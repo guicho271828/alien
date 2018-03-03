@@ -194,7 +194,9 @@
     (values results c)))
 
 (print-function-size 'applicable-ops/fast)
+)
 
+(in-compilation-phase (phase/full-compilation)
 (ftype* apply-op/fast op-id state+axioms state+axioms state+axioms)
 (defun apply-op/fast (op-id state child)
   (declare (optimize (speed 3) (debug 0) (safety 0)))
