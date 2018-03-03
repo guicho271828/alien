@@ -2,10 +2,10 @@
 (in-package :strips)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defparameter *memory-limit* 1000 ; 1GB
+(defvar *memory-limit* 1000 ; 1GB
   "maximum amount of memory in MB")
 
-(defparameter *time-limit* 20
+(defvar *time-limit* 20
   "Search time limit in sec.")
 
 (ftype* max-state-id fixnum)
