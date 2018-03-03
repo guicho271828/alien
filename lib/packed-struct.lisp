@@ -260,6 +260,37 @@ size: number of bits for the structure"
                             (- 128 offset-begin size))
                       (- size 64))))))))
 
+(declaim (inline %packed-accessor-int-unsafe))
+(defun %packed-accessor-int-unsafe (vector size position)
+  "offset: number of bits from the beginning of the structure
+size: number of bits for the structure.
+WARNING: this version does not mask the bits outside SIZE."
+  (declare (fixnum position)
+           ((integer 0 64) size)
+           (simple-bit-vector vector))
+  (assert (<= (+ size position) (length vector)) nil
+          "in %packed-accessor-int: (<= (+ size position)=~a (length vector)=~a)"
+          (+ size position) (length vector))
+  (multiple-value-bind (index-begin offset-begin) (floor position 64)
+    (let (;; (size (max 0 (min size (- (length vector) position))))
+          (remaining (- 64 offset-begin)))
+      ;; offset-begin: 0-63
+      ;; remaining:    1-64
+      (cond
+        ((<= size remaining)    ;when position=63, remaining = 1, size=1
+         (print-when-debug :read-int-one-word)
+         ;; -----11- -> 11------
+         (ash (sb-kernel:%vector-raw-bits vector index-begin)
+              (- offset-begin)))
+        (t
+         (print-when-debug :read-int-two-words)
+         ;; -----111 222----- -> 111222--
+         (logior (ash (sb-kernel:%vector-raw-bits vector index-begin)
+                      (- offset-begin))
+                 (ash (<<64 (sb-kernel:%vector-raw-bits vector (1+ index-begin))
+                            (- 128 offset-begin size))
+                      (- size 64))))))))
+
 (declaim (inline (setf %packed-accessor-int)))
 (defun (setf %packed-accessor-int) (newval vector size position)
   "position: number of bits from the beginning of the structure
