@@ -30,6 +30,8 @@
                                        ((list (list* name _) _)
                                         (find name *actions* :key #'second)))))
              (format s "     ~a~%" (aref *instantiated-ops* op-id))
+             (format s "     ~a~%" (compile-op (aref *instantiated-ops* op-id)))
+             
              (format s "      ~a~%" state+axioms)
              (format s "      ~a~%" child+axioms)
              (iter (for b1 in-vector state+axioms with-index i)
