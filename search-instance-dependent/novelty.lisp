@@ -7,40 +7,64 @@ novelty heuristics
 |#
 
 (in-compilation-phase (phase/full-compilation)
-(ftype* make-novelty1-heuristics (function (state+axioms) (integer 0 1)))
+(ftype* novelty1-heuristics state+axioms state+axioms (integer 0 1))
+(defun novelty1-heuristics (state db)
+  (let ((tmp (load-time-value (make-state+axioms))))
+    ;; d  ~d s result
+    ;; 0   1 0    0
+    ;; 0   1 1    1 
+    ;; 1   0 0    0
+    ;; 1   0 1    0
+    (bit-andc1 db state tmp)
+    (prog1 (if (find 1 tmp) 0 1)
+      (bit-ior db state db))))
+
+(declaim (inline make-novelty1-heuristics))
 (defun make-novelty1-heuristics ()
-  (let ((db (make-state+axioms))
-        (tmp (make-state+axioms)))
+  (let ((db (make-state+axioms)))
     (lambda (state)
-      ;; d  ~d s result
-      ;; 0   1 0    0
-      ;; 0   1 1    1 
-      ;; 1   0 0    0
-      ;; 1   0 1    0
-      (bit-andc1 db state tmp)
-      (prog1 (if (find 1 tmp) 0 1)
-        (bit-ior db state db)))))
+      (novelty1-heuristics state db))))
 )
 
 
 (in-compilation-phase (phase/full-compilation)
-(ftype* make-novelty2-heuristics (function (state+axioms) (integer 1 3)))
+(ftype* novelty2-heuristics
+        state+axioms
+        (runtime simple-array 'bit (list *state-size* *state-size*))
+        (integer 1 3))
+(defun novelty2-heuristics (state db)
+  (let ((novelty 3))
+    (declare ((integer 1 3) novelty))
+    (iter (declare (declare-variables))
+          (for i from 0)
+          (while (< i (length state)))
+          (when (= 1 (aref state i))
+            (when (= 0 (aref db i i))
+              ;; (format t "novelty 1 by i = ~a !~%" i)
+              (minf novelty 1)
+              (setf (aref db i i) 1))
+            (iter (declare (declare-variables))
+                  (for j from (1+ i))
+                  (while (< j (length state)))
+                  (when (= 1 (aref state j))
+                    (when (= 0 (aref db i j))
+                      ;; (format t "novelty 2 by i = ~a, j = ~a !~%" i j)
+                      (minf novelty 2)
+                      (setf (aref db i j) 1))))))
+    ;; (print state)
+    ;; (iter (for i below *state-size*)
+    ;;       (iter (for j below *state-size*)
+    ;;             (princ (aref db i j)))
+    ;;       (terpri))
+    (print novelty)
+    novelty))
+
+(declaim (inline make-novelty2-heuristics))
 (defun make-novelty2-heuristics ()
   (let ((db (make-array (list *state-size* *state-size*)
                         :element-type 'bit
                         :initial-element 0)))
-    (declare ((runtime simple-array 'bit (list *state-size* *state-size*)) db))
     (lambda (state)
-      (let ((novelty 3))
-        (iter (for b1 in-vector state with-index i)
-              (when (aref state i)
-                (when (= 0 (aref db i i))
-                  (minf novelty 1)
-                  (setf (aref db i i) 1))
-                (iter (for b2 in-vector state with-index j from (1+ i))
-                      (when (aref state j)
-                        (when (= 0 (aref db i j))
-                          (minf novelty 2)
-                          (setf (aref db i j) 1))))))
-        novelty))))
+      (novelty2-heuristics state db))))
+
 )
