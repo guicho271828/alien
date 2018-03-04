@@ -6,6 +6,7 @@ novelty heuristics
 
 |#
 
+(in-compilation-phase (phase/full-compilation)
 (ftype* make-novelty1-heuristics (function (state+axioms) (integer 0 1)))
 (defun make-novelty1-heuristics ()
   (let ((db (make-state+axioms))
@@ -19,7 +20,10 @@ novelty heuristics
       (bit-andc1 db state tmp)
       (prog1 (if (find 1 tmp) 0 1)
         (bit-ior db state db)))))
+)
 
+
+(in-compilation-phase (phase/full-compilation)
 (ftype* make-novelty2-heuristics (function (state+axioms) (integer 1 3)))
 (defun make-novelty2-heuristics ()
   (let ((db (make-array (list *state-size* *state-size*)
@@ -39,3 +43,4 @@ novelty heuristics
                           (minf novelty 2)
                           (setf (aref db i j) 1))))))
         novelty))))
+)
