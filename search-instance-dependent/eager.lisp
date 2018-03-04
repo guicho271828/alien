@@ -85,9 +85,11 @@
          (start (get-internal-real-time)))
     (declare (fixnum expanded evaluated start))
     (replace state state+axioms)
-    (let ((id (close-list-insert close-list state)))
-      (log:info "Initial heuristic value: ~a"
-                (funcall insert open-list id state+axioms)))
+    (let* ((id (close-list-insert close-list state))
+           (key (funcall insert open-list id state+axioms)))
+      ;; WARN! LOG:INFO may evaluate the argument twice, which may cause
+      ;; a hidden bug
+      (log:info "Initial heuristic value: ~a" key))
     (setf (state-information-facts info) state
           (state-information-status info) +open+
           (state-information-op info) *op-size*
