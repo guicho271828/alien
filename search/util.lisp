@@ -108,3 +108,14 @@ Otherwise leave the form as it is."
     (error (c)
       (log:warn "failed to inine a form due to: ~a~%~a~% form: ~a" (type-of c) c form)
       form)))
+
+
+(defmacro with-renaming (bindings &body body)
+  (let ((tmps (make-gensym-list (length bindings))))
+    (iter (for (old new) in bindings)
+          (for tmp in tmps)
+          (setf body (subst tmp old body :test #'equalp)))
+    (iter (for (old new) in bindings)
+          (for tmp in tmps)
+          (setf body (subst new tmp body :test #'equalp))))
+  `(progn ,@body))
