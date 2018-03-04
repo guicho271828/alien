@@ -72,6 +72,8 @@ From: ubuntu
     # compilation of lisp code is quite, quite different from what you usually
     # expect from C or C++. Don't ask.
     alien
+    chmod 777 $(which alien)
+    chmod -R 777 /root/
     
 %runscript
     ## The runscript is called whenever the container is used to solve
@@ -79,6 +81,7 @@ From: ubuntu
 
     ls -la
     ls -la /planner/.roswell/local-projects/strips
+    ls -la /planner/.roswell/bin
     
     pwd
     env
