@@ -134,6 +134,8 @@
    #:bell
    #:*sg-compiled-branch-limit*
    #:*effect-compilation-threashold*
-   #:solve-common))
+   #:solve-common
+   #:novelty1
+   #:novelty2))
 
 (setf trivia:*arity-check-by-test-call* nil)

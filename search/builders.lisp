@@ -38,3 +38,15 @@
   (make-evaluator
    :storage '(novelty)
    :function 'novelty-heuristics))
+
+(defun novelty1 ()
+  (push 'novelty1 *optional-features*)
+  (make-evaluator
+   :storage '()
+   :function '(make-novelty1-heuristics)))
+
+(defun novelty2 ()
+  (push 'novelty2 *optional-features*)
+  (make-evaluator
+   :storage '()
+   :function '(make-novelty2-heuristics)))
