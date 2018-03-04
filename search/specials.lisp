@@ -127,7 +127,7 @@ See also: function RUN, function SOLVE-COMMON")
 
 (defun retrieve-path () (invoke-restart (find-restart 'retrieve-path)))
 
-(enumerate status +new+ +open+ +closed+ +dominated+)
+(enumerate status +new+ +open+ +closed+ +dead+)
 
 (defstruct builder storage)
 

@@ -134,10 +134,13 @@
                            (incf evaluated)
                            (setf (state-information-facts info) child
                                  (state-information-parent info) id
-                                 (state-information-op info) op-id
-                                 (state-information-status info) +open+
-                                 (packed-aref db 'state-information id2) info)
-                           (funcall insert open-list id2 child+axioms))))))
+                                 (state-information-op info) op-id)
+                           (if (catch 'prune
+                                 (funcall insert open-list id2 child+axioms)
+                                 nil)
+                               (setf (state-information-status info) +dead+)
+                               (setf (state-information-status info) +open+))
+                           (setf (packed-aref db 'state-information id2) info))))))
                (rec)))
       ;; (declare (inline rec))
       ;; loop unrolling
