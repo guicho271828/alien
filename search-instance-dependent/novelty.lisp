@@ -16,7 +16,7 @@ novelty heuristics
     ;; 1   0 0    0
     ;; 1   0 1    0
     (bit-andc1 db state tmp)
-    (prog1 (if (find 1 tmp) 0 1)
+    (prog1 (if (find 1 tmp) 0 (throw 'prune t))
       (bit-ior db state db))))
 
 (declaim (inline make-novelty1-heuristics))
