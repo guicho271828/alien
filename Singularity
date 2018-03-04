@@ -86,7 +86,7 @@ From: ubuntu
     pwd
     env
     which alien
-    alien -m 6000 -t 300 $1 $2 $3
+    alien $@
     ls
 
 
