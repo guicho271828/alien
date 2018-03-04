@@ -50,7 +50,7 @@ From: ubuntu
     # unpack the irregular dependencies to the directory recognized by quicklisp
     unzip -u zip/type-r-master.zip     -d .roswell/local-projects/
     unzip -u zip/cl-prolog2-master.zip -d .roswell/local-projects/
-    unzip -u zip/cl-cudd.zip           -d .roswell/local-projects/
+    unzip -u zip/cl-cudd-master.zip    -d .roswell/local-projects/
     
     (
        # cloning /planner to /planner/.roswell/local-projects/strips (the directory recognized by quicklisp)
