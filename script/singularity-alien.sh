@@ -1,11 +1,14 @@
 #!/bin/bash +x
 
+[ -z $PBS_O_WORKDIR ] || cd $PBS_O_WORKDIR
+
 tmp=$(mktemp -d)
 echo $tmp
 chmod 777 $tmp
 
+export PATH=/usr/local/bin:$PATH
 
-problem=$(readlink -ef $1)
+echo "problem: ${problem:=$1}"
 
 dir=$(dirname $problem)
 
