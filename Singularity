@@ -87,7 +87,7 @@ From: ubuntu
     env
     which alien
     echo args: $@
-    bash -c "alien $*"
+    bash -c "alien -t 300 -m 6000 $*"
     ls
 
 
