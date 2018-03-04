@@ -6,14 +6,6 @@ novelty heuristics
 
 |#
 
-(in-compilation-phase ((and novelty phase/packed-structs))
-  (strips.lib:define-packed-struct novelty ()
-    (novelty 0 (runtime integer 0 *state-size*))))
-
-(in-compilation-phase ((and novelty phase/full-compilation))
-  (ftype* novelty-heuristics state+axioms (runtime integer 0 *state-size*))
-  (defun novelty-heuristics (state) 0))
-
 (ftype* make-novelty1-heuristics (function (state+axioms) (integer 0 1)))
 (defun make-novelty1-heuristics ()
   (let ((db (make-state+axioms))

@@ -36,7 +36,7 @@
 (defun novelty ()
   (push 'novelty *optional-features*)
   (make-evaluator
-   :storage '(novelty)
+   :storage '()
    :function 'novelty-heuristics))
 
 (defun novelty1 ()
