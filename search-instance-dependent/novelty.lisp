@@ -56,8 +56,9 @@ novelty heuristics
     ;;       (iter (for j below *state-size*)
     ;;             (princ (aref db i j)))
     ;;       (terpri))
-    (print novelty)
-    novelty))
+    (if (= novelty 3)
+        (throw 'prune t)
+        novelty)))
 
 (declaim (inline make-novelty2-heuristics))
 (defun make-novelty2-heuristics ()
