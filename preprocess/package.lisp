@@ -136,6 +136,7 @@
    #:*effect-compilation-threashold*
    #:solve-common
    #:novelty1
-   #:novelty2))
+   #:novelty2
+   #:novelty3))
 
 (setf trivia:*arity-check-by-test-call* nil)

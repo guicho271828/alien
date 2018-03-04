@@ -50,3 +50,9 @@
   (make-evaluator
    :storage '()
    :function '(load-time-value (make-novelty2-heuristics) t)))
+
+(defun novelty3 ()
+  (push 'novelty3 *optional-features*)
+  (make-evaluator
+   :storage '()
+   :function '(load-time-value (make-novelty3-heuristics) t)))

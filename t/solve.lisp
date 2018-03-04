@@ -71,6 +71,17 @@
                              (bucket-open-list
                               (novelty2)))))))))
 
+(defun solve-alien-novelty3 (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (novelty3)))))))))
+
 
 (defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
@@ -249,5 +260,6 @@
 
 (test demo-large-novelty1 (let ((*solver* #'solve-alien-novelty1)) (run! 'demo-large)))
 (test demo-large-novelty2 (let ((*solver* #'solve-alien-novelty2)) (run! 'demo-large)))
+(test demo-large-novelty3 (let ((*solver* #'solve-alien-novelty3)) (run! 'demo-large)))
 
 
