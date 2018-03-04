@@ -6,7 +6,7 @@ novelty heuristics
 
 |#
 
-(in-compilation-phase (phase/full-compilation)
+(in-compilation-phase ((and novelty1 phase/full-compilation))
 (ftype* novelty1-heuristics state+axioms state+axioms (integer 0 1))
 (defun novelty1-heuristics (state db)
   (let ((tmp (load-time-value (make-state+axioms))))
@@ -27,7 +27,7 @@ novelty heuristics
 )
 
 
-(in-compilation-phase (phase/full-compilation)
+(in-compilation-phase ((and novelty2 phase/full-compilation))
 (ftype* novelty2-heuristics
         state+axioms
         (runtime simple-array 'bit (list *state-size* *state-size*))
@@ -70,7 +70,7 @@ novelty heuristics
 
 )
 
-(in-compilation-phase (phase/full-compilation)
+(in-compilation-phase ((and novelty3 phase/full-compilation))
 (ftype* novelty3-heuristics
         state+axioms
         (runtime simple-array 'bit (list *state-size* *state-size* *state-size*))
