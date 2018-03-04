@@ -40,6 +40,6 @@ t_out=$tmp/$(basename $out)
 
 cp -t $tmp $problem $domain
 
-trap "cp -u -t $dir $tmp/*; rm -r $tmp" exit
+trap "cp -u -t $dir $t_out $t_err $t_plan; rm -r $tmp" exit
 
 singularity run -C -H $tmp planner.img $options $t_domain $t_problem $t_plan > $t_out 2> $t_err

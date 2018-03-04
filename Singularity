@@ -86,7 +86,8 @@ From: ubuntu
     pwd
     env
     which alien
-    alien $@
+    echo args: $@
+    bash -c "alien $*"
     ls
 
 
