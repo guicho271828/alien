@@ -7,7 +7,7 @@
   (ensure-delete-relaxed-sg)
   (make-evaluator
    :storage '(alien)
-   :function 'alien-heuristics))
+   :function '(function alien-heuristics)))
 
 (defun eager (open-list)
   (push 'eager *optional-features*)
@@ -25,13 +25,13 @@
   (push 'ff/rpg *optional-features*)
   (make-evaluator
    :storage '() ; no cache
-   :function 'ff-heuristic/rpg))
+   :function '(function ff-heuristic/rpg)))
 
 (defun goal-count ()
   (push 'goal-count *optional-features*)
   (make-evaluator
    :storage '(goal-count)
-   :function 'goal-count-heuristics))
+   :function '(function goal-count-heuristics)))
 
 (defun novelty ()
   (push 'novelty *optional-features*)

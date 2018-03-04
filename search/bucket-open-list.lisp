@@ -39,6 +39,6 @@
       :insert `(lambda (open id state)
                  (bucket-open-list-insert
                   open
-                  (,function state)
+                  (funcall ,function state)
                   id))
       :pop 'bucket-open-list-pop))))
