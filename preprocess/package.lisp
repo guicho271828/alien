@@ -139,6 +139,11 @@
    #:novelty2
    #:novelty3
    #:novelty
-   #:novelty4))
+   #:novelty4
+   #:sum
+   #:product
+   #:constant
+   #:maximum
+   #:threshold))
 
 (setf trivia:*arity-check-by-test-call* nil)
