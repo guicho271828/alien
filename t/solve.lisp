@@ -126,6 +126,20 @@
                              (bucket-open-list
                               (novelty :k 5)))))))))
 
+(defun solve-alien-bwfs (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (sum
+                               (product
+                                (constant (expt 2 (ceiling (log strips::*op-size* 2))))
+                                (novelty4))
+                               (ff/rpg))))))))))
 
 (defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
@@ -309,6 +323,8 @@
 (test demo-novelty3-zdd (let ((*solver* #'solve-alien-novelty3-zdd)) (run! 'demo)))
 (test demo-novelty4-zdd (let ((*solver* #'solve-alien-novelty4-zdd)) (run! 'demo)))
 (test demo-novelty5-zdd (let ((*solver* #'solve-alien-novelty5-zdd)) (run! 'demo)))
+
+(test demo-bwfs (let ((*solver* #'solve-alien-bwfs)) (run! 'demo)))
 
 
 (test demo-large-novelty1 (let ((*solver* #'solve-alien-novelty1)) (run! 'demo-large)))
