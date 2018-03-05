@@ -7,7 +7,7 @@ novelty heuristics
 |#
 
 (in-compilation-phase ((and novelty1 phase/full-compilation))
-(ftype* novelty1-heuristics state+axioms state+axioms (integer 0 1))
+(ftype* novelty1-heuristics state+axioms state+axioms (integer 1 2))
 (defun novelty1-heuristics (state db)
   (let ((tmp (load-time-value (make-state+axioms))))
     ;; d  ~d s result
@@ -16,7 +16,7 @@ novelty heuristics
     ;; 1   0 0    0
     ;; 1   0 1    0
     (bit-andc1 db state tmp)
-    (prog1 (if (find 1 tmp) 0 (throw 'prune t))
+    (prog1 (if (find 1 tmp) 1 2)
       (bit-ior db state db))))
 
 (ftype* novelty1-heuristics* state+axioms state+axioms (integer 1 2))
@@ -69,9 +69,7 @@ novelty heuristics
     ;;       (iter (for j below *state-size*)
     ;;             (princ (aref db i j)))
     ;;       (terpri))
-    (if (= novelty 3)
-        (throw 'prune t)
-        novelty)))
+    novelty))
 
 (ftype* novelty2-heuristics*
         state+axioms
@@ -139,9 +137,7 @@ novelty heuristics
                             (when (= 0 (aref db i j k))
                               (minf novelty 3)
                               (setf (aref db i j k) 1))))))))
-    (if (= novelty 4)
-        (throw 'prune t)
-        novelty)))
+    novelty))
 
 (ftype* novelty3-heuristics*
         state+axioms
@@ -224,9 +220,7 @@ novelty heuristics
                                     (when (= 0 (aref db i j k l))
                                       (minf novelty 4)
                                       (setf (aref db i j k l) 1))))))))))
-    (if (= novelty 5)
-        (throw 'prune t)
-        novelty)))
+    novelty))
 
 (ftype* novelty4-heuristics*
         state+axioms
@@ -346,26 +340,19 @@ novelty heuristics
                                   (k *state-size*)
                                   (initial-num-slots 256)
                                   (cache-size 262144)
-                                  (max-memory 0)
-                                  (prune t))
+                                  (max-memory 0))
   "If k is given and is a number, prune the nodes beyond that novelty."
   (declare (ignorable initial-num-slots cache-size max-memory))
   (remf keys :k)
-  (remf keys :prune)
   (let* ((*manager* (apply #'manager-init
                            :initial-num-vars-z *state-size*
                            keys))
          (manager *manager*) ; capture lexically
-         (db (zdd-set-of-emptyset))
-         (initial-state t))
+         (db (zdd-set-of-emptyset)))
     (lambda (state)
       (multiple-value-bind (novelty new-db) (novelty-heuristics state manager db k)
         (setf db new-db)
-        (if (and prune (not initial-state) (<= k novelty))
-            (throw 'prune t)
-            (progn
-              (setf initial-state nil)
-              novelty))))))
+        novelty))))
 )
 
 #+(or)
