@@ -82,6 +82,17 @@
                              (bucket-open-list
                               (novelty3)))))))))
 
+(defun solve-alien-novelty4 (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (novelty4)))))))))
+
 (defun solve-alien-novelty3-zdd (path)
   (solve-alien-common path
                       (lambda ()
@@ -294,6 +305,7 @@
 (test demo-novelty1 (let ((*solver* #'solve-alien-novelty1)) (run! 'demo)))
 (test demo-novelty2 (let ((*solver* #'solve-alien-novelty2)) (run! 'demo)))
 (test demo-novelty3 (let ((*solver* #'solve-alien-novelty3)) (run! 'demo)))
+(test demo-novelty4 (let ((*solver* #'solve-alien-novelty4)) (run! 'demo)))
 (test demo-novelty3-zdd (let ((*solver* #'solve-alien-novelty3-zdd)) (run! 'demo)))
 (test demo-novelty4-zdd (let ((*solver* #'solve-alien-novelty4-zdd)) (run! 'demo)))
 (test demo-novelty5-zdd (let ((*solver* #'solve-alien-novelty5-zdd)) (run! 'demo)))

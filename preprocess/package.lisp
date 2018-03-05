@@ -138,6 +138,7 @@
    #:novelty1
    #:novelty2
    #:novelty3
-   #:novelty))
+   #:novelty
+   #:novelty4))
 
 (setf trivia:*arity-check-by-test-call* nil)
