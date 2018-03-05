@@ -291,6 +291,9 @@
 (test demo-large-ff/rpg (let ((*solver* #'solve-alien-ff/rpg)) (run! 'demo-large)))
 (test demo-large-fd-ff  (let ((*solver* #'solve-fd-ff))        (run! 'demo-large)))
 
+(test demo-novelty1 (let ((*solver* #'solve-alien-novelty1)) (run! 'demo)))
+(test demo-novelty2 (let ((*solver* #'solve-alien-novelty2)) (run! 'demo)))
+(test demo-novelty3 (let ((*solver* #'solve-alien-novelty3)) (run! 'demo)))
 (test demo-novelty3-zdd (let ((*solver* #'solve-alien-novelty3-zdd)) (run! 'demo)))
 (test demo-novelty4-zdd (let ((*solver* #'solve-alien-novelty4-zdd)) (run! 'demo)))
 (test demo-novelty5-zdd (let ((*solver* #'solve-alien-novelty5-zdd)) (run! 'demo)))
