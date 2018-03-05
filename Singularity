@@ -17,7 +17,8 @@ From: ubuntu
     export ROSWELL_HOME=/planner/.roswell
     export PATH=/planner/.roswell/bin:$PATH
     export MAKEFLAGS="-j $((2*$(nproc)))"
-    export ASDF_OUTPUT_TRANSLATIONS='(:output-translations ("/planner/.roswell/local-projects/strips/search-instance-dependent/" "/tmp/search-instance-dependent/") :inherit-configuration)'
+    export ASDF_OUTPUT_TRANSLATIONS='(:output-translations ("/planner/.roswell/local-projects/" "/tmp/local-projects/") :inherit-configuration)'
+    export TZ='Asia/Tokyo'
     
 %post
 
@@ -74,6 +75,8 @@ From: ubuntu
     # expect from C or C++. Don't ask.
     alien
     chmod 777 $(which alien)
+    chmod -R 777 /root/
+    chmod -R 777 /planner/
     
 %runscript
     ## The runscript is called whenever the container is used to solve
