@@ -33,11 +33,16 @@
    :storage '(goal-count)
    :function '(function goal-count-heuristics)))
 
-(defun novelty ()
+(defun novelty (&rest keys
+                &key (k most-positive-fixnum)
+                  (initial-num-slots 256)
+                  (cache-size 262144)
+                  (max-memory 0))
+  (declare (ignorable k initial-num-slots cache-size max-memory))
   (push 'novelty *optional-features*)
   (make-evaluator
    :storage '()
-   :function 'novelty-heuristics))
+   :function `(load-time-value (make-novelty-heuristics ,@keys) t)))
 
 (defun novelty1 ()
   (push 'novelty1 *optional-features*)

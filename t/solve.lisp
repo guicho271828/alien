@@ -82,6 +82,39 @@
                              (bucket-open-list
                               (novelty3)))))))))
 
+(defun solve-alien-novelty3-zdd (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (novelty :k 3)))))))))
+
+(defun solve-alien-novelty4-zdd (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (novelty :k 4)))))))))
+
+(defun solve-alien-novelty5-zdd (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (novelty :k 5)))))))))
+
 
 (defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
@@ -258,8 +291,16 @@
 (test demo-large-ff/rpg (let ((*solver* #'solve-alien-ff/rpg)) (run! 'demo-large)))
 (test demo-large-fd-ff  (let ((*solver* #'solve-fd-ff))        (run! 'demo-large)))
 
+(test demo-novelty3-zdd (let ((*solver* #'solve-alien-novelty3-zdd)) (run! 'demo)))
+(test demo-novelty4-zdd (let ((*solver* #'solve-alien-novelty4-zdd)) (run! 'demo)))
+(test demo-novelty5-zdd (let ((*solver* #'solve-alien-novelty5-zdd)) (run! 'demo)))
+
+
 (test demo-large-novelty1 (let ((*solver* #'solve-alien-novelty1)) (run! 'demo-large)))
 (test demo-large-novelty2 (let ((*solver* #'solve-alien-novelty2)) (run! 'demo-large)))
 (test demo-large-novelty3 (let ((*solver* #'solve-alien-novelty3)) (run! 'demo-large)))
+(test demo-large-novelty3-zdd (let ((*solver* #'solve-alien-novelty3-zdd)) (run! 'demo-large)))
+(test demo-large-novelty4-zdd (let ((*solver* #'solve-alien-novelty4-zdd)) (run! 'demo-large)))
+(test demo-large-novelty5-zdd (let ((*solver* #'solve-alien-novelty5-zdd)) (run! 'demo-large)))
 
 

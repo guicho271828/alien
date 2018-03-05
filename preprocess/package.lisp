@@ -137,6 +137,7 @@
    #:solve-common
    #:novelty1
    #:novelty2
-   #:novelty3))
+   #:novelty3
+   #:novelty))
 
 (setf trivia:*arity-check-by-test-call* nil)

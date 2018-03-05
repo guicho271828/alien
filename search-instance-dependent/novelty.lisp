@@ -118,23 +118,121 @@ novelty heuristics
 
 )
 
+
+
+;; for understanding the recursion...
+#|
+
+(defun fn (state novelty)
+  (let ((len (length state)))
+    (terpri)
+    (labels ((rec (remaining-bits-to-collect
+                   position)
+               (format t "~&~vt~a" (1+ (- novelty remaining-bits-to-collect)) position)
+               (if (< 0 remaining-bits-to-collect)
+                   (let ((next (1- remaining-bits-to-collect)))
+                     (iter (for i from (1+ position) below (- len next))
+                           (when (= 1 (aref state i))
+                             (rec next i))))
+                   (format t " ~a" :terminal))))
+      (rec novelty 0))))
+
+(fn #*001101 1)
+(fn #*001101 2)
+(fn #*00110101 2)
+(fn #*00110101 3)
+(fn #*00110101 4)
+|#
+
+(in-compilation-phase ((and novelty phase/full-compilation))
+
+(ftype* make-zdd-tuples state+axioms fixnum cl-cudd:node)
+(defun make-zdd-tuples (state novelty)
+  (labels ((rec (remaining-bits-to-collect
+                 position)
+             ;; (format t "~&~vt~a" (1+ (- novelty remaining-bits-to-collect)) position)
+             (if (< 0 remaining-bits-to-collect)
+                 (let ((next (1- remaining-bits-to-collect)))
+                   (iter (for i from position below (- *state-size* next))
+                         (with tmp = (zdd-emptyset))
+                         (when (= 1 (aref state i))
+                           (setf tmp (zdd-union tmp (zdd-change (rec next (1+ i)) i))))
+                         (finally
+                          (return tmp))))
+                 (zdd-set-of-emptyset))))
+    (rec novelty 0)))
+
+(ftype* novelty-heuristics state+axioms cl-cudd:manager cl-cudd:node fixnum fixnum)
+(defun novelty-heuristics (state *manager* db k)
+  (let ((new-db db)
+        (novelty k))
+    (declare (cl-cudd:node new-db)
+             (fixnum novelty))
+    
+    (iter (declare (declare-variables))
+          (for n from 1 below k)
+          ;; collect length=n tuples
+          (for tuples = (make-zdd-tuples state n))
+          (setf new-db (zdd-union tuples new-db))
+          (when (= novelty k)
+            (unless (node-equal (zdd-difference tuples db)
+                                (zdd-emptyset))
+              ;; tuples contain something new
+              (setf novelty n))))
+
+    (values novelty new-db)))
+
+(declaim (inline make-novelty-heuristics))
+(defun make-novelty-heuristics (&rest keys
+                                &key
+                                  (k *state-size*)
+                                  (initial-num-slots 256)
+                                  (cache-size 262144)
+                                  (max-memory 0)
+                                  (prune t))
+  "If k is given and is a number, prune the nodes beyond that novelty."
+  (declare (ignorable initial-num-slots cache-size max-memory))
+  (remf keys :k)
+  (remf keys :prune)
+  (let* ((*manager* (apply #'manager-init
+                           :initial-num-vars-z *state-size*
+                           keys))
+         (manager *manager*) ; capture lexically
+         (db (zdd-set-of-emptyset))
+         (initial-state t))
+    (lambda (state)
+      (multiple-value-bind (novelty new-db) (novelty-heuristics state manager db k)
+        (setf db new-db)
+        (if (and prune (not initial-state) (<= k novelty))
+            (throw 'prune t)
+            (progn
+              (setf initial-state nil)
+              novelty))))))
+)
+
 #+(or)
-(defun make-novelty-heuristics (k)
-  (with-manager (:initial-num-vars-z (+ %mates %edges))
-    ;; (set-zdd-variable-group :mtr-default :from 0 :size %mates)
-    ;; (set-zdd-variable-group :mtr-default :from %mates :size %edges)
-    ;; (print (dump-zdd-variable-group-hierarchy))
-    ;; (zdd-enable-reordering :cudd-reorder-sift)
-    (let ((f (zdd-set-of-emptyset)))
-      (with-renaming ((+ zdd-union)
-                      (* zdd-product-unate)
-                      (/ zdd-divide-unate)
-                      (! zdd-change)
-                      (on  zdd-subset-1)
-                      (off zdd-subset-0)
-                      (% zdd-remainder-unate)
-                      (_+ +)
-                      (_* *)
-                      (s zdd-singleton))
-        (lambda (state)
-          )))))
+(progn
+(ql:quickload :strips)
+(sb-ext:gc :full t)
+(in-package :strips)
+(setf *state-size* 5)
+(defparameter *fn* (make-novelty-heuristics :prune nil))
+
+(assert (= (funcall *fn* #*00000) 5))
+(assert (= (funcall *fn* #*00000) 5))
+(assert (= (funcall *fn* #*00001) 1))
+(assert (= (funcall *fn* #*00001) 5))
+(assert (= (funcall *fn* #*00101) 1))
+(assert (= (funcall *fn* #*00001) 5))
+(assert (= (funcall *fn* #*00100) 5))
+(assert (= (funcall *fn* #*01010) 1))
+(assert (= (funcall *fn* #*01001) 2))
+(assert (= (funcall *fn* #*01010) 5))
+(assert (= (funcall *fn* #*01100) 2))
+(assert (= (funcall *fn* #*00011) 2))
+(assert (= (funcall *fn* #*00011) 5))
+(assert (= (funcall *fn* #*00110) 2))
+(assert (= (funcall *fn* #*00110) 5))
+(assert (= (funcall *fn* #*00111) 3))
+(assert (= (funcall *fn* #*00111) 5))
+)

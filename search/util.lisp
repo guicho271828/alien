@@ -119,3 +119,17 @@ Otherwise leave the form as it is."
           (for tmp in tmps)
           (setf body (subst new tmp body :test #'equalp))))
   `(progn ,@body))
+
+
+
+;; visualizing zdd
+
+(defun dump-zdd (path name f)
+  (cl-cudd.baseapi:zdd-dump-dot
+   (manager-pointer *manager*)
+   (cl-cudd.baseapi:cudd-regular (node-pointer f))
+   (namestring (make-pathname :name name :type "dot" :defaults path))))
+
+(defun draw (f)
+  (dump-zdd "." "dump" f)
+  (uiop:run-program (format nil "dot dump.dot -Tpdf -o dump.pdf")))
