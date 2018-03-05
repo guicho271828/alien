@@ -139,6 +139,16 @@
                                (shift-for strips::*op-size* (novelty2))
                                (ff/rpg))))))))))
 
+(defun solve-alien-alien (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (alien)))))))))
 
 (defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
@@ -324,6 +334,7 @@
 (test demo-novelty5-zdd (let ((*solver* #'solve-alien-novelty5-zdd)) (run! 'demo)))
 
 (test demo-bwfs (let ((*solver* #'solve-alien-bwfs)) (run! 'demo)))
+(test demo-alien (let ((*solver* #'solve-alien-alien)) (run! 'demo)))
 
 
 (test demo-large-novelty1 (let ((*solver* #'solve-alien-novelty1)) (run! 'demo-large)))

@@ -141,6 +141,7 @@
    #:novelty3
    #:novelty
    #:novelty4
+   #:alien
    #:sum
    #:product
    #:constant
