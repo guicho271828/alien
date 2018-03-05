@@ -74,7 +74,6 @@ From: ubuntu
     # expect from C or C++. Don't ask.
     alien
     chmod 777 $(which alien)
-    chmod -R 777 /root/
     
 %runscript
     ## The runscript is called whenever the container is used to solve
