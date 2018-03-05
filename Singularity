@@ -17,6 +17,7 @@ From: ubuntu
     export ROSWELL_HOME=/planner/.roswell
     export PATH=/planner/.roswell/bin:$PATH
     export MAKEFLAGS="-j $((2*$(nproc)))"
+    export ASDF_OUTPUT_TRANSLATIONS='(:output-translations ("/planner/.roswell/local-projects/strips/search-instance-dependent/" "/tmp/search-instance-dependent/") :inherit-configuration)'
     
 %post
 
