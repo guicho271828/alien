@@ -86,6 +86,9 @@ From: ubuntu
     ls -la /planner/.roswell/local-projects/strips
     ls -la /planner/.roswell/bin
 
+    echo "ASLR:"
+    cat /proc/sys/kernel/randomize_va_space
+    
     ros -e '(print :hello-world!)' -q
     pwd
     env
