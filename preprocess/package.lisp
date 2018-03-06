@@ -144,6 +144,7 @@
    #:product
    #:constant
    #:maximum
-   #:threshold))
+   #:threshold
+   #:shift-for))
 
 (setf trivia:*arity-check-by-test-call* nil)

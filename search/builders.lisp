@@ -101,6 +101,11 @@
    :storage nil
    :function `(constantly ,value)))
 
+(defun shift-for (max-value evalautor)
+  (product
+   (constant (expt 2 (ceiling (log max-value 2))))
+   evalautor))
+
 (defun threshold (threshold evaluator &key (except-init t))
   (assert (integerp threshold))
   (make-evaluator

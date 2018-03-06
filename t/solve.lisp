@@ -136,10 +136,9 @@
                             (eager
                              (bucket-open-list
                               (sum
-                               (product
-                                (constant (expt 2 (ceiling (log strips::*op-size* 2))))
-                                (novelty4))
+                               (shift-for strips::*op-size* (novelty2))
                                (ff/rpg))))))))))
+
 
 (defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
