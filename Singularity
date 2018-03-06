@@ -94,7 +94,7 @@ From: ubuntu
     env
     which alien
     echo args: $@
-    bash -c "alien -t 300 -m 6000 --search-option '(eager (bucket-open-list (sum (product (constant (expt 2 (ceiling (log strips::*op-size* 2)))) (novelty4)) (ff/rpg))))' $*"
+    bash -c "alien -t 300 -m 6000 --search-option '(eager (bucket-open-list (alien)))' $*"
     ls
 
 
