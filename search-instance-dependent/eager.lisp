@@ -82,6 +82,7 @@
          (child (make-state))
          (expanded 0)
          (evaluated 1)
+         (pruned 0)
          (start (get-internal-real-time)))
     (declare (fixnum expanded evaluated start))
     (replace state state+axioms)
@@ -140,7 +141,8 @@
                            (if (catch 'prune
                                  (funcall insert open-list id2 child+axioms)
                                  nil)
-                               (setf (state-information-status info) +dead+)
+                               (progn (setf (state-information-status info) +dead+)
+                                      (incf pruned))
                                (setf (state-information-status info) +open+))
                            (setf (packed-aref db 'state-information id2) info))))))
                (rec)))
@@ -151,6 +153,7 @@
         (log:info "expanded:  ~a" expanded)
         (log:info "evaluated: ~a" evaluated)
         (log:info "generated: ~a" (close-list-counter close-list))
+        (log:info "pruned:    ~a" pruned)
         (log:info "eval/sec:  ~a" (/ (float (* internal-time-units-per-second evaluated))
                                      (max 1 (- (get-internal-real-time) start)))))))))
 
