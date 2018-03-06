@@ -19,6 +19,17 @@ novelty heuristics
     (prog1 (if (find 1 tmp) 0 (throw 'prune t))
       (bit-ior db state db))))
 
+(ftype* novelty1-heuristics* state+axioms state+axioms (integer 1 2))
+(defun novelty1-heuristics* (state db)
+  (let ((tmp (load-time-value (make-state+axioms))))
+    ;; d  ~d s result
+    ;; 0   1 0    0
+    ;; 0   1 1    1 
+    ;; 1   0 0    0
+    ;; 1   0 1    0
+    (bit-andc1 db state tmp)
+    (if (find 1 tmp) 1 2)))
+
 (declaim (inline make-novelty1-heuristics))
 (defun make-novelty1-heuristics ()
   (let ((db (make-state+axioms)))
@@ -61,6 +72,30 @@ novelty heuristics
     (if (= novelty 3)
         (throw 'prune t)
         novelty)))
+
+(ftype* novelty2-heuristics*
+        state+axioms
+        (runtime simple-array 'bit (list *state-size* *state-size*))
+        (integer 1 3))
+(defun novelty2-heuristics* (state db)
+  "does not update the db"
+  (let ((novelty 3))
+    (declare ((integer 1 3) novelty))
+    (iter (declare (declare-variables))
+          (for i from 0)
+          (declare (fixnum i))
+          (while (< i (length state)))
+          (when (= 1 (aref state i))
+            (when (= 0 (aref db i i))
+              (minf novelty 1))
+            (iter (declare (declare-variables))
+                  (for j from (1+ i))
+                  (declare (fixnum j))
+                  (while (< j (length state)))
+                  (when (= 1 (aref state j))
+                    (when (= 0 (aref db i j))
+                      (minf novelty 2))))))
+    novelty))
 
 (declaim (inline make-novelty2-heuristics))
 (defun make-novelty2-heuristics ()
@@ -107,6 +142,37 @@ novelty heuristics
     (if (= novelty 4)
         (throw 'prune t)
         novelty)))
+
+(ftype* novelty3-heuristics*
+        state+axioms
+        (runtime simple-array 'bit (list *state-size* *state-size* *state-size*))
+        (integer 1 4))
+(defun novelty3-heuristics* (state db)
+  "does not update the db"
+  (let ((novelty 4))
+    (declare ((integer 1 4) novelty))
+    (iter (declare (declare-variables))
+          (for i from 0)
+          (declare (fixnum i))
+          (while (< i (length state)))
+          (when (= 1 (aref state i))
+            (when (= 0 (aref db i i i))
+              (minf novelty 1))
+            (iter (declare (declare-variables))
+                  (for j from (1+ i))
+                  (declare (fixnum j))
+                  (while (< j (length state)))
+                  (when (= 1 (aref state j))
+                    (when (= 0 (aref db i j j))
+                      (minf novelty 2))
+                    (iter (declare (declare-variables))
+                          (for k from (1+ j))
+                          (declare (fixnum k))
+                          (while (< k (length state)))
+                          (when (= 1 (aref state k))
+                            (when (= 0 (aref db i j k))
+                              (minf novelty 3))))))))
+    novelty))
 
 (declaim (inline make-novelty3-heuristics))
 (defun make-novelty3-heuristics ()
@@ -161,6 +227,44 @@ novelty heuristics
     (if (= novelty 5)
         (throw 'prune t)
         novelty)))
+
+(ftype* novelty4-heuristics*
+        state+axioms
+        (runtime simple-array 'bit (list *state-size* *state-size* *state-size* *state-size*))
+        (integer 1 5))
+(defun novelty4-heuristics* (state db)
+  "does not update the db"
+  (let ((novelty 5))
+    (declare ((integer 1 5) novelty))
+    (iter (declare (declare-variables))
+          (for i from 0)
+          (declare (fixnum i))
+          (while (< i (length state)))
+          (when (= 1 (aref state i))
+            (when (= 0 (aref db i i i i))
+              (minf novelty 1))
+            (iter (declare (declare-variables))
+                  (for j from (1+ i))
+                  (declare (fixnum j))
+                  (while (< j (length state)))
+                  (when (= 1 (aref state j))
+                    (when (= 0 (aref db i j j j))
+                      (minf novelty 2))
+                    (iter (declare (declare-variables))
+                          (for k from (1+ j))
+                          (declare (fixnum k))
+                          (while (< k (length state)))
+                          (when (= 1 (aref state k))
+                            (when (= 0 (aref db i j k k))
+                              (minf novelty 3))
+                            (iter (declare (declare-variables))
+                                  (for l from (1+ k))
+                                  (declare (fixnum l))
+                                  (while (< l (length state)))
+                                  (when (= 1 (aref state l))
+                                    (when (= 0 (aref db i j k l))
+                                      (minf novelty 4))))))))))
+    novelty))
 
 (declaim (inline make-novelty4-heuristics))
 (defun make-novelty4-heuristics ()
