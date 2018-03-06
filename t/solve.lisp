@@ -333,4 +333,27 @@
 (test demo-large-novelty4-zdd (let ((*solver* #'solve-alien-novelty4-zdd)) (run! 'demo-large)))
 (test demo-large-novelty5-zdd (let ((*solver* #'solve-alien-novelty5-zdd)) (run! 'demo-large)))
 
+(test sg-limit
+  (let ((*time-limit* 3)
+        (*compile-verbose* nil)
+        (*compile-print* nil))
+    (iter (for p in
+               '("ipc2014-agl/barman-agl14/p20.pddl"
+                 "ipc2014-agl/cavediving-agl14/p20.pddl"
+                 "ipc2014-agl/childsnack-agl14/p20.pddl"
+                 "ipc2014-agl/citycar-agl14/p20.pddl"
+                 "ipc2014-agl/floortile-agl14/p20.pddl"
+                 "ipc2014-agl/ged-agl14/p20.pddl"
+                 "ipc2014-agl/hiking-agl14/p20.pddl"
+                 "ipc2014-agl/maintenance-agl14/p20.pddl"
+                 "ipc2014-agl/openstacks-agl14/p20.pddl"
+                 "ipc2014-agl/parking-agl14/p20.pddl"
+                 "ipc2014-agl/tetris-agl14/p20.pddl"
+                 "ipc2014-agl/thoughtful-agl14/p20.pddl"
+                 "ipc2014-agl/transport-agl14/p20.pddl"
+                 "ipc2014-agl/visitall-agl14/p20.pddl"))
+          (iter (for *sg-compiled-branch-limit*
+                     from 0 to 3000 by 1000)
+                (solve p)))))
+
 
