@@ -4,10 +4,10 @@
 
 (defun alien ()
   (push 'alien *optional-features*)
-  (push 'novelty1 *optional-features*)
-  (push 'novelty2 *optional-features*)
-  (push 'novelty3 *optional-features*)
-  (ensure-random-semi-delete-relaxed-sg)
+  ;; (push 'novelty1 *optional-features*)
+  ;; (push 'novelty2 *optional-features*)
+  ;; (push 'novelty3 *optional-features*)
+  ;; (ensure-random-semi-delete-relaxed-sg)
   (make-evaluator
    :storage '()
    :function '(function alien-heuristics)))

@@ -150,6 +150,23 @@
                              (bucket-open-list
                               (alien)))))))))
 
+(defun solve-alien-alien2 (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (sum
+                               (product
+                                (constant (expt 2 (ceiling (log strips::*probe-limit* 2))))
+                                (threshold
+                                 (1- strips::*probe-limit*)
+                                 (alien)))
+                               (ff/rpg))))))))))
+
 (defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
   (log:info "Testing ~a" path)
@@ -335,7 +352,12 @@
 
 (test demo-bwfs (let ((*solver* #'solve-alien-bwfs)) (run! 'demo)))
 (test demo-alien (let ((*solver* #'solve-alien-alien)) (run! 'demo)))
+(test movie-alien (let ((*solver* #'solve-alien-alien)) (run! 'movie)))
+(test demo-large-alien (let ((*solver* #'solve-alien-alien)) (run! 'demo-large)))
 
+(test movie-alien2 (let ((*solver* #'solve-alien-alien2)) (run! 'movie)))
+(test demo-alien2 (let ((*solver* #'solve-alien-alien2)) (run! 'demo)))
+(test demo-large-alien2 (let ((*solver* #'solve-alien-alien2)) (run! 'demo-large)))
 
 (test demo-large-novelty1 (let ((*solver* #'solve-alien-novelty1)) (run! 'demo-large)))
 (test demo-large-novelty2 (let ((*solver* #'solve-alien-novelty2)) (run! 'demo-large)))
