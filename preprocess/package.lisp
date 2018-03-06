@@ -24,7 +24,7 @@
 
 (defpackage strips
   (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog2
-        :cl-cudd)
+        )
   (:shadowing-import-from :trivia :<>)
   (:shadow :iterate :else)
   (:shadow :info :node) ; cl-cudd

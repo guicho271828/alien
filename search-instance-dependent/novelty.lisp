@@ -144,6 +144,7 @@ novelty heuristics
 (fn #*00110101 4)
 |#
 
+#+(or)
 (in-compilation-phase ((and novelty phase/full-compilation))
 
 (ftype* make-zdd-tuples state+axioms fixnum cl-cudd:node)

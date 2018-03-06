@@ -124,12 +124,12 @@ Otherwise leave the form as it is."
 
 ;; visualizing zdd
 
-(defun dump-zdd (path name f)
-  (cl-cudd.baseapi:zdd-dump-dot
-   (manager-pointer *manager*)
-   (cl-cudd.baseapi:cudd-regular (node-pointer f))
-   (namestring (make-pathname :name name :type "dot" :defaults path))))
-
-(defun draw (f)
-  (dump-zdd "." "dump" f)
-  (uiop:run-program (format nil "dot dump.dot -Tpdf -o dump.pdf")))
+;; (defun dump-zdd (path name f)
+;;   (cl-cudd.baseapi:zdd-dump-dot
+;;    (manager-pointer *manager*)
+;;    (cl-cudd.baseapi:cudd-regular (node-pointer f))
+;;    (namestring (make-pathname :name name :type "dot" :defaults path))))
+;; 
+;; (defun draw (f)
+;;   (dump-zdd "." "dump" f)
+;;   (uiop:run-program (format nil "dot dump.dot -Tpdf -o dump.pdf")))

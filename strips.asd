@@ -23,7 +23,6 @@
               :static-vectors
               :log4cl
               :priority-queue
-              :cl-cudd
               :cffi)
  :serial t
  :components ((:module "lib"
