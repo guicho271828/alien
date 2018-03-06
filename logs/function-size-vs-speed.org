@@ -1,0 +1,318 @@
+* table2
+
+#+PLOT: ind:1 with:points logscale:xy
+#+PLOT: set:"logscale xy"
+|   byte |  eval/sec |
+|--------+-----------|
+|    382 | 330917.66 |
+|  57890 |  376598.8 |
+|  90850 |  425771.6 |
+| 322965 |  411135.5 |
+|  29384 |  293604.2 |
+|  29384 |           |
+|  29384 |  296061.0 |
+|    382 |  90588.96 |
+|  42570 |  89613.17 |
+| 122906 |  87390.23 |
+| 195162 | 85655.516 |
+|    382 |           |
+|  78178 | 444836.03 |
+| 153746 | 455284.63 |
+| 230594 |  454771.6 |
+|    382 |  60771.65 |
+|  53368 |  72388.89 |
+|  53368 |  74594.12 |
+|  53368 |  72466.06 |
+|    382 |  87928.38 |
+|  66242 |  136351.3 |
+| 145362 | 155809.97 |
+| 215618 | 167504.19 |
+|    381 |  668343.5 |
+|  59065 | 681557.56 |
+| 145833 |  640583.3 |
+| 211458 |  652288.6 |
+|    381 | 35634.746 |
+|  64418 | 30817.326 |
+| 107746 | 31486.559 |
+| 161810 | 32511.432 |
+|    381 | 11608.345 |
+|  59561 | 11620.074 |
+| 120274 |  11604.44 |
+| 165314 |  11604.44 |
+|    382 | 11574.705 |
+|  62914 |  10442.91 |
+| 125250 | 11046.849 |
+| 186082 | 14127.781 |
+|    382 |  65542.99 |
+|  60194 |   85544.0 |
+| 123442 | 85940.445 |
+| 187570 | 87144.234 |
+
+
+
+* table1
+
+|   byte |  eval/sec | limit | depth |
+|--------+-----------+-------+-------|
+|    382 | 330917.66 |     0 |     0 |
+|  57890 |  376598.8 |  1000 |   222 |
+|  90850 |  425771.6 |  2000 |   409 |
+| 322965 |  411135.5 |  3000 |   426 |
+|  29384 |  293604.2 |  1000 |    97 |
+|  29384 |           |  2000 |    97 |
+|  29384 |  296061.0 |  3000 |     7 |
+|    382 |  90588.96 |     0 |     0 |
+|  42570 |  89613.17 |  1000 |    51 |
+| 122906 |  87390.23 |  2000 |    53 |
+| 195162 | 85655.516 |  3000 |    55 |
+|    382 |           |     0 |     0 |
+|  78178 | 444836.03 |  1000 |    16 |
+| 153746 | 455284.63 |  2000 |   619 |
+| 230594 |  454771.6 |  3000 |   631 |
+|    382 |  60771.65 |     0 |     0 |
+|  53368 |  72388.89 |  1000 |   217 |
+|  53368 |  74594.12 |  2000 |   217 |
+|  53368 |  72466.06 |  3000 |   217 |
+|    382 |  87928.38 |     0 |     0 |
+|  66242 |  136351.3 |  1000 |   345 |
+| 145362 | 155809.97 |  2000 |   444 |
+| 215618 | 167504.19 |  3000 |   508 |
+|    381 |  668343.5 |     0 |     0 |
+|  59065 | 681557.56 |  1000 |    25 |
+| 145833 |  640583.3 |  2000 |    28 |
+| 211458 |  652288.6 |  3000 |    69 |
+|    381 | 35634.746 |     0 |     0 |
+|  64418 | 30817.326 |  1000 |   292 |
+| 107746 | 31486.559 |  2000 |   295 |
+| 161810 | 32511.432 |  3000 |   299 |
+|    381 | 11608.345 |     0 |     0 |
+|  59561 | 11620.074 |  1000 |    47 |
+| 120274 |  11604.44 |  2000 |    68 |
+| 165314 |  11604.44 |  3000 |    82 |
+|    382 | 11574.705 |     0 |     0 |
+|  62914 |  10442.91 |  1000 |   324 |
+| 125250 | 11046.849 |  2000 |   426 |
+| 186082 | 14127.781 |  3000 |   493 |
+|    382 |  65542.99 |     0 |     0 |
+|  60194 |   85544.0 |  1000 |   227 |
+| 123442 | 85940.445 |  2000 |    86 |
+| 187570 | 87144.234 |  3000 |    35 |
+
+0 0 381 28 
+
+* raw
+
+<ERROR> [17:17:52] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:17:52] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:17:52] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 382 bytes
+<ERROR> [17:17:52] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:17:55] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  330917.66
+<ERROR> [17:17:58] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:17:58] strips 8-successor-generator.lisp () - maximum depth to compile sg: 222
+<ERROR> [17:17:59] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 57890 bytes
+<ERROR> [17:17:59] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:18:02] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  376598.8
+<ERROR> [17:18:06] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:18:06] strips 8-successor-generator.lisp () - maximum depth to compile sg: 409
+<ERROR> [17:18:07] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 90850 bytes
+<ERROR> [17:18:07] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:18:10] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  425771.6
+<ERROR> [17:18:14] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:18:14] strips 8-successor-generator.lisp () - maximum depth to compile sg: 426
+<ERROR> [17:18:44] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 322965 bytes
+<ERROR> [17:18:44] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:18:47] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  411135.5
+<ERROR> [17:18:56] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:18:56] strips 8-successor-generator.lisp () - maximum depth to compile sg: 97
+<ERROR> [17:18:59] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 29384 bytes
+<ERROR> [17:18:59] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:19:02] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  293604.2
+<ERROR> [17:19:04] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:19:04] strips 8-successor-generator.lisp () - maximum depth to compile sg: 97
+<ERROR> [17:19:07] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 29384 bytes
+<ERROR> [17:19:07] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:19:13] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:19:13] strips 8-successor-generator.lisp () - maximum depth to compile sg: 97
+<ERROR> [17:19:16] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 29384 bytes
+<ERROR> [17:19:16] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:19:19] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  296061.0
+<ERROR> [17:19:24] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:19:24] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:19:24] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 382 bytes
+<ERROR> [17:19:24] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:19:28] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  90588.96
+<ERROR> [17:19:33] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:19:33] strips 8-successor-generator.lisp () - maximum depth to compile sg: 51
+<ERROR> [17:19:33] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 42570 bytes
+<ERROR> [17:19:33] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:19:37] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  89613.17
+<ERROR> [17:19:42] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:19:42] strips 8-successor-generator.lisp () - maximum depth to compile sg: 53
+<ERROR> [17:19:53] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 122906 bytes
+<ERROR> [17:19:53] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:19:57] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  87390.23
+<ERROR> [17:20:01] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:20:01] strips 8-successor-generator.lisp () - maximum depth to compile sg: 55
+<ERROR> [17:20:26] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 195162 bytes
+<ERROR> [17:20:26] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:20:30] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  85655.516
+<ERROR> [17:20:33] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:20:33] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:20:33] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 382 bytes
+<ERROR> [17:20:33] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:20:40] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:20:40] strips 8-successor-generator.lisp () - maximum depth to compile sg: 416
+<ERROR> [17:20:42] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 78178 bytes
+<ERROR> [17:20:42] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:20:45] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  444836.03
+<ERROR> [17:20:49] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:20:49] strips 8-successor-generator.lisp () - maximum depth to compile sg: 619
+<ERROR> [17:20:56] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 153746 bytes
+<ERROR> [17:20:56] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:21:00] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  455284.63
+<ERROR> [17:21:03] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:21:03] strips 8-successor-generator.lisp () - maximum depth to compile sg: 631
+<ERROR> [17:21:24] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 230594 bytes
+<ERROR> [17:21:24] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:21:28] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  454771.6
+<ERROR> [17:21:31] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:21:31] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:21:31] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 382 bytes
+<ERROR> [17:21:31] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:21:34] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  60771.65
+<ERROR> [17:21:37] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:21:37] strips 8-successor-generator.lisp () - maximum depth to compile sg: 217
+<ERROR> [17:21:40] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 53368 bytes
+<ERROR> [17:21:40] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:21:43] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  72388.89
+<ERROR> [17:21:45] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:21:45] strips 8-successor-generator.lisp () - maximum depth to compile sg: 217
+<ERROR> [17:21:48] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 53368 bytes
+<ERROR> [17:21:48] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:21:52] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  74594.12
+<ERROR> [17:21:54] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:21:54] strips 8-successor-generator.lisp () - maximum depth to compile sg: 217
+<ERROR> [17:21:57] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 53368 bytes
+<ERROR> [17:21:57] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:22:01] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  72466.06
+<ERROR> [17:22:04] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:22:04] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:22:04] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 382 bytes
+<ERROR> [17:22:04] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:22:07] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  87928.38
+<ERROR> [17:22:10] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:22:10] strips 8-successor-generator.lisp () - maximum depth to compile sg: 345
+<ERROR> [17:22:11] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 66242 bytes
+<ERROR> [17:22:11] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:22:15] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  136351.3
+<ERROR> [17:22:18] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:22:18] strips 8-successor-generator.lisp () - maximum depth to compile sg: 444
+<ERROR> [17:22:22] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 145362 bytes
+<ERROR> [17:22:22] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:22:25] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  155809.97
+<ERROR> [17:22:29] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:22:29] strips 8-successor-generator.lisp () - maximum depth to compile sg: 508
+<ERROR> [17:22:35] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 215618 bytes
+<ERROR> [17:22:35] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:22:39] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  167504.19
+<ERROR> [17:23:59] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:23:59] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:24:00] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 381 bytes
+<ERROR> [17:24:00] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:24:04] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  668343.5
+<ERROR> [17:25:26] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:25:26] strips 8-successor-generator.lisp () - maximum depth to compile sg: 25
+<ERROR> [17:25:29] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 59065 bytes
+<ERROR> [17:25:30] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:25:33] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  681557.56
+<ERROR> [17:27:03] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:27:03] strips 8-successor-generator.lisp () - maximum depth to compile sg: 28
+<ERROR> [17:27:27] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 145833 bytes
+<ERROR> [17:27:27] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:27:31] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  640583.3
+<ERROR> [17:28:59] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:28:59] strips 8-successor-generator.lisp () - maximum depth to compile sg: 69
+<ERROR> [17:29:55] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 211458 bytes
+<ERROR> [17:29:55] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:30:00] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  652288.6
+<ERROR> [17:30:41] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:30:41] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:30:44] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 381 bytes
+<ERROR> [17:30:44] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:30:48] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  35634.746
+<ERROR> [17:31:18] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:31:18] strips 8-successor-generator.lisp () - maximum depth to compile sg: 292
+<ERROR> [17:31:24] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 64418 bytes
+<ERROR> [17:31:24] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:31:29] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  30817.326
+<ERROR> [17:31:58] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:31:58] strips 8-successor-generator.lisp () - maximum depth to compile sg: 295
+<ERROR> [17:32:10] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 107746 bytes
+<ERROR> [17:32:10] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:32:14] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  31486.559
+<ERROR> [17:32:44] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:32:44] strips 8-successor-generator.lisp () - maximum depth to compile sg: 299
+<ERROR> [17:33:07] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 161810 bytes
+<ERROR> [17:33:07] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:33:11] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  32511.432
+<ERROR> [17:33:37] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:33:37] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:33:39] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 381 bytes
+<ERROR> [17:33:39] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:33:43] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  11608.345
+<ERROR> [17:34:08] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:34:08] strips 8-successor-generator.lisp () - maximum depth to compile sg: 47
+<ERROR> [17:34:12] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 59561 bytes
+<ERROR> [17:34:12] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:34:16] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  11620.074
+<ERROR> [17:34:42] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:34:42] strips 8-successor-generator.lisp () - maximum depth to compile sg: 68
+<ERROR> [17:34:48] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 120274 bytes
+<ERROR> [17:34:48] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:34:52] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  11604.44
+<ERROR> [17:35:17] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:35:17] strips 8-successor-generator.lisp () - maximum depth to compile sg: 82
+<ERROR> [17:35:24] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 165314 bytes
+<ERROR> [17:35:24] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:35:28] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  11604.44
+<ERROR> [17:37:34] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:37:34] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:37:34] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 382 bytes
+<ERROR> [17:37:34] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:37:38] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  11574.705
+<ERROR> [17:39:42] strips 8-successor-generator.lisp () - compiled branch limit: 1000
+<ERROR> [17:39:42] strips 8-successor-generator.lisp () - maximum depth to compile sg: 324
+<ERROR> [17:39:43] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 62914 bytes
+<ERROR> [17:39:43] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:39:47] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  10442.91
+<ERROR> [17:41:53] strips 8-successor-generator.lisp () - compiled branch limit: 2000
+<ERROR> [17:41:53] strips 8-successor-generator.lisp () - maximum depth to compile sg: 426
+<ERROR> [17:41:59] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 125250 bytes
+<ERROR> [17:41:59] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:42:03] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  11046.849
+<ERROR> [17:44:06] strips 8-successor-generator.lisp () - compiled branch limit: 3000
+<ERROR> [17:44:06] strips 8-successor-generator.lisp () - maximum depth to compile sg: 493
+<ERROR> [17:44:23] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 186082 bytes
+<ERROR> [17:44:23] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:44:27] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  14127.781
+<ERROR> [17:44:48] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:44:48] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:44:48] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 382 bytes
+<ERROR> [17:44:48] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:44:52] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  65542.99
+<ERROR> [17:45:12] strips 8-successor-generator.lisp () - maximum depth to compile sg: 227
+<ERROR> [17:45:13] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 60194 bytes
+<ERROR> [17:45:13] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:45:17] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  85544.0
+<ERROR> [17:45:38] strips 8-successor-generator.lisp () - maximum depth to compile sg: 286
+<ERROR> [17:45:43] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 123442 bytes
+<ERROR> [17:45:43] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:45:46] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  85940.445
+<ERROR> [17:46:07] strips 8-successor-generator.lisp () - maximum depth to compile sg: 335
+<ERROR> [17:46:17] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 187570 bytes
+<ERROR> [17:46:17] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
+<ERROR> [17:46:21] strips eager.lisp (eager-search cleanup-fun-58) - eval/sec:  87144.234
+<ERROR> [17:47:08] strips 8-successor-generator.lisp () - compiled branch limit: 0
+<ERROR> [17:47:08] strips 8-successor-generator.lisp () - maximum depth to compile sg: 0
+<ERROR> [17:47:10] strips util.lisp (print-function-size) - Segment size of APPLICABLE-OPS/FAST: 381 bytes
+<ERROR> [17:47:10] strips util.lisp (print-function-size) - Segment size of APPLY-OP/FAST: 28 bytes
