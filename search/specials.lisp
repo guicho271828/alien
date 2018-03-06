@@ -41,7 +41,8 @@
   (let ((sb-ext:*inline-expansion-limit* 10))
     (proclaim '(sb-ext:muffle-conditions style-warning sb-ext:compiler-note))
     (unwind-protect
-         (progn
+         (let ((*compile-verbose* nil)
+               (*compile-print* nil))
            ;; (asdf:compile-system :strips.instance-dependent :force t)
            (asdf:load-system :strips.instance-dependent :force t :verbose nil))
       ;; ensure the specialised code is removed and does not affect the later debugging
