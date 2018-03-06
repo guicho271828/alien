@@ -85,7 +85,8 @@ From: ubuntu
     ls -la
     ls -la /planner/.roswell/local-projects/strips
     ls -la /planner/.roswell/bin
-    
+
+    ros -e '(print :hello-world!)' -q
     pwd
     env
     which alien
