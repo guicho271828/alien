@@ -18,6 +18,7 @@
 (in-compilation-phase ((and ff/rpg phase/full-compilation))
   (defun ff-heuristic/rpg (state)
     "FF-heuristics based on a relaxed planning graph."
+    (declare (optimize (speed 3) (safety 0) (space 3) (debug 0)))
     ;; using the same idea of layer-membership from JAIR-FF, p263
     (let* ((action-layer-membership (maybe-inline-obj
                                      (make-array *delete-relaxed-op-size*
@@ -33,8 +34,9 @@
             (when (= fact 1) ; this includes axioms
               (setf (aref fact-layer-membership i) 0)))
       
-      (let* ((state1 (maybe-inline-obj (make-state+axioms)))
-             (state2 (maybe-inline-obj (make-state+axioms))))
+      (let* ((state1 (make-state+axioms))
+             (state2 (make-state+axioms)))
+        (declare (dynamic-extent state1 state2))
         (replace state1 state)
         (replace state2 state)
         (loop
@@ -53,7 +55,8 @@
            (incf current-layer)
            ;; destroy state1
            (bit-xor state1 state2 state1)
-           (iter (for changed-fact in-vector state1 with-index i)
+           (iter (declare (declare-variables))
+                 (for changed-fact in-vector state1 with-index i)
                  (when (= 1 changed-fact) ; this includes axioms
                    (setf (aref fact-layer-membership i) current-layer)))
            (when (goalp state2)
@@ -86,7 +89,8 @@
 
         (flet ((difficulty (op-id)
                  ;; do not consider the axioms.
-                 (iter (for pre in-vector (op-pre (aref (maybe-inline-obj *delete-relaxed-ops*) op-id)))
+                 (iter (declare (declare-variables))
+                       (for pre in-vector (op-pre (aref (maybe-inline-obj *delete-relaxed-ops*) op-id)))
                        (when (< pre (maybe-inline-obj *fact-size*))
                          (summing (aref fact-layer-membership pre)))))
                (push-layer (layer fact)
@@ -96,14 +100,17 @@
           
           ;; initializing G
           (fill end-counters 0)
-          (iter (for goal in-vector goals)
+          (iter (declare (declare-variables))
+                (for goal in-vector goals)
                 (for layer = (aref fact-layer-membership goal))
                 (push-layer layer goal))
           
           (fill (sb-kernel:%array-data marker) 0)
-          (iter (for layer from current-layer downto 1) ; for i:= m...1
+          (iter (declare (declare-variables))
+                (for layer from current-layer downto 1) ; for i:= m...1
                 (for layer-1 = (1- layer))
-                (iter (for i from 0)
+                (iter (declare (declare-variables))
+                      (for i from 0)
                       (while (< i (aref end-counters layer))) ; this is checked each time
                       (for goal = (aref G layer i))
                       (when (= 1 (aref marker layer goal))
@@ -112,17 +119,20 @@
                       (incf cost)
                       
                       (for achiever-id = 
-                           (iter (for op-id in-vector (aref achievers goal))
+                           (iter (declare (declare-variables))
+                                 (for op-id in-vector (aref achievers goal))
                                  (when (= layer-1 (aref action-layer-membership op-id))
                                    (finding op-id
                                             minimizing (difficulty op-id)))))
                       (for achiever = (aref *delete-relaxed-ops* achiever-id))
-                      (iter (for pre in-vector (op-pre achiever))
+                      (iter (declare (declare-variables))
+                            (for pre in-vector (op-pre achiever))
                             (for l = (aref fact-layer-membership pre))
                             (when (/= 0 l)
                               (push-layer l pre)))
 
-                      (iter (for eff in-vector (op-eff achiever))
+                      (iter (declare (declare-variables))
+                            (for eff in-vector (op-eff achiever))
                             (for add = (effect-eff eff))
                             (setf (aref marker layer   add) 1
                                   (aref marker layer-1 add) 1)))))
