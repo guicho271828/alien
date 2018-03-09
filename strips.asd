@@ -27,6 +27,7 @@
  :serial t
  :components ((:module "lib"
                :components ((:file "package")
+                            (:file "debug")
                             (:file "equivalence")
                             (:file "indexed-entries")
                             (:file "packed-struct")
