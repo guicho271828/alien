@@ -9,9 +9,36 @@ count the number of cases successfully reaching the goal.
 
 (defparameter *probe-limit* 10)
 
+(defparameter *semi-relaxed-rate-log2* 2
+  "Specifies the delete-relaxation rate in the search space explored by the probes.
+0 means that all delete effects are relaxed.
+
+1 means 1/2 the delete effects are relaxed, rest are preserved.
+2 means 3/4, 3 means 7/8, 4 means 15/16 and so on (the problem is almost delete-relaxed).
+
+When the value is negative, it uses an alternative scheme.
+-1 means 1/2 the delete effects are relaxed, rest are preserved.
+-2 means 1/4, -3 means 1/8, -4 means 1/16 and so on (the problem is almost similar to the original).
+
+When this value is set to 0, it means the probe searches in a fully delete-relaxed state space.
+In this case, the probe is complete and always find a goal when the original problem is solvable,
+and fails otherwise. This means that the outcome of sampling (random exploration) is deterministic.
+
+In order to bring some nondeterminism and conduct a meaningful sampling,
+ you should set a non-zero value.
+")
+
 (declaim (inline set-random-bitvector^2))
 (ftype* set-random-bitvector^2 fixnum simple-bit-vector simple-bit-vector)
 (defun set-random-bitvector^2 (i bv)
+  "Randomly set a bit vector BV according to the integer I.
+Approximately 1/2^I of the bits are randomly selected and set to 0, and the rest are 1.
+Larger I means more 1s.
+ 
+Examples:
+When I = 0, bv is filled with 0.
+When I = 1, approximately half the bits are 0.
+When I = 2, approximately 1/4 of the bits are 0."
   (declare (optimize (speed 3)))
   (fill bv 0)
   (dotimes (j i bv)
@@ -19,6 +46,26 @@ count the number of cases successfully reaching the goal.
       (setf (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
             (logior (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
                     (random (expt 2 64)))))))
+
+(declaim (inline reset-random-bitvector^2))
+(ftype* reset-random-bitvector^2 fixnum simple-bit-vector simple-bit-vector)
+(defun reset-random-bitvector^2 (i bv)
+  "Randomly reset a bit vector BV according to the integer I.
+Approximately 1/2^I of the bits are randomly selected and set to 1, and the rest are 0.
+Larger I means more 0s.
+ 
+Examples:
+When I = 0, bv is filled with 0.
+When I = 1, approximately half the bits are 0.
+When I = 2, approximately 1/4 of the bits are 0."
+  (declare (optimize (speed 3)))
+  (fill bv 1)
+  (dotimes (j i bv)
+    (dotimes (i (ceiling (length bv) 64))
+      (setf (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
+            (logand (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
+                    (random (expt 2 64)))))))
+
 
 ;; e.g.
 ;; (strips::set-random-bitvector^2 4 #*0000000000000000000000000000000000000000000000)
@@ -59,11 +106,15 @@ and count the number of reaching the semi-relaxed goal.
                        (random  (make-state+axioms)))
                    (declare (dynamic-extent deletes random))
                    (bit-andc2 current child deletes)
+                   ;; does not restore axioms
                    (fill deletes 0 :start (maybe-inline-obj *fact-size*))
-                   ;; (break+ current child deletes facts (bit-ior child deletes))
-                   ;; randomly semi-delete-relax
-                   ;; (set-random-bitvector^2 4 random)
-                   ;; (bit-and deletes random deletes)
+                   ;; smaller *semi-relaxed-rate-log2* = more 1s in RANDOM.
+                   ;; *semi-relaxed-rate-log2* = 0 is equivalent to delete-relaxation, and meaningless.
+                   (if (minusp (maybe-inline-obj *semi-relaxed-rate-log2*))
+                       (reset-random-bitvector^2 (maybe-inline-obj (abs *semi-relaxed-rate-log2*)) random)
+                       (set-random-bitvector^2 (maybe-inline-obj *semi-relaxed-rate-log2*) random))
+                   ;; choose which deletes to relax.
+                   (bit-and deletes random deletes)
                    ;; restore some deletes
                    (bit-ior child deletes child))
                  (apply-axioms child)))

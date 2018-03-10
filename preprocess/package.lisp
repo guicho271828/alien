@@ -92,6 +92,9 @@
    #:find-domain
    #:max-state-id
 
+   #:set-random-bitvector^2
+   #:reset-random-bitvector^2
+   
    ;; search external
    #:goal-found
    #:no-solution
