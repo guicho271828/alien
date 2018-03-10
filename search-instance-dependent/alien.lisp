@@ -65,28 +65,7 @@ and count the number of reaching the semi-relaxed goal.
                    (bit-and deletes random deletes)
                    ;; restore some deletes
                    (bit-ior child deletes child))
-                 (apply-axioms child))
-               (successor-novel-p (op-id)
-                 ;; do not choose the same op twice
-                 (when (= 1 (aref op-db op-id))
-                   (return-from successor-novel-p 0))
-                 
-                 (successor op-id)
-
-                 ;; choose the op immediately
-                 (when (goalp child)
-                   (incf success)
-                   (return-from successor-novel-p 2))
-
-                 ;; ignore ops not achieving new propositions
-                 (let ((achieved (make-state+axioms)))
-                   (declare (dynamic-extent achieved))
-                   (bit-andc1 state-db child achieved) ; 1 when 0 in db and 1 in child
-                   (when (not (find 1 achieved)) ; when some new propositon is found
-                     (return-from successor-novel-p 0)))
-                 
-                 ;; randmly choose the op
-                 (return-from successor-novel-p 1)))
+                 (apply-axioms child)))
         (dotimes (i (maybe-inline-obj *probe-limit*))
           ;; initializing probe
           (replace current state)
@@ -96,16 +75,35 @@ and count the number of reaching the semi-relaxed goal.
             (let ((chosen -1)
                   (i 0))
               (declare (fixnum chosen i))
-              (do-leaf (op-id current *sg*)
-                (case (successor-novel-p op-id)
-                  (0 )
-                  (1 (incf i)
-                     ;; performs reservoir sampling with k=1
-                     (when (= 0 (random i))
-                       (setf chosen op-id)))
-                  (2 (return))))
+              (flet ((successor-novel-p (op-id)
+                       ;; do not choose the same op twice
+                       (when (= 1 (aref op-db op-id))
+                         (return-from successor-novel-p))
+                       
+                       (successor op-id)
+
+                       ;; choose the op immediately
+                       (when (goalp child)
+                         (incf success)
+                         (return))
+
+                       ;; ignore ops not achieving new propositions
+                       (let ((achieved (make-state+axioms)))
+                         (declare (dynamic-extent achieved))
+                         (bit-andc1 state-db child achieved) ; 1 when 0 in db and 1 in child
+                         (when (not (find 1 achieved)) ; when some new propositon is found
+                           (return-from successor-novel-p)))
+                       
+                       ;; choose the op randomly via reservoir sampling with k=1
+                       (incf i)
+                       (when (= 0 (random i))
+                         (setf chosen op-id))))
+                (declare (dynamic-extent #'successor-novel-p))
+                (do-leaf (op-id current *sg*)
+                  (successor-novel-p op-id)))
               (if (plusp chosen)
                   (successor chosen)
+                  ;; dead end, no novel op chosen
                   (return))))))
       
       ;; (format t "~& ~a / ~a success." success *probe-limit*)
