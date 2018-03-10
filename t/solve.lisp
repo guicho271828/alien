@@ -167,6 +167,23 @@
                                  (alien)))
                                (ff/rpg))))))))))
 
+(defun solve-alien-alien3 (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (sum
+                               (ff/rpg)
+                               (shift-for strips::*op-size*
+                                          (sum (alien)
+                                               (shift-for strips::*probe-limit*
+                                                          (novelty3)))))))))))))
+
+
 (defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
   (log:info "Testing ~a" path)
@@ -390,4 +407,7 @@
                      from 0 to 3000 by 1000)
                 (solve p)))))
 
+(test demo-agl14-alien (let ((*solver* #'solve-alien-alien)) (run! 'demo-agl14)))
+(test demo-agl14-alien2 (let ((*solver* #'solve-alien-alien2)) (run! 'demo-agl14)))
+(test demo-agl14-alien3 (let ((*solver* #'solve-alien-alien3)) (run! 'demo-agl14)))
 
