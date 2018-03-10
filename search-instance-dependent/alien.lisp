@@ -7,7 +7,7 @@ count the number of cases successfully reaching the goal.
 
 |#
 
-(defparameter *probe-limit* 3)
+(defparameter *probe-limit* 10)
 
 (declaim (inline set-random-bitvector^2))
 (ftype* set-random-bitvector^2 fixnum simple-bit-vector simple-bit-vector)
@@ -52,7 +52,8 @@ and count the number of reaching the semi-relaxed goal.
       (declare (dynamic-extent current child state-db)
                ((runtime integer 0 *probe-limit*) success))
       (labels ((successor (op-id)
-                 (fill current 0 :start (maybe-inline-obj *fact-size*))
+                 (replace child current :end2 (maybe-inline-obj *fact-size*))
+                 (fill child 0 :start (maybe-inline-obj *fact-size*))
                  (apply-op/fast op-id current child)
                  (let ((deletes (make-state+axioms))
                        (random  (make-state+axioms)))
@@ -61,8 +62,8 @@ and count the number of reaching the semi-relaxed goal.
                    (fill deletes 0 :start (maybe-inline-obj *fact-size*))
                    ;; (break+ current child deletes facts (bit-ior child deletes))
                    ;; randomly semi-delete-relax
-                   (set-random-bitvector^2 4 random)
-                   (bit-and deletes random deletes)
+                   ;; (set-random-bitvector^2 4 random)
+                   ;; (bit-and deletes random deletes)
                    ;; restore some deletes
                    (bit-ior child deletes child))
                  (apply-axioms child)))
@@ -71,6 +72,7 @@ and count the number of reaching the semi-relaxed goal.
           (replace current state)
           (fill op-db 0)
           (fill state-db 0)
+          ;; (log:info "new probe")
           (dotimes (step (maybe-inline-obj *op-size*))
             (let ((chosen -1)
                   (i 0))
@@ -81,30 +83,37 @@ and count the number of reaching the semi-relaxed goal.
                          (return-from successor-novel-p))
                        
                        (successor op-id)
-
+                       
                        ;; choose the op immediately
                        (when (goalp child)
                          (incf success)
+                         ;; (log:info "took ~a steps (reached goal)" step)
                          (return))
 
                        ;; ignore ops not achieving new propositions
                        (let ((achieved (make-state+axioms)))
                          (declare (dynamic-extent achieved))
                          (bit-andc1 state-db child achieved) ; 1 when 0 in db and 1 in child
-                         (when (not (find 1 achieved)) ; when some new propositon is found
+                         (when (not (find 1 achieved))
                            (return-from successor-novel-p)))
                        
                        ;; choose the op randomly via reservoir sampling with k=1
                        (incf i)
                        (when (= 0 (random i))
                          (setf chosen op-id))))
-                (declare (dynamic-extent #'successor-novel-p))
                 (do-leaf (op-id current *sg*)
                   (successor-novel-p op-id)))
-              (if (plusp chosen)
-                  (successor chosen)
+              ;; (log:info "you are the chosen one! ~a" chosen)
+              (if (minusp chosen)
                   ;; dead end, no novel op chosen
-                  (return))))))
+                  (progn
+                    ;; (log:info "took ~a steps (failed)" step)
+                    (return))
+                  (progn
+                    (successor chosen)
+                    (setf (aref op-db chosen) 1)
+                    (bit-ior state-db child state-db)
+                    (replace current child)))))))
       
-      ;; (format t "~& ~a / ~a success." success *probe-limit*)
+      ;; (log:info "~a / ~a success." success *probe-limit*)
       (- (maybe-inline-obj *probe-limit*) success))))
