@@ -128,3 +128,42 @@ Operators with no effects are removed from the results and does not belong to th
              
     (log:info "~11@a: ~a" "op" (length *instantiated-ops*))
     (log:info "~11@a: ~a" "relaxed op" (length *random-semi-delete-relaxed-ops*))))
+
+
+
+(defvar *delete-only-sg* nil "Successor generators which contains delete-effects only.")
+(defvar *delete-only-ops* nil "Operators which contains delete-effects only.")
+(defvar *delete-only-op-size* nil "delete-only operator size.")
+
+(ftype* delete-only-op op op)
+(defun delete-only-op (op)
+  (ematch op
+    ((op pre eff)
+     (let ((relaxed-pre (remove-if #'minusp pre))
+           (relaxed-eff (delete-only-effects eff)))
+       (make-op :pre relaxed-pre
+                :eff relaxed-eff)))))
+
+(ftype* delete-only-effects (array effect) (simple-array effect))
+(defun delete-only-effects (effects)
+  (coerce
+   (iter (for e in-vector effects)
+         (ematch e
+           ((effect con eff)
+            (when (minusp eff)
+              (collecting
+               (make-effect :con (remove-if #'minusp con)
+                            :eff eff)
+               result-type vector)))))
+   '(simple-array effect)))
+
+(defun ensure-delete-only-sg ()
+  (unless (symbol-value '*delete-only-sg*)
+    (log:info "instantiating delete-only successor generator")
+    (setf (values *delete-only-sg*
+                  *delete-only-ops*)
+          (relaxed-sg *instantiated-ops* #'delete-only-op)
+          *delete-only-op-size*
+          (length *delete-only-ops*))
+    (log:info "~11@a: ~a" "op" (length *instantiated-ops*))
+    (log:info "~11@a: ~a" "delete-only op" (length *delete-only-ops*))))

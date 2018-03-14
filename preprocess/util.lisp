@@ -156,7 +156,10 @@
 
            *delete-relaxed-sg*
            *delete-relaxed-ops*
-           *delete-relaxed-op-size*)
+           *delete-relaxed-op-size*
+           *delete-only-sg*
+           *delete-only-ops*
+           *delete-only-op-size*)
        ,@body)))
 
 (defun positive (form)
