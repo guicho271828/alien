@@ -70,52 +70,6 @@ See also: function RUN, function SOLVE-COMMON")
 (defvar *random-semi-delete-relaxed-ops* nil "Semi-relaxed operators.")
 (defvar *random-semi-delete-relaxed-op-size* nil "Semi-relaxed operator size.")
 
-(defun solve-common (domain problem fn)
-  (log:info "[0.000s] [+0.000s] STARTED")
-  (log:info "Solving ~a" problem)
-  (let* ((*start-time* (get-internal-real-time))
-         (*last-milestone* *start-time*))
-    (with-parsed-information5 (-<> (parse problem domain)
-                                (prog1 arrow-macros:<> (log-milestone :parse))
-                                easy-invariant
-                                (prog1 arrow-macros:<> (log-milestone :easy-invariant))
-                                ground
-                                (prog1 arrow-macros:<> (log-milestone :ground))
-                                mutex-invariant
-                                (prog1 arrow-macros:<> (log-milestone :mutex-invariant))
-                                instantiate
-                                (prog1 arrow-macros:<> (log-milestone :intantiate)))
-
-      (log:info "       facts: ~A" *fact-size*)
-      (log:info "      axioms: ~A" (length *ground-axioms*))
-      (log:info "         ops: ~A" *op-size*)
-      (log:info "axiom layers: ~A" (length *instantiated-axiom-layers*))
-      (unwind-protect
-           (let (*optional-features*)
-             (funcall fn))
-        (log:info "Finished on ~a" problem)))))
-
-(defun solve-once (domain problem fn)
-  "Solve the problem, return the first solution"
-  (solve-common domain problem
-                (lambda ()
-                  (handler-bind ((goal-found
-                                  (lambda (c)
-                                    (declare (ignore c))
-                                    (return-from solve-once (retrieve-path)))))
-                    (funcall fn)))))
-
-(defun solve-once-to-file (domain problem plan-output-file fn)
-  "Solve the problem, return the first solution"
-  (solve-common domain problem
-                (lambda ()
-                  (handler-bind ((goal-found
-                                  (lambda (c)
-                                    (declare (ignore c))
-                                    (output-plan plan-output-file)
-                                    (return-from solve-once-to-file))))
-                    (funcall fn)))))
-
 ;; TODO: solve-many with specifying N
 
 (define-condition no-solution (simple-error)
