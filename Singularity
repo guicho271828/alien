@@ -17,7 +17,7 @@ From: ubuntu
     export ROSWELL_HOME=/planner/.roswell
     export PATH=/planner/.roswell/bin:$PATH
     export MAKEFLAGS="-j $((2*$(nproc)))"
-    export ASDF_OUTPUT_TRANSLATIONS='(:output-translations ("/planner/.roswell/local-projects/" "/tmp/local-projects/") :inherit-configuration)'
+    export ASDF_OUTPUT_TRANSLATIONS='(:output-translations ("/planner/.roswell/local-projects/strips/search-instance-dependent" "/tmp/search-instance-dependent/") ("/planner/.roswell/" "/planner/.cache/") :inherit-configuration)'
     export TZ='Asia/Tokyo'
     
 %post
@@ -69,33 +69,21 @@ From: ubuntu
     # Quicklisp downloads the rest of dependencies,
     # recognize the roswell script (roswell/alien.ros) and copy it as an executable .roswell/bin/alien .
     ros install strips
-    
-    # alien is not compiled. If you run it once, it self-compiles itself. The
-    # compilation of lisp code is quite, quite different from what you usually
-    # expect from C or C++. Don't ask.
-    alien
-    chmod 777 $(which alien)
-    chmod -R 777 /root/
-    chmod -R 777 /planner/
+
+    # alternative way to build alien
+    ros dynamic-space-size=8000 dump --disable-compression executable roswell/alien.ros
+    mv -f roswell/alien alien
+    ./alien
     
 %runscript
     ## The runscript is called whenever the container is used to solve
     ## an instance.
 
-    ls -la
-    ls -la /planner/.roswell/local-projects/strips
-    ls -la /planner/.roswell/bin
-
-    echo "ASLR:"
-    cat /proc/sys/kernel/randomize_va_space
-    
-    ros -e '(print :hello-world!)' -q
     pwd
     env
-    which alien
-    echo args: $@
-    bash -c "alien -t 300 -m 6000 --search-option '(eager (bucket-open-list (alien)))' $*"
     ls
+    echo args: $@
+    bash -c "/planner/alien -t 300 -m 6000 $*"
 
 
 
