@@ -138,6 +138,7 @@ Otherwise leave the form as it is."
 
 
 (defun show-doc (specs)
+  (format *error-output* "Synopsis:~%")
   (iter (for (key arg variable) in specs)
         (format *error-output*
                 "~@{~40@a : ~a~%~}"

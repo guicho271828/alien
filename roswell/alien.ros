@@ -44,6 +44,15 @@ exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
     (_
      (format *error-output* "Usage: alien.ros [options] [domain] problem [plan-output-file]~%")
      (format *error-output* "Got ARGV: ~a~%" argv)
+     (format *error-output* "~{~30@a: ~a~%~}"
+             (list "dynamic space size" (sb-ext:dynamic-space-size)
+                   "lisp implementation type" (lisp-implementation-type)
+                   "lisp implementation version" (lisp-implementation-version)
+                   "machine instance" (machine-instance)
+                   "machine type" (machine-type)
+                   "machine version" (machine-version)
+                   "software type" (software-type)
+                   "software version" (software-version)))
      (show-doc
       `((-t sec *time-limit*)
         (-m kbyte *memory-limit*)
