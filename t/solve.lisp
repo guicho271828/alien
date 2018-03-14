@@ -136,8 +136,8 @@
                             (eager
                              (bucket-open-list
                               (sum
-                               (shift-for strips::*op-size* (novelty2))
-                               (ff/rpg))))))))))
+                               (ff/rpg)
+                               (shift-for strips::*op-size* (novelty2)))))))))))
 
 (defun solve-alien-alien (path)
   (solve-alien-common path
@@ -160,12 +160,8 @@
                             (eager
                              (bucket-open-list
                               (sum
-                               (product
-                                (constant (expt 2 (ceiling (log strips::*probe-limit* 2))))
-                                (threshold
-                                 (1- strips::*probe-limit*)
-                                 (alien)))
-                               (ff/rpg))))))))))
+                               (ff/rpg)
+                               (shift-for strips::*op-size* (alien)))))))))))
 
 (defun solve-alien-alien3 (path)
   (solve-alien-common path
