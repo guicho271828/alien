@@ -11,7 +11,7 @@ count the number of cases successfully reaching the goal.
 
 (defparameter *probe-limit* 10)
 
-(defparameter *semi-relaxed-rate-log2* 2
+(defparameter *semi-relaxed-rate-log2* 3
   "Specifies the delete-relaxation rate in the search space explored by the probes.
 0 means that all delete effects are relaxed.
 

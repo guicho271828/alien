@@ -15,15 +15,13 @@
  :components ((:module "search-instance-dependent"
                :components ((:file "close-list")
                             (:file "search-common")
-                            (:file "novelty")
-                            (:file "alien" :depends-on ("novelty"))
                             (:file "eager")
                             (:file "ff")
                             (:file "goal-count")
-                            (:module "heuristics"
-                             :components ())
-                            (:module "searchers"
-                             :components ())
-                            (:module "open-list"
-                             :components ()))))
+                            (:file "novelty")
+                            (:file "alien"
+                             :depends-on ("novelty"))
+                            (:file "alien-ffish"
+                             :depends-on ("alien"
+                                          "ff")))))
  :description "Instance-dependent component of STRIPS")
