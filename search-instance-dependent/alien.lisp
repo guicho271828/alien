@@ -147,11 +147,9 @@ and count the number of reaching the semi-relaxed goal.
                   (chosen -1))
               (declare (fixnum c chosen))
               (do-leaf (op-id current *sg*)
-                (setf (aref ops c) op-id)
-                (incf c))
-
-              ;; do not choose the same op twice
-              (setf c (slide-if (lambda (op-id) (= 0 (aref op-db op-id))) ops :end c))
+                (when (= 0 (aref op-db op-id))
+                  (setf (aref ops c) op-id)
+                  (incf c)))
               ;; randomize selection
               (shuffle ops :end c)
               
