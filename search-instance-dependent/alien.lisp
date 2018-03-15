@@ -184,4 +184,5 @@ and count the number of reaching the semi-relaxed goal.
                     (replace current child)))))))
       
       ;; (log:info "~a / ~a success." success *probe-limit*)
-      (- (maybe-inline-obj *probe-limit*) success))))
+      (- (maybe-inline-obj *probe-limit*) success)))
+  (print-function-size 'alien-heuristics))
