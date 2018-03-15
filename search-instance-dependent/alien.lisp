@@ -142,35 +142,40 @@ and count the number of reaching the semi-relaxed goal.
           (fill state-db 0)
           ;; (log:info "new probe")
           (dotimes (step (maybe-inline-obj *op-size*))
-            (let ((chosen -1)
-                  (i 0))
-              (declare (fixnum chosen i))
-              (flet ((successor-novel-p (op-id)
-                       ;; do not choose the same op twice
-                       (when (= 1 (aref op-db op-id))
-                         (return-from successor-novel-p))
-                       
-                       (successor op-id)
-                       
-                       ;; choose the op immediately
-                       (when (goalp child)
-                         (incf success)
-                         ;; (log:info "took ~a steps (reached goal)" step)
-                         (return))
+            (let ((ops (load-time-value (make-array *op-size* :element-type 'op-id)))
+                  (c 0)
+                  (chosen -1))
+              (declare (fixnum c chosen))
+              (do-leaf (op-id current *sg*)
+                (setf (aref ops c) op-id)
+                (incf c))
 
-                       ;; ignore ops not achieving new propositions
-                       (let ((achieved (make-state+axioms)))
-                         (declare (dynamic-extent achieved))
-                         (bit-andc1 state-db child achieved) ; 1 when 0 in db and 1 in child
-                         (when (not (find 1 achieved))
-                           (return-from successor-novel-p)))
-                       
-                       ;; choose the op randomly via reservoir sampling with k=1
-                       (incf i)
-                       (when (= 0 (random i))
-                         (setf chosen op-id))))
-                (do-leaf (op-id current *sg*)
-                  (successor-novel-p op-id)))
+              ;; do not choose the same op twice
+              (setf c (slide-if (lambda (op-id) (= 0 (aref op-db op-id))) ops :end c))
+              ;; randomize selection
+              (shuffle ops :end c)
+              
+              (iter choose-op
+                    (declare (declare-variables))
+                    (for (the op-id op-id) in-vector ops with-index i below c)
+
+                    (successor op-id)   ;this is a heavy operation, calls to it should be minimized
+                    (when (goalp child) ;when goal, terminate the probe immediately
+                      (incf success)
+                      ;; (log:info "took ~a steps (reached goal)" step)
+                      (return))
+                    
+                    ;; skip ops not achieving new propositions
+                    (let ((achieved (make-state+axioms)))
+                      (declare (dynamic-extent achieved))
+                      (bit-andc1 state-db child achieved) ; 1 when 0 in db and 1 in child
+                      (when (not (find 1 achieved))
+                        (next-iteration)))
+
+                    ;; the op satisfies all conditions.
+                    (setf chosen op-id)
+                    (finish))
+
               ;; (log:info "you are the chosen one! ~a" chosen)
               (if (minusp chosen)
                   ;; dead end, no novel op chosen
@@ -178,7 +183,6 @@ and count the number of reaching the semi-relaxed goal.
                     ;; (log:info "took ~a steps (failed)" step)
                     (return))
                   (progn
-                    (successor chosen)
                     (setf (aref op-db chosen) 1)
                     (bit-ior state-db child state-db)
                     (replace current child)))))))
