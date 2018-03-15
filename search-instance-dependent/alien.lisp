@@ -165,11 +165,16 @@ and count the number of reaching the semi-relaxed goal.
                       ;; (log:info "took ~a steps (reached goal)" step)
                       (return))
                     
-                    ;; skip ops not achieving new propositions
+                    ;; skip the op not achieving new propositions
                     (let ((achieved (make-state+axioms)))
                       (declare (dynamic-extent achieved))
                       (bit-andc1 state-db child achieved) ; 1 when 0 in db and 1 in child
                       (when (not (find 1 achieved))
+                        ;; skip the op.
+                        ;; Also, since novelty is monotonic, there is no chance that this op
+                        ;; would achive new propositions in the next iteration. Thus, we can
+                        ;; safely remove this op from the consideration.
+                        (setf (aref op-db op-id) 1)
                         (next-iteration)))
 
                     ;; the op satisfies all conditions.
