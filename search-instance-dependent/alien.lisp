@@ -67,6 +67,15 @@ When I = 2, approximately 1/4 of the bits are 0."
       (setf (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
             (logand (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
                     (random (expt 2 64)))))))
+
+(declaim (inline set/reset-random-bitvector^2))
+(ftype* set/reset-random-bitvector^2 fixnum simple-bit-vector simple-bit-vector)
+(defun set/reset-random-bitvector^2 (i bv)
+  (declare (optimize (speed 3)))
+  (if (plusp i)
+      (set-random-bitvector^2 i bv)
+      (reset-random-bitvector^2 i bv)))
+
 )
 
 ;; e.g.
@@ -120,9 +129,7 @@ and count the number of reaching the semi-relaxed goal.
                    (fill deletes 0 :start (maybe-inline-obj *fact-size*))
                    ;; smaller *semi-relaxed-rate-log2* = more 1s in RANDOM.
                    ;; *semi-relaxed-rate-log2* = 0 is equivalent to delete-relaxation, and meaningless.
-                   (if (minusp (maybe-inline-obj *semi-relaxed-rate-log2*))
-                       (reset-random-bitvector^2 (maybe-inline-obj (abs *semi-relaxed-rate-log2*)) random)
-                       (set-random-bitvector^2 (maybe-inline-obj *semi-relaxed-rate-log2*) random))
+                   (set/reset-random-bitvector^2 (maybe-inline-obj *semi-relaxed-rate-log2*) random)
                    ;; choose which deletes to relax.
                    (bit-and deletes random deletes)
                    ;; restore some deletes
