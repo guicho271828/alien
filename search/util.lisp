@@ -122,7 +122,20 @@ Otherwise leave the form as it is."
           (setf body (subst new tmp body :test #'equalp))))
   `(progn ,@body))
 
-
+(declaim (inline slide-if))
+(defun slide-if (predicate array &key (start 0) (end (length array)))
+  "poor man's delete-if"
+  (declare (fixnum start end)
+           (array array)
+           (function predicate))
+  (let ((j start))
+    (declare (fixnum j))
+    (dotimes (i end)
+      (let ((elem (aref array i)))
+        (when (funcall predicate elem)
+          (setf (aref array j) elem)
+          (incf j))))
+    j))
 
 ;; visualizing zdd
 
