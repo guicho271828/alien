@@ -1,0 +1,27 @@
+
+/home/guicho/repos/lisp/strips/ipc2014-agl/ged-agl14/p01.pddl
+
+normal reservoir: 2.20 eval/sec
+
+
+demo/cavediving/p01.pddl
+
+the problem is that do-leaf takes longer as more propositions are added.
+it was almost quadratic.
+
+eval/sec
+normal reservoir: 775.25507
+filter after reservoir: 2167.4338
+
+store into array, shuffle: 2557.5576
+
+prune unnovel actions found during random selection: 2715.916
+
+rpg-based (alien/rpg):  9402.963
+
+rpg-based, reuse do-leaf for deletes: 10218.818
+
+terminate on the first success; return the number of tries: 32709
+
+(reference) ff/rpg: 72973.37
+

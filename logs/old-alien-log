@@ -1,0 +1,5615 @@
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 74 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015475 seconds of total run time (0.015475 user, 0.000000 system)
+  93.75% CPU
+  24,697,196 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 25 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002557 seconds of total run time (0.002557 user, 0.000000 system)
+  150.00% CPU
+  4,077,464 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 36 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.007579 seconds of total run time (0.007579 user, 0.000000 system)
+  100.00% CPU
+  12,094,272 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:55] strips eager.lisp (eager-search) - Initial heuristic value: 24631
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 14 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001236 seconds of total run time (0.001236 user, 0.000000 system)
+  100.00% CPU
+  1,968,648 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 54 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.008941 seconds of total run time (0.005046 user, 0.003895 system)
+  100.00% CPU
+  14,267,136 processor cycles
+  32,560 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 100 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.017726 seconds of total run time (0.017666 user, 0.000060 system)
+  105.88% CPU
+  28,289,156 processor cycles
+  32,784 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 93 steps (failed)
+Evaluation took:
+  0.024 seconds of real time
+  0.023716 seconds of total run time (0.023716 user, 0.000000 system)
+  100.00% CPU
+  37,899,660 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 120 steps (failed)
+Evaluation took:
+  0.037 seconds of real time
+  0.036913 seconds of total run time (0.036888 user, 0.000025 system)
+  100.00% CPU
+  58,919,760 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 122 steps (failed)
+Evaluation took:
+  0.031 seconds of real time
+  0.030750 seconds of total run time (0.030750 user, 0.000000 system)
+  100.00% CPU
+  49,100,404 processor cycles
+  65,040 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 29 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002625 seconds of total run time (0.002625 user, 0.000000 system)
+  100.00% CPU
+  4,185,412 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 76 steps (failed)
+Evaluation took:
+  0.025 seconds of real time
+  0.024973 seconds of total run time (0.024973 user, 0.000000 system)
+  100.00% CPU
+  39,860,984 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 300 steps (failed)
+Evaluation took:
+  0.177 seconds of real time
+  0.171599 seconds of total run time (0.171503 user, 0.000096 system)
+  97.18% CPU
+  282,054,180 processor cycles
+  32,368 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 12 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000880 seconds of total run time (0.000880 user, 0.000000 system)
+  100.00% CPU
+  1,401,512 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 53 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.009015 seconds of total run time (0.009015 user, 0.000000 system)
+  100.00% CPU
+  14,385,912 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 10 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000880 seconds of total run time (0.000880 user, 0.000000 system)
+  100.00% CPU
+  1,400,880 processor cycles
+  32,368 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 32 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002182 seconds of total run time (0.002182 user, 0.000000 system)
+  100.00% CPU
+  3,478,368 processor cycles
+  32,688 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 34 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.007486 seconds of total run time (0.007486 user, 0.000000 system)
+  87.50% CPU
+  11,945,904 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 271 steps (failed)
+Evaluation took:
+  0.188 seconds of real time
+  0.175535 seconds of total run time (0.175487 user, 0.000048 system)
+  93.62% CPU
+  299,310,584 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 103 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.022676 seconds of total run time (0.022676 user, 0.000000 system)
+  100.00% CPU
+  36,193,388 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:55] strips alien.lisp (alien-heuristics) - took 70 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.021284 seconds of total run time (0.021282 user, 0.000002 system)
+  100.00% CPU
+  33,971,396 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 163 steps (failed)
+Evaluation took:
+  0.122 seconds of real time
+  0.121303 seconds of total run time (0.121259 user, 0.000044 system)
+  99.18% CPU
+  193,701,872 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 141 steps (failed)
+Evaluation took:
+  0.084 seconds of real time
+  0.082717 seconds of total run time (0.082717 user, 0.000000 system)
+  98.81% CPU
+  132,775,076 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 58 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.007414 seconds of total run time (0.007414 user, 0.000000 system)
+  100.00% CPU
+  11,830,656 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 44 steps (failed)
+Evaluation took:
+  0.047 seconds of real time
+  0.008036 seconds of total run time (0.008036 user, 0.000000 system)
+  17.02% CPU
+  74,235,288 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 121 steps (failed)
+Evaluation took:
+  0.038 seconds of real time
+  0.033188 seconds of total run time (0.033177 user, 0.000011 system)
+  86.84% CPU
+  60,851,616 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 69 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015915 seconds of total run time (0.015915 user, 0.000000 system)
+  100.00% CPU
+  25,399,648 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 128 steps (failed)
+Evaluation took:
+  0.054 seconds of real time
+  0.053780 seconds of total run time (0.053719 user, 0.000061 system)
+  100.00% CPU
+  85,881,868 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 95 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.022534 seconds of total run time (0.022534 user, 0.000000 system)
+  100.00% CPU
+  35,965,764 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 32 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005436 seconds of total run time (0.005430 user, 0.000006 system)
+  100.00% CPU
+  8,673,336 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 98 steps (failed)
+Evaluation took:
+  0.043 seconds of real time
+  0.043373 seconds of total run time (0.043373 user, 0.000000 system)
+  100.00% CPU
+  69,269,576 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 59 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.010111 seconds of total run time (0.010111 user, 0.000000 system)
+  90.91% CPU
+  16,134,720 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 75 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.022135 seconds of total run time (0.022120 user, 0.000015 system)
+  100.00% CPU
+  35,364,388 processor cycles
+  32,336 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 88 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.014966 seconds of total run time (0.014966 user, 0.000000 system)
+  100.00% CPU
+  23,886,276 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 63 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.009909 seconds of total run time (0.009909 user, 0.000000 system)
+  100.00% CPU
+  15,812,348 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 137 steps (failed)
+Evaluation took:
+  0.083 seconds of real time
+  0.082838 seconds of total run time (0.082838 user, 0.000000 system)
+  100.00% CPU
+  132,299,408 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 179 steps (failed)
+Evaluation took:
+  0.087 seconds of real time
+  0.087026 seconds of total run time (0.087026 user, 0.000000 system)
+  100.00% CPU
+  138,723,560 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 125 steps (failed)
+Evaluation took:
+  0.041 seconds of real time
+  0.040257 seconds of total run time (0.036385 user, 0.003872 system)
+  97.56% CPU
+  64,303,132 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 40 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005085 seconds of total run time (0.005047 user, 0.000038 system)
+  100.00% CPU
+  8,111,296 processor cycles
+  31,744 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 72 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.010490 seconds of total run time (0.010404 user, 0.000086 system)
+  100.00% CPU
+  16,751,424 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 89 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.012868 seconds of total run time (0.012868 user, 0.000000 system)
+  100.00% CPU
+  20,557,016 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 28 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002026 seconds of total run time (0.002026 user, 0.000000 system)
+  100.00% CPU
+  3,229,072 processor cycles
+  32,528 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 69 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.021851 seconds of total run time (0.021851 user, 0.000000 system)
+  100.00% CPU
+  34,907,536 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 137 steps (failed)
+Evaluation took:
+  0.068 seconds of real time
+  0.068118 seconds of total run time (0.068118 user, 0.000000 system)
+  100.00% CPU
+  108,838,680 processor cycles
+  32,624 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 25 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.003905 seconds of total run time (0.003905 user, 0.000000 system)
+  100.00% CPU
+  6,253,756 processor cycles
+  32,496 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 61 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011271 seconds of total run time (0.011271 user, 0.000000 system)
+  100.00% CPU
+  18,015,660 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 137 steps (failed)
+Evaluation took:
+  0.074 seconds of real time
+  0.073639 seconds of total run time (0.073639 user, 0.000000 system)
+  100.00% CPU
+  117,591,500 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 90 steps (failed)
+Evaluation took:
+  0.029 seconds of real time
+  0.013594 seconds of total run time (0.013594 user, 0.000000 system)
+  48.28% CPU
+  46,240,048 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 53 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.009237 seconds of total run time (0.009237 user, 0.000000 system)
+  100.00% CPU
+  14,757,852 processor cycles
+  32,256 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 78 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015966 seconds of total run time (0.015966 user, 0.000000 system)
+  100.00% CPU
+  25,520,048 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 31 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004019 seconds of total run time (0.004019 user, 0.000000 system)
+  100.00% CPU
+  6,410,380 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 53 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005046 seconds of total run time (0.005046 user, 0.000000 system)
+  100.00% CPU
+  8,074,088 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 13 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001156 seconds of total run time (0.001156 user, 0.000000 system)
+  100.00% CPU
+  1,842,348 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 29 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002456 seconds of total run time (0.002456 user, 0.000000 system)
+  100.00% CPU
+  3,916,100 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 30 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002468 seconds of total run time (0.002468 user, 0.000000 system)
+  66.67% CPU
+  3,950,652 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 78 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.022423 seconds of total run time (0.022423 user, 0.000000 system)
+  95.65% CPU
+  35,812,036 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:28:56] strips alien.lisp (alien-heuristics) - took 35 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002963 seconds of total run time (0.002963 user, 0.000000 system)
+  100.00% CPU
+  4,738,688 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 220 steps (failed)
+Evaluation took:
+  0.115 seconds of real time
+  0.114497 seconds of total run time (0.114497 user, 0.000000 system)
+  99.13% CPU
+  182,850,880 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 218 steps (failed)
+Evaluation took:
+  0.118 seconds of real time
+  0.117024 seconds of total run time (0.117024 user, 0.000000 system)
+  99.15% CPU
+  187,017,000 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 57 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.015450 seconds of total run time (0.015450 user, 0.000000 system)
+  100.00% CPU
+  24,657,928 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 69 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.018393 seconds of total run time (0.018393 user, 0.000000 system)
+  94.74% CPU
+  29,357,204 processor cycles
+  192 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 119 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.022927 seconds of total run time (0.022927 user, 0.000000 system)
+  100.00% CPU
+  36,593,040 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 87 steps (failed)
+Evaluation took:
+  0.033 seconds of real time
+  0.032883 seconds of total run time (0.032883 user, 0.000000 system)
+  100.00% CPU
+  52,527,964 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 46 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.007539 seconds of total run time (0.007539 user, 0.000000 system)
+  114.29% CPU
+  12,029,760 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 76 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.022062 seconds of total run time (0.022062 user, 0.000000 system)
+  100.00% CPU
+  35,211,656 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 76 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.021185 seconds of total run time (0.021185 user, 0.000000 system)
+  100.00% CPU
+  33,844,708 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 97 steps (failed)
+Evaluation took:
+  0.027 seconds of real time
+  0.027015 seconds of total run time (0.027015 user, 0.000000 system)
+  100.00% CPU
+  43,118,548 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 203 steps (failed)
+Evaluation took:
+  0.170 seconds of real time
+  0.169663 seconds of total run time (0.169663 user, 0.000000 system)
+  100.00% CPU
+  270,956,028 processor cycles
+  65,392 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 201 steps (failed)
+Evaluation took:
+  0.093 seconds of real time
+  0.093450 seconds of total run time (0.093450 user, 0.000000 system)
+  100.00% CPU
+  149,236,856 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 95 steps (failed)
+Evaluation took:
+  0.024 seconds of real time
+  0.023740 seconds of total run time (0.023740 user, 0.000000 system)
+  100.00% CPU
+  37,927,988 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 42 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002899 seconds of total run time (0.002899 user, 0.000000 system)
+  100.00% CPU
+  4,623,880 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 117 steps (failed)
+Evaluation took:
+  0.054 seconds of real time
+  0.053754 seconds of total run time (0.053754 user, 0.000000 system)
+  100.00% CPU
+  85,823,324 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 83 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011543 seconds of total run time (0.011543 user, 0.000000 system)
+  100.00% CPU
+  18,436,988 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 72 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011546 seconds of total run time (0.011546 user, 0.000000 system)
+  100.00% CPU
+  18,427,080 processor cycles
+  32,304 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 73 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.017441 seconds of total run time (0.017441 user, 0.000000 system)
+  100.00% CPU
+  27,835,768 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 85 steps (failed)
+Evaluation took:
+  0.040 seconds of real time
+  0.039635 seconds of total run time (0.039635 user, 0.000000 system)
+  100.00% CPU
+  63,263,520 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 178 steps (failed)
+Evaluation took:
+  0.086 seconds of real time
+  0.085009 seconds of total run time (0.085009 user, 0.000000 system)
+  98.84% CPU
+  136,678,316 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 101 steps (failed)
+Evaluation took:
+  0.035 seconds of real time
+  0.034971 seconds of total run time (0.034971 user, 0.000000 system)
+  100.00% CPU
+  56,337,536 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - took 194 steps (failed)
+Evaluation took:
+  0.090 seconds of real time
+  0.089320 seconds of total run time (0.089320 user, 0.000000 system)
+  98.89% CPU
+  143,018,528 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:57] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 111 steps (failed)
+Evaluation took:
+  0.069 seconds of real time
+  0.068673 seconds of total run time (0.068673 user, 0.000000 system)
+  100.00% CPU
+  109,654,092 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 173 steps (failed)
+Evaluation took:
+  0.066 seconds of real time
+  0.065691 seconds of total run time (0.065691 user, 0.000000 system)
+  100.00% CPU
+  105,592,532 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 152 steps (failed)
+Evaluation took:
+  0.052 seconds of real time
+  0.051866 seconds of total run time (0.051866 user, 0.000000 system)
+  100.00% CPU
+  82,622,240 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 249 steps (failed)
+Evaluation took:
+  0.217 seconds of real time
+  0.217086 seconds of total run time (0.217086 user, 0.000000 system)
+  100.00% CPU
+  346,544,952 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 75 steps (failed)
+Evaluation took:
+  0.027 seconds of real time
+  0.027113 seconds of total run time (0.027113 user, 0.000000 system)
+  100.00% CPU
+  43,089,448 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 166 steps (failed)
+Evaluation took:
+  0.061 seconds of real time
+  0.060392 seconds of total run time (0.060392 user, 0.000000 system)
+  98.36% CPU
+  96,211,100 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 90 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.012476 seconds of total run time (0.012476 user, 0.000000 system)
+  100.00% CPU
+  19,910,592 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 237 steps (failed)
+Evaluation took:
+  0.198 seconds of real time
+  0.197414 seconds of total run time (0.197414 user, 0.000000 system)
+  99.49% CPU
+  314,907,340 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 175 steps (failed)
+Evaluation took:
+  0.090 seconds of real time
+  0.090289 seconds of total run time (0.090289 user, 0.000000 system)
+  100.00% CPU
+  143,938,764 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 163 steps (failed)
+Evaluation took:
+  0.121 seconds of real time
+  0.120185 seconds of total run time (0.120185 user, 0.000000 system)
+  99.17% CPU
+  191,894,836 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 138 steps (failed)
+Evaluation took:
+  0.057 seconds of real time
+  0.050887 seconds of total run time (0.050887 user, 0.000000 system)
+  89.47% CPU
+  90,741,972 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - took 96 steps (failed)
+Evaluation took:
+  0.034 seconds of real time
+  0.030139 seconds of total run time (0.030139 user, 0.000000 system)
+  88.24% CPU
+  54,364,668 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:58] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 105 steps (failed)
+Evaluation took:
+  0.024 seconds of real time
+  0.024234 seconds of total run time (0.024234 user, 0.000000 system)
+  100.00% CPU
+  38,716,528 processor cycles
+  32,672 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 284 steps (failed)
+Evaluation took:
+  0.101 seconds of real time
+  0.100853 seconds of total run time (0.100853 user, 0.000000 system)
+  100.00% CPU
+  161,185,540 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 97 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.017154 seconds of total run time (0.017154 user, 0.000000 system)
+  100.00% CPU
+  27,167,692 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 120 steps (failed)
+Evaluation took:
+  0.024 seconds of real time
+  0.023708 seconds of total run time (0.023708 user, 0.000000 system)
+  100.00% CPU
+  37,912,688 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 35 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003586 seconds of total run time (0.003586 user, 0.000000 system)
+  133.33% CPU
+  5,721,104 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 79 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.014838 seconds of total run time (0.014838 user, 0.000000 system)
+  100.00% CPU
+  23,681,272 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 84 steps (failed)
+Evaluation took:
+  0.018 seconds of real time
+  0.017123 seconds of total run time (0.017123 user, 0.000000 system)
+  94.44% CPU
+  27,366,328 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 473 steps (failed)
+Evaluation took:
+  0.447 seconds of real time
+  0.446906 seconds of total run time (0.446906 user, 0.000000 system)
+  100.00% CPU
+  713,345,904 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 40 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.008812 seconds of total run time (0.008812 user, 0.000000 system)
+  60.00% CPU
+  23,578,304 processor cycles
+  32,528 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 68 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.016211 seconds of total run time (0.016211 user, 0.000000 system)
+  76.19% CPU
+  34,327,156 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 76 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015930 seconds of total run time (0.015930 user, 0.000000 system)
+  100.00% CPU
+  25,424,528 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 114 steps (failed)
+Evaluation took:
+  0.025 seconds of real time
+  0.025592 seconds of total run time (0.025592 user, 0.000000 system)
+  104.00% CPU
+  40,847,584 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 65 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015942 seconds of total run time (0.015942 user, 0.000000 system)
+  100.00% CPU
+  25,480,188 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 159 steps (failed)
+Evaluation took:
+  0.082 seconds of real time
+  0.082874 seconds of total run time (0.082874 user, 0.000000 system)
+  101.22% CPU
+  132,103,648 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 63 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.018328 seconds of total run time (0.018328 user, 0.000000 system)
+  94.74% CPU
+  29,252,048 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 74 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.022295 seconds of total run time (0.022295 user, 0.000000 system)
+  100.00% CPU
+  35,584,312 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 125 steps (failed)
+Evaluation took:
+  0.058 seconds of real time
+  0.057398 seconds of total run time (0.057398 user, 0.000000 system)
+  98.28% CPU
+  92,304,668 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 89 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.022243 seconds of total run time (0.022243 user, 0.000000 system)
+  100.00% CPU
+  35,267,176 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 22 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001528 seconds of total run time (0.001528 user, 0.000000 system)
+  200.00% CPU
+  2,436,752 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 23 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001703 seconds of total run time (0.001703 user, 0.000000 system)
+  100.00% CPU
+  2,714,588 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - took 82 steps (failed)
+Evaluation took:
+  0.026 seconds of real time
+  0.025484 seconds of total run time (0.025434 user, 0.000050 system)
+  96.15% CPU
+  41,558,764 processor cycles
+  32,464 bytes consed
+  
+ <INFO> [00:28:59] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 202 steps (failed)
+Evaluation took:
+  0.168 seconds of real time
+  0.167484 seconds of total run time (0.167484 user, 0.000000 system)
+  99.40% CPU
+  268,209,572 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 130 steps (failed)
+Evaluation took:
+  0.081 seconds of real time
+  0.079241 seconds of total run time (0.079241 user, 0.000000 system)
+  97.53% CPU
+  128,223,876 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 47 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.009159 seconds of total run time (0.009159 user, 0.000000 system)
+  100.00% CPU
+  14,615,852 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 157 steps (failed)
+Evaluation took:
+  0.065 seconds of real time
+  0.065211 seconds of total run time (0.065211 user, 0.000000 system)
+  100.00% CPU
+  104,129,228 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 237 steps (failed)
+Evaluation took:
+  0.068 seconds of real time
+  0.067707 seconds of total run time (0.067707 user, 0.000000 system)
+  100.00% CPU
+  108,112,296 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 366 steps (failed)
+Evaluation took:
+  0.147 seconds of real time
+  0.146642 seconds of total run time (0.146642 user, 0.000000 system)
+  100.00% CPU
+  233,651,072 processor cycles
+  32,368 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 176 steps (failed)
+Evaluation took:
+  0.104 seconds of real time
+  0.103770 seconds of total run time (0.103770 user, 0.000000 system)
+  100.00% CPU
+  166,060,724 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 65 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011441 seconds of total run time (0.011441 user, 0.000000 system)
+  91.67% CPU
+  18,259,920 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 38 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.009049 seconds of total run time (0.009049 user, 0.000000 system)
+  100.00% CPU
+  14,217,512 processor cycles
+  32,368 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 22 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001556 seconds of total run time (0.001556 user, 0.000000 system)
+  100.00% CPU
+  2,480,564 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 22 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000852 seconds of total run time (0.000852 user, 0.000000 system)
+  100.00% CPU
+  1,357,156 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 36 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.003930 seconds of total run time (0.003930 user, 0.000000 system)
+  100.00% CPU
+  6,268,864 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 100 steps (failed)
+Evaluation took:
+  0.030 seconds of real time
+  0.029781 seconds of total run time (0.029781 user, 0.000000 system)
+  100.00% CPU
+  47,532,772 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 9 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000690 seconds of total run time (0.000686 user, 0.000004 system)
+  100.00% CPU
+  1,100,428 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 11 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000577 seconds of total run time (0.000577 user, 0.000000 system)
+  100.00% CPU
+  916,532 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 24 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002099 seconds of total run time (0.002099 user, 0.000000 system)
+  100.00% CPU
+  3,347,288 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 26 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001613 seconds of total run time (0.001613 user, 0.000000 system)
+  100.00% CPU
+  2,569,948 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 81 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.007648 seconds of total run time (0.007648 user, 0.000000 system)
+  114.29% CPU
+  12,204,504 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 29 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002557 seconds of total run time (0.002557 user, 0.000000 system)
+  100.00% CPU
+  4,076,440 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 25 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002035 seconds of total run time (0.002035 user, 0.000000 system)
+  100.00% CPU
+  3,244,932 processor cycles
+  32,592 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 21 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001646 seconds of total run time (0.001646 user, 0.000000 system)
+  100.00% CPU
+  2,623,496 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 46 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.009295 seconds of total run time (0.009295 user, 0.000000 system)
+  90.00% CPU
+  14,832,888 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 54 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004413 seconds of total run time (0.004413 user, 0.000000 system)
+  100.00% CPU
+  7,039,384 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 55 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.006512 seconds of total run time (0.006512 user, 0.000000 system)
+  100.00% CPU
+  10,410,120 processor cycles
+  32,528 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 56 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.012055 seconds of total run time (0.012055 user, 0.000000 system)
+  100.00% CPU
+  19,238,812 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 68 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.014591 seconds of total run time (0.014591 user, 0.000000 system)
+  100.00% CPU
+  23,287,776 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 32 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002148 seconds of total run time (0.002148 user, 0.000000 system)
+  100.00% CPU
+  3,423,508 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 43 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003421 seconds of total run time (0.003421 user, 0.000000 system)
+  100.00% CPU
+  5,457,372 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 128 steps (failed)
+Evaluation took:
+  0.031 seconds of real time
+  0.031278 seconds of total run time (0.031278 user, 0.000000 system)
+  100.00% CPU
+  49,651,540 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 23 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001997 seconds of total run time (0.001997 user, 0.000000 system)
+  100.00% CPU
+  3,183,912 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 82 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.018406 seconds of total run time (0.018406 user, 0.000000 system)
+  94.74% CPU
+  29,377,768 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 127 steps (failed)
+Evaluation took:
+  0.025 seconds of real time
+  0.025566 seconds of total run time (0.025566 user, 0.000000 system)
+  104.00% CPU
+  40,825,220 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 45 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004912 seconds of total run time (0.004912 user, 0.000000 system)
+  125.00% CPU
+  7,589,880 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 57 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.016400 seconds of total run time (0.016386 user, 0.000014 system)
+  100.00% CPU
+  26,172,632 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 56 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004201 seconds of total run time (0.004201 user, 0.000000 system)
+  100.00% CPU
+  6,701,292 processor cycles
+  32,672 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 81 steps (failed)
+Evaluation took:
+  0.014 seconds of real time
+  0.013867 seconds of total run time (0.013867 user, 0.000000 system)
+  100.00% CPU
+  22,131,872 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 6 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000309 seconds of total run time (0.000309 user, 0.000000 system)
+  100.00% CPU
+  490,020 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 167 steps (failed)
+Evaluation took:
+  0.035 seconds of real time
+  0.034953 seconds of total run time (0.034953 user, 0.000000 system)
+  100.00% CPU
+  55,789,568 processor cycles
+  32,512 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - took 79 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.013408 seconds of total run time (0.013408 user, 0.000000 system)
+  100.00% CPU
+  21,184,112 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:00] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 317 steps (failed)
+Evaluation took:
+  0.147 seconds of real time
+  0.147186 seconds of total run time (0.144419 user, 0.002767 system)
+  100.00% CPU
+  235,003,260 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 71 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.016087 seconds of total run time (0.012593 user, 0.003494 system)
+  94.12% CPU
+  26,268,608 processor cycles
+  32,464 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 99 steps (failed)
+Evaluation took:
+  0.031 seconds of real time
+  0.030914 seconds of total run time (0.030815 user, 0.000099 system)
+  100.00% CPU
+  49,404,752 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 318 steps (failed)
+Evaluation took:
+  0.273 seconds of real time
+  0.272789 seconds of total run time (0.272789 user, 0.000000 system)
+  100.00% CPU
+  435,459,144 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 140 steps (failed)
+Evaluation took:
+  0.085 seconds of real time
+  0.085230 seconds of total run time (0.085230 user, 0.000000 system)
+  100.00% CPU
+  135,902,668 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 52 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.004836 seconds of total run time (0.004830 user, 0.000006 system)
+  100.00% CPU
+  7,423,400 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 27 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002418 seconds of total run time (0.002418 user, 0.000000 system)
+  100.00% CPU
+  3,855,620 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 179 steps (failed)
+Evaluation took:
+  0.055 seconds of real time
+  0.054694 seconds of total run time (0.054694 user, 0.000000 system)
+  100.00% CPU
+  87,335,532 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 24 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001947 seconds of total run time (0.001936 user, 0.000011 system)
+  100.00% CPU
+  2,879,104 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 82 steps (failed)
+Evaluation took:
+  0.027 seconds of real time
+  0.027364 seconds of total run time (0.027352 user, 0.000012 system)
+  100.00% CPU
+  43,676,708 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 108 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.020567 seconds of total run time (0.020567 user, 0.000000 system)
+  100.00% CPU
+  32,830,440 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 97 steps (failed)
+Evaluation took:
+  0.018 seconds of real time
+  0.018493 seconds of total run time (0.018493 user, 0.000000 system)
+  100.00% CPU
+  29,514,396 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 131 steps (failed)
+Evaluation took:
+  0.037 seconds of real time
+  0.037509 seconds of total run time (0.037509 user, 0.000000 system)
+  102.70% CPU
+  59,871,868 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 68 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.006788 seconds of total run time (0.006774 user, 0.000014 system)
+  116.67% CPU
+  10,645,676 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 176 steps (failed)
+Evaluation took:
+  0.066 seconds of real time
+  0.065551 seconds of total run time (0.065551 user, 0.000000 system)
+  100.00% CPU
+  104,433,604 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 110 steps (failed)
+Evaluation took:
+  0.053 seconds of real time
+  0.048850 seconds of total run time (0.048850 user, 0.000000 system)
+  92.45% CPU
+  85,038,896 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 142 steps (failed)
+Evaluation took:
+  0.032 seconds of real time
+  0.027286 seconds of total run time (0.027286 user, 0.000000 system)
+  84.38% CPU
+  50,846,356 processor cycles
+  32,864 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 174 steps (failed)
+Evaluation took:
+  0.075 seconds of real time
+  0.070245 seconds of total run time (0.070245 user, 0.000000 system)
+  93.33% CPU
+  119,297,944 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 194 steps (failed)
+Evaluation took:
+  0.090 seconds of real time
+  0.085559 seconds of total run time (0.085559 user, 0.000000 system)
+  95.56% CPU
+  144,374,212 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 101 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.020669 seconds of total run time (0.020669 user, 0.000000 system)
+  100.00% CPU
+  32,738,952 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - took 48 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005356 seconds of total run time (0.005356 user, 0.000000 system)
+  100.00% CPU
+  8,545,728 processor cycles
+  32,512 bytes consed
+  
+ <INFO> [00:29:01] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 66 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.009771 seconds of total run time (0.009771 user, 0.000000 system)
+  100.00% CPU
+  15,643,316 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 326 steps (failed)
+Evaluation took:
+  0.257 seconds of real time
+  0.256290 seconds of total run time (0.256290 user, 0.000000 system)
+  99.61% CPU
+  409,623,808 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 31 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.002982 seconds of total run time (0.002982 user, 0.000000 system)
+  27.27% CPU
+  18,108,004 processor cycles
+  32,528 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 49 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.012398 seconds of total run time (0.012398 user, 0.000000 system)
+  92.31% CPU
+  19,786,032 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 148 steps (failed)
+Evaluation took:
+  0.067 seconds of real time
+  0.067103 seconds of total run time (0.067103 user, 0.000000 system)
+  100.00% CPU
+  107,196,328 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 108 steps (failed)
+Evaluation took:
+  0.033 seconds of real time
+  0.033578 seconds of total run time (0.033578 user, 0.000000 system)
+  103.03% CPU
+  53,142,984 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 48 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.003600 seconds of total run time (0.003600 user, 0.000000 system)
+  100.00% CPU
+  5,741,796 processor cycles
+  32,464 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 12 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000648 seconds of total run time (0.000648 user, 0.000000 system)
+  100.00% CPU
+  1,030,964 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 73 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.007864 seconds of total run time (0.007864 user, 0.000000 system)
+  114.29% CPU
+  12,406,964 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 130 steps (failed)
+Evaluation took:
+  0.059 seconds of real time
+  0.058728 seconds of total run time (0.058728 user, 0.000000 system)
+  100.00% CPU
+  93,779,056 processor cycles
+  32,592 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 17 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001230 seconds of total run time (0.001230 user, 0.000000 system)
+  100.00% CPU
+  1,960,052 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 58 steps (failed)
+Evaluation took:
+  0.018 seconds of real time
+  0.017212 seconds of total run time (0.017212 user, 0.000000 system)
+  94.44% CPU
+  27,469,880 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 33 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.004186 seconds of total run time (0.004186 user, 0.000000 system)
+  80.00% CPU
+  6,676,716 processor cycles
+  32,544 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 243 steps (failed)
+Evaluation took:
+  0.194 seconds of real time
+  0.194268 seconds of total run time (0.194268 user, 0.000000 system)
+  100.00% CPU
+  309,844,948 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 215 steps (failed)
+Evaluation took:
+  0.075 seconds of real time
+  0.075206 seconds of total run time (0.075206 user, 0.000000 system)
+  100.00% CPU
+  120,045,488 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 20 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002439 seconds of total run time (0.002439 user, 0.000000 system)
+  100.00% CPU
+  3,890,336 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 41 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005162 seconds of total run time (0.005162 user, 0.000000 system)
+  100.00% CPU
+  8,341,388 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 43 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005058 seconds of total run time (0.005058 user, 0.000000 system)
+  100.00% CPU
+  8,068,360 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 45 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.006257 seconds of total run time (0.006257 user, 0.000000 system)
+  85.71% CPU
+  10,052,440 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 146 steps (failed)
+Evaluation took:
+  0.088 seconds of real time
+  0.088499 seconds of total run time (0.088499 user, 0.000000 system)
+  100.00% CPU
+  141,141,760 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 24 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002536 seconds of total run time (0.002536 user, 0.000000 system)
+  100.00% CPU
+  4,144,716 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 117 steps (failed)
+Evaluation took:
+  0.047 seconds of real time
+  0.044880 seconds of total run time (0.044880 user, 0.000000 system)
+  95.74% CPU
+  75,754,964 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 192 steps (failed)
+Evaluation took:
+  0.039 seconds of real time
+  0.038206 seconds of total run time (0.038206 user, 0.000000 system)
+  97.44% CPU
+  61,902,172 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 36 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.005894 seconds of total run time (0.005887 user, 0.000007 system)
+  54.55% CPU
+  17,056,168 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:02] strips alien.lisp (alien-heuristics) - took 85 steps (failed)
+Evaluation took:
+  0.033 seconds of real time
+  0.023360 seconds of total run time (0.023360 user, 0.000000 system)
+  69.70% CPU
+  52,144,808 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 160 steps (failed)
+Evaluation took:
+  0.063 seconds of real time
+  0.061988 seconds of total run time (0.061988 user, 0.000000 system)
+  98.41% CPU
+  100,252,380 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 78 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.006850 seconds of total run time (0.006850 user, 0.000000 system)
+  58.33% CPU
+  18,474,404 processor cycles
+  32,160 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 19 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001179 seconds of total run time (0.001179 user, 0.000000 system)
+  100.00% CPU
+  1,911,780 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 6 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000471 seconds of total run time (0.000471 user, 0.000000 system)
+  0.00% CPU
+  748,764 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 221 steps (failed)
+Evaluation took:
+  0.210 seconds of real time
+  0.204664 seconds of total run time (0.204664 user, 0.000000 system)
+  97.62% CPU
+  335,915,936 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 41 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.004256 seconds of total run time (0.004256 user, 0.000000 system)
+  44.44% CPU
+  14,438,452 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 25 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002598 seconds of total run time (0.002598 user, 0.000000 system)
+  100.00% CPU
+  4,142,932 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 53 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.004370 seconds of total run time (0.004370 user, 0.000000 system)
+  57.14% CPU
+  12,438,424 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 286 steps (failed)
+Evaluation took:
+  0.253 seconds of real time
+  0.236694 seconds of total run time (0.236694 user, 0.000000 system)
+  93.68% CPU
+  403,953,300 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 31 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002729 seconds of total run time (0.002729 user, 0.000000 system)
+  150.00% CPU
+  4,351,844 processor cycles
+  32,656 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 46 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.008363 seconds of total run time (0.008363 user, 0.000000 system)
+  88.89% CPU
+  14,357,456 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 328 steps (failed)
+Evaluation took:
+  0.143 seconds of real time
+  0.142025 seconds of total run time (0.142025 user, 0.000000 system)
+  99.30% CPU
+  226,882,024 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 68 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011893 seconds of total run time (0.011893 user, 0.000000 system)
+  100.00% CPU
+  19,096,152 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 58 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.018859 seconds of total run time (0.018859 user, 0.000000 system)
+  82.61% CPU
+  37,587,364 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 73 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.006289 seconds of total run time (0.006289 user, 0.000000 system)
+  50.00% CPU
+  18,031,788 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 165 steps (failed)
+Evaluation took:
+  0.087 seconds of real time
+  0.078001 seconds of total run time (0.078001 user, 0.000000 system)
+  89.66% CPU
+  139,515,560 processor cycles
+  33,168 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 70 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.006623 seconds of total run time (0.006623 user, 0.000000 system)
+  58.33% CPU
+  18,440,572 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 88 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.013752 seconds of total run time (0.013752 user, 0.000000 system)
+  73.68% CPU
+  30,623,532 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 36 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.002643 seconds of total run time (0.002643 user, 0.000000 system)
+  42.86% CPU
+  10,600,588 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 12 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000821 seconds of total run time (0.000821 user, 0.000000 system)
+  100.00% CPU
+  1,305,916 processor cycles
+  32,080 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 156 steps (failed)
+Evaluation took:
+  0.061 seconds of real time
+  0.056828 seconds of total run time (0.056828 user, 0.000000 system)
+  93.44% CPU
+  98,301,932 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 131 steps (failed)
+Evaluation took:
+  0.025 seconds of real time
+  0.024006 seconds of total run time (0.024006 user, 0.000000 system)
+  96.00% CPU
+  39,984,668 processor cycles
+  32,704 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - took 6 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000599 seconds of total run time (0.000599 user, 0.000000 system)
+  100.00% CPU
+  951,348 processor cycles
+  33,776 bytes consed
+  
+ <INFO> [00:29:03] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 192 steps (failed)
+Evaluation took:
+  0.050 seconds of real time
+  0.047933 seconds of total run time (0.047933 user, 0.000000 system)
+  96.00% CPU
+  79,103,296 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 62 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.006507 seconds of total run time (0.006507 user, 0.000000 system)
+  63.64% CPU
+  18,611,780 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 35 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002948 seconds of total run time (0.002948 user, 0.000000 system)
+  100.00% CPU
+  4,700,684 processor cycles
+  65,520 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 148 steps (failed)
+Evaluation took:
+  0.070 seconds of real time
+  0.070364 seconds of total run time (0.070364 user, 0.000000 system)
+  100.00% CPU
+  112,976,412 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 74 steps (failed)
+Evaluation took:
+  0.014 seconds of real time
+  0.009642 seconds of total run time (0.009642 user, 0.000000 system)
+  71.43% CPU
+  23,549,860 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 159 steps (failed)
+Evaluation took:
+  0.078 seconds of real time
+  0.068200 seconds of total run time (0.068200 user, 0.000000 system)
+  87.18% CPU
+  124,260,232 processor cycles
+  1,392 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 51 steps (failed)
+Evaluation took:
+  0.018 seconds of real time
+  0.011801 seconds of total run time (0.011801 user, 0.000000 system)
+  66.67% CPU
+  28,489,032 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 83 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.013179 seconds of total run time (0.013179 user, 0.000000 system)
+  56.52% CPU
+  37,542,880 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 107 steps (failed)
+Evaluation took:
+  0.038 seconds of real time
+  0.033460 seconds of total run time (0.033460 user, 0.000000 system)
+  86.84% CPU
+  61,703,540 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 103 steps (failed)
+Evaluation took:
+  0.043 seconds of real time
+  0.037501 seconds of total run time (0.037501 user, 0.000000 system)
+  88.37% CPU
+  68,651,648 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 86 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.013673 seconds of total run time (0.013673 user, 0.000000 system)
+  73.68% CPU
+  30,991,476 processor cycles
+  32,688 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 103 steps (failed)
+Evaluation took:
+  0.029 seconds of real time
+  0.029082 seconds of total run time (0.029082 user, 0.000000 system)
+  100.00% CPU
+  46,404,492 processor cycles
+  1,168 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 66 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.015345 seconds of total run time (0.015345 user, 0.000000 system)
+  100.00% CPU
+  24,758,540 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 166 steps (failed)
+Evaluation took:
+  0.090 seconds of real time
+  0.088420 seconds of total run time (0.088420 user, 0.000000 system)
+  97.78% CPU
+  142,889,212 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 48 steps (failed)
+Evaluation took:
+  0.014 seconds of real time
+  0.009167 seconds of total run time (0.009167 user, 0.000000 system)
+  64.29% CPU
+  23,056,500 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 74 steps (failed)
+Evaluation took:
+  0.033 seconds of real time
+  0.021840 seconds of total run time (0.019777 user, 0.002063 system)
+  66.67% CPU
+  52,583,216 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 31 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002624 seconds of total run time (0.002624 user, 0.000000 system)
+  100.00% CPU
+  4,185,436 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 47 steps (failed)
+Evaluation took:
+  0.014 seconds of real time
+  0.013830 seconds of total run time (0.013811 user, 0.000019 system)
+  100.00% CPU
+  22,102,684 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 112 steps (failed)
+Evaluation took:
+  0.066 seconds of real time
+  0.060337 seconds of total run time (0.060337 user, 0.000000 system)
+  90.91% CPU
+  104,291,536 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 72 steps (failed)
+Evaluation took:
+  0.026 seconds of real time
+  0.022815 seconds of total run time (0.022815 user, 0.000000 system)
+  88.46% CPU
+  41,111,232 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 43 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002527 seconds of total run time (0.002527 user, 0.000000 system)
+  100.00% CPU
+  4,412,008 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 170 steps (failed)
+Evaluation took:
+  0.092 seconds of real time
+  0.086791 seconds of total run time (0.086791 user, 0.000000 system)
+  94.57% CPU
+  146,462,316 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:04] strips alien.lisp (alien-heuristics) - took 381 steps (failed)
+Evaluation took:
+  0.237 seconds of real time
+  0.234943 seconds of total run time (0.234943 user, 0.000000 system)
+  99.16% CPU
+  378,317,276 processor cycles
+  34,048 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 204 steps (failed)
+Evaluation took:
+  0.126 seconds of real time
+  0.125777 seconds of total run time (0.122403 user, 0.003374 system)
+  100.00% CPU
+  201,920,848 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 83 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015721 seconds of total run time (0.015721 user, 0.000000 system)
+  100.00% CPU
+  25,359,712 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 139 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.018097 seconds of total run time (0.018097 user, 0.000000 system)
+  81.82% CPU
+  35,684,460 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 49 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.010755 seconds of total run time (0.010755 user, 0.000000 system)
+  64.71% CPU
+  25,716,084 processor cycles
+  32,640 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 22 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001502 seconds of total run time (0.001502 user, 0.000000 system)
+  100.00% CPU
+  2,393,288 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 148 steps (failed)
+Evaluation took:
+  0.070 seconds of real time
+  0.047859 seconds of total run time (0.047859 user, 0.000000 system)
+  68.57% CPU
+  112,096,592 processor cycles
+  1,088 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 226 steps (failed)
+Evaluation took:
+  0.101 seconds of real time
+  0.092490 seconds of total run time (0.092490 user, 0.000000 system)
+  91.09% CPU
+  161,413,608 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 29 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001491 seconds of total run time (0.001491 user, 0.000000 system)
+  50.00% CPU
+  2,376,816 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 72 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.023234 seconds of total run time (0.023234 user, 0.000000 system)
+  100.00% CPU
+  37,566,420 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 41 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002202 seconds of total run time (0.002202 user, 0.000000 system)
+  100.00% CPU
+  3,511,708 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 96 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.016254 seconds of total run time (0.016254 user, 0.000000 system)
+  100.00% CPU
+  25,932,804 processor cycles
+  32,928 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 40 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002578 seconds of total run time (0.002578 user, 0.000000 system)
+  100.00% CPU
+  4,111,968 processor cycles
+  32,592 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 21 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001805 seconds of total run time (0.001805 user, 0.000000 system)
+  100.00% CPU
+  2,877,884 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 39 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.006585 seconds of total run time (0.006585 user, 0.000000 system)
+  100.00% CPU
+  10,508,324 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 153 steps (failed)
+Evaluation took:
+  0.085 seconds of real time
+  0.081904 seconds of total run time (0.081904 user, 0.000000 system)
+  96.47% CPU
+  135,997,328 processor cycles
+  32,496 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 97 steps (failed)
+Evaluation took:
+  0.034 seconds of real time
+  0.033891 seconds of total run time (0.033891 user, 0.000000 system)
+  100.00% CPU
+  54,436,320 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 262 steps (failed)
+Evaluation took:
+  0.310 seconds of real time
+  0.301703 seconds of total run time (0.301703 user, 0.000000 system)
+  97.42% CPU
+  494,712,772 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 39 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003978 seconds of total run time (0.003978 user, 0.000000 system)
+  133.33% CPU
+  5,936,168 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 227 steps (failed)
+Evaluation took:
+  0.076 seconds of real time
+  0.073719 seconds of total run time (0.073719 user, 0.000000 system)
+  97.37% CPU
+  120,230,860 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 73 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.020399 seconds of total run time (0.020399 user, 0.000000 system)
+  95.24% CPU
+  33,484,452 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:05] strips alien.lisp (alien-heuristics) - took 102 steps (failed)
+Evaluation took:
+  0.036 seconds of real time
+  0.035431 seconds of total run time (0.035431 user, 0.000000 system)
+  97.22% CPU
+  57,718,668 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 188 steps (failed)
+Evaluation took:
+  0.100 seconds of real time
+  0.099223 seconds of total run time (0.099223 user, 0.000000 system)
+  99.00% CPU
+  160,312,372 processor cycles
+  864 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 57 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.015396 seconds of total run time (0.015396 user, 0.000000 system)
+  88.24% CPU
+  26,160,908 processor cycles
+  32,608 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 161 steps (failed)
+Evaluation took:
+  0.077 seconds of real time
+  0.073909 seconds of total run time (0.069996 user, 0.003913 system)
+  96.10% CPU
+  122,553,016 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 164 steps (failed)
+Evaluation took:
+  0.033 seconds of real time
+  0.032463 seconds of total run time (0.032448 user, 0.000015 system)
+  96.97% CPU
+  52,223,900 processor cycles
+  1,408 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 62 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.007029 seconds of total run time (0.007029 user, 0.000000 system)
+  100.00% CPU
+  11,231,388 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 112 steps (failed)
+Evaluation took:
+  0.025 seconds of real time
+  0.025454 seconds of total run time (0.025430 user, 0.000024 system)
+  100.00% CPU
+  40,687,292 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 116 steps (failed)
+Evaluation took:
+  0.028 seconds of real time
+  0.028369 seconds of total run time (0.028357 user, 0.000012 system)
+  100.00% CPU
+  44,824,632 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 46 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011594 seconds of total run time (0.008926 user, 0.002668 system)
+  100.00% CPU
+  18,529,416 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 60 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.009295 seconds of total run time (0.009251 user, 0.000044 system)
+  100.00% CPU
+  14,850,856 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 122 steps (failed)
+Evaluation took:
+  0.049 seconds of real time
+  0.048619 seconds of total run time (0.048599 user, 0.000020 system)
+  100.00% CPU
+  77,793,060 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 226 steps (failed)
+Evaluation took:
+  0.201 seconds of real time
+  0.201147 seconds of total run time (0.201147 user, 0.000000 system)
+  100.00% CPU
+  321,569,028 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 105 steps (failed)
+Evaluation took:
+  0.045 seconds of real time
+  0.044370 seconds of total run time (0.044370 user, 0.000000 system)
+  97.78% CPU
+  71,327,852 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 111 steps (failed)
+Evaluation took:
+  0.025 seconds of real time
+  0.024068 seconds of total run time (0.024068 user, 0.000000 system)
+  96.00% CPU
+  39,251,104 processor cycles
+  1,168 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 25 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002086 seconds of total run time (0.002086 user, 0.000000 system)
+  100.00% CPU
+  3,325,408 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 149 steps (failed)
+Evaluation took:
+  0.079 seconds of real time
+  0.077960 seconds of total run time (0.077960 user, 0.000000 system)
+  98.73% CPU
+  125,676,828 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 56 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.006092 seconds of total run time (0.006092 user, 0.000000 system)
+  100.00% CPU
+  10,068,684 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 80 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.008857 seconds of total run time (0.008857 user, 0.000000 system)
+  100.00% CPU
+  14,184,264 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 31 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002002 seconds of total run time (0.002002 user, 0.000000 system)
+  100.00% CPU
+  3,190,216 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 97 steps (failed)
+Evaluation took:
+  0.026 seconds of real time
+  0.026056 seconds of total run time (0.026056 user, 0.000000 system)
+  100.00% CPU
+  42,187,776 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 111 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.016033 seconds of total run time (0.016032 user, 0.000001 system)
+  94.12% CPU
+  25,968,300 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 76 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011053 seconds of total run time (0.011053 user, 0.000000 system)
+  100.00% CPU
+  17,963,264 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 46 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.007975 seconds of total run time (0.007975 user, 0.000000 system)
+  100.00% CPU
+  12,738,536 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 148 steps (failed)
+Evaluation took:
+  0.091 seconds of real time
+  0.088599 seconds of total run time (0.088579 user, 0.000020 system)
+  97.80% CPU
+  145,214,880 processor cycles
+  32,704 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 158 steps (failed)
+Evaluation took:
+  0.065 seconds of real time
+  0.061956 seconds of total run time (0.061956 user, 0.000000 system)
+  95.38% CPU
+  103,134,940 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 33 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004321 seconds of total run time (0.004321 user, 0.000000 system)
+  100.00% CPU
+  6,893,288 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:06] strips alien.lisp (alien-heuristics) - took 63 steps (failed)
+Evaluation took:
+  0.024 seconds of real time
+  0.022874 seconds of total run time (0.022794 user, 0.000080 system)
+  95.83% CPU
+  39,269,356 processor cycles
+  32,608 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 190 steps (failed)
+Evaluation took:
+  0.117 seconds of real time
+  0.117258 seconds of total run time (0.117258 user, 0.000000 system)
+  100.00% CPU
+  187,970,892 processor cycles
+  672 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 33 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001907 seconds of total run time (0.001907 user, 0.000000 system)
+  100.00% CPU
+  3,039,660 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 51 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.006114 seconds of total run time (0.006114 user, 0.000000 system)
+  100.00% CPU
+  10,028,088 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 101 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.014850 seconds of total run time (0.014850 user, 0.000000 system)
+  100.00% CPU
+  23,983,480 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 63 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.016041 seconds of total run time (0.016041 user, 0.000000 system)
+  100.00% CPU
+  25,863,428 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 83 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011713 seconds of total run time (0.011713 user, 0.000000 system)
+  100.00% CPU
+  18,958,128 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 79 steps (failed)
+Evaluation took:
+  0.034 seconds of real time
+  0.033325 seconds of total run time (0.033325 user, 0.000000 system)
+  97.06% CPU
+  53,890,700 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 28 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002213 seconds of total run time (0.002213 user, 0.000000 system)
+  100.00% CPU
+  3,530,092 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 113 steps (failed)
+Evaluation took:
+  0.047 seconds of real time
+  0.046109 seconds of total run time (0.046109 user, 0.000000 system)
+  97.87% CPU
+  74,947,740 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 103 steps (failed)
+Evaluation took:
+  0.043 seconds of real time
+  0.043037 seconds of total run time (0.043037 user, 0.000000 system)
+  100.00% CPU
+  69,049,000 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 73 steps (failed)
+Evaluation took:
+  0.031 seconds of real time
+  0.030730 seconds of total run time (0.030730 user, 0.000000 system)
+  100.00% CPU
+  49,166,668 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 33 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003506 seconds of total run time (0.003506 user, 0.000000 system)
+  133.33% CPU
+  5,594,452 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 23 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002277 seconds of total run time (0.002277 user, 0.000000 system)
+  66.67% CPU
+  3,910,824 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 52 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.013134 seconds of total run time (0.013134 user, 0.000000 system)
+  100.00% CPU
+  21,224,060 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 29 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002821 seconds of total run time (0.002821 user, 0.000000 system)
+  100.00% CPU
+  4,498,216 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 129 steps (failed)
+Evaluation took:
+  0.041 seconds of real time
+  0.040227 seconds of total run time (0.040227 user, 0.000000 system)
+  97.56% CPU
+  64,895,940 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 76 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.019131 seconds of total run time (0.019131 user, 0.000000 system)
+  100.00% CPU
+  30,782,652 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 232 steps (failed)
+Evaluation took:
+  0.242 seconds of real time
+  0.240979 seconds of total run time (0.240979 user, 0.000000 system)
+  99.59% CPU
+  386,410,436 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 39 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003639 seconds of total run time (0.003639 user, 0.000000 system)
+  133.33% CPU
+  5,617,040 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 227 steps (failed)
+Evaluation took:
+  0.103 seconds of real time
+  0.103440 seconds of total run time (0.103440 user, 0.000000 system)
+  100.00% CPU
+  165,473,808 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 59 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.010002 seconds of total run time (0.010002 user, 0.000000 system)
+  100.00% CPU
+  16,229,776 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 39 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.004333 seconds of total run time (0.004333 user, 0.000000 system)
+  80.00% CPU
+  6,706,588 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 73 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.016500 seconds of total run time (0.016500 user, 0.000000 system)
+  100.00% CPU
+  26,632,480 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 38 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005788 seconds of total run time (0.003405 user, 0.002383 system)
+  100.00% CPU
+  9,233,676 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:07] strips alien.lisp (alien-heuristics) - took 198 steps (failed)
+Evaluation took:
+  0.068 seconds of real time
+  0.066302 seconds of total run time (0.066225 user, 0.000077 system)
+  97.06% CPU
+  108,985,204 processor cycles
+  32,704 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 388 steps (failed)
+Evaluation took:
+  0.364 seconds of real time
+  0.363492 seconds of total run time (0.363492 user, 0.000000 system)
+  99.73% CPU
+  581,496,260 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 252 steps (failed)
+Evaluation took:
+  0.157 seconds of real time
+  0.156713 seconds of total run time (0.156713 user, 0.000000 system)
+  100.00% CPU
+  250,657,584 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 227 steps (failed)
+Evaluation took:
+  0.195 seconds of real time
+  0.192935 seconds of total run time (0.192935 user, 0.000000 system)
+  98.97% CPU
+  311,609,048 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 183 steps (failed)
+Evaluation took:
+  0.038 seconds of real time
+  0.037925 seconds of total run time (0.037905 user, 0.000020 system)
+  100.00% CPU
+  60,582,160 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 60 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.010150 seconds of total run time (0.010150 user, 0.000000 system)
+  100.00% CPU
+  16,197,188 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 62 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015459 seconds of total run time (0.015459 user, 0.000000 system)
+  93.75% CPU
+  24,672,812 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 246 steps (failed)
+Evaluation took:
+  0.195 seconds of real time
+  0.193511 seconds of total run time (0.193511 user, 0.000000 system)
+  99.49% CPU
+  310,655,676 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 30 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.003747 seconds of total run time (0.003746 user, 0.000001 system)
+  40.00% CPU
+  14,831,204 processor cycles
+  31,952 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 61 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.012113 seconds of total run time (0.012109 user, 0.000004 system)
+  100.00% CPU
+  19,651,020 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 40 steps (failed)
+Evaluation took:
+  0.020 seconds of real time
+  0.004211 seconds of total run time (0.004204 user, 0.000007 system)
+  20.00% CPU
+  31,133,376 processor cycles
+  32,576 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 61 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011048 seconds of total run time (0.011048 user, 0.000000 system)
+  100.00% CPU
+  17,668,012 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 54 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.008744 seconds of total run time (0.008744 user, 0.000000 system)
+  100.00% CPU
+  14,014,436 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 98 steps (failed)
+Evaluation took:
+  0.030 seconds of real time
+  0.026569 seconds of total run time (0.026569 user, 0.000000 system)
+  90.00% CPU
+  48,537,044 processor cycles
+  32,608 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 45 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005025 seconds of total run time (0.005025 user, 0.000000 system)
+  100.00% CPU
+  8,015,176 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 88 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.014527 seconds of total run time (0.014527 user, 0.000000 system)
+  100.00% CPU
+  23,573,936 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 83 steps (failed)
+Evaluation took:
+  0.034 seconds of real time
+  0.033108 seconds of total run time (0.033108 user, 0.000000 system)
+  97.06% CPU
+  53,984,000 processor cycles
+  32,624 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 80 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015749 seconds of total run time (0.015749 user, 0.000000 system)
+  100.00% CPU
+  25,271,352 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 81 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.015704 seconds of total run time (0.015704 user, 0.000000 system)
+  106.67% CPU
+  25,261,088 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 67 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.017223 seconds of total run time (0.013396 user, 0.003827 system)
+  100.00% CPU
+  27,631,164 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:08] strips alien.lisp (alien-heuristics) - took 37 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004717 seconds of total run time (0.000827 user, 0.003890 system)
+  125.00% CPU
+  7,504,584 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:09] strips alien.lisp (alien-heuristics) - took 163 steps (failed)
+Evaluation took:
+  0.061 seconds of real time
+  0.060618 seconds of total run time (0.060598 user, 0.000020 system)
+  100.00% CPU
+  97,258,424 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:09] strips alien.lisp (alien-heuristics) - took 58 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011288 seconds of total run time (0.011288 user, 0.000000 system)
+  100.00% CPU
+  18,135,112 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:09] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:09] strips alien.lisp (alien-heuristics) - took 100 steps (failed)
+Evaluation took:
+  0.031 seconds of real time
+  0.030694 seconds of total run time (0.030694 user, 0.000000 system)
+  100.00% CPU
+  49,637,060 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:09] strips alien.lisp (alien-heuristics) - took 157 steps (failed)
+Evaluation took:
+  0.090 seconds of real time
+  0.080612 seconds of total run time (0.080612 user, 0.000000 system)
+  90.00% CPU
+  143,099,840 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:09] strips alien.lisp (alien-heuristics) - took 523 steps (failed)
+Evaluation took:
+  0.461 seconds of real time
+  0.456566 seconds of total run time (0.456566 user, 0.000000 system)
+  99.13% CPU
+  735,169,100 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:09] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 295 steps (failed)
+Evaluation took:
+  0.396 seconds of real time
+  0.391153 seconds of total run time (0.387264 user, 0.003889 system)
+  98.74% CPU
+  631,524,284 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 25 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003840 seconds of total run time (0.003712 user, 0.000128 system)
+  133.33% CPU
+  5,891,012 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 44 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005952 seconds of total run time (0.002396 user, 0.003556 system)
+  100.00% CPU
+  9,568,644 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 116 steps (failed)
+Evaluation took:
+  0.039 seconds of real time
+  0.037627 seconds of total run time (0.037627 user, 0.000000 system)
+  97.44% CPU
+  61,349,952 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 109 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.023208 seconds of total run time (0.023208 user, 0.000000 system)
+  100.00% CPU
+  37,521,312 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 61 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003890 seconds of total run time (0.003890 user, 0.000000 system)
+  133.33% CPU
+  5,972,920 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 44 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003329 seconds of total run time (0.003329 user, 0.000000 system)
+  100.00% CPU
+  5,435,096 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 13 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000731 seconds of total run time (0.000731 user, 0.000000 system)
+  100.00% CPU
+  1,162,864 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 79 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011035 seconds of total run time (0.011035 user, 0.000000 system)
+  91.67% CPU
+  17,718,528 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 21 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001296 seconds of total run time (0.001296 user, 0.000000 system)
+  50.00% CPU
+  2,066,008 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 111 steps (failed)
+Evaluation took:
+  0.032 seconds of real time
+  0.031685 seconds of total run time (0.031685 user, 0.000000 system)
+  100.00% CPU
+  51,169,976 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 31 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002854 seconds of total run time (0.002854 user, 0.000000 system)
+  100.00% CPU
+  4,488,816 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 108 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.022042 seconds of total run time (0.022042 user, 0.000000 system)
+  100.00% CPU
+  36,050,856 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 122 steps (failed)
+Evaluation took:
+  0.052 seconds of real time
+  0.051931 seconds of total run time (0.051931 user, 0.000000 system)
+  100.00% CPU
+  83,206,740 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 7 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000549 seconds of total run time (0.000549 user, 0.000000 system)
+  100.00% CPU
+  642,536 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 54 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.009601 seconds of total run time (0.009601 user, 0.000000 system)
+  100.00% CPU
+  15,567,852 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 66 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.015328 seconds of total run time (0.015328 user, 0.000000 system)
+  100.00% CPU
+  24,582,244 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 109 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.012709 seconds of total run time (0.012709 user, 0.000000 system)
+  100.00% CPU
+  20,427,748 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 60 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.007600 seconds of total run time (0.007600 user, 0.000000 system)
+  100.00% CPU
+  12,253,068 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 54 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.007998 seconds of total run time (0.007998 user, 0.000000 system)
+  100.00% CPU
+  12,763,136 processor cycles
+  32,064 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 82 steps (failed)
+Evaluation took:
+  0.036 seconds of real time
+  0.035940 seconds of total run time (0.035940 user, 0.000000 system)
+  100.00% CPU
+  57,594,436 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 106 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011037 seconds of total run time (0.011037 user, 0.000000 system)
+  100.00% CPU
+  18,187,372 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 40 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003198 seconds of total run time (0.003198 user, 0.000000 system)
+  100.00% CPU
+  5,101,436 processor cycles
+  32,528 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 193 steps (failed)
+Evaluation took:
+  0.120 seconds of real time
+  0.118273 seconds of total run time (0.118273 user, 0.000000 system)
+  98.33% CPU
+  191,880,740 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 58 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004300 seconds of total run time (0.004300 user, 0.000000 system)
+  100.00% CPU
+  6,859,348 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 56 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005393 seconds of total run time (0.005393 user, 0.000000 system)
+  83.33% CPU
+  8,735,604 processor cycles
+  32,464 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 95 steps (failed)
+Evaluation took:
+  0.020 seconds of real time
+  0.019961 seconds of total run time (0.019961 user, 0.000000 system)
+  100.00% CPU
+  32,048,760 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 218 steps (failed)
+Evaluation took:
+  0.109 seconds of real time
+  0.109525 seconds of total run time (0.109525 user, 0.000000 system)
+  100.92% CPU
+  175,158,744 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 189 steps (failed)
+Evaluation took:
+  0.123 seconds of real time
+  0.121583 seconds of total run time (0.121583 user, 0.000000 system)
+  99.19% CPU
+  195,196,692 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - took 77 steps (failed)
+Evaluation took:
+  0.014 seconds of real time
+  0.014370 seconds of total run time (0.014370 user, 0.000000 system)
+  100.00% CPU
+  22,793,612 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:10] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 343 steps (failed)
+Evaluation took:
+  0.382 seconds of real time
+  0.377670 seconds of total run time (0.377670 user, 0.000000 system)
+  98.95% CPU
+  610,497,360 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 106 steps (failed)
+Evaluation took:
+  0.027 seconds of real time
+  0.027478 seconds of total run time (0.027478 user, 0.000000 system)
+  100.00% CPU
+  44,453,744 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 56 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.010216 seconds of total run time (0.010216 user, 0.000000 system)
+  100.00% CPU
+  15,953,028 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 296 steps (failed)
+Evaluation took:
+  0.131 seconds of real time
+  0.130790 seconds of total run time (0.130790 user, 0.000000 system)
+  100.00% CPU
+  209,271,224 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 120 steps (failed)
+Evaluation took:
+  0.037 seconds of real time
+  0.036919 seconds of total run time (0.036919 user, 0.000000 system)
+  100.00% CPU
+  59,076,608 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 102 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011165 seconds of total run time (0.011165 user, 0.000000 system)
+  100.00% CPU
+  17,702,216 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 79 steps (failed)
+Evaluation took:
+  0.024 seconds of real time
+  0.024336 seconds of total run time (0.024336 user, 0.000000 system)
+  100.00% CPU
+  38,955,464 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 46 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.007334 seconds of total run time (0.007334 user, 0.000000 system)
+  100.00% CPU
+  11,653,736 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 72 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.022593 seconds of total run time (0.022593 user, 0.000000 system)
+  100.00% CPU
+  35,966,544 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 111 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.013081 seconds of total run time (0.013081 user, 0.000000 system)
+  100.00% CPU
+  20,997,204 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 160 steps (failed)
+Evaluation took:
+  0.073 seconds of real time
+  0.073741 seconds of total run time (0.073741 user, 0.000000 system)
+  101.37% CPU
+  117,879,464 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 158 steps (failed)
+Evaluation took:
+  0.035 seconds of real time
+  0.035566 seconds of total run time (0.035566 user, 0.000000 system)
+  102.86% CPU
+  56,664,600 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 17 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001229 seconds of total run time (0.001229 user, 0.000000 system)
+  100.00% CPU
+  1,957,480 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 93 steps (failed)
+Evaluation took:
+  0.042 seconds of real time
+  0.042337 seconds of total run time (0.042337 user, 0.000000 system)
+  100.00% CPU
+  67,558,840 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 109 steps (failed)
+Evaluation took:
+  0.050 seconds of real time
+  0.050616 seconds of total run time (0.050616 user, 0.000000 system)
+  102.00% CPU
+  81,013,928 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 30 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002556 seconds of total run time (0.002556 user, 0.000000 system)
+  100.00% CPU
+  4,076,444 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 46 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002025 seconds of total run time (0.002025 user, 0.000000 system)
+  100.00% CPU
+  3,228,164 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 51 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003410 seconds of total run time (0.003410 user, 0.000000 system)
+  100.00% CPU
+  5,556,820 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 63 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.021560 seconds of total run time (0.021560 user, 0.000000 system)
+  100.00% CPU
+  34,605,412 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 65 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011152 seconds of total run time (0.011152 user, 0.000000 system)
+  100.00% CPU
+  17,797,008 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 193 steps (failed)
+Evaluation took:
+  0.038 seconds of real time
+  0.037166 seconds of total run time (0.037166 user, 0.000000 system)
+  97.37% CPU
+  59,599,308 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 105 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.012376 seconds of total run time (0.012376 user, 0.000000 system)
+  92.31% CPU
+  19,863,660 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:29:11] strips alien.lisp (alien-heuristics) - took 229 steps (failed)
+Evaluation took:
+  0.068 seconds of real time
+  0.065640 seconds of total run time (0.065640 user, 0.000000 system)
+  97.06% CPU
+  107,960,940 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 292 steps (failed)
+Evaluation took:
+  0.337 seconds of real time
+  0.335764 seconds of total run time (0.335764 user, 0.000000 system)
+  99.70% CPU
+  537,948,196 processor cycles
+  32,656 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 69 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.010054 seconds of total run time (0.010054 user, 0.000000 system)
+  100.00% CPU
+  16,044,700 processor cycles
+  32,560 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 86 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.016879 seconds of total run time (0.016879 user, 0.000000 system)
+  100.00% CPU
+  26,982,148 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 40 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005383 seconds of total run time (0.005383 user, 0.000000 system)
+  100.00% CPU
+  8,372,272 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 75 steps (failed)
+Evaluation took:
+  0.018 seconds of real time
+  0.017740 seconds of total run time (0.017740 user, 0.000000 system)
+  100.00% CPU
+  29,543,144 processor cycles
+  32,528 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 26 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001889 seconds of total run time (0.001889 user, 0.000000 system)
+  100.00% CPU
+  3,011,540 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 121 steps (failed)
+Evaluation took:
+  0.054 seconds of real time
+  0.046021 seconds of total run time (0.046021 user, 0.000000 system)
+  85.19% CPU
+  85,000,608 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 58 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.008805 seconds of total run time (0.008805 user, 0.000000 system)
+  100.00% CPU
+  14,345,068 processor cycles
+  33,264 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 41 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004240 seconds of total run time (0.004240 user, 0.000000 system)
+  100.00% CPU
+  6,881,112 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 51 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005984 seconds of total run time (0.005984 user, 0.000000 system)
+  100.00% CPU
+  9,632,968 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 23 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002103 seconds of total run time (0.000000 user, 0.002103 system)
+  66.67% CPU
+  3,352,644 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 105 steps (failed)
+Evaluation took:
+  0.054 seconds of real time
+  0.045980 seconds of total run time (0.044680 user, 0.001300 system)
+  85.19% CPU
+  86,735,684 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 23 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001303 seconds of total run time (0.001259 user, 0.000044 system)
+  100.00% CPU
+  2,076,820 processor cycles
+  32,512 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 76 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.010766 seconds of total run time (0.010766 user, 0.000000 system)
+  100.00% CPU
+  17,181,044 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 65 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.010271 seconds of total run time (0.010271 user, 0.000000 system)
+  90.91% CPU
+  16,535,264 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 53 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.007650 seconds of total run time (0.007650 user, 0.000000 system)
+  114.29% CPU
+  12,207,204 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 20 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001684 seconds of total run time (0.001684 user, 0.000000 system)
+  100.00% CPU
+  2,801,592 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 66 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.008655 seconds of total run time (0.008655 user, 0.000000 system)
+  100.00% CPU
+  13,811,124 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 64 steps (failed)
+Evaluation took:
+  0.024 seconds of real time
+  0.023803 seconds of total run time (0.023803 user, 0.000000 system)
+  100.00% CPU
+  38,263,756 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 63 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005946 seconds of total run time (0.005946 user, 0.000000 system)
+  100.00% CPU
+  9,487,664 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 276 steps (failed)
+Evaluation took:
+  0.107 seconds of real time
+  0.107123 seconds of total run time (0.107123 user, 0.000000 system)
+  100.00% CPU
+  171,417,836 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 21 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001829 seconds of total run time (0.001829 user, 0.000000 system)
+  100.00% CPU
+  2,674,644 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 132 steps (failed)
+Evaluation took:
+  0.052 seconds of real time
+  0.051704 seconds of total run time (0.051704 user, 0.000000 system)
+  100.00% CPU
+  82,853,792 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 57 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.006110 seconds of total run time (0.006110 user, 0.000000 system)
+  100.00% CPU
+  9,747,664 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 69 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.012618 seconds of total run time (0.012618 user, 0.000000 system)
+  100.00% CPU
+  20,255,380 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 51 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.007802 seconds of total run time (0.007802 user, 0.000000 system)
+  100.00% CPU
+  12,531,912 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 332 steps (failed)
+Evaluation took:
+  0.367 seconds of real time
+  0.366243 seconds of total run time (0.366243 user, 0.000000 system)
+  99.73% CPU
+  585,171,868 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 119 steps (failed)
+Evaluation took:
+  0.018 seconds of real time
+  0.017843 seconds of total run time (0.017843 user, 0.000000 system)
+  100.00% CPU
+  28,594,532 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:12] strips alien.lisp (alien-heuristics) - took 76 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.017375 seconds of total run time (0.017375 user, 0.000000 system)
+  100.00% CPU
+  27,800,260 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 190 steps (failed)
+Evaluation took:
+  0.112 seconds of real time
+  0.111243 seconds of total run time (0.111243 user, 0.000000 system)
+  99.11% CPU
+  177,802,528 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 78 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.009461 seconds of total run time (0.009461 user, 0.000000 system)
+  100.00% CPU
+  14,994,748 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 8 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000349 seconds of total run time (0.000349 user, 0.000000 system)
+  100.00% CPU
+  554,412 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 22 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001756 seconds of total run time (0.001756 user, 0.000000 system)
+  100.00% CPU
+  2,799,764 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 46 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.003296 seconds of total run time (0.003296 user, 0.000000 system)
+  75.00% CPU
+  5,257,928 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 106 steps (failed)
+Evaluation took:
+  0.029 seconds of real time
+  0.028560 seconds of total run time (0.028560 user, 0.000000 system)
+  100.00% CPU
+  45,805,368 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 31 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004319 seconds of total run time (0.004319 user, 0.000000 system)
+  100.00% CPU
+  6,891,088 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 78 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.009725 seconds of total run time (0.009714 user, 0.000011 system)
+  111.11% CPU
+  15,519,528 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 66 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.009670 seconds of total run time (0.006874 user, 0.002796 system)
+  100.00% CPU
+  15,583,140 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 78 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005085 seconds of total run time (0.005049 user, 0.000036 system)
+  100.00% CPU
+  8,111,960 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 348 steps (failed)
+Evaluation took:
+  0.289 seconds of real time
+  0.288184 seconds of total run time (0.288184 user, 0.000000 system)
+  99.65% CPU
+  460,545,124 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 143 steps (failed)
+Evaluation took:
+  0.059 seconds of real time
+  0.059262 seconds of total run time (0.059262 user, 0.000000 system)
+  100.00% CPU
+  94,843,308 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 91 steps (failed)
+Evaluation took:
+  0.057 seconds of real time
+  0.056632 seconds of total run time (0.056632 user, 0.000000 system)
+  100.00% CPU
+  90,347,228 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 191 steps (failed)
+Evaluation took:
+  0.164 seconds of real time
+  0.163981 seconds of total run time (0.163981 user, 0.000000 system)
+  100.00% CPU
+  261,696,564 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 108 steps (failed)
+Evaluation took:
+  0.029 seconds of real time
+  0.029631 seconds of total run time (0.029631 user, 0.000000 system)
+  103.45% CPU
+  47,408,828 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 175 steps (failed)
+Evaluation took:
+  0.044 seconds of real time
+  0.044512 seconds of total run time (0.040959 user, 0.003553 system)
+  102.27% CPU
+  70,849,176 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - took 116 steps (failed)
+Evaluation took:
+  0.052 seconds of real time
+  0.052005 seconds of total run time (0.052005 user, 0.000000 system)
+  100.00% CPU
+  82,961,668 processor cycles
+  31,984 bytes consed
+  
+ <INFO> [00:29:13] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - took 342 steps (failed)
+Evaluation took:
+  0.527 seconds of real time
+  0.525917 seconds of total run time (0.525917 user, 0.000000 system)
+  99.81% CPU
+  842,146,060 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - took 112 steps (failed)
+Evaluation took:
+  0.031 seconds of real time
+  0.030111 seconds of total run time (0.030103 user, 0.000008 system)
+  96.77% CPU
+  48,219,268 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - took 132 steps (failed)
+Evaluation took:
+  0.027 seconds of real time
+  0.027411 seconds of total run time (0.027411 user, 0.000000 system)
+  100.00% CPU
+  43,685,132 processor cycles
+  32,656 bytes consed
+  
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - took 114 steps (failed)
+Evaluation took:
+  0.052 seconds of real time
+  0.051751 seconds of total run time (0.051751 user, 0.000000 system)
+  100.00% CPU
+  82,765,500 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - took 13 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000782 seconds of total run time (0.000782 user, 0.000000 system)
+  100.00% CPU
+  1,245,508 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - took 112 steps (failed)
+Evaluation took:
+  0.044 seconds of real time
+  0.043749 seconds of total run time (0.043749 user, 0.000000 system)
+  100.00% CPU
+  69,905,980 processor cycles
+  32,480 bytes consed
+  
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - took 71 steps (failed)
+Evaluation took:
+  0.028 seconds of real time
+  0.027669 seconds of total run time (0.027669 user, 0.000000 system)
+  100.00% CPU
+  44,248,492 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - took 149 steps (failed)
+Evaluation took:
+  0.077 seconds of real time
+  0.076706 seconds of total run time (0.076706 user, 0.000000 system)
+  100.00% CPU
+  122,411,304 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - took 24 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002194 seconds of total run time (0.002180 user, 0.000014 system)
+  100.00% CPU
+  3,280,652 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:14] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 516 steps (failed)
+Evaluation took:
+  0.469 seconds of real time
+  0.468523 seconds of total run time (0.468523 user, 0.000000 system)
+  100.00% CPU
+  748,203,484 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 75 steps (failed)
+Evaluation took:
+  0.025 seconds of real time
+  0.024855 seconds of total run time (0.024855 user, 0.000000 system)
+  100.00% CPU
+  39,595,560 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 411 steps (failed)
+Evaluation took:
+  0.338 seconds of real time
+  0.337865 seconds of total run time (0.337865 user, 0.000000 system)
+  100.00% CPU
+  539,627,796 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 94 steps (failed)
+Evaluation took:
+  0.027 seconds of real time
+  0.026681 seconds of total run time (0.026681 user, 0.000000 system)
+  100.00% CPU
+  42,796,512 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 78 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.014591 seconds of total run time (0.014591 user, 0.000000 system)
+  100.00% CPU
+  23,422,488 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 68 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.018908 seconds of total run time (0.018908 user, 0.000000 system)
+  100.00% CPU
+  30,029,360 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 144 steps (failed)
+Evaluation took:
+  0.048 seconds of real time
+  0.048535 seconds of total run time (0.048525 user, 0.000010 system)
+  102.08% CPU
+  77,587,792 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 308 steps (failed)
+Evaluation took:
+  0.232 seconds of real time
+  0.232651 seconds of total run time (0.229176 user, 0.003475 system)
+  100.43% CPU
+  371,434,724 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 52 steps (failed)
+Evaluation took:
+  0.014 seconds of real time
+  0.013565 seconds of total run time (0.013514 user, 0.000051 system)
+  100.00% CPU
+  21,769,384 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 75 steps (failed)
+Evaluation took:
+  0.020 seconds of real time
+  0.019856 seconds of total run time (0.019856 user, 0.000000 system)
+  100.00% CPU
+  31,805,876 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:15] strips alien.lisp (alien-heuristics) - took 171 steps (failed)
+Evaluation took:
+  0.089 seconds of real time
+  0.089149 seconds of total run time (0.089149 user, 0.000000 system)
+  100.00% CPU
+  142,201,348 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 113 steps (failed)
+Evaluation took:
+  0.043 seconds of real time
+  0.043348 seconds of total run time (0.043329 user, 0.000019 system)
+  100.00% CPU
+  68,865,744 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 66 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.020891 seconds of total run time (0.020891 user, 0.000000 system)
+  100.00% CPU
+  33,382,284 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 29 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001590 seconds of total run time (0.001590 user, 0.000000 system)
+  100.00% CPU
+  2,650,300 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 147 steps (failed)
+Evaluation took:
+  0.100 seconds of real time
+  0.099208 seconds of total run time (0.099208 user, 0.000000 system)
+  99.00% CPU
+  159,272,940 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 174 steps (failed)
+Evaluation took:
+  0.115 seconds of real time
+  0.114764 seconds of total run time (0.112024 user, 0.002740 system)
+  100.00% CPU
+  183,466,244 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 312 steps (failed)
+Evaluation took:
+  0.123 seconds of real time
+  0.123287 seconds of total run time (0.123287 user, 0.000000 system)
+  100.00% CPU
+  196,684,324 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 68 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.004723 seconds of total run time (0.004715 user, 0.000008 system)
+  100.00% CPU
+  7,536,240 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 71 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.017802 seconds of total run time (0.017802 user, 0.000000 system)
+  94.74% CPU
+  28,995,156 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 103 steps (failed)
+Evaluation took:
+  0.025 seconds of real time
+  0.025262 seconds of total run time (0.025262 user, 0.000000 system)
+  100.00% CPU
+  40,524,680 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 184 steps (failed)
+Evaluation took:
+  0.101 seconds of real time
+  0.100641 seconds of total run time (0.100641 user, 0.000000 system)
+  100.00% CPU
+  160,787,100 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 76 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.007306 seconds of total run time (0.007306 user, 0.000000 system)
+  100.00% CPU
+  11,778,648 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 66 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.006973 seconds of total run time (0.006973 user, 0.000000 system)
+  100.00% CPU
+  11,245,884 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 58 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.022606 seconds of total run time (0.022606 user, 0.000000 system)
+  100.00% CPU
+  36,192,776 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 177 steps (failed)
+Evaluation took:
+  0.126 seconds of real time
+  0.126187 seconds of total run time (0.126187 user, 0.000000 system)
+  100.00% CPU
+  201,753,672 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 54 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.003907 seconds of total run time (0.003907 user, 0.000000 system)
+  100.00% CPU
+  6,232,120 processor cycles
+  32,096 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 86 steps (failed)
+Evaluation took:
+  0.035 seconds of real time
+  0.026324 seconds of total run time (0.026324 user, 0.000000 system)
+  74.29% CPU
+  54,474,552 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 86 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.014040 seconds of total run time (0.014040 user, 0.000000 system)
+  93.33% CPU
+  22,507,924 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 71 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.006382 seconds of total run time (0.006382 user, 0.000000 system)
+  100.00% CPU
+  10,183,972 processor cycles
+  32,256 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 103 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.016885 seconds of total run time (0.016885 user, 0.000000 system)
+  100.00% CPU
+  26,948,068 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 57 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.008090 seconds of total run time (0.008090 user, 0.000000 system)
+  100.00% CPU
+  12,908,376 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 61 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.010860 seconds of total run time (0.010860 user, 0.000000 system)
+  100.00% CPU
+  17,330,884 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 16 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001248 seconds of total run time (0.001248 user, 0.000000 system)
+  100.00% CPU
+  1,987,172 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 81 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.013329 seconds of total run time (0.013329 user, 0.000000 system)
+  100.00% CPU
+  21,270,888 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 22 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001251 seconds of total run time (0.001251 user, 0.000000 system)
+  50.00% CPU
+  1,993,592 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 66 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.007692 seconds of total run time (0.007692 user, 0.000000 system)
+  100.00% CPU
+  12,291,800 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:16] strips alien.lisp (alien-heuristics) - took 44 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003107 seconds of total run time (0.003107 user, 0.000000 system)
+  100.00% CPU
+  4,956,604 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 263 steps (failed)
+Evaluation took:
+  0.274 seconds of real time
+  0.273869 seconds of total run time (0.273869 user, 0.000000 system)
+  100.00% CPU
+  436,912,792 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 39 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.008042 seconds of total run time (0.008042 user, 0.000000 system)
+  100.00% CPU
+  12,672,368 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 68 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.020569 seconds of total run time (0.020569 user, 0.000000 system)
+  100.00% CPU
+  32,829,828 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 54 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.006775 seconds of total run time (0.006775 user, 0.000000 system)
+  100.00% CPU
+  10,811,340 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 100 steps (failed)
+Evaluation took:
+  0.033 seconds of real time
+  0.033131 seconds of total run time (0.033131 user, 0.000000 system)
+  100.00% CPU
+  52,917,060 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 86 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.008662 seconds of total run time (0.008662 user, 0.000000 system)
+  112.50% CPU
+  13,822,452 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 146 steps (failed)
+Evaluation took:
+  0.078 seconds of real time
+  0.077895 seconds of total run time (0.077895 user, 0.000000 system)
+  100.00% CPU
+  123,947,748 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 78 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.008974 seconds of total run time (0.008974 user, 0.000000 system)
+  100.00% CPU
+  14,320,532 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 101 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.021319 seconds of total run time (0.021319 user, 0.000000 system)
+  100.00% CPU
+  34,027,348 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 94 steps (failed)
+Evaluation took:
+  0.027 seconds of real time
+  0.026316 seconds of total run time (0.026316 user, 0.000000 system)
+  96.30% CPU
+  42,036,708 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 87 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.018858 seconds of total run time (0.018858 user, 0.000000 system)
+  100.00% CPU
+  29,887,172 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 40 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002940 seconds of total run time (0.002940 user, 0.000000 system)
+  100.00% CPU
+  4,689,076 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 114 steps (failed)
+Evaluation took:
+  0.036 seconds of real time
+  0.035834 seconds of total run time (0.035834 user, 0.000000 system)
+  100.00% CPU
+  57,197,792 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 64 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.012477 seconds of total run time (0.012477 user, 0.000000 system)
+  92.31% CPU
+  19,708,320 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 294 steps (failed)
+Evaluation took:
+  0.278 seconds of real time
+  0.278395 seconds of total run time (0.278395 user, 0.000000 system)
+  100.00% CPU
+  444,391,484 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 44 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.012335 seconds of total run time (0.012335 user, 0.000000 system)
+  100.00% CPU
+  19,685,692 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 7 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000512 seconds of total run time (0.000512 user, 0.000000 system)
+  100.00% CPU
+  588,420 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 56 steps (failed)
+Evaluation took:
+  0.014 seconds of real time
+  0.013962 seconds of total run time (0.013962 user, 0.000000 system)
+  100.00% CPU
+  22,284,108 processor cycles
+  32,768 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 67 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.010729 seconds of total run time (0.010729 user, 0.000000 system)
+  100.00% CPU
+  17,153,128 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 204 steps (failed)
+Evaluation took:
+  0.104 seconds of real time
+  0.104585 seconds of total run time (0.104585 user, 0.000000 system)
+  100.96% CPU
+  166,694,636 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 139 steps (failed)
+Evaluation took:
+  0.068 seconds of real time
+  0.067964 seconds of total run time (0.067964 user, 0.000000 system)
+  100.00% CPU
+  108,487,936 processor cycles
+  32,256 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 37 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005244 seconds of total run time (0.005244 user, 0.000000 system)
+  100.00% CPU
+  8,367,360 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 141 steps (failed)
+Evaluation took:
+  0.073 seconds of real time
+  0.072216 seconds of total run time (0.072216 user, 0.000000 system)
+  98.63% CPU
+  115,099,724 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 41 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005005 seconds of total run time (0.005005 user, 0.000000 system)
+  100.00% CPU
+  7,985,536 processor cycles
+  32,544 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 59 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011075 seconds of total run time (0.011075 user, 0.000000 system)
+  91.67% CPU
+  17,673,908 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 34 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004064 seconds of total run time (0.004064 user, 0.000000 system)
+  100.00% CPU
+  6,248,664 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 74 steps (failed)
+Evaluation took:
+  0.020 seconds of real time
+  0.020038 seconds of total run time (0.020038 user, 0.000000 system)
+  100.00% CPU
+  31,981,564 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:17] strips alien.lisp (alien-heuristics) - took 51 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.008960 seconds of total run time (0.008960 user, 0.000000 system)
+  112.50% CPU
+  14,047,580 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 58 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.010925 seconds of total run time (0.010925 user, 0.000000 system)
+  100.00% CPU
+  17,435,676 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 43 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005154 seconds of total run time (0.005154 user, 0.000000 system)
+  100.00% CPU
+  8,223,248 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 45 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.003981 seconds of total run time (0.003981 user, 0.000000 system)
+  100.00% CPU
+  6,351,828 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 189 steps (failed)
+Evaluation took:
+  0.048 seconds of real time
+  0.047303 seconds of total run time (0.047303 user, 0.000000 system)
+  97.92% CPU
+  75,527,512 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 48 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004870 seconds of total run time (0.001194 user, 0.003676 system)
+  125.00% CPU
+  7,770,120 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 151 steps (failed)
+Evaluation took:
+  0.053 seconds of real time
+  0.052588 seconds of total run time (0.052569 user, 0.000019 system)
+  100.00% CPU
+  84,660,680 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 26 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001443 seconds of total run time (0.001396 user, 0.000047 system)
+  100.00% CPU
+  2,078,148 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 5 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000264 seconds of total run time (0.000256 user, 0.000008 system)
+  100.00% CPU
+  419,256 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 239 steps (failed)
+Evaluation took:
+  0.139 seconds of real time
+  0.138653 seconds of total run time (0.138653 user, 0.000000 system)
+  100.00% CPU
+  221,171,852 processor cycles
+  33,600 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 28 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002602 seconds of total run time (0.002602 user, 0.000000 system)
+  150.00% CPU
+  4,151,176 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 32 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005106 seconds of total run time (0.005106 user, 0.000000 system)
+  100.00% CPU
+  8,147,280 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 109 steps (failed)
+Evaluation took:
+  0.035 seconds of real time
+  0.034493 seconds of total run time (0.034493 user, 0.000000 system)
+  97.14% CPU
+  55,087,848 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 41 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.007389 seconds of total run time (0.007389 user, 0.000000 system)
+  100.00% CPU
+  11,584,284 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 81 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.020950 seconds of total run time (0.020950 user, 0.000000 system)
+  100.00% CPU
+  33,436,404 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 159 steps (failed)
+Evaluation took:
+  0.097 seconds of real time
+  0.096901 seconds of total run time (0.096877 user, 0.000024 system)
+  100.00% CPU
+  154,828,152 processor cycles
+  1,280 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 90 steps (failed)
+Evaluation took:
+  0.018 seconds of real time
+  0.017478 seconds of total run time (0.017478 user, 0.000000 system)
+  94.44% CPU
+  27,895,932 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 191 steps (failed)
+Evaluation took:
+  0.120 seconds of real time
+  0.119954 seconds of total run time (0.119954 user, 0.000000 system)
+  100.00% CPU
+  191,542,068 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 11 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000632 seconds of total run time (0.000632 user, 0.000000 system)
+  100.00% CPU
+  1,005,456 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 145 steps (failed)
+Evaluation took:
+  0.038 seconds of real time
+  0.037741 seconds of total run time (0.037741 user, 0.000000 system)
+  100.00% CPU
+  59,995,120 processor cycles
+  1,040 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 84 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015999 seconds of total run time (0.015999 user, 0.000000 system)
+  100.00% CPU
+  25,534,760 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 89 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.022055 seconds of total run time (0.022039 user, 0.000016 system)
+  100.00% CPU
+  35,203,528 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 49 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.009311 seconds of total run time (0.009311 user, 0.000000 system)
+  100.00% CPU
+  14,860,004 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 41 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.004422 seconds of total run time (0.004422 user, 0.000000 system)
+  80.00% CPU
+  7,087,524 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 65 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.015457 seconds of total run time (0.015457 user, 0.000000 system)
+  100.00% CPU
+  24,669,976 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 87 steps (failed)
+Evaluation took:
+  0.040 seconds of real time
+  0.039907 seconds of total run time (0.039907 user, 0.000000 system)
+  100.00% CPU
+  63,718,676 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 30 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.003460 seconds of total run time (0.003460 user, 0.000000 system)
+  75.00% CPU
+  5,517,612 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 13 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000856 seconds of total run time (0.000854 user, 0.000002 system)
+  100.00% CPU
+  1,362,676 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 32 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002287 seconds of total run time (0.002287 user, 0.000000 system)
+  100.00% CPU
+  3,648,204 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 28 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002009 seconds of total run time (0.002009 user, 0.000000 system)
+  100.00% CPU
+  3,201,564 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 20 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001558 seconds of total run time (0.001558 user, 0.000000 system)
+  100.00% CPU
+  2,483,452 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 82 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.014916 seconds of total run time (0.014916 user, 0.000000 system)
+  100.00% CPU
+  23,807,096 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 23 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001749 seconds of total run time (0.001720 user, 0.000029 system)
+  100.00% CPU
+  2,787,784 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 56 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005914 seconds of total run time (0.005914 user, 0.000000 system)
+  100.00% CPU
+  9,436,192 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 19 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001022 seconds of total run time (0.001022 user, 0.000000 system)
+  100.00% CPU
+  1,628,556 processor cycles
+  32,096 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 67 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011771 seconds of total run time (0.011771 user, 0.000000 system)
+  100.00% CPU
+  18,784,892 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 52 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.006432 seconds of total run time (0.006432 user, 0.000000 system)
+  100.00% CPU
+  10,262,492 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 15 steps (failed)
+Evaluation took:
+  0.131 seconds of real time
+  0.001303 seconds of total run time (0.001303 user, 0.000000 system)
+  0.76% CPU
+  208,813,948 processor cycles
+  33,104 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 50 steps (failed)
+Evaluation took:
+  0.009 seconds of real time
+  0.008870 seconds of total run time (0.008842 user, 0.000028 system)
+  100.00% CPU
+  14,783,412 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 21 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000889 seconds of total run time (0.000889 user, 0.000000 system)
+  100.00% CPU
+  1,429,072 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 53 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.004648 seconds of total run time (0.004648 user, 0.000000 system)
+  125.00% CPU
+  7,414,724 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 107 steps (failed)
+Evaluation took:
+  0.014 seconds of real time
+  0.013473 seconds of total run time (0.013468 user, 0.000005 system)
+  92.86% CPU
+  21,519,748 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 42 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005102 seconds of total run time (0.005102 user, 0.000000 system)
+  100.00% CPU
+  8,141,676 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - took 46 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005545 seconds of total run time (0.005545 user, 0.000000 system)
+  120.00% CPU
+  8,848,856 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:18] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:19] strips alien.lisp (alien-heuristics) - took 511 steps (failed)
+Evaluation took:
+  0.677 seconds of real time
+  0.676999 seconds of total run time (0.676999 user, 0.000000 system)
+  100.00% CPU
+  1,081,238,880 processor cycles
+  96 bytes consed
+  
+ <INFO> [00:29:19] strips alien.lisp (alien-heuristics) - took 195 steps (failed)
+Evaluation took:
+  0.041 seconds of real time
+  0.040984 seconds of total run time (0.040984 user, 0.000000 system)
+  100.00% CPU
+  66,077,876 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:19] strips alien.lisp (alien-heuristics) - took 63 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.007911 seconds of total run time (0.007911 user, 0.000000 system)
+  100.00% CPU
+  12,390,252 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:19] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:19] strips alien.lisp (alien-heuristics) - took 104 steps (failed)
+Evaluation took:
+  0.033 seconds of real time
+  0.033474 seconds of total run time (0.033457 user, 0.000017 system)
+  100.00% CPU
+  53,418,728 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:19] strips alien.lisp (alien-heuristics) - took 260 steps (failed)
+Evaluation took:
+  0.178 seconds of real time
+  0.177405 seconds of total run time (0.177405 user, 0.000000 system)
+  99.44% CPU
+  283,246,496 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 234 steps (failed)
+Evaluation took:
+  0.194 seconds of real time
+  0.193419 seconds of total run time (0.193419 user, 0.000000 system)
+  99.48% CPU
+  309,119,464 processor cycles
+  1,200 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 64 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015920 seconds of total run time (0.015920 user, 0.000000 system)
+  100.00% CPU
+  25,390,016 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 158 steps (failed)
+Evaluation took:
+  0.112 seconds of real time
+  0.111611 seconds of total run time (0.111611 user, 0.000000 system)
+  100.00% CPU
+  178,215,468 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 52 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011567 seconds of total run time (0.011567 user, 0.000000 system)
+  109.09% CPU
+  18,231,872 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 117 steps (failed)
+Evaluation took:
+  0.048 seconds of real time
+  0.047583 seconds of total run time (0.047583 user, 0.000000 system)
+  100.00% CPU
+  75,980,868 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 42 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.010736 seconds of total run time (0.010736 user, 0.000000 system)
+  110.00% CPU
+  16,934,112 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 123 steps (failed)
+Evaluation took:
+  0.045 seconds of real time
+  0.044426 seconds of total run time (0.044426 user, 0.000000 system)
+  97.78% CPU
+  70,424,436 processor cycles
+  1,376 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 59 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.010568 seconds of total run time (0.010568 user, 0.000000 system)
+  100.00% CPU
+  16,865,028 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 64 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.018795 seconds of total run time (0.018795 user, 0.000000 system)
+  100.00% CPU
+  29,999,172 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 69 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011679 seconds of total run time (0.011679 user, 0.000000 system)
+  100.00% CPU
+  18,638,008 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 80 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.012160 seconds of total run time (0.012160 user, 0.000000 system)
+  92.31% CPU
+  19,406,388 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 108 steps (failed)
+Evaluation took:
+  0.045 seconds of real time
+  0.044481 seconds of total run time (0.044481 user, 0.000000 system)
+  97.78% CPU
+  71,445,036 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 25 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001754 seconds of total run time (0.001754 user, 0.000000 system)
+  200.00% CPU
+  2,819,860 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 59 steps (failed)
+Evaluation took:
+  0.014 seconds of real time
+  0.013324 seconds of total run time (0.013324 user, 0.000000 system)
+  92.86% CPU
+  21,265,684 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 114 steps (failed)
+Evaluation took:
+  0.038 seconds of real time
+  0.038422 seconds of total run time (0.038422 user, 0.000000 system)
+  100.00% CPU
+  61,372,128 processor cycles
+  32,560 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 135 steps (failed)
+Evaluation took:
+  0.020 seconds of real time
+  0.019664 seconds of total run time (0.019664 user, 0.000000 system)
+  100.00% CPU
+  31,146,132 processor cycles
+  33,152 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 133 steps (failed)
+Evaluation took:
+  0.072 seconds of real time
+  0.072108 seconds of total run time (0.072108 user, 0.000000 system)
+  100.00% CPU
+  115,102,128 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 51 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.012010 seconds of total run time (0.012010 user, 0.000000 system)
+  100.00% CPU
+  19,166,692 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 23 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002549 seconds of total run time (0.002549 user, 0.000000 system)
+  150.00% CPU
+  4,063,860 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 100 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.015030 seconds of total run time (0.015030 user, 0.000000 system)
+  100.00% CPU
+  23,987,588 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 141 steps (failed)
+Evaluation took:
+  0.038 seconds of real time
+  0.037363 seconds of total run time (0.037363 user, 0.000000 system)
+  97.37% CPU
+  59,673,896 processor cycles
+  32,240 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 105 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015796 seconds of total run time (0.015796 user, 0.000000 system)
+  100.00% CPU
+  25,211,616 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 45 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.006589 seconds of total run time (0.006589 user, 0.000000 system)
+  116.67% CPU
+  10,510,556 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 38 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.004418 seconds of total run time (0.004418 user, 0.000000 system)
+  80.00% CPU
+  7,048,216 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 39 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005677 seconds of total run time (0.005677 user, 0.000000 system)
+  100.00% CPU
+  9,058,716 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 117 steps (failed)
+Evaluation took:
+  0.050 seconds of real time
+  0.049819 seconds of total run time (0.049818 user, 0.000001 system)
+  100.00% CPU
+  79,509,820 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 131 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.022539 seconds of total run time (0.022539 user, 0.000000 system)
+  100.00% CPU
+  35,973,892 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 83 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011370 seconds of total run time (0.011370 user, 0.000000 system)
+  100.00% CPU
+  18,146,568 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 24 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002444 seconds of total run time (0.002396 user, 0.000048 system)
+  100.00% CPU
+  3,897,784 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:20] strips alien.lisp (alien-heuristics) - took 400 steps (failed)
+Evaluation took:
+  0.234 seconds of real time
+  0.234504 seconds of total run time (0.230920 user, 0.003584 system)
+  100.43% CPU
+  374,139,444 processor cycles
+  1,424 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 84 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.008308 seconds of total run time (0.008298 user, 0.000010 system)
+  100.00% CPU
+  13,258,448 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 104 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.009824 seconds of total run time (0.009824 user, 0.000000 system)
+  100.00% CPU
+  15,268,948 processor cycles
+  31,952 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 60 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.011009 seconds of total run time (0.011009 user, 0.000000 system)
+  100.00% CPU
+  17,568,024 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 39 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002517 seconds of total run time (0.002517 user, 0.000000 system)
+  100.00% CPU
+  4,014,204 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 94 steps (failed)
+Evaluation took:
+  0.055 seconds of real time
+  0.054202 seconds of total run time (0.054202 user, 0.000000 system)
+  98.18% CPU
+  86,553,744 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 130 steps (failed)
+Evaluation took:
+  0.052 seconds of real time
+  0.052050 seconds of total run time (0.052050 user, 0.000000 system)
+  100.00% CPU
+  82,902,620 processor cycles
+  1,136 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 58 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.016113 seconds of total run time (0.016113 user, 0.000000 system)
+  100.00% CPU
+  25,716,808 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 101 steps (failed)
+Evaluation took:
+  0.020 seconds of real time
+  0.020656 seconds of total run time (0.020656 user, 0.000000 system)
+  105.00% CPU
+  32,968,512 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 67 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011129 seconds of total run time (0.011129 user, 0.000000 system)
+  91.67% CPU
+  17,790,668 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 276 steps (failed)
+Evaluation took:
+  0.336 seconds of real time
+  0.336812 seconds of total run time (0.336812 user, 0.000000 system)
+  100.30% CPU
+  537,420,124 processor cycles
+  32,608 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 376 steps (failed)
+Evaluation took:
+  0.333 seconds of real time
+  0.332929 seconds of total run time (0.330218 user, 0.002711 system)
+  100.00% CPU
+  531,527,800 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 36 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003055 seconds of total run time (0.003055 user, 0.000000 system)
+  100.00% CPU
+  4,679,472 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 94 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015740 seconds of total run time (0.015740 user, 0.000000 system)
+  100.00% CPU
+  25,121,720 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 65 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.016893 seconds of total run time (0.016864 user, 0.000029 system)
+  100.00% CPU
+  26,962,488 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:21] strips alien.lisp (alien-heuristics) - took 103 steps (failed)
+Evaluation took:
+  0.047 seconds of real time
+  0.047403 seconds of total run time (0.047403 user, 0.000000 system)
+  100.00% CPU
+  75,528,024 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 225 steps (failed)
+Evaluation took:
+  0.106 seconds of real time
+  0.106095 seconds of total run time (0.106043 user, 0.000052 system)
+  100.00% CPU
+  169,160,612 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 21 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.001040 seconds of total run time (0.001040 user, 0.000000 system)
+  100.00% CPU
+  1,656,472 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 55 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.004880 seconds of total run time (0.004880 user, 0.000000 system)
+  100.00% CPU
+  7,785,988 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 114 steps (failed)
+Evaluation took:
+  0.043 seconds of real time
+  0.042795 seconds of total run time (0.042795 user, 0.000000 system)
+  100.00% CPU
+  68,722,540 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 86 steps (failed)
+Evaluation took:
+  0.020 seconds of real time
+  0.019920 seconds of total run time (0.019920 user, 0.000000 system)
+  100.00% CPU
+  31,794,604 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 147 steps (failed)
+Evaluation took:
+  0.038 seconds of real time
+  0.037657 seconds of total run time (0.037657 user, 0.000000 system)
+  100.00% CPU
+  60,127,236 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 168 steps (failed)
+Evaluation took:
+  0.076 seconds of real time
+  0.076628 seconds of total run time (0.076628 user, 0.000000 system)
+  101.32% CPU
+  122,106,152 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 24 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002007 seconds of total run time (0.002007 user, 0.000000 system)
+  100.00% CPU
+  3,200,056 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 94 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015889 seconds of total run time (0.015889 user, 0.000000 system)
+  100.00% CPU
+  25,359,900 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 69 steps (failed)
+Evaluation took:
+  0.019 seconds of real time
+  0.018363 seconds of total run time (0.018363 user, 0.000000 system)
+  94.74% CPU
+  29,309,564 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 65 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.022030 seconds of total run time (0.022030 user, 0.000000 system)
+  95.65% CPU
+  35,204,104 processor cycles
+  32,672 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 67 steps (failed)
+Evaluation took:
+  0.008 seconds of real time
+  0.008878 seconds of total run time (0.008878 user, 0.000000 system)
+  112.50% CPU
+  13,971,704 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 15 steps (failed)
+Evaluation took:
+  0.000 seconds of real time
+  0.000971 seconds of total run time (0.000971 user, 0.000000 system)
+  100.00% CPU
+  1,546,968 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 37 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001936 seconds of total run time (0.001936 user, 0.000000 system)
+  100.00% CPU
+  3,086,860 processor cycles
+  32,528 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 55 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.006719 seconds of total run time (0.006719 user, 0.000000 system)
+  100.00% CPU
+  10,722,192 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 102 steps (failed)
+Evaluation took:
+  0.039 seconds of real time
+  0.038440 seconds of total run time (0.038440 user, 0.000000 system)
+  97.44% CPU
+  61,394,220 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 5 steps (failed)
+Evaluation took:
+  0.001 seconds of real time
+  0.000321 seconds of total run time (0.000321 user, 0.000000 system)
+  0.00% CPU
+  508,536 processor cycles
+  32,544 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 150 steps (failed)
+Evaluation took:
+  0.027 seconds of real time
+  0.027338 seconds of total run time (0.027338 user, 0.000000 system)
+  100.00% CPU
+  43,655,364 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 39 steps (failed)
+Evaluation took:
+  0.043 seconds of real time
+  0.004574 seconds of total run time (0.004574 user, 0.000000 system)
+  11.63% CPU
+  67,762,028 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 113 steps (failed)
+Evaluation took:
+  0.048 seconds of real time
+  0.040324 seconds of total run time (0.040324 user, 0.000000 system)
+  83.33% CPU
+  77,187,244 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 114 steps (failed)
+Evaluation took:
+  0.049 seconds of real time
+  0.048915 seconds of total run time (0.045404 user, 0.003511 system)
+  100.00% CPU
+  77,673,388 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 31 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003327 seconds of total run time (0.003218 user, 0.000109 system)
+  100.00% CPU
+  5,305,568 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 85 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011793 seconds of total run time (0.011793 user, 0.000000 system)
+  100.00% CPU
+  18,868,212 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 159 steps (failed)
+Evaluation took:
+  0.099 seconds of real time
+  0.098919 seconds of total run time (0.098919 user, 0.000000 system)
+  100.00% CPU
+  158,124,124 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 82 steps (failed)
+Evaluation took:
+  0.024 seconds of real time
+  0.024289 seconds of total run time (0.024279 user, 0.000010 system)
+  100.00% CPU
+  38,601,932 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 48 steps (failed)
+Evaluation took:
+  0.013 seconds of real time
+  0.012774 seconds of total run time (0.012774 user, 0.000000 system)
+  100.00% CPU
+  20,415,664 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 215 steps (failed)
+Evaluation took:
+  0.084 seconds of real time
+  0.083456 seconds of total run time (0.083456 user, 0.000000 system)
+  98.81% CPU
+  133,187,244 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 92 steps (failed)
+Evaluation took:
+  0.022 seconds of real time
+  0.022808 seconds of total run time (0.022808 user, 0.000000 system)
+  104.55% CPU
+  36,427,756 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 101 steps (failed)
+Evaluation took:
+  0.023 seconds of real time
+  0.022144 seconds of total run time (0.022144 user, 0.000000 system)
+  95.65% CPU
+  35,577,812 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 133 steps (failed)
+Evaluation took:
+  0.056 seconds of real time
+  0.055701 seconds of total run time (0.055701 user, 0.000000 system)
+  100.00% CPU
+  89,019,596 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 68 steps (failed)
+Evaluation took:
+  0.010 seconds of real time
+  0.010502 seconds of total run time (0.010502 user, 0.000000 system)
+  110.00% CPU
+  16,779,364 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 47 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.003087 seconds of total run time (0.003087 user, 0.000000 system)
+  100.00% CPU
+  4,940,352 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 43 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005930 seconds of total run time (0.005930 user, 0.000000 system)
+  100.00% CPU
+  9,461,924 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - took 82 steps (failed)
+Evaluation took:
+  0.016 seconds of real time
+  0.015328 seconds of total run time (0.015328 user, 0.000000 system)
+  93.75% CPU
+  24,490,032 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:22] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 194 steps (failed)
+Evaluation took:
+  0.148 seconds of real time
+  0.146904 seconds of total run time (0.146904 user, 0.000000 system)
+  99.32% CPU
+  237,025,420 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 108 steps (failed)
+Evaluation took:
+  0.032 seconds of real time
+  0.031439 seconds of total run time (0.031439 user, 0.000000 system)
+  96.88% CPU
+  50,271,640 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 29 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002077 seconds of total run time (0.002077 user, 0.000000 system)
+  100.00% CPU
+  3,311,488 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 48 steps (failed)
+Evaluation took:
+  0.005 seconds of real time
+  0.005219 seconds of total run time (0.005219 user, 0.000000 system)
+  100.00% CPU
+  8,358,276 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 64 steps (failed)
+Evaluation took:
+  0.021 seconds of real time
+  0.021197 seconds of total run time (0.021197 user, 0.000000 system)
+  100.00% CPU
+  33,608,448 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 67 steps (failed)
+Evaluation took:
+  0.007 seconds of real time
+  0.006645 seconds of total run time (0.006645 user, 0.000000 system)
+  100.00% CPU
+  10,619,700 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 111 steps (failed)
+Evaluation took:
+  0.026 seconds of real time
+  0.025994 seconds of total run time (0.025994 user, 0.000000 system)
+  100.00% CPU
+  41,558,596 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 217 steps (failed)
+Evaluation took:
+  0.131 seconds of real time
+  0.130887 seconds of total run time (0.130887 user, 0.000000 system)
+  100.00% CPU
+  209,061,988 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 224 steps (failed)
+Evaluation took:
+  0.115 seconds of real time
+  0.115714 seconds of total run time (0.115714 user, 0.000000 system)
+  100.87% CPU
+  184,196,320 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 25 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.002179 seconds of total run time (0.002179 user, 0.000000 system)
+  100.00% CPU
+  3,474,772 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 162 steps (failed)
+Evaluation took:
+  0.025 seconds of real time
+  0.025086 seconds of total run time (0.025086 user, 0.000000 system)
+  100.00% CPU
+  40,040,020 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 85 steps (failed)
+Evaluation took:
+  0.011 seconds of real time
+  0.010932 seconds of total run time (0.010932 user, 0.000000 system)
+  100.00% CPU
+  17,447,860 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 24 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002288 seconds of total run time (0.002288 user, 0.000000 system)
+  66.67% CPU
+  3,649,596 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 38 steps (failed)
+Evaluation took:
+  0.002 seconds of real time
+  0.001971 seconds of total run time (0.001971 user, 0.000000 system)
+  100.00% CPU
+  3,141,836 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 111 steps (failed)
+Evaluation took:
+  0.029 seconds of real time
+  0.029044 seconds of total run time (0.029039 user, 0.000005 system)
+  100.00% CPU
+  46,360,140 processor cycles
+  32,144 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 119 steps (failed)
+Evaluation took:
+  0.050 seconds of real time
+  0.050603 seconds of total run time (0.050603 user, 0.000000 system)
+  102.00% CPU
+  80,724,680 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 57 steps (failed)
+Evaluation took:
+  0.012 seconds of real time
+  0.011889 seconds of total run time (0.011889 user, 0.000000 system)
+  100.00% CPU
+  18,972,544 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 61 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.014473 seconds of total run time (0.014473 user, 0.000000 system)
+  93.33% CPU
+  23,099,116 processor cycles
+  32,560 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 100 steps (failed)
+Evaluation took:
+  0.040 seconds of real time
+  0.040236 seconds of total run time (0.040236 user, 0.000000 system)
+  100.00% CPU
+  64,224,420 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 439 steps (failed)
+Evaluation took:
+  0.272 seconds of real time
+  0.272246 seconds of total run time (0.272243 user, 0.000003 system)
+  100.00% CPU
+  434,386,768 processor cycles
+  32,752 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 94 steps (failed)
+Evaluation took:
+  0.020 seconds of real time
+  0.019616 seconds of total run time (0.019616 user, 0.000000 system)
+  100.00% CPU
+  31,943,116 processor cycles
+  32,496 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 78 steps (failed)
+Evaluation took:
+  0.017 seconds of real time
+  0.016447 seconds of total run time (0.016447 user, 0.000000 system)
+  94.12% CPU
+  26,249,140 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 195 steps (failed)
+Evaluation took:
+  0.095 seconds of real time
+  0.095286 seconds of total run time (0.095286 user, 0.000000 system)
+  100.00% CPU
+  151,910,936 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - took 41 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005999 seconds of total run time (0.005999 user, 0.000000 system)
+  100.00% CPU
+  9,373,568 processor cycles
+  65,184 bytes consed
+  
+ <INFO> [00:29:23] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:24] strips alien.lisp (alien-heuristics) - took 100 steps (failed)
+Evaluation took:
+  0.028 seconds of real time
+  0.028575 seconds of total run time (0.028575 user, 0.000000 system)
+  103.57% CPU
+  45,608,580 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:24] strips alien.lisp (alien-heuristics) - took 36 steps (failed)
+Evaluation took:
+  0.003 seconds of real time
+  0.002867 seconds of total run time (0.002867 user, 0.000000 system)
+  100.00% CPU
+  4,572,948 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:24] strips alien.lisp (alien-heuristics) - took 22 steps (failed)
+Evaluation took:
+  0.004 seconds of real time
+  0.003648 seconds of total run time (0.003648 user, 0.000000 system)
+  100.00% CPU
+  5,843,880 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:24] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:24] strips alien.lisp (alien-heuristics) - took 149 steps (failed)
+Evaluation took:
+  0.044 seconds of real time
+  0.044072 seconds of total run time (0.044072 user, 0.000000 system)
+  100.00% CPU
+  70,364,836 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:24] strips alien.lisp (alien-heuristics) - took 201 steps (failed)
+Evaluation took:
+  0.114 seconds of real time
+  0.107658 seconds of total run time (0.107658 user, 0.000000 system)
+  94.74% CPU
+  180,969,536 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:24] strips alien.lisp (alien-heuristics) - took 42 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005897 seconds of total run time (0.005865 user, 0.000032 system)
+  100.00% CPU
+  9,408,380 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:24] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:24] strips alien.lisp (alien-heuristics) - took 103 steps (failed)
+Evaluation took:
+  0.015 seconds of real time
+  0.015060 seconds of total run time (0.015060 user, 0.000000 system)
+  100.00% CPU
+  24,034,164 processor cycles
+  32,544 bytes consed
+  
+ <INFO> [00:29:25] strips alien.lisp (alien-heuristics) - took 534 steps (failed)
+Evaluation took:
+  0.810 seconds of real time
+  0.810222 seconds of total run time (0.810222 user, 0.000000 system)
+  100.00% CPU
+  1,293,610,692 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:25] strips alien.lisp (alien-heuristics) - took 326 steps (failed)
+Evaluation took:
+  0.201 seconds of real time
+  0.200271 seconds of total run time (0.200271 user, 0.000000 system)
+  99.50% CPU
+  320,102,012 processor cycles
+  0 bytes consed
+  
+ <INFO> [00:29:25] strips alien.lisp (alien-heuristics) - 0 / 3 success.
+ <INFO> [00:29:25] strips alien.lisp (alien-heuristics) - took 67 steps (failed)
+Evaluation took:
+  0.006 seconds of real time
+  0.005308 seconds of total run time (0.001413 user, 0.003895 system)
+  83.33% CPU
+  8,468,516 processor cycles
+  0 bytes consed
+  
+Evaluation took:
+  0.044 seconds of real time
+  0.044388 seconds of total run time (0.044376 user, 0.000012 system)
+  100.00% CPU
+  70,893,400 processor cycles
+  0 bytes consed
