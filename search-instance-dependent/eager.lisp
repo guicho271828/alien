@@ -81,6 +81,7 @@
   (declare (optimize (speed 3)))
   (let* ((db (make-state-information-array
               (max-state-id)))
+         (*db* db)
          (close-list (make-close-list :key-function
                                       (let ((info (make-state-information))
                                             (state (make-state)))

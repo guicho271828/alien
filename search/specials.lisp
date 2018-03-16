@@ -86,6 +86,8 @@ See also: function RUN, function SOLVE-COMMON")
 
 (defstruct (searcher (:include builder)) form)
 
+;; main state information database
+(defvar *db*)
 
 ;; (ftype* MAKE-STATE-INFORMATION &key (:static *))
 ;; (ftype* MAKE-STATE-INFORMATION-ARRAY * &key (:static *))
