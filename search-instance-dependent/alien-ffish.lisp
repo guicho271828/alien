@@ -51,7 +51,7 @@ and count the number of reaching the semi-relaxed goal.
            (success 0))
       (declare (dynamic-extent state-db state1 state2 state3)
                (fixnum success))
-      (dotimes (i (maybe-inline-obj *probe-limit*))
+      (dotimes (i (maybe-inline-obj *probe-limit*) (maybe-inline-obj *probe-limit*))
         (fill op-db 0)
         (replace state-db state)
         (replace state1 state)
@@ -72,9 +72,8 @@ and count the number of reaching the semi-relaxed goal.
                       (delete-relaxed-apply-op op-id state1 state2))
                 (apply-axioms state2)
                 (when (goalp state2)
-                  (incf success)
                   ;; (log:info "took ~a steps (success)" step)
-                  (return))
+                  (return-from alien-heuristics/rpg i))
 
                 (let ((achieved (make-state+axioms)))
                   (declare (dynamic-extent achieved))
@@ -107,8 +106,6 @@ and count the number of reaching the semi-relaxed goal.
                 (apply-axioms state3)
                 ;; prepare for the next iteration
                 (replace state1 state3)
-                (replace state2 state3))))
-      ;; (log:info "~a / ~a success." success *probe-limit*)
-      (- (maybe-inline-obj *probe-limit*) success)))
+                (replace state2 state3))))))
   (print-function-size 'alien-heuristics/rpg))
 
