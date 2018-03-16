@@ -56,7 +56,7 @@ exec ros dynamic-space-size=7000 -L sbcl-bin -m alien -Q -- $0 "$@"
                    "software version" (software-version)))
      (show-doc
       `((-t sec *time-limit*)
-        (-m kbyte *memory-limit*)
+        (-m mbyte *memory-limit*)
         (--sg-compiled-branch-limit limit *sg-compiled-branch-limit*)
         (--search-option SEXP *search-option*)
         (--alias NAME *aliases*))))))
