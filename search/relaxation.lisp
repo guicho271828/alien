@@ -6,14 +6,19 @@
   "a class of functions that returns a relaxed version of an operator."
   `(function (op) op))
 
-(ftype* relaxed-sg (simple-array op) relaxer (values sg (simple-array op)))
-(defun relaxed-sg (ops relaxer)
+(ftype* relaxed-sg (simple-array op) relaxer &optional t (values sg (simple-array op)))
+(defun relaxed-sg (ops relaxer &optional (simplify t))
   "Relaxes a SG using a relaxer function.
 Returns two values: a relaxed SG and a vector of relaxed ops.
 The original SG and operators are not destructively modified.
-Operators with no effects are removed from the results and does not belong to the SG."
+Operators with no effects are removed from the results and does not belong to the SG.
+
+If SIMPLIFY is non-nil (default), operators which becomes identical are pruned.
+Setting this to NIL is useful when you want to keep the original op id.
+"
   (let ((relaxed-ops (map 'vector relaxer ops)))
-    (setf relaxed-ops (delete-duplicates relaxed-ops :test #'equalp))
+    (when simplify
+      (setf relaxed-ops (delete-duplicates relaxed-ops :test #'equalp)))
     (values (generate-sg relaxed-ops)
             (coerce relaxed-ops
                     '(simple-array op)))))
@@ -47,12 +52,12 @@ Operators with no effects are removed from the results and does not belong to th
                result-type vector)))))
    '(simple-array effect)))
 
-(defun ensure-delete-relaxed-sg ()
+(defun ensure-delete-relaxed-sg (&optional (simplify t))
   (unless (symbol-value '*delete-relaxed-sg*)
     (log:info "instantiating delete-relaxed successor generator")
     (setf (values *delete-relaxed-sg*
                   *delete-relaxed-ops*)
-          (relaxed-sg *instantiated-ops* #'delete-relax-op)
+          (relaxed-sg *instantiated-ops* #'delete-relax-op simplify)
           *delete-relaxed-op-size*
           (length *delete-relaxed-ops*))
     (log:info "~11@a: ~a" "op" (length *instantiated-ops*))
@@ -157,12 +162,12 @@ Operators with no effects are removed from the results and does not belong to th
                result-type vector)))))
    '(simple-array effect)))
 
-(defun ensure-delete-only-sg ()
+(defun ensure-delete-only-sg (&optional (simplify t))
   (unless (symbol-value '*delete-only-sg*)
     (log:info "instantiating delete-only successor generator")
     (setf (values *delete-only-sg*
                   *delete-only-ops*)
-          (relaxed-sg *instantiated-ops* #'delete-only-op)
+          (relaxed-sg *instantiated-ops* #'delete-only-op simplify)
           *delete-only-op-size*
           (length *delete-only-ops*))
     (log:info "~11@a: ~a" "op" (length *instantiated-ops*))
