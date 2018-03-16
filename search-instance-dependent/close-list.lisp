@@ -130,5 +130,4 @@ If the secondary value is T, then the state is a duplicate."
                  counter-place
                  (1+ counter))))))))
 
-(log:info (max-state-id))
 )

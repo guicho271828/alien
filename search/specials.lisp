@@ -16,7 +16,7 @@
   (floor (* 8 1024 1024 *memory-limit*) ; MB -> bit
          (handler-case
              (max 64 ; for avoiding division-by-zero
-                  (size-of 'state-information))
+                  (eval '(size-of 'state-information)))
            (error ()
              ;; using 64 bit as the lower bound
              64))))

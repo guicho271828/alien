@@ -35,6 +35,8 @@ instance-depdendent code should be compiled/loaded three times.
        ;; because SYMBOLICATE interns in the current package
        (eval `(strips.lib:define-packed-struct state-information ,storage)))
      (log:info (eval '(size-of 'state-information)))
+     (log:info *memory-limit*)
+     (log:info (max-state-id))
      (log-milestone :state-information)
      ;; third LOAD
      (log:info "compiling instance-dependent code for functions")
