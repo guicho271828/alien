@@ -24,14 +24,19 @@ and count the number of reaching the semi-relaxed goal.
 |#
 
 (in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
-(defun alien ()
-  (push 'alien/rpg *optional-features*)
-  (push 'ff/rpg *optional-features*)
-  (ensure-delete-relaxed-sg nil)
-  (ensure-delete-only-sg nil)
-  (make-evaluator
-   :storage '()
-   :function '(function alien-heuristics/rpg)))
+
+  (defun alien (&key
+                  (probe *probe-limit*)
+                  (semi-relaxation *semi-relaxed-rate-log2*))
+    (setf *probe-limit* probe
+          *semi-relaxed-rate-log2* semi-relaxation)
+    (push 'alien/rpg *optional-features*)
+    (push 'ff/rpg *optional-features*)
+    (ensure-delete-relaxed-sg nil)
+    (ensure-delete-only-sg nil)
+    (make-evaluator
+     :storage '()
+     :function '(function alien-heuristics/rpg)))
 )
 
 (in-compilation-phase ((and alien/rpg phase/full-compilation))
