@@ -152,6 +152,6 @@
    #:constant
    #:maximum
    #:threshold
-   #:shift-for))
+   #:tiebreak))
 
 (setf trivia:*arity-check-by-test-call* nil)

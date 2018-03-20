@@ -195,43 +195,39 @@ Otherwise leave the form as it is."
     (bwfs2
      (eager
       (bucket-open-list
-       (sum
-        (shift-for strips::*op-size* (novelty2))
+       (tiebreak
+        (novelty2)
         (ff/rpg)))))
     (bwfs3
      (eager
       (bucket-open-list
-       (sum
-        (shift-for strips::*op-size* (novelty3))
+       (tiebreak
+        (novelty3)
         (ff/rpg)))))
     (bwfs4
      (eager
       (bucket-open-list
-       (sum
-        (shift-for strips::*op-size* (novelty4))
+       (tiebreak
+        (novelty4)
         (ff/rpg)))))
     (alien
      (eager (bucket-open-list (alien))))
     (alien2
      (eager (bucket-open-list
-             (sum
-              (ff/rpg)
-              (shift-for strips::*op-size* (alien))))))
+             (tiebreak
+              (alien)
+              (ff/rpg)))))
     (alien3
      (eager (bucket-open-list
-             (sum
-              (ff/rpg)
-              (shift-for strips::*op-size*
-                         (sum (alien)
-                              (shift-for strips::*probe-limit*
-                                         (novelty3))))))))
+             (tiebreak
+              (novelty3)
+              (alien)
+              (ff/rpg)))))
     (alien4
      (eager (bucket-open-list
-             (sum
-              (ff/rpg)
-              (shift-for strips::*op-size*
-                         (sum (alien)
-                              (shift-for strips::*probe-limit*
-                                         (novelty2)))))))))
+             (tiebreak
+              (novelty2)
+              (alien)
+              (ff/rpg))))))
   "Aliases for predefined search configurations.")
 

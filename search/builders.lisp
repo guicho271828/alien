@@ -55,10 +55,21 @@
                        (value 0 (integer ,value ,value))))
      :function `(constantly ,value))))
 
-(defun shift-for (max-value evalautor)
-  (product
-   (constant (expt 2 (ceiling (log max-value 2))))
-   evalautor))
+(defun tiebreak (evaluator &rest more)
+  (if more
+      (let ((lower-priority (apply #'tiebreak more)))
+        (with-gensyms (tiebreak)
+          (make-evaluator
+           :storage `(list (strips.lib:define-packed-struct ,tiebreak ()
+                             (value 0 (runtime unsigned-byte
+                                               (+ (size-of (first ,(evaluator-storage evaluator)))
+                                                  (size-of (first ,(evaluator-storage lower-priority))))))))
+           :function `(lambda (state)
+                        (+ (ash (funcall ,(evaluator-function evaluator) state)
+                                (maybe-inline-obj
+                                 (size-of (first ,(evaluator-storage lower-priority)))))
+                           (funcall ,(evaluator-function lower-priority) state))))))
+      evaluator))
 
 (defun threshold (threshold evaluator &key (except-init t))
   (assert (integerp threshold))

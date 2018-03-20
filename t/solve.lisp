@@ -135,9 +135,9 @@
                             *time-limit*
                             (eager
                              (bucket-open-list
-                              (sum
-                               (ff/rpg)
-                               (shift-for strips::*op-size* (novelty2)))))))))))
+                              (tiebreak
+                               (novelty2)
+                               (ff/rpg))))))))))
 
 (defun solve-alien-alien (path)
   (solve-alien-common path
@@ -159,9 +159,9 @@
                             *time-limit*
                             (eager
                              (bucket-open-list
-                              (sum
-                               (ff/rpg)
-                               (shift-for strips::*op-size* (alien)))))))))))
+                              (tiebreak
+                               (alien)
+                               (ff/rpg))))))))))
 
 (defun solve-alien-alien3 (path)
   (solve-alien-common path
@@ -172,12 +172,10 @@
                             *time-limit*
                             (eager
                              (bucket-open-list
-                              (sum
-                               (ff/rpg)
-                               (shift-for strips::*op-size*
-                                          (sum (alien)
-                                               (shift-for strips::*probe-limit*
-                                                          (novelty3)))))))))))))
+                              (tiebreak
+                               (novelty3)
+                               (alien)
+                               (ff/rpg))))))))))
 
 
 (defun solve-fd-common (path option)
