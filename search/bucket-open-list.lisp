@@ -68,4 +68,39 @@
                      (bucket-open-list-insert open value id))))
       :pop 'bucket-open-list-pop))))
 
+;; lazy open list
+
+(defun lazy-bucket-open-list (evaluator)
+  (ematch evaluator
+    ((evaluator storage function)
+     (make-open-list
+      :storage `(list* 'cache-bit ,storage)
+      :constructor 'make-bucket-open-list
+      :insert `(let ((info (make-state-information))
+                     (pinfo (make-state-information)))
+                 (lambda (open id state)
+                   (packed-aref *db* 'state-information id info)
+                   (let ((key
+                          (if (= (state-information-op info) ,*op-size*)
+                              ;; initial state
+                              ,(let ((l (symbol-packed-struct-layout (first storage)))
+                                     (s (packed-struct-layout-size-by-name l 'value)))
+                                 (1- (expt 2 s)))
+                              (let ((pid (state-information-parent info)))
+                                (packed-aref *db* 'state-information pid pinfo)
+                                (if (= 1 (state-information-cached pinfo))
+                                    (state-information-value pinfo)
+                                    (let ((pstate+axioms (make-state+axioms))
+                                          (pstate        (make-state)))
+                                      (declare (dynamic-extent pstate))
+                                      (state-information-facts pinfo pstate)
+                                      (replace pstate+axioms pstate)
+                                      (apply-axioms pstate+axioms)
+                                      (let ((new-key (funcall ,function pstate+axioms)))
+                                        (setf (state-information-value pinfo) new-key
+                                              (state-information-cached pinfo) 1
+                                              (packed-aref *db* 'state-information pid) pinfo)
+                                        new-key)))))))
+                     (bucket-open-list-insert open key id))))
+      :pop 'bucket-open-list-pop))))
 
