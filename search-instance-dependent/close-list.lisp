@@ -104,8 +104,8 @@ using C++ unordered_set<StateID, StateIDSemanticHash, StateIDSemanticEqual>
 ;; thus :HASH-FUNCTION and :TEST is not overridden.
 
 (ftype* close-list-insert close-list state (values state-id boolean))
-(defun close-list-insert (close-list thing)
-  "Inserts THING to the close-list under duplicate detection. Returns two values: an ID and a boolean.
+(defun close-list-insert (close-list state)
+  "Inserts STATE to the close-list under duplicate detection. Returns two values: an ID and a boolean.
 If the secondary value is T, then the state is a duplicate."
   (declare (optimize (speed 3) (safety 0) (debug 0)))
   (ematch close-list
@@ -113,10 +113,10 @@ If the secondary value is T, then the state is a duplicate."
                  key-function
                  (counter (place counter-place counter)))
      
-     (let* ((hash (state-hash thing))
+     (let* ((hash (state-hash state))
             (bag (gethash hash table)))
        (declare (list bag))
-       (if-let ((id (find thing bag
+       (if-let ((id (find state bag
                           :key key-function
                           :test #'state-=)))
          ;; duplicate found, do not insert
@@ -129,5 +129,21 @@ If the secondary value is T, then the state is a duplicate."
                  (cons counter bag)
                  counter-place
                  (1+ counter))))))))
+
+(ftype* close-list-fetch close-list state (or state-id null))
+(defun close-list-fetch (close-list state)
+  "Fetch the id of a STATE in the close-list. Returns ID or nil."
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  (ematch close-list
+    ((close-list table
+                 key-function
+                 (counter (place counter-place counter)))
+     
+     (let* ((hash (state-hash state))
+            (bag (gethash hash table)))
+       (declare (list bag))
+       (find state bag
+             :key key-function
+             :test #'state-=)))))
 
 )
