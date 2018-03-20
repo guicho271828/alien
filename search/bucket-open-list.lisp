@@ -42,3 +42,30 @@
                   (funcall ,function state)
                   id))
       :pop 'bucket-open-list-pop))))
+
+;; cached open list
+
+(strips.lib:define-packed-struct cache-bit ()
+  (cached 0 bit))
+
+(defun cached-bucket-open-list (evaluator)
+  (ematch evaluator
+    ((evaluator storage function)
+     (make-open-list
+      :storage `(list* 'cache-bit ,storage)
+      :constructor 'make-bucket-open-list
+      :insert `(let ((info (make-state-information)))
+                 (lambda (open id state)
+                   (packed-aref *db* 'state-information id info)
+                   (let ((value
+                          (if (= 1 (state-information-cached info))
+                              (state-information-value info)
+                              (let ((new-key (funcall ,function state)))
+                                (setf (state-information-value info) new-key
+                                      (state-information-cached info) 1
+                                      (packed-aref *db* 'state-information id) info)
+                                new-key))))
+                     (bucket-open-list-insert open value id))))
+      :pop 'bucket-open-list-pop))))
+
+

@@ -127,6 +127,7 @@
    
    ;; open list
    #:bucket-open-list
+   #:cached-bucket-open-list
    
    ;; heuristics
    #:goal-count
