@@ -34,7 +34,7 @@
   (ematch evaluator
     ((evaluator storage function)
      (make-open-list
-      :storage storage
+      :storage 'nil ; no cache
       :constructor 'make-bucket-open-list
       :insert `(lambda (open id state)
                  (bucket-open-list-insert

@@ -1,4 +1,6 @@
 
+;; TODO: rename this file to BFS
+
 (in-package :strips)
 
 (in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
@@ -7,7 +9,7 @@
   (ematch open-list
     ((open-list storage constructor insert pop)
      (make-searcher
-      :storage (cons 'eager storage)
+      :storage `(list* 'eager ,storage)
       :form `(lambda ()
                (eager-search #',constructor
                              #',insert

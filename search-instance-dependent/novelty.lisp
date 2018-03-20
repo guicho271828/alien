@@ -14,33 +14,46 @@ novelty heuristics
   (declare (ignorable k initial-num-slots cache-size max-memory))
   (push 'novelty *optional-features*)
   (make-evaluator
-   :storage '()
+   :storage '(list 'novelty) ; not defined yet
    :function `(load-time-value (make-novelty-heuristics ,@keys) t)))
 
 (defun novelty1 ()
   (push 'novelty1 *optional-features*)
   (make-evaluator
-   :storage '()
+   :storage '(list 'novelty1)
    :function '(load-time-value (make-novelty1-heuristics) t)))
 
 (defun novelty2 ()
   (push 'novelty2 *optional-features*)
   (make-evaluator
-   :storage '()
+   :storage '(list 'novelty2)
    :function '(load-time-value (make-novelty2-heuristics) t)))
 
 (defun novelty3 ()
   (push 'novelty3 *optional-features*)
   (make-evaluator
-   :storage '()
+   :storage '(list 'novelty3)
    :function '(load-time-value (make-novelty3-heuristics) t)))
 
 (defun novelty4 ()
   (push 'novelty4 *optional-features*)
   (make-evaluator
-   :storage '()
+   :storage '(list 'novelty4)
    :function '(load-time-value (make-novelty4-heuristics) t)))
 )
+
+(in-compilation-phase ((and novelty1 phase/packed-structs))
+  (strips.lib:define-packed-struct novelty1 ()
+    (value 0 (integer 1 2))))
+(in-compilation-phase ((and novelty2 phase/packed-structs))
+  (strips.lib:define-packed-struct novelty2 ()
+    (value 0 (integer 1 3))))
+(in-compilation-phase ((and novelty3 phase/packed-structs))
+  (strips.lib:define-packed-struct novelty3 ()
+    (value 0 (integer 1 4))))
+(in-compilation-phase ((and novelty4 phase/packed-structs))
+  (strips.lib:define-packed-struct novelty4 ()
+    (value 0 (integer 1 5))))
 
 (in-compilation-phase ((and novelty1 phase/full-compilation))
 (ftype* novelty1-heuristics state+axioms state+axioms (integer 1 2))

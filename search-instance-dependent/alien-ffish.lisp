@@ -35,8 +35,13 @@ and count the number of reaching the semi-relaxed goal.
     (ensure-delete-relaxed-sg nil)
     (ensure-delete-only-sg nil)
     (make-evaluator
-     :storage '()
+     :storage '(list 'alien/rpg)
      :function '(function alien-heuristics/rpg)))
+)
+
+(in-compilation-phase ((and alien/rpg phase/packed-structs))
+  (strips.lib:define-packed-struct alien/rpg ()
+    (value 0 (runtime integer 0 *probe-limit*)))
 )
 
 (in-compilation-phase ((and alien/rpg phase/full-compilation))

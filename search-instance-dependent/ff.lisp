@@ -7,13 +7,13 @@
   (ensure-delete-relaxed-sg)
   (push 'ff/rpg *optional-features*)
   (make-evaluator
-   :storage '() ; no cache
+   :storage '(list 'ff)
    :function '(function ff-heuristic/rpg)))
 )
 
 (in-compilation-phase ((and ff/rpg phase/packed-structs))
   (strips.lib:define-packed-struct ff ()
-    (ff 0 (runtime integer 0 *delete-relaxed-op-size*))))
+    (value 0 (runtime integer 0 *delete-relaxed-op-size*))))
 
 (in-compilation-phase ((and ff/rpg phase/full-compilation))
   ;; the range is inclusive. *delete-relaxed-op-size* means unreachable

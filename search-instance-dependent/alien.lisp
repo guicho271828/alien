@@ -98,6 +98,11 @@ and count the number of reaching the semi-relaxed goal.
 
 |#
 
+(in-compilation-phase ((and alien phase/packed-structs))
+  (strips.lib:define-packed-struct alien ()
+    (value 0 (runtime integer 0 *probe-limit*)))
+)
+
 (in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
   (defun alien (&key
                   (probe *probe-limit*)
@@ -106,7 +111,7 @@ and count the number of reaching the semi-relaxed goal.
           *semi-relaxed-rate-log2* semi-relaxation)
     (push 'alien *optional-features*)
     (make-evaluator
-     :storage '()
+     :storage '(list 'alien)
      :function '(function alien-heuristics)))
 )
 
