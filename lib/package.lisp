@@ -19,6 +19,12 @@
    #:defstruct-of-array
    #:define-packed-struct
    #:packed-aref
+   #:packed-struct-layout
+   #:packed-struct-layout-name
+   #:packed-struct-layout-default-by-name
+   #:packed-struct-layout-type-by-name
+   #:packed-struct-layout-size-by-name
+   #:packed-struct-layout-offset-by-name
    #:unbound-packed-struct-layout
    #:symbol-packed-struct-layout
    #:packed-struct-layout-boundp

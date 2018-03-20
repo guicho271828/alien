@@ -134,6 +134,34 @@
     sizes
     offsets))
 
+(declaim (inline
+          packed-struct-layout-default-by-name
+          packed-struct-layout-type-by-name
+          packed-struct-layout-size-by-name
+          packed-struct-layout-offset-by-name)
+         (ftype (function (packed-struct-layout symbol) *)
+                packed-struct-layout-default-by-name
+                packed-struct-layout-type-by-name
+                packed-struct-layout-size-by-name
+                packed-struct-layout-offset-by-name))
+
+(defun packed-struct-layout-default-by-name (layout name)
+  (let ((layout (ensure-packed-struct-layout layout)))
+    (let ((p (position name (packed-struct-layout-names layout))))
+      (elt (packed-struct-layout-defaults layout) p))))
+(defun packed-struct-layout-type-by-name (layout name)
+  (let ((layout (ensure-packed-struct-layout layout)))
+    (let ((p (position name (packed-struct-layout-names layout))))
+      (elt (packed-struct-layout-types layout) p))))
+(defun packed-struct-layout-size-by-name (layout name)
+  (let ((layout (ensure-packed-struct-layout layout)))
+    (let ((p (position name (packed-struct-layout-names layout))))
+      (elt (packed-struct-layout-sizes layout) p))))
+(defun packed-struct-layout-offset-by-name (layout name)
+  (let ((layout (ensure-packed-struct-layout layout)))
+    (let ((p (position name (packed-struct-layout-names layout))))
+      (elt (packed-struct-layout-offsets layout) p))))
+
 (defmethod make-load-form ((self packed-struct-layout) &optional environment)
   (make-load-form-saving-slots self
                                :environment environment))
