@@ -212,22 +212,54 @@ Otherwise leave the form as it is."
         (ff/rpg)))))
     (alien
      (eager (bucket-open-list (alien))))
-    (alien2
+    (alien+ff
      (eager (bucket-open-list
              (tiebreak
               (alien)
               (ff/rpg)))))
-    (alien3
+    (novelty2+alien+ff
+     (eager (bucket-open-list
+             (tiebreak
+              (novelty2)
+              (alien)
+              (ff/rpg)))))
+    (novelty3+alien+ff
      (eager (bucket-open-list
              (tiebreak
               (novelty3)
               (alien)
               (ff/rpg)))))
-    (alien4
+    (alien/rpg
+     (eager (bucket-open-list (alien/rpg))))
+    (alien/rpg+ff
+     (eager (bucket-open-list
+             (tiebreak
+              (alien/rpg)
+              (ff/rpg)))))
+    (novelty2+alien/rpg+ff
      (eager (bucket-open-list
              (tiebreak
               (novelty2)
-              (alien)
-              (ff/rpg))))))
+              (alien/rpg)
+              (ff/rpg)))))
+    (novelty3+alien/rpg+ff
+     (eager (bucket-open-list
+             (tiebreak
+              (novelty3)
+              (alien/rpg)
+              (ff/rpg)))))
+
+    ;; ARIENAI!!! == impossible (japanese)
+    (alieni
+     (eager (bucket-open-list
+             (tiebreak
+              (ff/rpg) ; opposite order
+              (alien)))))
+    (alieni/rpg
+     (eager (bucket-open-list
+             (tiebreak
+              (ff/rpg)
+              (alien/rpg)))))
+    )
   "Aliases for predefined search configurations.")
 
