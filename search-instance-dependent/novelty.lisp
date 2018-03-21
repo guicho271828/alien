@@ -5,6 +5,42 @@
 novelty heuristics
 
 |#
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
+(defun novelty (&rest keys
+                &key (k most-positive-fixnum)
+                  (initial-num-slots 256)
+                  (cache-size 262144)
+                  (max-memory 0))
+  (declare (ignorable k initial-num-slots cache-size max-memory))
+  (push 'novelty *optional-features*)
+  (make-evaluator
+   :storage '()
+   :function `(load-time-value (make-novelty-heuristics ,@keys) t)))
+
+(defun novelty1 ()
+  (push 'novelty1 *optional-features*)
+  (make-evaluator
+   :storage '()
+   :function '(load-time-value (make-novelty1-heuristics) t)))
+
+(defun novelty2 ()
+  (push 'novelty2 *optional-features*)
+  (make-evaluator
+   :storage '()
+   :function '(load-time-value (make-novelty2-heuristics) t)))
+
+(defun novelty3 ()
+  (push 'novelty3 *optional-features*)
+  (make-evaluator
+   :storage '()
+   :function '(load-time-value (make-novelty3-heuristics) t)))
+
+(defun novelty4 ()
+  (push 'novelty4 *optional-features*)
+  (make-evaluator
+   :storage '()
+   :function '(load-time-value (make-novelty4-heuristics) t)))
+)
 
 (in-compilation-phase ((and novelty1 phase/full-compilation))
 (ftype* novelty1-heuristics state+axioms state+axioms (integer 1 2))
@@ -36,7 +72,6 @@ novelty heuristics
     (lambda (state)
       (novelty1-heuristics state db))))
 )
-
 
 (in-compilation-phase ((and novelty2 phase/full-compilation))
 (ftype* novelty2-heuristics

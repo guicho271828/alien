@@ -18,6 +18,13 @@ Operators with no effects are removed from the results and does not belong to th
             (coerce relaxed-ops
                     '(simple-array op)))))
 
+
+;; these definitions should come before solve-common,
+;; otherwise with-parsed-information5 does not know it should be treated as a special variable
+(defvar *delete-relaxed-sg* nil "Relaxed successor generators.")
+(defvar *delete-relaxed-ops* nil "Relaxed operators.")
+(defvar *delete-relaxed-op-size* nil "Relaxed operator size.")
+
 (ftype* delete-relax-op op op)
 (defun delete-relax-op (op)
   (ematch op
@@ -52,6 +59,12 @@ Operators with no effects are removed from the results and does not belong to th
     (log:info "~11@a: ~a" "relaxed op" (length *delete-relaxed-ops*))))
 
 
+
+
+;; these functions are not used.
+(defvar *random-semi-delete-relaxed-sg* nil "Semi-relaxed successor generators.")
+(defvar *random-semi-delete-relaxed-ops* nil "Semi-relaxed operators.")
+(defvar *random-semi-delete-relaxed-op-size* nil "Semi-relaxed operator size.")
 (defvar *random-semi-relax-ratio* 0.8)
 
 (ftype* random-semi-delete-relax-op op op)

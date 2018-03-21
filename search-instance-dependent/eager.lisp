@@ -1,6 +1,19 @@
 
 (in-package :strips)
 
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
+(defun eager (open-list)
+  (push 'eager *optional-features*)
+  (ematch open-list
+    ((open-list storage constructor insert pop)
+     (make-searcher
+      :storage (cons 'eager storage)
+      :form `(lambda ()
+               (eager-search #',constructor
+                             #',insert
+                             #',pop))))))
+)
+
 (in-compilation-phase ((and eager phase/packed-structs))
 (strips.lib:define-packed-struct eager ()
   (facts 0 state)

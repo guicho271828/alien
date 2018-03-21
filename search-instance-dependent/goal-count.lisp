@@ -1,6 +1,14 @@
 
 (in-package :strips)
 
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
+(defun goal-count ()
+  (push 'goal-count *optional-features*)
+  (make-evaluator
+   :storage '(goal-count)
+   :function '(function goal-count-heuristics)))
+)
+
 (in-compilation-phase ((and goal-count phase/packed-structs))
 (strips.lib:define-packed-struct goal-count ()
   (goal-count 0 (runtime integer 0 *fact-size*)))

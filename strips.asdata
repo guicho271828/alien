@@ -29,9 +29,7 @@ $ update-asdf
        (:util)
        (:specials)
        (:rest :recursive nil)
-       (:dir :heuristics)
-       (:dir :searchers)
-       (:dir :open-list))
+       (:run))
  (:dir :validate
        (:rest)))
 

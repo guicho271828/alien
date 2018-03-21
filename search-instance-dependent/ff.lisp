@@ -2,6 +2,15 @@
 
 ;; note: FF heuristic value is dependent on the operator ordering.
 
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
+(defun ff/rpg ()
+  (ensure-delete-relaxed-sg)
+  (push 'ff/rpg *optional-features*)
+  (make-evaluator
+   :storage '() ; no cache
+   :function '(function ff-heuristic/rpg)))
+)
+
 (in-compilation-phase ((and ff/rpg phase/packed-structs))
   (strips.lib:define-packed-struct ff ()
     (ff 0 (runtime integer 0 *delete-relaxed-op-size*))))

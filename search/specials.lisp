@@ -61,15 +61,6 @@
 Each search specification function should add a corresponding flag to this variable.
 See also: function RUN, function SOLVE-COMMON")
 
-;; these definitions should come before solve-common,
-;; otherwise with-parsed-information5 does not know it should be treated as a special variable
-(defvar *delete-relaxed-sg* nil "Relaxed successor generators.")
-(defvar *delete-relaxed-ops* nil "Relaxed operators.")
-(defvar *delete-relaxed-op-size* nil "Relaxed operator size.")
-(defvar *random-semi-delete-relaxed-sg* nil "Semi-relaxed successor generators.")
-(defvar *random-semi-delete-relaxed-ops* nil "Semi-relaxed operators.")
-(defvar *random-semi-delete-relaxed-op-size* nil "Semi-relaxed operator size.")
-
 ;; TODO: solve-many with specifying N
 
 (define-condition no-solution (simple-error)

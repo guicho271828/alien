@@ -53,14 +53,8 @@
                             (:file "compile-sg")
                             (:file "non-axiom-goals")
                             (:file "relaxation")
-                            (:file "run")
                             (:file "timeout")
-                            (:module "heuristics"
-                             :components ())
-                            (:module "searchers"
-                             :components ())
-                            (:module "open-list"
-                             :components ())))
+                            (:file "run")))
               (:module "validate"
                :components ((:file "validate"))))
  :description "A STRIPS planner"
