@@ -153,6 +153,7 @@
    #:constant
    #:maximum
    #:threshold
-   #:tiebreak))
+   #:tiebreak
+   #:evaluator-let))
 
 (setf trivia:*arity-check-by-test-call* nil)
