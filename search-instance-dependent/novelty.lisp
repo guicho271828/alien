@@ -58,7 +58,8 @@ novelty heuristics
 (in-compilation-phase ((and novelty1 phase/full-compilation))
 (ftype* novelty1-heuristics state+axioms state+axioms (integer 1 2))
 (defun novelty1-heuristics (state db)
-  (let ((tmp (load-time-value (make-state+axioms))))
+  (let ((tmp (make-state+axioms)))
+    (declare (dynamic-extent tmp))
     ;; d  ~d s result
     ;; 0   1 0    0
     ;; 0   1 1    1 
@@ -70,7 +71,8 @@ novelty heuristics
 
 (ftype* novelty1-heuristics* state+axioms state+axioms (integer 1 2))
 (defun novelty1-heuristics* (state db)
-  (let ((tmp (load-time-value (make-state+axioms))))
+  (let ((tmp (make-state+axioms)))
+    (declare (dynamic-extent tmp))
     ;; d  ~d s result
     ;; 0   1 0    0
     ;; 0   1 1    1 
