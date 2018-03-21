@@ -161,3 +161,63 @@ Otherwise leave the form as it is."
          (/ (- (get-internal-real-time) *start-time*)
             internal-time-units-per-second))
       (eval *search-option*)))))
+
+(defvar *aliases*
+  '((blind
+     (eager (bucket-open-list (blind))))
+    (goal-count
+     (eager (bucket-open-list (gc))))
+    (ff
+     (eager (bucket-open-list (ff/rpg))))
+    (novelty1
+     (eager (bucket-open-list (novelty1))))
+    (novelty2
+     (eager (bucket-open-list (novelty2))))
+    (novelty3
+     (eager (bucket-open-list (novelty3))))
+    (novelty4
+     (eager (bucket-open-list (novelty4))))
+    
+    (bwfs2
+     (eager
+      (bucket-open-list
+       (sum
+        (shift-for strips::*op-size* (novelty2))
+        (ff/rpg)))))
+    (bwfs3
+     (eager
+      (bucket-open-list
+       (sum
+        (shift-for strips::*op-size* (novelty3))
+        (ff/rpg)))))
+    (bwfs4
+     (eager
+      (bucket-open-list
+       (sum
+        (shift-for strips::*op-size* (novelty4))
+        (ff/rpg)))))
+    (alien
+     (eager (bucket-open-list (alien))))
+    (alien2
+     (eager (bucket-open-list
+             (sum
+              (ff/rpg)
+              (shift-for strips::*op-size* (alien))))))
+    (alien3
+     (eager (bucket-open-list
+             (sum
+              (ff/rpg)
+              (shift-for strips::*op-size*
+                         (sum (alien)
+                              (shift-for strips::*probe-limit*
+                                         (novelty3))))))))
+    (alien4
+     (eager (bucket-open-list
+             (sum
+              (ff/rpg)
+              (shift-for strips::*op-size*
+                         (sum (alien)
+                              (shift-for strips::*probe-limit*
+                                         (novelty2)))))))))
+  "Aliases for predefined search configurations.")
+

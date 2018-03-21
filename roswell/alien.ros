@@ -23,6 +23,11 @@ exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
      (apply #'main rest))
     ((list* "--search-option" (read *search-option*) rest)
      (apply #'main rest))
+    ((list* "--alias" (read alias) rest)
+     (apply #'main
+            "--search-option"
+            (princ-to-string (second (assoc alias *aliases*)))
+            rest))
     
     ((list problem)
      (print-plan
@@ -43,5 +48,6 @@ exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
       `((-t sec *time-limit*)
         (-m kbyte *memory-limit*)
         (--sg-compiled-branch-limit limit *sg-compiled-branch-limit*)
-        (--search-option SEXP *search-option*))))))
+        (--search-option SEXP *search-option*)
+        (--alias NAME *aliases*))))))
 ;;; vim: set ft=lisp lisp:
