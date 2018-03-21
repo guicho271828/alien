@@ -24,8 +24,7 @@ and count the number of reaching the semi-relaxed goal.
 |#
 
 (in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
-
-  (defun alien (&key
+  (defun alien/rpg (&key
                   (probe *probe-limit*)
                   (semi-relaxation *semi-relaxed-rate-log2*))
     (setf *probe-limit* probe

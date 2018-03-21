@@ -183,7 +183,7 @@
                             *time-limit*
                             (eager
                              (bucket-open-list
-                              (alien)))))))))
+                              (alien/rpg)))))))))
 
 (defun solve-alien-alien-lazy (path)
   (solve-alien-common path
@@ -194,7 +194,7 @@
                             *time-limit*
                             (eager
                              (lazy-bucket-open-list
-                              (alien)))))))))
+                              (alien/rpg)))))))))
 
 (defun solve-alien-alien2 (path)
   (solve-alien-common path
@@ -206,7 +206,7 @@
                             (eager
                              (bucket-open-list
                               (tiebreak
-                               (alien)
+                               (alien/rpg)
                                (ff/rpg))))))))))
 
 (defun solve-alien-alien2-cached (path)
@@ -219,7 +219,7 @@
                             (eager
                              (cached-bucket-open-list
                               (tiebreak
-                               (alien)
+                               (alien/rpg)
                                (ff/rpg))))))))))
 
 (defun solve-alien-alien2-lazy (path)
@@ -232,7 +232,7 @@
                             (eager
                              (lazy-bucket-open-list
                               (tiebreak
-                               (alien)
+                               (alien/rpg)
                                (ff/rpg))))))))))
 
 (defun solve-alien-alien3 (path)
@@ -246,7 +246,7 @@
                              (bucket-open-list
                               (tiebreak
                                (novelty2)
-                               (alien)
+                               (alien/rpg)
                                (ff/rpg))))))))))
 
 (defun solve-alien-alien3-lazy (path)
@@ -260,7 +260,7 @@
                              (lazy-bucket-open-list
                               (tiebreak
                                (novelty2)
-                               (alien)
+                               (alien/rpg)
                                (ff/rpg))))))))))
 
 (defun solve-alien-alien3-cached (path)
@@ -274,7 +274,7 @@
                              (cached-bucket-open-list
                               (tiebreak
                                (novelty2)
-                               (alien)
+                               (alien/rpg)
                                (ff/rpg))))))))))
 
 (defun solve-alien-alieni (path)
@@ -288,7 +288,7 @@
                              (bucket-open-list
                               (tiebreak
                                (ff/rpg)
-                               (alien))))))))))
+                               (alien/rpg))))))))))
 
 (defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
@@ -385,6 +385,25 @@
         (solve "movie/p01.pddl")
         (solve "movie/p10.pddl")
         (solve "movie/p20.pddl")))
+
+(test floortile
+  (iter (for *solver* in (list #'solve-alien-blind
+                               #'solve-alien-gc
+                               #'solve-alien-ff/rpg
+                               #'solve-alien-ff/rpg-lazy
+                               #'solve-alien-novelty1
+                               #'solve-alien-novelty2
+                               #'solve-alien-novelty3
+                               #'solve-alien-novelty4
+                               #'solve-alien-bwfs2
+                               #'solve-alien-bwfs3
+                               #'solve-alien-alien
+                               #'solve-alien-alien-lazy
+                               #'solve-alien-alien2
+                               #'solve-alien-alien2-lazy
+                               #'solve-alien-alien3
+                               #'solve-alien-alien3-lazy))
+        (solve "ipc2014-agl/floortile-agl14/p01.pddl")))
 
 (test demo
   ;; demo problems for IPC submission
@@ -547,3 +566,4 @@
 (test demo-alien2-lazy (let ((*solver* #'solve-alien-alien2-lazy)) (run! 'demo)))
 (test demo-alien3-cached (let ((*solver* #'solve-alien-alien3-cached)) (run! 'demo)))
 (test demo-alien3-lazy (let ((*solver* #'solve-alien-alien3-lazy)) (run! 'demo)))
+

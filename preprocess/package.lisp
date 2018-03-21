@@ -147,6 +147,7 @@
    #:novelty
    #:novelty4
    #:alien
+   #:alien/rpg
    #:sum
    #:product
    #:constant
