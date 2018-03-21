@@ -30,7 +30,8 @@
   (:shadow :info :node) ; cl-cudd
   (:import-from :strips.lib
                 :packed-aref
-                :size-of)
+                :size-of
+                :slot-size-of)
   (:export
    ;; translate
    #:parse

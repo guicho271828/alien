@@ -201,14 +201,24 @@
 ;; constant fold
 (define-compiler-macro size-of (&whole whole type &environment env)
   (if (constantp type env)
-      (match type
-        ((list 'quote type)
-         (handler-case (size-of type)
-           (error (c)
-             (log:warn "In compiler macro expansion of ~a,~_ caught ~a :~_ ~a" whole (type-of c) c)
-             whole)))
-        (_
-         whole))
+      (handler-case (eval whole)
+        (error (c)
+          (log:warn "In compiler macro expansion of ~a,~_ caught ~a :~_ ~a" whole (type-of c) c)
+          whole))
+      whole))
+
+(defun slot-size-of (layout-name slotname)
+  (packed-struct-layout-size-by-name
+   (symbol-packed-struct-layout layout-name)
+   slotname))
+
+(define-compiler-macro slot-size-of (&whole whole layout-name slotname &environment env)
+  (if (and (constantp layout-name env)
+           (constantp slotname env))
+      (handler-case (eval whole)
+        (error (c)
+          (log:warn "In compiler macro expansion of ~a,~_ caught ~a :~_ ~a" whole (type-of c) c)
+          whole))
       whole))
 
 ;; (size-of '(unsigned-byte 5))
