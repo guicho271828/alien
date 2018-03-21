@@ -19,6 +19,7 @@
                             (:file "ff")
                             (:file "goal-count")
                             (:file "novelty")
+                            (:file "local-novelty")
                             (:file "alien"
                              :depends-on ("novelty"))
                             (:file "alien-ffish"
