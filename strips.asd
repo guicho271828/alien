@@ -51,6 +51,7 @@
                             (:file "builders")
                             (:file "compile-effect")
                             (:file "compile-sg")
+                            (:file "landmarks")
                             (:file "non-axiom-goals")
                             (:file "relaxation")
                             (:file "timeout")
