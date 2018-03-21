@@ -84,3 +84,82 @@
                         ,@(when except-init `((setf init nil)))
                         value))))))
 
+(defmacro evaluator-let (bindings &body body)
+  `(call-with-temporary-variables
+    (list ,@(mapcar #'second bindings))
+    (lambda ,(mapcar #'first bindings)
+      ,@body)))
+
+(defun call-with-temporary-variables (evaluators fn)
+  "Convert the given evaluators to evaluators which just reference the cached values in lexical variables.
+EVALUATORS: a list of evaluators.
+FN: a function which takes as many arguments as the length of evaluators.
+This function is called with evaluators each of which just refers to a lexical variable
+bound to the result of evaluation.
+
+Equivalent to FD's evaluation context / heuristic cache, but implemented much conveniently.
+"
+  (let* ((temporaries
+          (mapcar (lambda (tmp)
+                    (gensym "TMP"))
+                  evaluators))
+         (locally-cached-evaluators
+          (mapcar (lambda-ematch*
+                    (((evaluator storage) tmp)
+                     ;; Evaluation of this evaluator inside FN
+                     ;; is merely an access to a local variable.
+                     (make-evaluator
+                      :storage storage
+                      :function `(lambda (state) (declare (ignore state)) ,tmp))))
+                  evaluators
+                  temporaries))
+         (result
+          (apply fn locally-cached-evaluators)))
+    (ematch result
+      ((evaluator storage function)
+       (make-evaluator
+        :storage storage
+        :function `(lambda (state)
+                     (let ,(mapcar (lambda-ematch*
+                                     (((evaluator function) tmp)
+                                      ;; create a lexical binding
+                                      `(,tmp (funcall ,function state))))
+                                   evaluators
+                                   temporaries)
+                       (funcall ,function state))))))))
+
+#| Usage:
+
+(evaluator-let ((h (ff/rpg)))
+  (tiebreak
+   h
+   (novelty-for h)))
+
+=>
+
+(call-with-temporary-variables
+ (list (ff/rpg))
+ (lambda (h)
+   (tiebreak
+    h
+    (novelty-for h))))
+
+=> produces code below
+
+(lambda (state)
+  (let ((#:TMP0 (funcall (function ff-heuristics/rpg) state))) ; expansion for ff/rpg evaluator
+    
+    ;; expansion for TIEBREAK evaluator
+    (funcall (lambda (state)
+               (+ (ash (funcall
+                        ;; expansion for the locally cached ff/rpg evaluator
+                        (lambda (state) (declare (ignore state)) #:TMP0)
+                        state)
+                       (maybe-inline-obj
+                        (size-of (first ...))))
+                  (funcall (lambda (state)
+                             ;; expansion for NOVELTY-FOR evaluator
+                             ...)
+                           state)))
+             state)))
+|#
