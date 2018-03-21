@@ -146,6 +146,8 @@
    #:novelty3
    #:novelty
    #:novelty4
+   #:local-novelty1
+   #:local-novelty2
    #:alien
    #:alien/rpg
    #:sum
