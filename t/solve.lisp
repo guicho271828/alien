@@ -254,9 +254,20 @@
                            (strips::non-axiom-goals)))))))))
 
 (test movie
-  (solve "movie/p01.pddl")
-  (solve "movie/p10.pddl")
-  (solve "movie/p20.pddl"))
+  (iter (for *solver* in (list #'solve-alien-blind
+                               #'solve-alien-gc
+                               #'solve-alien-ff/rpg
+                               #'solve-alien-novelty1
+                               #'solve-alien-novelty2
+                               #'solve-alien-novelty3
+                               #'solve-alien-novelty4
+                               #'solve-alien-bwfs
+                               #'solve-alien-alien
+                               #'solve-alien-alien2
+                               #'solve-alien-alien3))
+        (solve "movie/p01.pddl")
+        (solve "movie/p10.pddl")
+        (solve "movie/p20.pddl")))
 
 (test demo
   ;; demo problems for IPC submission
