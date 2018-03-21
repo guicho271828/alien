@@ -115,21 +115,25 @@ A generator node is just a list containing operator indices."
   (assert (symbolp state))
   (assert (symbolp op-id))
   (assert (symbolp sg))
+  (log:info "compiling a successor generator")
   (let ((*sg-compiled-depth-limit*
          (find-depth-limit (symbol-value sg) *sg-compiled-branch-limit*)))
     (log:info "compiled branch limit: ~a" *sg-compiled-branch-limit*)
     (log:info "maximum depth to compile sg: ~a" *sg-compiled-depth-limit*)
-    `(labels ((interpret (node)
-                (ematch node
-                  ((type list)
-                   (dolist (,op-id node)
-                     ,@body))
-                  ((sg-node variable then else either)
-                   (if (= 1 (aref ,state variable))
-                       (interpret then)
-                       (interpret else))
-                   (interpret either)))))
-       ,(compile-iteration-over-leaf op-id state (symbol-value sg) body))))
+    (prog1
+        `(labels ((interpret (node)
+                    (ematch node
+                      ((type list)
+                       (dolist (,op-id node)
+                         (declare (op-id ,op-id))
+                         ,@body))
+                      ((sg-node variable then else either)
+                       (if (= 1 (aref ,state variable))
+                           (interpret then)
+                           (interpret else))
+                       (interpret either)))))
+           ,(compile-iteration-over-leaf op-id state (symbol-value sg) body))
+      (log:info "done"))))
 
 (defun compile-iteration-over-leaf (op-id-sym state-sym sg body
                                     &optional (start 0)
