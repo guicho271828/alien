@@ -83,7 +83,8 @@ From: ubuntu
     env
     ls
     echo args: $@
-    bash -c "/planner/alien -t 300 -m 6000 $*"
+    # use 3600 limit on both agile and SAT; will be terminated anyways
+    bash -c "/planner/alien -t 3600 -m 6000 $*"
 
 
 
