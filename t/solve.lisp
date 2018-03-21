@@ -148,7 +148,7 @@
                              (bucket-open-list
                               (novelty :k 5)))))))))
 
-(defun solve-alien-bwfs (path)
+(defun solve-alien-bwfs2 (path)
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
@@ -161,6 +161,19 @@
                                (novelty2)
                                (ff/rpg))))))))))
 
+(defun solve-alien-bwfs3 (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (tiebreak
+                               (novelty3)
+                               (ff/rpg))))))))))
+
 (defun solve-alien-alien (path)
   (solve-alien-common path
                       (lambda ()
@@ -170,6 +183,17 @@
                             *time-limit*
                             (eager
                              (bucket-open-list
+                              (alien)))))))))
+
+(defun solve-alien-alien-lazy (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (lazy-bucket-open-list
                               (alien)))))))))
 
 (defun solve-alien-alien2 (path)
@@ -221,7 +245,7 @@
                             (eager
                              (bucket-open-list
                               (tiebreak
-                               (novelty3)
+                               (novelty2)
                                (alien)
                                (ff/rpg))))))))))
 
@@ -235,7 +259,7 @@
                             (eager
                              (lazy-bucket-open-list
                               (tiebreak
-                               (novelty3)
+                               (novelty2)
                                (alien)
                                (ff/rpg))))))))))
 
@@ -249,10 +273,22 @@
                             (eager
                              (cached-bucket-open-list
                               (tiebreak
-                               (novelty3)
+                               (novelty2)
                                (alien)
                                (ff/rpg))))))))))
 
+(defun solve-alien-alieni (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (eager
+                             (bucket-open-list
+                              (tiebreak
+                               (ff/rpg)
+                               (alien))))))))))
 
 (defun solve-fd-common (path option)
   (declare (optimize (debug 3) (speed 0)))
@@ -339,7 +375,8 @@
                                #'solve-alien-novelty2
                                #'solve-alien-novelty3
                                #'solve-alien-novelty4
-                               #'solve-alien-bwfs
+                               #'solve-alien-bwfs2
+                               #'solve-alien-bwfs3
                                #'solve-alien-alien
                                #'solve-alien-alien2
                                #'solve-alien-alien3
@@ -453,7 +490,8 @@
 (test demo-novelty4-zdd (let ((*solver* #'solve-alien-novelty4-zdd)) (run! 'demo)))
 (test demo-novelty5-zdd (let ((*solver* #'solve-alien-novelty5-zdd)) (run! 'demo)))
 
-(test demo-bwfs (let ((*solver* #'solve-alien-bwfs)) (run! 'demo)))
+(test demo-bwfs2 (let ((*solver* #'solve-alien-bwfs2)) (run! 'demo)))
+(test demo-bwfs3 (let ((*solver* #'solve-alien-bwfs3)) (run! 'demo)))
 (test demo-alien (let ((*solver* #'solve-alien-alien)) (run! 'demo)))
 (test movie-alien (let ((*solver* #'solve-alien-alien)) (run! 'movie)))
 (test demo-large-alien (let ((*solver* #'solve-alien-alien)) (run! 'demo-large)))
@@ -461,6 +499,12 @@
 (test movie-alien2 (let ((*solver* #'solve-alien-alien2)) (run! 'movie)))
 (test demo-alien2 (let ((*solver* #'solve-alien-alien2)) (run! 'demo)))
 (test demo-large-alien2 (let ((*solver* #'solve-alien-alien2)) (run! 'demo-large)))
+
+(test movie-alien3 (let ((*solver* #'solve-alien-alien3)) (run! 'movie)))
+(test demo-alien3 (let ((*solver* #'solve-alien-alien3)) (run! 'demo)))
+(test demo-large-alien3 (let ((*solver* #'solve-alien-alien3)) (run! 'demo-large)))
+
+(test demo-alieni (let ((*solver* #'solve-alien-alieni)) (run! 'demo)))
 
 (test demo-large-novelty1 (let ((*solver* #'solve-alien-novelty1)) (run! 'demo-large)))
 (test demo-large-novelty2 (let ((*solver* #'solve-alien-novelty2)) (run! 'demo-large)))
@@ -498,6 +542,7 @@
 
 (test demo-ff/rpg-cached (let ((*solver* #'solve-alien-ff/rpg-cached)) (run! 'demo)))
 (test demo-ff/rpg-lazy (let ((*solver* #'solve-alien-ff/rpg-lazy)) (run! 'demo)))
+(test demo-alien-lazy (let ((*solver* #'solve-alien-alien-lazy)) (run! 'demo)))
 (test demo-alien2-cached (let ((*solver* #'solve-alien-alien2-cached)) (run! 'demo)))
 (test demo-alien2-lazy (let ((*solver* #'solve-alien-alien2-lazy)) (run! 'demo)))
 (test demo-alien3-cached (let ((*solver* #'solve-alien-alien3-cached)) (run! 'demo)))
