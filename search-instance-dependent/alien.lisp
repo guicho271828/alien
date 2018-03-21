@@ -7,6 +7,8 @@ count the number of cases successfully reaching the goal.
 
 |#
 
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
+
 (defparameter *probe-limit* 10)
 
 (defparameter *semi-relaxed-rate-log2* 2
@@ -65,7 +67,7 @@ When I = 2, approximately 1/4 of the bits are 0."
       (setf (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
             (logand (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
                     (random (expt 2 64)))))))
-
+)
 
 ;; e.g.
 ;; (strips::set-random-bitvector^2 4 #*0000000000000000000000000000000000000000000000)
@@ -86,6 +88,14 @@ We sample the state space with a successor function which is randomly ALMOST del
 and count the number of reaching the semi-relaxed goal.
 
 |#
+
+(in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
+(defun alien ()
+  (push 'alien *optional-features*)
+  (make-evaluator
+   :storage '()
+   :function '(function alien-heuristics)))
+)
 
 (in-compilation-phase ((and alien phase/full-compilation))
   (ftype* alien-heuristics state+axioms (runtime integer 0 *probe-limit*))
