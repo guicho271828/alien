@@ -11,9 +11,9 @@
      (make-searcher
       :storage `(list* 'eager ,storage)
       :form `(lambda ()
-               (eager-search #',constructor
-                             #',insert
-                             #',pop))))))
+               (eager-search ,constructor
+                             ,insert
+                             ,pop))))))
 )
 
 (in-compilation-phase ((and eager phase/packed-structs))

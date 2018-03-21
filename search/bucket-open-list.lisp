@@ -35,13 +35,13 @@
     ((evaluator storage function)
      (make-open-list
       :storage 'nil ; no cache
-      :constructor 'make-bucket-open-list
+      :constructor '(function make-bucket-open-list)
       :insert `(lambda (open id state)
                  (bucket-open-list-insert
                   open
                   (funcall ,function state)
                   id))
-      :pop 'bucket-open-list-pop))))
+      :pop '(function bucket-open-list-pop)))))
 
 ;; cached open list
 
@@ -53,7 +53,7 @@
     ((evaluator storage function)
      (make-open-list
       :storage `(list* 'cache-bit ,storage)
-      :constructor 'make-bucket-open-list
+      :constructor '(function make-bucket-open-list)
       :insert `(let ((info (make-state-information)))
                  (lambda (open id state)
                    (packed-aref *db* 'state-information id info)
@@ -66,7 +66,7 @@
                                       (packed-aref *db* 'state-information id) info)
                                 new-key))))
                      (bucket-open-list-insert open value id))))
-      :pop 'bucket-open-list-pop))))
+      :pop '(function bucket-open-list-pop)))))
 
 ;; lazy open list
 
@@ -75,17 +75,16 @@
     ((evaluator storage function)
      (make-open-list
       :storage `(list* 'cache-bit ,storage)
-      :constructor 'make-bucket-open-list
+      :constructor '(function make-bucket-open-list)
       :insert `(let ((info (make-state-information))
                      (pinfo (make-state-information)))
                  (lambda (open id state)
                    (packed-aref *db* 'state-information id info)
                    (let ((key
                           (if (= (state-information-op info) ,*op-size*)
-                              ;; initial state
-                              ,(let ((l (symbol-packed-struct-layout (first storage)))
-                                     (s (packed-struct-layout-size-by-name l 'value)))
-                                 (1- (expt 2 s)))
+                              ;; initial state, slot-size-of has a compiler macro
+                              (ldb (byte (slot-size-of 'state-information 'value) 0) -1)
+                              ;; other states
                               (let ((pid (state-information-parent info)))
                                 (packed-aref *db* 'state-information pid pinfo)
                                 (if (= 1 (state-information-cached pinfo))
@@ -102,5 +101,5 @@
                                               (packed-aref *db* 'state-information pid) pinfo)
                                         new-key)))))))
                      (bucket-open-list-insert open key id))))
-      :pop 'bucket-open-list-pop))))
+      :pop '(function bucket-open-list-pop)))))
 
