@@ -10,31 +10,6 @@ exec ros dynamic-space-size=8000 -L sbcl-bin -m alien -Q -- $0 "$@"
 
 (in-package :strips)
 
-(defun show-doc (specs)
-  (iter (for (key arg variable) in specs)
-        (format *error-output*
-                "~@{~40@a : ~a~%~}"
-                (format nil "~(~{~a~^ | ~}~) ~a" (ensure-list key) arg)
-                (or (documentation variable 'variable) "undocumented")
-                ""
-                (format nil "  default value: ~a"
-                        (if (boundp variable)
-                            (symbol-value variable)
-                            "unspecified")))))
-
-(defvar *search-option* '(eager (bucket-open-list (ff/rpg)))
-  "search configurations.")
-
-(defun main-search ()
-  (with-memory-usage-diff ()
-    (run
-     (timeout
-      (- *time-limit*
-         ;; subtract the current runtime
-         (/ (- (get-internal-real-time) *start-time*)
-            internal-time-units-per-second))
-      (eval *search-option*)))))
-
 (defun main (&rest argv)
   (declare (ignorable argv))
   (setf *terminal-io* *error-output*)

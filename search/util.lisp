@@ -135,3 +135,29 @@ Otherwise leave the form as it is."
 ;; (defun draw (f)
 ;;   (dump-zdd "." "dump" f)
 ;;   (uiop:run-program (format nil "dot dump.dot -Tpdf -o dump.pdf")))
+
+
+(defun show-doc (specs)
+  (iter (for (key arg variable) in specs)
+        (format *error-output*
+                "~@{~40@a : ~a~%~}"
+                (format nil "~(~{~a~^ | ~}~) ~a" (ensure-list key) arg)
+                (or (documentation variable 'variable) "undocumented")
+                ""
+                (format nil "  default value: ~a"
+                        (if (boundp variable)
+                            (symbol-value variable)
+                            "unspecified")))))
+
+(defvar *search-option* '(eager (bucket-open-list (ff/rpg)))
+  "Search configuration.")
+
+(defun main-search ()
+  (with-memory-usage-diff ()
+    (run
+     (timeout
+      (- *time-limit*
+         ;; subtract the current runtime
+         (/ (- (get-internal-real-time) *start-time*)
+            internal-time-units-per-second))
+      (eval *search-option*)))))
