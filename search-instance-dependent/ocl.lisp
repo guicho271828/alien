@@ -4,26 +4,26 @@
 (in-package :strips)
 
 (in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
-(defun eager (open-list)
-  (push 'eager *optional-features*)
+(defun ocl (open-list)
+  (push 'ocl *optional-features*)
   (ematch open-list
     ((open-list storage constructor insert pop)
      (make-searcher
-      :storage `(list* 'eager ,storage)
+      :storage `(list* 'ocl ,storage)
       :form `(lambda ()
-               (eager-search ,constructor
+               (ocl-search ,constructor
                              ,insert
                              ,pop))))))
 )
 
-(in-compilation-phase ((and eager phase/packed-structs))
-(strips.lib:define-packed-struct eager ()
+(in-compilation-phase ((and ocl phase/packed-structs))
+(strips.lib:define-packed-struct ocl ()
   (facts 0 state)
   (parent 0 state-id)
   (op 0 op-id)
   (status +new+ status)))
 
-(in-compilation-phase ((and eager phase/full-compilation))
+(in-compilation-phase ((and ocl phase/full-compilation))
   (defun print-plan-simulation (op-ids)
     (log:debug
      "~a"
@@ -78,8 +78,8 @@
              
              (replace state+axioms child+axioms))))))
 
-(in-compilation-phase ((and eager phase/full-compilation))
-(defun eager-search (open-list insert pop)
+(in-compilation-phase ((and ocl phase/full-compilation))
+(defun ocl-search (open-list insert pop)
   (declare (optimize (speed 3)))
   (let* ((db (make-state-information-array
               (max-state-id)))

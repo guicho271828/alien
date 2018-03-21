@@ -163,7 +163,7 @@ Otherwise leave the form as it is."
                             (symbol-value variable)
                             "unspecified")))))
 
-(defvar *search-option* '(eager (bucket-open-list (ff/rpg)))
+(defvar *search-option* '(ocl (bucket-open-list (ff/rpg)))
   "Search configuration.")
 
 (defun main-search ()
@@ -178,88 +178,88 @@ Otherwise leave the form as it is."
 
 (defvar *aliases*
   '((blind
-     (eager (bucket-open-list (blind))))
+     (ocl (bucket-open-list (blind))))
     (goal-count
-     (eager (bucket-open-list (gc))))
+     (ocl (bucket-open-list (gc))))
     (ff
-     (eager (bucket-open-list (ff/rpg))))
+     (ocl (bucket-open-list (ff/rpg))))
     (novelty1
-     (eager (bucket-open-list (novelty1))))
+     (ocl (bucket-open-list (novelty1))))
     (novelty2
-     (eager (bucket-open-list (novelty2))))
+     (ocl (bucket-open-list (novelty2))))
     (novelty3
-     (eager (bucket-open-list (novelty3))))
+     (ocl (bucket-open-list (novelty3))))
     (novelty4
-     (eager (bucket-open-list (novelty4))))
+     (ocl (bucket-open-list (novelty4))))
     
     (bwfs2
-     (eager
+     (ocl
       (bucket-open-list
        (tiebreak
         (novelty2)
         (ff/rpg)))))
     (bwfs3
-     (eager
+     (ocl
       (bucket-open-list
        (tiebreak
         (novelty3)
         (ff/rpg)))))
     (bwfs4
-     (eager
+     (ocl
       (bucket-open-list
        (tiebreak
         (novelty4)
         (ff/rpg)))))
     (alien
-     (eager (bucket-open-list (alien))))
+     (ocl (bucket-open-list (alien))))
     (alien+ff
-     (eager (bucket-open-list
-             (tiebreak
-              (alien)
-              (ff/rpg)))))
+     (ocl (bucket-open-list
+           (tiebreak
+            (alien)
+            (ff/rpg)))))
     (novelty2+alien+ff
-     (eager (bucket-open-list
-             (tiebreak
-              (novelty2)
-              (alien)
-              (ff/rpg)))))
+     (ocl (bucket-open-list
+           (tiebreak
+            (novelty2)
+            (alien)
+            (ff/rpg)))))
     (novelty3+alien+ff
-     (eager (bucket-open-list
-             (tiebreak
-              (novelty3)
-              (alien)
-              (ff/rpg)))))
+     (ocl (bucket-open-list
+           (tiebreak
+            (novelty3)
+            (alien)
+            (ff/rpg)))))
     (alien/rpg
-     (eager (bucket-open-list (alien/rpg))))
+     (ocl (bucket-open-list (alien/rpg))))
     (alien/rpg+ff
-     (eager (bucket-open-list
-             (tiebreak
-              (alien/rpg)
-              (ff/rpg)))))
+     (ocl (bucket-open-list
+           (tiebreak
+            (alien/rpg)
+            (ff/rpg)))))
     (novelty2+alien/rpg+ff
-     (eager (bucket-open-list
-             (tiebreak
-              (novelty2)
-              (alien/rpg)
-              (ff/rpg)))))
+     (ocl (bucket-open-list
+           (tiebreak
+            (novelty2)
+            (alien/rpg)
+            (ff/rpg)))))
     (novelty3+alien/rpg+ff
-     (eager (bucket-open-list
-             (tiebreak
-              (novelty3)
-              (alien/rpg)
-              (ff/rpg)))))
+     (ocl (bucket-open-list
+           (tiebreak
+            (novelty3)
+            (alien/rpg)
+            (ff/rpg)))))
 
     ;; ARIENAI!!! == impossible (japanese)
     (alieni
-     (eager (bucket-open-list
-             (tiebreak
-              (ff/rpg) ; opposite order
-              (alien)))))
+     (ocl (bucket-open-list
+           (tiebreak
+            (ff/rpg) ; opposite order
+            (alien)))))
     (alieni/rpg
-     (eager (bucket-open-list
-             (tiebreak
-              (ff/rpg)
-              (alien/rpg)))))
+     (ocl (bucket-open-list
+           (tiebreak
+            (ff/rpg)
+            (alien/rpg)))))
     )
   "Aliases for predefined search configurations.")
 

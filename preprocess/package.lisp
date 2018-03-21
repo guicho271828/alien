@@ -122,7 +122,7 @@
    #:decode-state
 
    ;; search algorithm/wrapper
-   #:eager
+   #:ocl
    #:timeout
    
    ;; open list

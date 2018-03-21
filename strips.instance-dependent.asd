@@ -15,7 +15,7 @@
  :components ((:module "search-instance-dependent"
                :components ((:file "close-list")
                             (:file "search-common")
-                            (:file "eager")
+                            (:file "ocl")
                             (:file "ff")
                             (:file "goal-count")
                             (:file "novelty")

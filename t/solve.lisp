@@ -23,7 +23,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (blind)))))))))
 
@@ -34,7 +34,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (goal-count)))))))))
 
@@ -45,7 +45,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (ff/rpg)))))))))
 
@@ -56,7 +56,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (cached-bucket-open-list
                               (ff/rpg)))))))))
 
@@ -67,7 +67,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (lazy-bucket-open-list
                               (ff/rpg)))))))))
 
@@ -78,7 +78,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (novelty1)))))))))
 
@@ -89,7 +89,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (novelty2)))))))))
 
@@ -100,7 +100,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (novelty3)))))))))
 
@@ -111,7 +111,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (novelty4)))))))))
 
@@ -122,7 +122,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (novelty :k 3)))))))))
 
@@ -133,7 +133,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (novelty :k 4)))))))))
 
@@ -144,7 +144,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (novelty :k 5)))))))))
 
@@ -155,7 +155,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (tiebreak
                                (novelty2)
@@ -168,7 +168,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (tiebreak
                                (novelty3)
@@ -181,7 +181,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (alien/rpg)))))))))
 
@@ -192,7 +192,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (lazy-bucket-open-list
                               (alien/rpg)))))))))
 
@@ -203,7 +203,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (tiebreak
                                (alien/rpg)
@@ -216,7 +216,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (cached-bucket-open-list
                               (tiebreak
                                (alien/rpg)
@@ -229,7 +229,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (lazy-bucket-open-list
                               (tiebreak
                                (alien/rpg)
@@ -242,7 +242,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (tiebreak
                                (novelty2)
@@ -256,7 +256,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (lazy-bucket-open-list
                               (tiebreak
                                (novelty2)
@@ -270,7 +270,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (cached-bucket-open-list
                               (tiebreak
                                (novelty2)
@@ -284,7 +284,7 @@
                           (strips:run
                            (timeout
                             *time-limit*
-                            (eager
+                            (ocl
                              (bucket-open-list
                               (tiebreak
                                (ff/rpg)
@@ -336,7 +336,7 @@
 (test instance-depdenent
   (finishes
     (print
-     (eager
+     (ocl
       (bucket-open-list
        (blind))))))
 
