@@ -216,24 +216,38 @@
           (adjust-array vector (* 2 (array-total-size vector))))
       (vector-push element vector))))
 
-(defun safe-aref (vector i &optional (initial-element nil initial-element-supplied-p))
-  (if (not (array-in-bounds-p vector i))
-      (progn
-        (when (adjustable-array-p vector)
-          (log:trace "extending array: ~a -> ~a" (array-total-size vector) (* 2 (array-total-size vector)))
-          (if initial-element-supplied-p
-              (adjust-array vector (* 2 (array-total-size vector)) :initial-element initial-element)
-              (adjust-array vector (* 2 (array-total-size vector)))))
-        initial-element)
-      (aref vector i)))
+(defmacro safe-aref (vector i &optional (initial-element nil initial-element-supplied-p))
+  (once-only (vector i)
+    `(if (not (array-in-bounds-p ,vector ,i))
+         (if (adjustable-array-p ,vector)
+             (let ((old-size (array-total-size ,vector))
+                   (new-size (expt 2 (integer-length ,i))))
+               (adjust-array ,vector new-size)
+               ,@(when initial-element-supplied-p
+                   `((dotimes (offset (- new-size old-size))
+                       (setf (aref ,vector (+ old-size offset)) ,initial-element))))
+               (aref ,vector ,i))
+             ,initial-element)
+         (aref ,vector ,i))))
 
-(defun (setf safe-aref) (newval vector i &optional (initial-element nil initial-element-supplied-p))
-  (when (not (array-in-bounds-p vector i))
-    (log:trace "extending array: ~a -> ~a" (array-total-size vector) (* 2 (array-total-size vector)))
-    (if initial-element-supplied-p
-        (adjust-array vector (* 2 (array-total-size vector)) :initial-element initial-element)
-        (adjust-array vector (* 2 (array-total-size vector)))))
-  (setf (aref vector i) newval))
+;; (defun safe-aref (vector i &optional (initial-element nil initial-element-supplied-p))
+;;   (if (not (array-in-bounds-p vector i))
+;;       (progn
+;;         (when (adjustable-array-p vector)
+;;           (log:trace "extending array: ~a -> ~a" (array-total-size vector) (* 2 (array-total-size vector)))
+;;           (if initial-element-supplied-p
+;;               (adjust-array vector (* 2 (array-total-size vector)) :initial-element initial-element)
+;;               (adjust-array vector (* 2 (array-total-size vector)))))
+;;         initial-element)
+;;       (aref vector i)))
+;; 
+;; (defun (setf safe-aref) (newval vector i &optional (initial-element nil initial-element-supplied-p))
+;;   (when (not (array-in-bounds-p vector i))
+;;     (log:trace "extending array: ~a -> ~a" (array-total-size vector) (* 2 (array-total-size vector)))
+;;     (if initial-element-supplied-p
+;;         (adjust-array vector (* 2 (array-total-size vector)) :initial-element initial-element)
+;;         (adjust-array vector (* 2 (array-total-size vector)))))
+;;   (setf (aref vector i) newval))
 
 (defmacro in-compile-time ((environment) &body body &environment env)
   (check-type environment symbol)
