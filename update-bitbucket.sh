@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 git checkout master
 git rebase develop
