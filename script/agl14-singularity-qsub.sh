@@ -40,6 +40,8 @@ options="--alias bwfs2"      probdir="../results3/ipc2014-agl-bwfs2"  run
 options="--alias bwfs3"      probdir="../results3/ipc2014-agl-bwfs3"  run
 options="--alias bwfs4"      probdir="../results3/ipc2014-agl-bwfs4"  run
 
-options="--alias wffw1"      probdir="../results3/ipc2014-agl-wffw1"  run
-options="--alias wffw2"      probdir="../results3/ipc2014-agl-wffw2"  run
+options="--alias wffw11"      probdir="../results3/ipc2014-agl-wffw11"  run
+options="--alias wffw22"      probdir="../results3/ipc2014-agl-wffw22"  run
+options="--alias wffw12"      probdir="../results3/ipc2014-agl-wffw12"  run
+options="--alias wffw21"      probdir="../results3/ipc2014-agl-wffw21"  run
 
