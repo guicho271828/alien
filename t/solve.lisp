@@ -174,7 +174,7 @@
                                (novelty3)
                                (ff/rpg))))))))))
 
-(defun solve-alien-wffw1 (path)
+(defun solve-alien-wffw11 (path)
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
@@ -189,7 +189,7 @@
           h
           (local-novelty1 h)))))))))))
 
-(defun solve-alien-wffw2 (path)
+(defun solve-alien-wffw22 (path)
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
@@ -203,6 +203,36 @@
           (novelty2)
           h
           (local-novelty2 h)))))))))))
+
+(defun solve-alien-wffw12 (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (ocl
+      (bucket-open-list
+       (evaluator-let ((h (ff/rpg)))
+         (tiebreak
+          (novelty1)
+          h
+          (local-novelty2 h)))))))))))
+
+(defun solve-alien-wffw21 (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (ocl
+      (bucket-open-list
+       (evaluator-let ((h (ff/rpg)))
+         (tiebreak
+          (novelty2)
+          h
+          (local-novelty1 h)))))))))))
 
 (defun solve-alien-alien (path)
   (solve-alien-common path
@@ -597,5 +627,7 @@
 (test demo-alien3-cached (let ((*solver* #'solve-alien-alien3-cached)) (run! 'demo)))
 (test demo-alien3-lazy (let ((*solver* #'solve-alien-alien3-lazy)) (run! 'demo)))
 
-(test demo-alien-wffw1 (let ((*solver* #'solve-alien-wffw1)) (run! 'demo)))
-(test demo-alien-wffw2 (let ((*solver* #'solve-alien-wffw2)) (run! 'demo)))
+(test demo-alien-wffw11 (let ((*solver* #'solve-alien-wffw11)) (run! 'demo)))
+(test demo-alien-wffw22 (let ((*solver* #'solve-alien-wffw22)) (run! 'demo)))
+(test demo-alien-wffw12 (let ((*solver* #'solve-alien-wffw12)) (run! 'demo)))
+(test demo-alien-wffw21 (let ((*solver* #'solve-alien-wffw21)) (run! 'demo)))
