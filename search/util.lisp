@@ -210,7 +210,15 @@ Otherwise leave the form as it is."
        (tiebreak
         (novelty4)
         (ff/rpg)))))
-    (wffw2
+    (wffw11
+     (ocl
+      (bucket-open-list
+       (evaluator-let ((h (ff/rpg)))
+         (tiebreak
+          (novelty1)
+          h
+          (local-novelty1 h))))))
+    (wffw22
      (ocl
       (bucket-open-list
        (evaluator-let ((h (ff/rpg)))
@@ -218,6 +226,22 @@ Otherwise leave the form as it is."
           (novelty2)
           h
           (local-novelty2 h))))))
+    (wffw12
+     (ocl
+      (bucket-open-list
+       (evaluator-let ((h (ff/rpg)))
+         (tiebreak
+          (novelty1)
+          h
+          (local-novelty2 h))))))
+    (wffw21
+     (ocl
+      (bucket-open-list
+       (evaluator-let ((h (ff/rpg)))
+         (tiebreak
+          (novelty2)
+          h
+          (local-novelty1 h))))))
     (alien
      (ocl (bucket-open-list (alien))))
     (alien+ff
