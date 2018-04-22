@@ -71,8 +71,7 @@ From: ubuntu
     ros install strips
 
     # alternative way to build alien
-    ros dynamic-space-size=8000 dump --disable-compression executable roswell/alien.ros
-    mv -f roswell/alien alien
+    ros dynamic-space-size=8000 dump --disable-compression executable roswell/alien.ros -o alien
     ./alien
     
 %runscript
@@ -84,7 +83,7 @@ From: ubuntu
     ls
     echo args: $@
     # use 3600 limit on both agile and SAT; will be terminated anyways
-    bash -c "/planner/alien -t 3600 -m 6000 $*"
+    bash -c "/planner/alien -t 3600 -m 7000 $*"
 
 
 
