@@ -40,3 +40,6 @@ options="--alias bwfs2"      probdir="../results3/ipc2014-agl-bwfs2"  run
 options="--alias bwfs3"      probdir="../results3/ipc2014-agl-bwfs3"  run
 options="--alias bwfs4"      probdir="../results3/ipc2014-agl-bwfs4"  run
 
+options="--alias wffw1"      probdir="../results3/ipc2014-agl-wffw1"  run
+options="--alias wffw2"      probdir="../results3/ipc2014-agl-wffw2"  run
+
