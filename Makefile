@@ -1,4 +1,7 @@
 
+alien:
+	ros dynamic-space-size=8000 dump --disable-compression executable roswell/alien.ros -o alien
+
 planner.img: $(shell git ls-files)
 	sudo singularity build planner.img ./Singularity
 
