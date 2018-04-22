@@ -174,6 +174,36 @@
                                (novelty3)
                                (ff/rpg))))))))))
 
+(defun solve-alien-wffw1 (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (ocl
+      (bucket-open-list
+       (evaluator-let ((h (ff/rpg)))
+         (tiebreak
+          (novelty1)
+          h
+          (local-novelty1 h)))))))))))
+
+(defun solve-alien-wffw2 (path)
+  (solve-alien-common path
+                      (lambda ()
+                        (with-memory-usage-diff ()
+                          (strips:run
+                           (timeout
+                            *time-limit*
+                            (ocl
+      (bucket-open-list
+       (evaluator-let ((h (ff/rpg)))
+         (tiebreak
+          (novelty2)
+          h
+          (local-novelty2 h)))))))))))
+
 (defun solve-alien-alien (path)
   (solve-alien-common path
                       (lambda ()
@@ -567,3 +597,5 @@
 (test demo-alien3-cached (let ((*solver* #'solve-alien-alien3-cached)) (run! 'demo)))
 (test demo-alien3-lazy (let ((*solver* #'solve-alien-alien3-lazy)) (run! 'demo)))
 
+(test demo-alien-wffw1 (let ((*solver* #'solve-alien-wffw1)) (run! 'demo)))
+(test demo-alien-wffw2 (let ((*solver* #'solve-alien-wffw2)) (run! 'demo)))
