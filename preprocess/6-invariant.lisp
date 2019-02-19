@@ -3,7 +3,7 @@
 ;; it is in fact only running the axiom-layer deduction.
 ;; the true invariant synthesis code is added in the future.
 
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
 ;; (-> "ipc2011-opt/transport-opt11/p01.pddl"

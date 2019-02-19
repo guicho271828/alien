@@ -1,5 +1,5 @@
 
-(in-package :strips)
+(in-package :alien)
 
 (in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
 (defun goal-count ()
@@ -10,7 +10,7 @@
 )
 
 (in-compilation-phase ((and goal-count phase/packed-structs))
-(strips.lib:define-packed-struct goal-count ()
+(alien.lib:define-packed-struct goal-count ()
   (value 0 (runtime integer 0 *fact-size*)))
 )
 

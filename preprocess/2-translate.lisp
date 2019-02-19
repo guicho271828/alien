@@ -2,7 +2,7 @@
 ;; Malte Helmert. Concise finite-domain representations for PDDL planning tasks, JAIR, 2009
 ;; See Section 4
 
-(in-package :strips)
+(in-package :alien)
 
 (defun find-domain (problem-path)
   (log:debug "finding the domain file...")

@@ -1,5 +1,5 @@
 
-(in-package :strips.lib)
+(in-package :alien.lib)
 
 (sb-c:defknown nop () null (sb-c::always-translatable)
   :overwrite-fndb-silently t)
@@ -9,17 +9,17 @@
 
 (in-package "SB-VM")
 
-(define-vop (strips.lib::nop)
+(define-vop (alien.lib::nop)
   (:policy :fast-safe)
-  (:translate strips.lib::nop)
+  (:translate alien.lib::nop)
   (:results (result :scs (descriptor-reg)))
   (:result-types list)
   (:generator 4
               (inst nop)))
 
-(define-vop (strips.lib::nop2)
+(define-vop (alien.lib::nop2)
   (:policy :fast-safe)
-  (:translate strips.lib::nop2)
+  (:translate alien.lib::nop2)
   (:args (thing :scs (descriptor-reg)))
   (:arg-types t)
   (:results (result :scs (descriptor-reg)))

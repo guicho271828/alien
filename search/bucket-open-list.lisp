@@ -1,4 +1,4 @@
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
 ;;; open list
@@ -45,7 +45,7 @@
 
 ;; cached open list
 
-(strips.lib:define-packed-struct cache-bit ()
+(alien.lib:define-packed-struct cache-bit ()
   (cached 0 bit))
 
 (defun cached-bucket-open-list (evaluator)

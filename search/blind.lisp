@@ -1,8 +1,8 @@
 
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(strips.lib:define-packed-struct blind ()
+(alien.lib:define-packed-struct blind ()
   (value 0 (integer 0 0)))
 
 (defun blind-heuristics (state)

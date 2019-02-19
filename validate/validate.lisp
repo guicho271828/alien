@@ -1,5 +1,5 @@
 
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
 (defun search-fd ()
@@ -12,7 +12,7 @@
                          (warn "Fast Downward was not found!")
                          (rec parent)))))))
     (rec
-     (asdf:system-source-directory :strips))))
+     (asdf:system-source-directory :alien))))
 
 (defun fd-relative-pathname (path)
   (let ((path (merge-pathnames
@@ -42,7 +42,7 @@
                          (warn "VAL was not found!")
                          (rec parent)))))))
     (rec
-     (asdf:system-source-directory :strips))))
+     (asdf:system-source-directory :alien))))
 
 (defun validator ()
   (merge-pathnames "validate" (search-val)))

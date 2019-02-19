@@ -1,12 +1,12 @@
 #|
-  This file is a part of strips project.
+  This file is a part of alien project.
   Copyright (c) 2017 Masataro Asai (guicho2.71828@gmail.com)
 |#
 
 (in-package :cl-user)
-(defpackage :strips.test
+(defpackage :alien.test
   (:use :cl
-        :strips :pddl
+        :alien :pddl
         :fiveam
         :iterate :alexandria :trivia
         :lparallel
@@ -14,15 +14,15 @@
         :cl-prolog2)
   (:shadowing-import-from :trivia :<>)
   (:shadowing-import-from :fiveam :run))
-(in-package :strips.test)
+(in-package :alien.test)
 
 (named-readtables:in-readtable :fare-quasiquote)
 
 
-(def-suite :strips)
-(in-suite :strips)
+(def-suite :alien)
+(in-suite :alien)
 
-(def-suite translate :in :strips)
+(def-suite translate :in :alien)
 (in-suite translate)
 
 ;; run test with (run! test-name) 
@@ -47,7 +47,7 @@
 (test translate
   (finishes
     (let ((*package* (find-package :cl-user)))
-      (parse (asdf:system-relative-pathname :strips "axiom-domains/opttel-adl-derived/p01.pddl"))))
+      (parse (asdf:system-relative-pathname :alien "axiom-domains/opttel-adl-derived/p01.pddl"))))
 
   (for-all ((p (lambda () (random-elt *small-files*))))
     (let (parsed)
@@ -133,23 +133,23 @@
          (cocktail . beverage)
          (shot . container)
          (shaker . container))
-       (strips::parse-typed-def '(hand level beverage dispenser container - object
+       (alien::parse-typed-def '(hand level beverage dispenser container - object
                                   ingredient cocktail - beverage
                                   shot shaker - container))))
   (is (set= '(object location truck)
             (let ((*types* '((truck . location)
                              (location . truck)
                              (truck . object))))
-              (strips::flatten-type 'truck))))
+              (alien::flatten-type 'truck))))
   
   (signals error
     (let (*types*)
-      (strips::grovel-types '((:types truck - location location - truck)))))
+      (alien::grovel-types '((:types truck - location location - truck)))))
   
   (is (set= '((location ?truck) (truck ?truck))
             (let ((*types* '((truck . location)
                              (location . object))))
-              (strips::flatten-types/argument '?truck 'truck))))
+              (alien::flatten-types/argument '?truck 'truck))))
   
   (is (set= '((IN ?TRUCK ?THING) (TRUCK ?TRUCK))
             (let ((*types* '((truck . location)
@@ -157,13 +157,13 @@
                   (*predicate-types* '((truck location)
                                        (location object)
                                        (in truck object))))
-              (strips::flatten-types/predicate `(in ?truck ?thing)))))
+              (alien::flatten-types/predicate `(in ?truck ?thing)))))
 
   (signals error
     (let ((*types* '((truck . location)
                      (location . object)))
           (*predicate-types* '()))
-      (strips::flatten-types/predicate `(in ?truck ?thing))))
+      (alien::flatten-types/predicate `(in ?truck ?thing))))
 
   (let ((*types* '((truck . location)
                    (location . object)))
@@ -171,7 +171,7 @@
                              (location object)
                              (in truck object))))
     (multiple-value-bind (w/o-type predicates parsed)
-        (strips::flatten-typed-def `(?truck - truck ?thing - object))
+        (alien::flatten-typed-def `(?truck - truck ?thing - object))
       (is (set= '(?truck ?thing) w/o-type))
       (is (set= '((truck ?truck)) predicates))
       (is (set= '((?truck . truck) (?thing . object)) parsed))))
@@ -181,14 +181,14 @@
         (*predicate-types* '((clean agent object))))
     (is (equal
          '(forall (?u) (imply (and (unit ?u)) (and (and (clean ?v ?u) (agent ?v)))))
-         (strips::flatten-types/condition `(forall (?u - unit) (and (clean ?v ?u))))))
+         (alien::flatten-types/condition `(forall (?u - unit) (and (clean ?v ?u))))))
     (is (equal
          '(not (and (clean ?v ?u) (agent ?v)))
-         (strips::flatten-types/condition `(not (clean ?v ?u))))))
+         (alien::flatten-types/condition `(not (clean ?v ?u))))))
 
   (let ((*types* '((a . object) (b . object)))
         *predicate-types* *predicates*)
-    (strips::grovel-predicates `((:predicates (pred ?x - a ?y - b))))
+    (alien::grovel-predicates `((:predicates (pred ?x - a ?y - b))))
     (is (set= '((pred ?x ?y)) *predicates*))
     (is (set= '((pred a b)) *predicate-types*))))
 
@@ -200,10 +200,10 @@
     acc))
 
 (defun nnf-dnf (condition)
-  (collect-results (strips::&nnf-dnf condition)))
+  (collect-results (alien::&nnf-dnf condition)))
 
 (defun nnf-dnf/effect (condition)
-  (collect-results (strips::&nnf-dnf/effect condition)))
+  (collect-results (alien::&nnf-dnf/effect condition)))
 
 (defun gen-bool ()
   (lambda () (zerop (random 2))))
@@ -233,15 +233,15 @@
 
 (test simplify-effect
   (is (equal '(and (forall nil (when (and) (clear))))
-             (strips::simplify-effect `(clear))))
+             (alien::simplify-effect `(clear))))
 
-  (ematch (strips::simplify-effect `(when (and) (and (a) (b))))
+  (ematch (alien::simplify-effect `(when (and) (and (a) (b))))
     (`(and ,@rest)
       (is (set= `((forall nil (when (and) (b)))
                   (forall nil (when (and) (a))))
                 rest))))
 
-  (ematch (strips::simplify-effect `(when (and) (forall () (and (a) (b)))))
+  (ematch (alien::simplify-effect `(when (and) (forall () (and (a) (b)))))
     (`(and ,@rest)
       (is (set= `((forall nil (when (and) (b)))
                   (forall nil (when (and) (a))))
@@ -249,7 +249,7 @@
 
 (test move-exists/condition
   
-  (ematch (strips::move-exists/condition `(exists (a b c) (three a b c)))
+  (ematch (alien::move-exists/condition `(exists (a b c) (three a b c)))
     (`(exists ,args ,form)
       (let ((fn (eval `(lambda ,args
                          (flet ((three (a b c) (xor a b c)))
@@ -261,13 +261,13 @@
   ;; (EXISTS (#:A54970 #:B54971 #:C54972) (AND (THREE #:A54970 #:B54971 #:C54972)))
 
   (finishes
-    (print (strips::move-exists/condition `(and
+    (print (alien::move-exists/condition `(and
                                             (p1)
                                             (exists (a) (p2 a))
                                             (exists (a) (p3 a)))))
     ;; (EXISTS (#:A54873 #:A54874) (AND (P3 #:A54874) (P2 #:A54873) (P1)))
     
-    (print (strips::move-exists/condition `(and
+    (print (alien::move-exists/condition `(and
                                             (p1)
                                             (exists (a)
                                                     (and (and (p3 a)
@@ -275,14 +275,14 @@
                                                          (exists (b) (p2 a b)))))))
     ;; (EXISTS (#:A54875 #:B54876) (AND (P2 #:A54875 #:B54876) (P4 #:A54875) (P3 #:A54875) (P1)))
     
-    (print (strips::move-exists/effect `(and (p1)
+    (print (alien::move-exists/effect `(and (p1)
                                              (and (p1) (p1))
                                              (when (exists (a) (clear a))
                                                (and (p2) (and (p2) (and (p2) (p2))))))))
     ;; (AND (FORALL (#:A54877) (WHEN (AND (CLEAR #:A54877)) (AND (P2) (P2) (P2) (P2)))) (P1) (P1) (P1)) 
     ))
 
-(def-suite grounding :in :strips)
+(def-suite grounding :in :alien)
 (in-suite grounding)
 
 #+obsolete
@@ -291,7 +291,7 @@
                         (in-city ?l2 ?c)
                         (at ?t ?l1)))) 
     (multiple-value-match
-        (strips::all-relaxed-reachable2
+        (alien::all-relaxed-reachable2
          (shuffle
           (copy-list
            '((in-city ?l1 ?c)
@@ -303,7 +303,7 @@
              
   (let ((*predicates* '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2))))
     (multiple-value-bind (decomposed temporary)
-        (strips::all-relaxed-reachable2
+        (alien::all-relaxed-reachable2
          (shuffle
           (copy-list
            '((LOCATABLE ?V) (VEHICLE ?V) (LOCATION ?L1) (LOCATION ?L2) (AT ?V ?L1) (ROAD ?L1 ?L2)))))
@@ -312,8 +312,8 @@
       (is (= 2 (length decomposed)))
       (is (<= 4 (length temporary) 8))))
 
-  (is-true (strips::tmp-p '(tmp111)))
-  (is-false (strips::tmp-p '(a))))
+  (is-true (alien::tmp-p '(tmp111)))
+  (is-false (alien::tmp-p '(a))))
 
 (defun call-test-ground (info fn)
   (with-parsed-information4 (mutex-invariant (ground (easy-invariant info) *package*))
@@ -329,8 +329,8 @@
 (in-suite relaxed-reachability)
 
 (test relaxed-reachability1
-  (with-test-ground (strips::parse1 '(define (domain d)
-                              (:requirements :strips :typing)
+  (with-test-ground (alien::parse1 '(define (domain d)
+                              (:requirements :alien :typing)
                               (:predicates (d ?x) (p ?x) (goal))
                               (:action a :parameters (?x) :precondition (and) :effect (p ?x))
                               (:derived (d ?x) (p ?x)))
@@ -341,10 +341,10 @@
                               (:goal (goal))))
     (print *monotonicity*)
     (is-true *monotonicity*)
-    (is-true (strips::axiom-p '(d ?x)))
-    (is-true (strips::added-p '(p ?x)))
-    (is-true (strips::monotonic+p '(p ?x)))
-    (is-true (strips::static-p '(goal)))
+    (is-true (alien::axiom-p '(d ?x)))
+    (is-true (alien::added-p '(p ?x)))
+    (is-true (alien::monotonic+p '(p ?x)))
+    (is-true (alien::static-p '(goal)))
     (print *facts*)
     (print *ground-axioms*)
     (print *ops*)
@@ -357,8 +357,8 @@
 
 (test relaxed-reachability2
   ;; parameter ?x is not referenced in the axiom body
-  (with-test-ground (strips::parse1 '(define (domain d)
-                                      (:requirements :strips :typing)
+  (with-test-ground (alien::parse1 '(define (domain d)
+                                      (:requirements :alien :typing)
                                       (:predicates (d ?x) (p) (goal))
                                       (:action a :parameters (?x) :precondition (and) :effect (p))
                                       (:derived (d ?x) (p)))
@@ -367,10 +367,10 @@
                                       (:objects o1 o2)
                                       (:init )
                                       (:goal (goal))))
-    (is-true (strips::axiom-p '(d ?x)))
-    (is-true (strips::added-p '(p)))
-    (is-true (strips::monotonic+p '(p)))
-    (is-true (strips::static-p '(goal)))
+    (is-true (alien::axiom-p '(d ?x)))
+    (is-true (alien::added-p '(p)))
+    (is-true (alien::monotonic+p '(p)))
+    (is-true (alien::static-p '(goal)))
     (print *facts*)
     (is-true (mem '(p) *facts*))
     (is-true (mem '(d o1) *ground-axioms*))
@@ -380,8 +380,8 @@
 
 (test relaxed-reachability3
   ;; parameter ?x is a free variable in the axiom body
-  (with-test-ground (strips::parse1 '(define (domain d)
-                              (:requirements :strips :typing)
+  (with-test-ground (alien::parse1 '(define (domain d)
+                              (:requirements :alien :typing)
                               (:predicates (d) (p ?x) (goal))
                               (:action a :parameters (?x) :precondition (and) :effect (p ?x))
                               (:derived (d) (p ?x)))
@@ -390,10 +390,10 @@
                               (:objects o1 o2)
                               (:init )
                               (:goal (goal))))
-    (is-true (strips::axiom-p '(d)))
-    (is-true (strips::added-p '(p ?x)))
-    (is-true (strips::monotonic+p '(p ?x)))
-    (is-true (strips::static-p '(goal)))
+    (is-true (alien::axiom-p '(d)))
+    (is-true (alien::added-p '(p ?x)))
+    (is-true (alien::monotonic+p '(p ?x)))
+    (is-true (alien::static-p '(goal)))
     
     (is-true (mem '(p o1) *facts*))
     (is-true (mem '(p o2) *facts*))
@@ -404,8 +404,8 @@
     (is-true (mem '((a0 o2) (0)) *ops*))))
 
 (test relaxed-reachability4
-  (with-test-ground (strips::parse1 '(define (domain d)
-                              (:requirements :strips :typing)
+  (with-test-ground (alien::parse1 '(define (domain d)
+                              (:requirements :alien :typing)
                               (:predicates (d ?x) (p ?x) (p2 ?x) (goal))
                               (:action a :parameters (?x) :precondition (and) :effect (p ?x))
                               (:derived (d) (p2 ?x)))
@@ -464,9 +464,9 @@
 
 (test relaxed-reachability7 ; initially true vs false predicates which are never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))
-    (with-test-ground (strips::parse1
+    (with-test-ground (alien::parse1
                        '(define (domain d)
-                         (:requirements :strips :typing)
+                         (:requirements :alien :typing)
                          (:predicates (p ?x) (q ?x))
                          (:action a :parameters (?x) :precondition (and (not (p ?x))) :effect (q ?x)))
                        '(define (problem p)
@@ -479,9 +479,9 @@
 
 (test relaxed-reachability8 ; initially true predicates which can be deleted vs which is never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))
-    (with-test-ground (strips::parse1
+    (with-test-ground (alien::parse1
                        '(define (domain d)
-                         (:requirements :strips :typing)
+                         (:requirements :alien :typing)
                          (:predicates (p ?x) (q ?x) (r ?x))
                          (:action a :parameters (?x) :precondition (not (p ?x)) :effect (q ?x))
                          (:action a :parameters (?x) :precondition (r ?x)       :effect (not (p ?x))))
@@ -496,9 +496,9 @@
 (test relaxed-reachability9 ; axioms that can become true vs cannot become true
   (let ((*enable-negative-precondition-pruning-for-axioms* t)
         (*enable-negative-precondition-pruning-for-fluents* t))
-    (with-test-ground (strips::parse1
+    (with-test-ground (alien::parse1
                        '(define (domain d)
-                         (:requirements :strips :typing)
+                         (:requirements :alien :typing)
                          (:predicates (p ?x) (q ?x) (axiom ?x))
                          (:action a :parameters (?x) :precondition (and (not (axiom ?x))) :effect (q ?x))
                          (:derived (axiom ?x) (p ?x)))
@@ -514,9 +514,9 @@
 (test relaxed-reachability10 ; axioms that can become true vs cannot become true
   (let ((*enable-negative-precondition-pruning-for-axioms* t)
         (*enable-negative-precondition-pruning-for-fluents* t))
-    (with-test-ground (strips::parse1
+    (with-test-ground (alien::parse1
                        '(define (domain d)
-                         (:requirements :strips :typing)
+                         (:requirements :alien :typing)
                          (:predicates (p ?x) (q ?x) (axiom ?x) (r ?x))
                          (:action a :parameters (?x) :precondition (and (not (axiom ?x))) :effect (q ?x))
                          (:action a :parameters (?x) :precondition (r ?x)                 :effect (not (p ?x)))
@@ -547,7 +547,7 @@
              ((reachable 0) 3)
              ((reachable 1) 2)
              ((reachable 2) 1))
-           (read-from-string (strips::%axiom-layers)))))
+           (read-from-string (alien::%axiom-layers)))))
   
   (is-true
    (let ((*axioms* `((:derived (reachable ?x) (and (at ?x)))
@@ -565,11 +565,11 @@
              ((reachable 0) 3)
              ((reachable 1) 2)
              ((reachable 2) 1))
-           (read-from-string (strips::%axiom-layers)))))
+           (read-from-string (alien::%axiom-layers)))))
 
 
   (with-parsed-information3 (-> "axiom-domains/opttel-adl-derived/p01.pddl"
-                              strips::%rel
+                              alien::%rel
                               parse
                               easy-invariant
                               ground)
@@ -577,7 +577,7 @@
 
   (finishes
     (-> "axiom-domains/opttel-adl-derived/p01.pddl"
-      strips::%rel
+      alien::%rel
       parse
       easy-invariant
       ground
@@ -597,13 +597,13 @@
 
 (defparameter *timeout* 600)
 
-(defun num-operator-fd (p &optional (d (strips::find-domain p)))
+(defun num-operator-fd (p &optional (d (alien::find-domain p)))
   (format t "~&Testing FD grounding, without invariant synthesis~%")
   (with-timing
     (handler-case
       (bt:with-timeout (*timeout*)
         (let ((command (format nil "~a --invariant-generation-max-time 0 ~a ~a | grep 'Translator operators' | cut -d' ' -f 3"
-                               (strips::%rel "downward/src/translate/translate.py") d p)))
+                               (alien::%rel "downward/src/translate/translate.py") d p)))
           (write-string command *trace-output*)
           (terpri *trace-output*)
           (read-from-string
@@ -612,7 +612,7 @@
       (bt:timeout ()
         nil))))
 
-(defun num-operator-ours (p &optional (d (strips::find-domain p)))
+(defun num-operator-ours (p &optional (d (alien::find-domain p)))
   (format t "~&Testing prolog-based grounding, without invariant synthesis~%")
   (with-timing
     (handler-case
@@ -633,11 +633,11 @@
 (defparameter *small-files*
   '("researchers-domain/p07.pddl"
     "axiom-domains/opttel-adl-derived/p01.pddl"
-    #+(or) "axiom-domains/opttel-strips-derived/p01.pddl"       ; FD is too slow
+    #+(or) "axiom-domains/opttel-alien-derived/p01.pddl"       ; FD is too slow
     "axiom-domains/philosophers-adl-derived/p01.pddl"
-    #+(or) "axiom-domains/philosophers-strips-derived/p01.pddl" ; FD is too slow
+    #+(or) "axiom-domains/philosophers-alien-derived/p01.pddl" ; FD is too slow
     "axiom-domains/psr-middle-adl-derived/p01.pddl"             ; ours < fd with negative preconditions
-    #+(or) "axiom-domains/psr-middle-strips-derived/p01.pddl"   ; FD is too slow
+    #+(or) "axiom-domains/psr-middle-alien-derived/p01.pddl"   ; FD is too slow
     "ipc2006-optsat/openstacks/p01.pddl"
     "ipc2006-optsat/pathways/p01.pddl"
     "ipc2006-optsat/pipesworld/p01.pddl"
@@ -687,11 +687,11 @@
 (defparameter *middle-files*
   '("researchers-domain/p10.pddl"
     "axiom-domains/opttel-adl-derived/p10.pddl"
-    #+(or) "axiom-domains/opttel-strips-derived/p10.pddl"       ; FD is too slow
+    #+(or) "axiom-domains/opttel-alien-derived/p10.pddl"       ; FD is too slow
     "axiom-domains/philosophers-adl-derived/p10.pddl"
-    #+(or) "axiom-domains/philosophers-strips-derived/p10.pddl" ; FD is too slow
+    #+(or) "axiom-domains/philosophers-alien-derived/p10.pddl" ; FD is too slow
     "axiom-domains/psr-middle-adl-derived/p10.pddl"             ; ours < fd with negative preconditions
-    #+(or) "axiom-domains/psr-middle-strips-derived/p10.pddl"   ; FD is too slow
+    #+(or) "axiom-domains/psr-middle-alien-derived/p10.pddl"   ; FD is too slow
     "ipc2006-optsat/openstacks/p10.pddl"
     "ipc2006-optsat/pathways/p10.pddl"
     "ipc2006-optsat/pipesworld/p10.pddl"
@@ -741,11 +741,11 @@
 (defparameter *large-files*
   '("researchers-domain/p12.pddl"
     "axiom-domains/opttel-adl-derived/p48.pddl"
-    "axiom-domains/opttel-strips-derived/p19.pddl"
+    "axiom-domains/opttel-alien-derived/p19.pddl"
     "axiom-domains/philosophers-adl-derived/p48.pddl"
-    "axiom-domains/philosophers-strips-derived/p48.pddl"
+    "axiom-domains/philosophers-alien-derived/p48.pddl"
     "axiom-domains/psr-middle-adl-derived/p50.pddl"
-    "axiom-domains/psr-middle-strips-derived/p50.pddl"
+    "axiom-domains/psr-middle-alien-derived/p50.pddl"
     "ipc2011-opt/barman-opt11/p20.pddl"
     "ipc2011-opt/elevators-opt11/p20.pddl"
     "ipc2011-opt/floortile-opt11/p20.pddl"
@@ -847,8 +847,8 @@
 (test num-operator-small
   (test-num-operators *small-files*))
 
-(def-suite :strips.more)
-(in-suite :strips.more)
+(def-suite :alien.more)
+(in-suite :alien.more)
 
 (test num-operator-middle
   (test-num-operators *middle-files*))
@@ -860,8 +860,8 @@
   (let ((*time-parser* t))
     (test-num-operators
      '(;; very large grounded domains
-       "axiom-domains/psr-middle-strips-derived/p50.pddl" ; 106sec @ 94 facts, 7451 axioms, 5214 ops
-       "axiom-domains/opttel-strips-derived/p19.pddl"  ; 10sec @ 2320 facts, 1601 axioms, 2860 ops
+       "axiom-domains/psr-middle-alien-derived/p50.pddl" ; 106sec @ 94 facts, 7451 axioms, 5214 ops
+       "axiom-domains/opttel-alien-derived/p19.pddl"  ; 10sec @ 2320 facts, 1601 axioms, 2860 ops
        "ipc2011-opt/tidybot-opt11/p20.pddl"            ; 55sec @ 386 facts, 1 axioms, 203873 ops (vs FD: 30488 ops)
        ))))
 

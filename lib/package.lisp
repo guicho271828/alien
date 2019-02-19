@@ -1,5 +1,5 @@
 
-(defpackage :strips.lib
+(defpackage :alien.lib
   (:use :cl :trivia :iterate :alexandria :static-vectors)
   (:export
    #:make-index
@@ -31,7 +31,7 @@
    #:merge-packed-struct-layout
    #:size-of))
 
-(in-package :strips.lib)
+(in-package :alien.lib)
 
 (defmacro ftype* (name &rest types)
   `(declaim (ftype (function ,(butlast types) ,(lastcar types)) ,name)))

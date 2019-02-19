@@ -1,7 +1,7 @@
 
 ;; TODO: rename this file to BFS
 
-(in-package :strips)
+(in-package :alien)
 
 (in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
 (defun ocl (open-list)
@@ -17,7 +17,7 @@
 )
 
 (in-compilation-phase ((and ocl phase/packed-structs))
-(strips.lib:define-packed-struct ocl ()
+(alien.lib:define-packed-struct ocl ()
   (facts 0 state)
   (parent 0 state-id)
   (op 0 op-id)
@@ -41,7 +41,7 @@
 
              (format s "~a : ~a, id: ~a~%" i (decode-op op-id) op-id)
              (let ((*package* (find-package :pddl)))
-               (format s "     ~s~%" (match (strips.lib:index-ref *op-index* op-id)
+               (format s "     ~s~%" (match (alien.lib:index-ref *op-index* op-id)
                                        ((list (list* name _) _)
                                         (find name *actions* :key #'second)))))
              (format s "     ~a~%" (aref *instantiated-ops* op-id))

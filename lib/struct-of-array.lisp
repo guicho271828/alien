@@ -1,6 +1,6 @@
 
 
-(in-package :strips.lib)
+(in-package :alien.lib)
 
 (defparameter *soa-initial-size* 32)
 

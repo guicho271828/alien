@@ -1,9 +1,9 @@
 
-(in-package :strips.test)
+(in-package :alien.test)
 
 (named-readtables:in-readtable :fare-quasiquote)
 
-(def-suite instantiate :in :strips)
+(def-suite instantiate :in :alien)
 (in-suite instantiate)
 
 (defun call-test-instantiate (info fn)
@@ -18,8 +18,8 @@
   `(call-test-instantiate ,info (lambda () ,@body)))
 
 (test instantiate1
-  (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
-                                                  (:requirements :strips :typing)
+  (with-test-instantiate (alien::parse1 'pddl::(define (domain d)
+                                                  (:requirements :alien :typing)
                                                   (:predicates (d ?x) (p ?x))
                                                   (:action a :parameters (?x) :precondition (and) :effect (p ?x))
                                                   (:derived (d ?x) (p ?x)))
@@ -42,8 +42,8 @@
 
 (test instantiate2
   ;; parameter ?x is not referenced in the axiom body
-  (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
-                                                  (:requirements :strips :typing)
+  (with-test-instantiate (alien::parse1 'pddl::(define (domain d)
+                                                  (:requirements :alien :typing)
                                                   (:predicates (d ?x) (p) (goal))
                                                   (:action a :parameters (?x) :precondition (and) :effect (p))
                                                   (:derived (d ?x) (p)))
@@ -62,8 +62,8 @@
 
 (test instantiate3
   ;; parameter ?x is a free variable in the axiom body
-  (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
-                                                  (:requirements :strips :typing)
+  (with-test-instantiate (alien::parse1 'pddl::(define (domain d)
+                                                  (:requirements :alien :typing)
                                                   (:predicates (d) (p ?x) (goal))
                                                   (:action a :parameters (?x) :precondition (and) :effect (p ?x))
                                                   (:derived (d) (p ?x)))
@@ -82,8 +82,8 @@
     (finishes (println *instantiated-axioms*))))
 
 (test instantiate4
-  (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
-                                                  (:requirements :strips :typing)
+  (with-test-instantiate (alien::parse1 'pddl::(define (domain d)
+                                                  (:requirements :alien :typing)
                                                   (:predicates (d ?x) (p ?x) (p2 ?x) (goal))
                                                   (:action a :parameters (?x) :precondition (and) :effect (p ?x))
                                                   (:derived (d) (p2 ?x)))
@@ -101,8 +101,8 @@
     (finishes (println *instantiated-axioms*))))
 
 (test instantiate5
-  (with-test-instantiate (strips::parse1 'pddl::(define (domain d)
-                                                  (:requirements :strips :typing)
+  (with-test-instantiate (alien::parse1 'pddl::(define (domain d)
+                                                  (:requirements :alien :typing)
                                                   (:predicates (at ?x) (connected ?x ?y))
                                                   (:action move :parameters (?x ?y)
                                                            :precondition (and (at ?x) (connected ?x ?y))
@@ -117,7 +117,7 @@
     (finishes (println *fact-size*))
     (finishes (println *instantiated-ops*))
     (finishes (println *sg*))
-    (is-true (equalp *sg* (strips::sg-node 0 '(0) nil (strips::sg-node 1 '(1) nil nil))))
+    (is-true (equalp *sg* (alien::sg-node 0 '(0) nil (alien::sg-node 1 '(1) nil nil))))
     (finishes (println *instantiated-axioms*))))
 
 (test instantiate-opttel
@@ -140,9 +140,9 @@
 
 (test instantiate7 ; initially true vs false predicates which are never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))
-    (with-test-instantiate (strips::parse1
+    (with-test-instantiate (alien::parse1
                             'pddl::(define (domain d)
-                                     (:requirements :strips :typing)
+                                     (:requirements :alien :typing)
                                      (:predicates (p ?x) (q ?x))
                                      (:action a :parameters (?x) :precondition (and (not (p ?x))) :effect (q ?x)))
                             'pddl::(define (problem p)
@@ -158,9 +158,9 @@
 
 (test instantiate8 ; initially true predicates which can be deleted vs which is never deleted
   (let ((*enable-negative-precondition-pruning-for-fluents* t))
-    (with-test-instantiate (strips::parse1
+    (with-test-instantiate (alien::parse1
                             'pddl::(define (domain d)
-                                     (:requirements :strips :typing)
+                                     (:requirements :alien :typing)
                                      (:predicates (p ?x) (q ?x) (r ?x))
                                      (:action a :parameters (?x) :precondition (not (p ?x)) :effect (q ?x))
                                      (:action a :parameters (?x) :precondition (r ?x)       :effect (not (p ?x))))
@@ -178,9 +178,9 @@
 (test instantiate9 ; axioms that can become true vs cannot become true
   (let ((*enable-negative-precondition-pruning-for-axioms* t)
         (*enable-negative-precondition-pruning-for-fluents* t))
-    (with-test-instantiate (strips::parse1
+    (with-test-instantiate (alien::parse1
                             'pddl::(define (domain d)
-                                     (:requirements :strips :typing)
+                                     (:requirements :alien :typing)
                                      (:predicates (p ?x) (q ?x) (axiom ?x))
                                      (:action a :parameters (?x) :precondition (and (not (axiom ?x))) :effect (q ?x))
                                      (:derived (axiom ?x) (p ?x)))
@@ -199,9 +199,9 @@
 (test instantiate10 ; axioms that can become true vs cannot become true
   (let ((*enable-negative-precondition-pruning-for-axioms* t)
         (*enable-negative-precondition-pruning-for-fluents* t))
-    (with-test-instantiate (strips::parse1
+    (with-test-instantiate (alien::parse1
                             'pddl::(define (domain d)
-                                     (:requirements :strips :typing)
+                                     (:requirements :alien :typing)
                                      (:predicates (p ?x) (q ?x) (axiom ?x) (r ?x))
                                      (:action a :parameters (?x) :precondition (and (not (axiom ?x))) :effect (q ?x))
                                      (:action a :parameters (?x) :precondition (r ?x)                 :effect (not (p ?x)))

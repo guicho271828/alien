@@ -5,7 +5,7 @@
   (cl:declare (cl:ignore name body))
   (cl:error "This is a dummy macro for editor integration"))
 
-(cl:in-package :strips)
+(cl:in-package :alien)
 
 (defmacro defun* (name args &body body)
   (match name
@@ -47,7 +47,7 @@
     (list (+ a b c) rest)))
 
 (defun %rel (pathname)
-  (asdf:system-relative-pathname :strips pathname))
+  (asdf:system-relative-pathname :alien pathname))
 
 (defmacro print-values (&body form)
   `(multiple-value-call (lambda (&rest args) (values-list (mapcar #'println args)))

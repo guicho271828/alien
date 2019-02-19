@@ -1,11 +1,11 @@
 
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
 ;; decoding state
 
 (defun decode-fact (index)
-  (strips.lib:index-ref *fact-index* (logabs index)))
+  (alien.lib:index-ref *fact-index* (logabs index)))
 
 (defun decode-state (state)
   (iter (for b in-vector state with-index i)
@@ -15,7 +15,7 @@
 (defun decode-op (op)
   (ematch op
     ((integer)
-     (match (strips.lib:index-ref *op-index* op)
+     (match (alien.lib:index-ref *op-index* op)
        ((list (list* name args) _)
         (list* (getf (find name *actions* :key #'second) :original-action)
                args))))

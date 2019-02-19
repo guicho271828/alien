@@ -1,4 +1,4 @@
-(in-package :strips)
+(in-package :alien)
 
 #|
 
@@ -39,7 +39,7 @@ and count the number of reaching the semi-relaxed goal.
 )
 
 (in-compilation-phase ((and alien/rpg phase/packed-structs))
-  (strips.lib:define-packed-struct alien/rpg ()
+  (alien.lib:define-packed-struct alien/rpg ()
     (value 0 (runtime integer 0 *probe-limit*)))
 )
 

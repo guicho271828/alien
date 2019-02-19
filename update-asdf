@@ -1,7 +1,7 @@
 #!/bin/bash
 
-update-asdf -y -s strips -f strips.asdata
+update-asdf -y -s alien -f alien.asdata
 
-update-asdf -y -s strips.test -f strips.test.asdata
+update-asdf -y -s alien.test -f alien.test.asdata
 
-update-asdf -y -s strips.instance-dependent -f strips.instance-dependent.asdata
+update-asdf -y -s alien.instance-dependent -f alien.instance-dependent.asdata

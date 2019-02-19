@@ -2,7 +2,7 @@
 ;; common search-related functions
 ;; TODO: applicable ops and apply-axioms are suboptimal.
 
-(in-package :strips)
+(in-package :alien)
 
 (in-compilation-phase ((not (or phase/packed-structs phase/full-compilation)))
   (ftype* initial-state+axioms *)

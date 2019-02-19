@@ -1,6 +1,6 @@
 
 
-(in-package :strips)
+(in-package :alien)
 
 (deftype relaxer ()
   "a class of functions that returns a relaxed version of an operator."

@@ -10,7 +10,7 @@
 ;; When the current value of the variable is true, follow THEN branch and EITHER branch.
 ;; When the current value of the variable is false, follow ELSE branch and EITHER branch.
 
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
 (defvar *sg*)

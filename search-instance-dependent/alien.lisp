@@ -1,4 +1,4 @@
-(in-package :strips)
+(in-package :alien)
 
 #|
 
@@ -45,8 +45,8 @@ When I = 2, approximately 1/4 of the bits are 0."
   (fill bv 0)
   (dotimes (j i bv)
     (dotimes (i (ceiling (length bv) 64))
-      (setf (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
-            (logior (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
+      (setf (alien.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
+            (logior (alien.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
                     (random (expt 2 64)))))))
 
 (declaim (inline reset-random-bitvector^2))
@@ -64,8 +64,8 @@ When I = 2, approximately 1/4 of the bits are 0."
   (fill bv 1)
   (dotimes (j i bv)
     (dotimes (i (ceiling (length bv) 64))
-      (setf (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
-            (logand (strips.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
+      (setf (alien.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
+            (logand (alien.lib::%packed-accessor-int-unsafe bv 64 (* i 64))
                     (random (expt 2 64)))))))
 
 (declaim (inline set/reset-random-bitvector^2))
@@ -79,7 +79,7 @@ When I = 2, approximately 1/4 of the bits are 0."
 )
 
 ;; e.g.
-;; (strips::set-random-bitvector^2 4 #*0000000000000000000000000000000000000000000000)
+;; (alien::set-random-bitvector^2 4 #*0000000000000000000000000000000000000000000000)
 ;; #*1111111111111111101111110111111111111111111111
 
 #|
@@ -99,7 +99,7 @@ and count the number of reaching the semi-relaxed goal.
 |#
 
 (in-compilation-phase ((and alien phase/packed-structs))
-  (strips.lib:define-packed-struct alien ()
+  (alien.lib:define-packed-struct alien ()
     (value 0 (runtime integer 0 *probe-limit*)))
 )
 

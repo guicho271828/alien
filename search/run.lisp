@@ -1,4 +1,4 @@
-(in-package :strips)
+(in-package :alien)
 
 #|
 
@@ -30,11 +30,11 @@ instance-depdendent code should be compiled/loaded three times.
      (log-milestone :secondary-compilation)
      ;; compile STATE-INFORMATION
      (let* (;; because SYMBOLICATE interns in the current package
-            (*package* (find-package :strips))
+            (*package* (find-package :alien))
             ;; default value is 200, which consumes too much time for compilation
             (sb-ext:*inline-expansion-limit* 10)
             (storage-list (eval storage)))
-       (eval `(strips.lib:define-packed-struct state-information ,storage-list)))
+       (eval `(alien.lib:define-packed-struct state-information ,storage-list)))
      (log:info (eval '(size-of 'state-information)))
      (log:info *memory-limit*)
      (log:info (max-state-id))

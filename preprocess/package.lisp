@@ -1,5 +1,5 @@
 #|
-  This file is a part of strips project.
+  This file is a part of alien project.
   Copyright (c) 2017 Masataro Asai (guicho2.71828@gmail.com)
 |#
 
@@ -22,13 +22,13 @@
            :either)
   (:documentation "The package for loading the symbols in the input"))
 
-(defpackage strips
+(defpackage alien
   (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog2
         )
   (:shadowing-import-from :trivia :<>)
   (:shadow :iterate :else)
   (:shadow :info :node) ; cl-cudd
-  (:import-from :strips.lib
+  (:import-from :alien.lib
                 :packed-aref
                 :size-of
                 :slot-size-of)

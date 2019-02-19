@@ -1,5 +1,5 @@
 
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
 (defvar *sg-compiled-branch-limit* 1000) ; this roughly keeps the generator within 20k bytes
@@ -133,7 +133,7 @@
                             `((,(if val 'when 'unless) (logbitp ,(- var start) ,pack)
                                 ,@branches)))))
                      branches))))
-      `(let ((,pack (strips.lib::%packed-accessor-int ,state-sym ,width ,start)))
+      `(let ((,pack (alien.lib::%packed-accessor-int ,state-sym ,width ,start)))
          ,@(rec sg nil)))))
 
 ;; note : logand+lognot saves additional storage for mask

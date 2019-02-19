@@ -1,5 +1,5 @@
 
-(in-package :strips)
+(in-package :alien)
 
 (defun timeout (time searcher)
   (ematch searcher

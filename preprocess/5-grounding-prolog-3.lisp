@@ -5,7 +5,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 
 |#
 
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
 (defun ground (info &optional (package (find-package :pddl)))

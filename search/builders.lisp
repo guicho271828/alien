@@ -1,11 +1,11 @@
 
 
-(in-package :strips)
+(in-package :alien)
 
 (defun sum (&rest evaluators)
   (with-gensyms (sum)
     (make-evaluator
-     :storage `(list (strips.lib:define-packed-struct ,sum ()
+     :storage `(list (alien.lib:define-packed-struct ,sum ()
                        (value 0 (runtime integer 0
                                          (reduce #'+
                                                  (append ,@(mapcar #'evaluator-storage evaluators))
@@ -19,7 +19,7 @@
 (defun product (&rest evaluators)
   (with-gensyms (product)
     (make-evaluator
-     :storage `(list (strips.lib:define-packed-struct ,product ()
+     :storage `(list (alien.lib:define-packed-struct ,product ()
                        (value 0 (runtime unsigned-byte
                                          ;; because the size of storages are unknown when
                                          ;; the builders are evaluated
@@ -35,7 +35,7 @@
 (defun maximum (&rest evaluators)
   (with-gensyms (maximum)
     (make-evaluator
-     :storage `(list (strips.lib:define-packed-struct ,maximum ()
+     :storage `(list (alien.lib:define-packed-struct ,maximum ()
                        (value 0 (runtime unsigned-byte
                                          (reduce #'max
                                                  (append ,@(mapcar #'evaluator-storage evaluators))
@@ -51,7 +51,7 @@
   (assert (integerp value))
   (with-gensyms (constant)
     (make-evaluator
-     :storage `(list (strips.lib:define-packed-struct ,constant ()
+     :storage `(list (alien.lib:define-packed-struct ,constant ()
                        (value 0 (integer ,value ,value))))
      :function `(constantly ,value))))
 
@@ -60,7 +60,7 @@
       (let ((lower-priority (apply #'tiebreak more)))
         (with-gensyms (tiebreak)
           (make-evaluator
-           :storage `(list (strips.lib:define-packed-struct ,tiebreak ()
+           :storage `(list (alien.lib:define-packed-struct ,tiebreak ()
                              (value 0 (runtime unsigned-byte
                                                (+ (size-of (first ,(evaluator-storage evaluator)))
                                                   (size-of (first ,(evaluator-storage lower-priority))))))))

@@ -1,4 +1,4 @@
-(in-package :strips)
+(in-package :alien)
 
 ;; note: FF heuristic value is dependent on the operator ordering.
 
@@ -12,7 +12,7 @@
 )
 
 (in-compilation-phase ((and ff/rpg phase/packed-structs))
-  (strips.lib:define-packed-struct ff ()
+  (alien.lib:define-packed-struct ff ()
     (value 0 (runtime integer 0 *delete-relaxed-op-size*))))
 
 (in-compilation-phase ((and ff/rpg phase/full-compilation))

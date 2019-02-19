@@ -1,9 +1,9 @@
 
-(in-package :strips.test)
+(in-package :alien.test)
 
 (named-readtables:in-readtable :fare-quasiquote)
 
-(def-suite solve :in :strips)
+(def-suite solve :in :alien)
 (in-suite solve)
 
 (defun solve-alien-common (path fn)
@@ -12,7 +12,7 @@
   (recompile-instance-dependent-code)
   (sb-ext:gc :full t)
   (let* ((path (%rel path)))
-    (strips::with-temp (planfile :debug t)
+    (alien::with-temp (planfile :debug t)
       (solve-once-to-file (find-domain path) path planfile fn)
       planfile)))
 
@@ -20,7 +20,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -31,7 +31,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -42,7 +42,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -53,7 +53,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -64,7 +64,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -75,7 +75,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -86,7 +86,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -97,7 +97,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -108,7 +108,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -119,7 +119,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -130,7 +130,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -141,7 +141,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -152,7 +152,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -165,7 +165,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -178,7 +178,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -193,7 +193,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -208,7 +208,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -223,7 +223,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -238,7 +238,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -249,7 +249,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -260,7 +260,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -273,7 +273,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -286,7 +286,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -299,7 +299,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -313,7 +313,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -327,7 +327,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -341,7 +341,7 @@
   (solve-alien-common path
                       (lambda ()
                         (with-memory-usage-diff ()
-                          (strips:run
+                          (alien:run
                            (timeout
                             *time-limit*
                             (ocl
@@ -354,11 +354,11 @@
   (declare (optimize (debug 3) (speed 0)))
   (log:info "Testing ~a" path)
   (let* ((path (%rel path))
-         (strips::*start-time* (get-internal-real-time))
-         (strips::*last-milestone* strips::*start-time*))
+         (alien::*start-time* (get-internal-real-time))
+         (alien::*last-milestone* alien::*start-time*))
     (unwind-protect
-         (strips::with-temp (planfile :debug t)
-           (uiop:run-program (list (namestring (strips::fd-relative-pathname "fast-downward.py"))
+         (alien::with-temp (planfile :debug t)
+           (uiop:run-program (list (namestring (alien::fd-relative-pathname "fast-downward.py"))
                                    "--run-all"
                                    "--overall-memory-limit" (princ-to-string *memory-limit*)
                                    "--translate-time-limit"  (princ-to-string *time-limit*)
@@ -372,7 +372,7 @@
                              :output t
                              :ignore-error-status t)
            planfile)
-      (strips::log-milestone :fd))))
+      (alien::log-milestone :fd))))
 
 (defun solve-fd-blind (path)
   (solve-fd-common path "eager(single_buckets(blind(),queue_type=LIFO),cost_type=ONE)"))
@@ -385,7 +385,7 @@
   (handler-case
       (let ((planfile (funcall fn path))
             (path (%rel path)))
-        (is-true (validate-plan (strips:find-domain path)
+        (is-true (validate-plan (alien:find-domain path)
                                 path
                                 planfile)))
     ((or sb-ext:timeout error) (c)
@@ -404,8 +404,8 @@
   (solve-alien-common
    "movie/p01.pddl"
    (lambda ()
-     (strips:run
-      (strips::make-searcher
+     (alien:run
+      (alien::make-searcher
        :storage nil
        :form `(lambda ()
                 (print
@@ -414,16 +414,16 @@
                   (replace s #*11111110)
                   (is (equal #*11111111
                              (apply-axioms s))))
-                (is-true (strips::goalp #*11111111))
-                (is-true (strips::goalp #*00000001))
+                (is-true (alien::goalp #*11111111))
+                (is-true (alien::goalp #*00000001))
                 (signals goal-found
                   (report-if-goal #*11111111 (lambda ())))
                 (signals goal-found
                   (report-if-goal #*00000001 (lambda ())))
                 (is (equal #*11111110
-                           (strips::goals)))
+                           (alien::goals)))
                 (is (equal #*11111110
-                           (strips::non-axiom-goals)))))))))
+                           (alien::non-axiom-goals)))))))))
 
 (test movie
   (iter (for *solver* in (list #'solve-alien-blind
@@ -476,11 +476,11 @@
 (test demo-large
   ;; VAL doesnt work
   ;; (solve "axiom-domains/opttel-adl-derived/p01.pddl")
-  ;; (solve "axiom-domains/opttel-strips-derived/p01.pddl")
+  ;; (solve "axiom-domains/opttel-alien-derived/p01.pddl")
   ;; (solve "axiom-domains/philosophers-adl-derived/p01.pddl")
-  ;; (solve "axiom-domains/philosophers-strips-derived/p01.pddl")
+  ;; (solve "axiom-domains/philosophers-alien-derived/p01.pddl")
   ;; (solve "axiom-domains/psr-middle-adl-derived/p01.pddl")
-  ;; (solve "axiom-domains/psr-middle-strips-derived/p01.pddl")
+  ;; (solve "axiom-domains/psr-middle-alien-derived/p01.pddl")
   
   ;; (solve "check/negative-precondition-test/p01.pddl")
   ;; (solve "check/rovers-noop/p01.pddl")
@@ -488,16 +488,16 @@
 
   ;; (solve "downward/benchmarks/openstacks/p01.pddl")
   ;; (solve "downward/benchmarks/openstacks-opt08-adl/p01.pddl")
-  ;; (solve "downward/benchmarks/openstacks-strips/domain_p01.pddl")
-  ;; (solve "downward/benchmarks/openstacks-strips/p01.pddl")
+  ;; (solve "downward/benchmarks/openstacks-alien/domain_p01.pddl")
+  ;; (solve "downward/benchmarks/openstacks-alien/p01.pddl")
   ;; (solve "downward/benchmarks/pathways/p01.pddl")
   ;; (solve "downward/benchmarks/pathways-noneg/p01.pddl")
   ;; (solve "downward/benchmarks/rovers/p01.pddl")
   ;; (solve "downward/benchmarks/storage/p01.pddl")
   ;; (solve "downward/benchmarks/tpp/p01.pddl")
   ;; (solve "downward/benchmarks/trucks/p01.pddl")
-  ;; (solve "downward/benchmarks/trucks-strips/domain_p01.pddl")
-  ;; (solve "downward/benchmarks/trucks-strips/p01.pddl")
+  ;; (solve "downward/benchmarks/trucks-alien/domain_p01.pddl")
+  ;; (solve "downward/benchmarks/trucks-alien/p01.pddl")
 
   (solve "ipc2006-optsat/openstacks/p01.pddl")
   (solve "ipc2006-optsat/pathways/p01.pddl")
@@ -550,11 +550,11 @@
    "movie/p01.pddl"
    (lambda ()
      (ff/rpg)
-     (strips:run
-      (strips::make-searcher
+     (alien:run
+      (alien::make-searcher
        :storage nil
        :form `(lambda ()
-                (is (= 7 (uiop:symbol-call :strips :ff-heuristic/rpg #*00000000)))))))))
+                (is (= 7 (uiop:symbol-call :alien :ff-heuristic/rpg #*00000000)))))))))
 
 (test demo-ff/rpg (let ((*solver* #'solve-alien-ff/rpg)) (run! 'demo)))
 (test demo-fd-ff  (let ((*solver* #'solve-fd-ff))        (run! 'demo)))

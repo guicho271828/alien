@@ -1,7 +1,7 @@
 ;; instantiate EFFECT and OP instance as well as some lookup table for the facts.
 ;; EFFECT and OP are primitive representation of operators and its effects.
 
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
 (defvar *fact-index*)
@@ -36,7 +36,7 @@
 (deftype axiom-layer ()
   '(array effect))
 
-(declaim (strips.lib:index *fact-index* *op-index*))
+(declaim (alien.lib:index *fact-index* *op-index*))
 (declaim (fixnum *fact-size* *state-size* *op-size*))
 (declaim (cons *fact-trie*))
 (declaim ((array op) *instantiated-ops*))
@@ -51,7 +51,7 @@
         (list* :fact-index fact-index
                :fact-size fact-size
                :fact-trie fact-trie
-               :state-size (strips.lib:index-size fact-index)
+               :state-size (alien.lib:index-size fact-index)
                :op-index op-index
                :instantiated-ops instantiated-ops
                :successor-generator (generate-sg instantiated-ops)
@@ -61,8 +61,8 @@
                info)))))
 
 (defun index-facts ()
-  (let ((i (strips.lib:make-index :test 'equal))
-        (trie (strips.lib:make-trie))
+  (let ((i (alien.lib:make-index :test 'equal))
+        (trie (alien.lib:make-trie))
         (fact-size 0))
     ;; indexing init
     (dolist (f *init*)
@@ -71,39 +71,39 @@
       ;; candidates for free variables.  static facts are never added to the
       ;; preconditions nor effect conditions.
       (unless (static-p f)
-        (strips.lib:index-insert i f))
-      (strips.lib:trie-insert trie f))
+        (alien.lib:index-insert i f))
+      (alien.lib:trie-insert trie f))
     ;; indexing fluents
     (dolist (f *facts*)
-      (strips.lib:index-insert i f)
-      (strips.lib:trie-insert trie f))
-    (setf fact-size (strips.lib:index-size i))
+      (alien.lib:index-insert i f)
+      (alien.lib:trie-insert trie f))
+    (setf fact-size (alien.lib:index-size i))
     ;; indexing axioms
     (dolist (f *ground-axioms*)
-      (strips.lib:index-insert i f)
-      (strips.lib:trie-insert trie f))
+      (alien.lib:index-insert i f)
+      (alien.lib:trie-insert trie f))
     (values i fact-size trie)))
 
 (defun instantiate-ops (index trie)
   (log:info "Instantiating operator objects")
-  (let ((op-sexp-index (strips.lib:make-index :test 'equal))
-        (op-index      (strips.lib:make-index :test 'equalp)))
+  (let ((op-sexp-index (alien.lib:make-index :test 'equal))
+        (op-index      (alien.lib:make-index :test 'equalp)))
     (log:info "Making an operator index")
     (dolist (op-sexp *ops*)
       (catch 'contradiction
         ;; op with conflicting precond should be pruned
         (let ((op (instantiate-op op-sexp index trie)))
-          (multiple-value-bind (id inserted) (strips.lib:index-insert op-index op)
+          (multiple-value-bind (id inserted) (alien.lib:index-insert op-index op)
             (declare (ignore id))
             (when inserted
-              (strips.lib:index-insert op-sexp-index op-sexp))))))
+              (alien.lib:index-insert op-sexp-index op-sexp))))))
 
-    (log:info "Removed duplicated operators: ~a -> ~a" (length *ops*) (strips.lib:index-size op-index))
+    (log:info "Removed duplicated operators: ~a -> ~a" (length *ops*) (alien.lib:index-size op-index))
 
     (values op-sexp-index
-            (make-array (strips.lib:index-size op-index)
+            (make-array (alien.lib:index-size op-index)
                         :element-type 'op
-                        :initial-contents (strips.lib:index-array op-index)))))
+                        :initial-contents (alien.lib:index-array op-index)))))
 
 (defun opposite-effect-p (a b)
   (match* (a b)
@@ -138,13 +138,13 @@
                 (dolist (c gpre)
                   (if (positive c)
                       (unless (static-p c)
-                        (linear-extend pre (strips.lib:index-id index c) most-positive-fixnum))
+                        (linear-extend pre (alien.lib:index-id index c) most-positive-fixnum))
                       (if (member (second c) gpre :test 'equal)
                           ;; Note: the precondition contains a contradiction, i.e. X and (not X).
                           ;; This cannot be checked during grounding because
                           ;; it ignores all negative preconditions.
                           (throw 'contradiction nil)
-                          (let ((i (strips.lib:index-id index (second c))))
+                          (let ((i (alien.lib:index-id index (second c))))
                             (when i ; otherwise unreachable
                               (linear-extend pre (lognot i) most-positive-fixnum)))))))
               (sort pre #'<)
@@ -163,7 +163,7 @@
                           (if (iter (for e2 in-vector eff with-index j)
                                     (thereis (opposite-effect-p e1 e2)))
                               (log:trace "op ~a:~%cancelling effects: ~a" `(,name ,@args)
-                                         (strips.lib:index-ref index (logabs (effect-eff e1))))
+                                         (alien.lib:index-ref index (logabs (effect-eff e1))))
                               (collect e1 result-type vector))))
               #+(or)
               (iter (with blacklist = nil)
@@ -177,7 +177,7 @@
                             (pushnew i blacklist)
                             (pushnew k blacklist)
                             (log:trace "op ~a:~%cancelling effects: ~a" `(,name ,@args)
-                                       (strips.lib:index-ref index (logabs (effect-eff e1))))
+                                       (alien.lib:index-ref index (logabs (effect-eff e1))))
                             (setf noop-found t))
                           (finally
                            (unless noop-found
@@ -199,7 +199,7 @@
         ((list* first rest)
          (let* ((negative (negative first))
                 (c (if negative (second first) first)))
-           (strips.lib:query-trie
+           (alien.lib:query-trie
             (lambda (gc)
               (let ((rest (copy-tree rest))
                     (atom (copy-tree atom)))
@@ -222,23 +222,23 @@
          (dolist (c gcon)
            (if (positive c)
                (unless (static-p c)
-                 (linear-extend con (strips.lib:index-id index c) most-positive-fixnum))
+                 (linear-extend con (alien.lib:index-id index c) most-positive-fixnum))
                (if (member (second c) gcon :test 'equal)
                    ;; Note: this precondition contains a contradiction, i.e. X and (not X).
                    ;; This cannot be checked during grounding because
                    ;; it ignores all negative preconditions.
                    (return-from instantiate-effect-aux2)
-                   (let ((i (strips.lib:index-id index (second c))))
+                   (let ((i (alien.lib:index-id index (second c))))
                      (when i ; otherwise unreachable
                        (linear-extend con (lognot i) most-positive-fixnum)))))))
        
        (sort con #'<)
        (when (positive atom)
          (assert (notany #'variablep atom))
-         (setf eff (strips.lib:index-id index atom)))
+         (setf eff (alien.lib:index-id index atom)))
        (when (negative atom)
          (assert (notany #'variablep (second atom)))
-         (let ((i (strips.lib:index-id index (second atom))))
+         (let ((i (alien.lib:index-id index (second atom))))
            (when i ; otherwise unreachable
              (setf eff (lognot i)))))
        ;; note: ignoring action cost at the moment
@@ -278,9 +278,9 @@
   (let ((results (make-a-array fact-size :element-type 'fixnum)))
     (iter (for p in *init*)
           (unless (static-p p)
-            (linear-extend results (strips.lib:index-id fact-index p))))
+            (linear-extend results (alien.lib:index-id fact-index p))))
     results))
 
 (defun instantiate-goal (fact-index)
-  (strips.lib:index-id fact-index *goal*))
+  (alien.lib:index-id fact-index *goal*))
 

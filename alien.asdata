@@ -1,5 +1,5 @@
 #| -*- mode : lisp -*-
-  This file is a part of strips project.
+  This file is a part of alien project.
 
 This is a [asd-generator](https://github.com/phoe/asd-generator/) config file.
 Run below for auto-regenerating the asd file:
@@ -11,16 +11,25 @@ $ update-asdf
 |#
 
 #|
-  A STRIPS planner
+  A ALIEN planner
 
   Author: Masataro Asai (guicho2.71828@gmail.com)
 |#
 
 
-((:dir :search-instance-dependent
-       (:close-list)
-       (:search-common)
+((:dir :lib
+       (:package)
+       (:rest))
+ (:dir :preprocess
+       (:package)
+       (:util)
+       (:specials)
+       (:rest :recursive nil))
+ (:dir :search
+       (:util)
+       (:specials)
        (:rest :recursive nil)
-       (:file :alien :depends-on ("novelty"))
-       (:file :alien-ffish :depends-on ("alien" "ff"))))
+       (:run))
+ (:dir :validate
+       (:rest)))
 

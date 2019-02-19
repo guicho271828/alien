@@ -1,5 +1,5 @@
 
-(in-package :strips)
+(in-package :alien)
 
 #|
 
@@ -19,7 +19,7 @@ novelty heuristics local to a plateau
   )
 
 (in-compilation-phase ((and local-novelty1 phase/packed-structs))
-  (strips.lib:define-packed-struct local-novelty1 ()
+  (alien.lib:define-packed-struct local-novelty1 ()
     (value 0 (integer 1 2))))
 
 (in-compilation-phase ((and local-novelty1 phase/full-compilation))
@@ -53,7 +53,7 @@ novelty heuristics local to a plateau
 )
 
 (in-compilation-phase ((and local-novelty2 phase/packed-structs))
-  (strips.lib:define-packed-struct local-novelty2 ()
+  (alien.lib:define-packed-struct local-novelty2 ()
     (value 0 (integer 1 3))))
 
 (in-compilation-phase ((and local-novelty2 phase/full-compilation))

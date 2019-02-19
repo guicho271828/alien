@@ -1,5 +1,5 @@
 
-(in-package :strips.lib)
+(in-package :alien.lib)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (define-constant +t+ '+t+))

@@ -1,5 +1,5 @@
 
-(in-package :strips)
+(in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
 (defvar *memory-limit* 1000 ; 1GB
@@ -43,10 +43,10 @@
     (unwind-protect
          (let ((*compile-verbose* nil)
                (*compile-print* nil))
-           ;; (asdf:compile-system :strips.instance-dependent :force t)
-           (asdf:load-system :strips.instance-dependent :force t :verbose nil))
+           ;; (asdf:compile-system :alien.instance-dependent :force t)
+           (asdf:load-system :alien.instance-dependent :force t :verbose nil))
       ;; ensure the specialised code is removed and does not affect the later debugging
-      (asdf:clear-system :strips.instance-dependent))))
+      (asdf:clear-system :alien.instance-dependent))))
 
 (defun output-plan (plan-output-file)
   "write the plan into a file"

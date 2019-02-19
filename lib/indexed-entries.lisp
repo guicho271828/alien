@@ -1,6 +1,6 @@
 
 
-(in-package :strips.lib)
+(in-package :alien.lib)
 
 ;; general indexed entry.
 

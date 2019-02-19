@@ -1,5 +1,5 @@
 
-(in-package :strips.lib)
+(in-package :alien.lib)
 
 ;; I looked up various alternatives, but none satisfies my needs of storing and retrieving
 ;; certain data as compact as possible.
@@ -34,12 +34,12 @@
 
 
 #+(or)
-(define-vop (strips.lib::<<64)
+(define-vop (alien.lib::<<64)
   ;; Turned out, this code is wrong because it allows several arguments to be
   ;; assigned to the same register. See the failure example below.
   
   (:policy :fast-safe)
-  (:translate strips.lib::<<64)
+  (:translate alien.lib::<<64)
   (:args (int :scs (unsigned-reg) :target result)
          (shift :scs (unsigned-reg) :target ecx))
   (:arg-types unsigned-num unsigned-num)
@@ -66,9 +66,9 @@
 ;; 135:       90               NOP
 ;; 136:       90               NOP
 
-(define-vop (strips.lib::<<64)
+(define-vop (alien.lib::<<64)
   (:policy :fast-safe)
-  (:translate strips.lib::<<64)
+  (:translate alien.lib::<<64)
   (:args (number :scs (unsigned-reg) :target result
                  ;; I do not understand what this code actually means, even
                  ;; after I read the documentation of define-vop.
@@ -88,7 +88,7 @@
               (move ecx amount)
               (inst shl result :cl)))
 
-(in-package :strips.lib)
+(in-package :alien.lib)
 
 (defun <<64 (int shift)
   "Shift the integer like ASH, but discards the bits where ASH would cons to a bignum."

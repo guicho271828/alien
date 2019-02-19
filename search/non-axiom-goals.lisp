@@ -1,4 +1,4 @@
-(in-package :strips)
+(in-package :alien)
 
 (defun goals ()
   "Returns a bit-vector whose bits are set when

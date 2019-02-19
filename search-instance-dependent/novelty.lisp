@@ -1,4 +1,4 @@
-(in-package :strips)
+(in-package :alien)
 
 #|
 
@@ -43,16 +43,16 @@ novelty heuristics
 )
 
 (in-compilation-phase ((and novelty1 phase/packed-structs))
-  (strips.lib:define-packed-struct novelty1 ()
+  (alien.lib:define-packed-struct novelty1 ()
     (value 0 (integer 1 2))))
 (in-compilation-phase ((and novelty2 phase/packed-structs))
-  (strips.lib:define-packed-struct novelty2 ()
+  (alien.lib:define-packed-struct novelty2 ()
     (value 0 (integer 1 3))))
 (in-compilation-phase ((and novelty3 phase/packed-structs))
-  (strips.lib:define-packed-struct novelty3 ()
+  (alien.lib:define-packed-struct novelty3 ()
     (value 0 (integer 1 4))))
 (in-compilation-phase ((and novelty4 phase/packed-structs))
-  (strips.lib:define-packed-struct novelty4 ()
+  (alien.lib:define-packed-struct novelty4 ()
     (value 0 (integer 1 5))))
 
 (in-compilation-phase ((and novelty1 phase/full-compilation))
@@ -407,9 +407,9 @@ novelty heuristics
 
 #+(or)
 (progn
-(ql:quickload :strips)
+(ql:quickload :alien)
 (sb-ext:gc :full t)
-(in-package :strips)
+(in-package :alien)
 (setf *state-size* 5)
 (defparameter *fn* (make-novelty-heuristics :prune nil))
 
