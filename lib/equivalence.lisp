@@ -1,4 +1,10 @@
 
+#|
+
+small library for handling equivalence classes
+
+|#
+
 (in-package :alien.lib)
 
 ;; X -> classid

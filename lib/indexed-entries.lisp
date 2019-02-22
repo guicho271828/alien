@@ -1,4 +1,12 @@
 
+#|
+
+A storage that allows fast bidirectional access to/from an index from/to an object.
+
+For object -> index:  The object is looked up in a hash table to obtain the index, O(1).
+For index  -> object: The object is looked up in an array, O(1).
+
+|#
 
 (in-package :alien.lib)
 

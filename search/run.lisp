@@ -20,6 +20,8 @@ instance-depdendent code should be compiled/loaded three times.
 |#
 
 (defun run (search-engine)
+  "Given a search-engine instance, compile additional codes for search and
+ runs the search defined by the search-engine."
   (ematch search-engine
     ((searcher storage form)
      ;; second LOAD
@@ -58,6 +60,8 @@ instance-depdendent code should be compiled/loaded three times.
          (log:info "Search finished"))))))
 
 (defun solve-common (domain problem fn)
+  "Process the domain and problem file, instantiate the grounded state space and then invoke FN.
+Return the results of calling FN."
   (log:info "[0.000s] [+0.000s] STARTED")
   (log:info "Solving ~a" problem)
   (let* ((*start-time* (get-internal-real-time))
