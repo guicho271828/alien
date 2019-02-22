@@ -22,6 +22,16 @@
     ((op)
      (decode-op (position op *instantiated-ops*)))))
 
+(defun encode-op (op)
+  "map the action signature (as used in the original pddl) to the internal operator id"
+  (ematch op
+    ((list* name args)
+     (let ((id (alien.lib:index-id *op-sexp-index*
+                                   (list* (getf (find name *actions* :key #'fourth) :action)
+                                          args))))
+       (values id
+               (aref *instantiated-ops* id))))))
+
 (defmacro enumerate (name &body name-or-value)
   "Define a type NAME which could take some values specified by name-or-value.
 name-or-value is a list whose element is whether a SYMBOL for a constant variable, or a list (SYMBOL INTEGER).
