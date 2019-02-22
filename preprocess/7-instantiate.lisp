@@ -8,7 +8,7 @@
 (defvar *fact-size*)
 (defvar *fact-trie*)
 (defvar *state-size*)
-(defvar *op-index*)
+(defvar *op-sexp-index*)
 (defvar *instantiated-ops*)
 (defvar *op-size*)
 (defvar *instantiated-axiom-layers*)
@@ -36,7 +36,7 @@
 (deftype axiom-layer ()
   '(array effect))
 
-(declaim (alien.lib:index *fact-index* *op-index*))
+(declaim (alien.lib:index *fact-index* *op-sexp-index*))
 (declaim (fixnum *fact-size* *state-size* *op-size*))
 (declaim (cons *fact-trie*))
 (declaim ((array op) *instantiated-ops*))
@@ -47,12 +47,12 @@
 (defun instantiate (info)
   (with-parsed-information4 info
     (multiple-value-bind (fact-index fact-size fact-trie) (index-facts)
-      (multiple-value-bind (op-index instantiated-ops) (instantiate-ops fact-index fact-trie)
+      (multiple-value-bind (op-sexp-index instantiated-ops) (instantiate-ops fact-index fact-trie)
         (list* :fact-index fact-index
                :fact-size fact-size
                :fact-trie fact-trie
                :state-size (alien.lib:index-size fact-index)
-               :op-index op-index
+               :op-sexp-index op-sexp-index
                :instantiated-ops instantiated-ops
                :successor-generator (generate-sg instantiated-ops)
                :instantiated-axiom-layers (instantiate-axiom-layers fact-index fact-trie)
@@ -96,7 +96,11 @@
           (multiple-value-bind (id inserted) (alien.lib:index-insert op-index op)
             (declare (ignore id))
             (when inserted
-              (alien.lib:index-insert op-sexp-index op-sexp))))))
+              ;; op-sexp is a list of action representation (e.g. (pickup
+              ;; block)) and its reachable effects.  However, we only store the
+              ;; action representation into the op-sexp-index for the later
+              ;; cross-retrieval of the action <-> op-id mapping.
+              (alien.lib:index-insert op-sexp-index (first op-sexp)))))))
 
     (log:info "Removed duplicated operators: ~a -> ~a" (length *ops*) (alien.lib:index-size op-index))
 

@@ -41,8 +41,8 @@
 
              (format s "~a : ~a, id: ~a~%" i (decode-op op-id) op-id)
              (let ((*package* (find-package :pddl)))
-               (format s "     ~s~%" (match (alien.lib:index-ref *op-index* op-id)
-                                       ((list (list* name _) _)
+               (format s "     ~s~%" (match (alien.lib:index-ref *op-sexp-index* op-id)
+                                       ((list* name _)
                                         (find name *actions* :key #'second)))))
              (format s "     ~a~%" (aref *instantiated-ops* op-id))
              (format s "     ~a~%" (compile-op (aref *instantiated-ops* op-id)))

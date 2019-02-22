@@ -132,7 +132,7 @@
            (*fact-size* (getf ,info :fact-size))
            (*fact-trie* (getf ,info :fact-trie))
            (*state-size* (getf ,info :state-size))
-           (*op-index* (getf ,info :op-index))
+           (*op-sexp-index* (getf ,info :op-sexp-index))
            (*instantiated-ops* (getf ,info :instantiated-ops))
            (*op-size* (length (getf ,info :instantiated-ops)))
            (*sg* (getf ,info :successor-generator))

@@ -31,7 +31,7 @@
     (finishes (println *fact-index*))
     (finishes (println *fact-trie*))
     (finishes (println *fact-size*))
-    (finishes (println *op-index*))
+    (finishes (println *op-sexp-index*))
     (finishes (println *instantiated-ops*))
     (finishes (println *sg*))
     (is-true (set= *sg* '(0 1)))

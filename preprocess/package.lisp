@@ -78,7 +78,7 @@
    #:*fact-size*
    #:*fact-trie*
    #:*instantiated-ops*
-   #:*op-index*
+   #:*op-sexp-index*
    #:*sg*
    #:with-parsed-information5
    #:*instantiated-axiom-layers*

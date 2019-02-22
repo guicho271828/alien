@@ -15,8 +15,8 @@
 (defun decode-op (op)
   (ematch op
     ((integer)
-     (match (alien.lib:index-ref *op-index* op)
-       ((list (list* name args) _)
+     (match (alien.lib:index-ref *op-sexp-index* op)
+       ((list* name args)
         (list* (getf (find name *actions* :key #'second) :original-action)
                args))))
     ((op)
