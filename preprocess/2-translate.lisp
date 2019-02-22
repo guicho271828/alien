@@ -260,6 +260,8 @@ Signals an error when the type is not connected to the root OBJECT type."
                     (ematch condition
                       ((list* '= _)
                        (log:trace "skipping ~a" condition))
+                      ((list* 'not _)
+                       (log:trace "skipping ~a -- closed world assumption" condition))
                       (_
                        (appending (flatten-types/predicate condition t))))))
      (setf *init* (remove-duplicates *init* :test 'equal)))))
