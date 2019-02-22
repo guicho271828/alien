@@ -8,9 +8,13 @@
   (alien.lib:index-ref *fact-index* (logabs index)))
 
 (defun decode-state (state)
-  (iter (for b in-vector state with-index i)
-        (when (= 1 b)
-          (collect (decode-fact i)))))
+  (append
+   (iter (for p in *init*)
+         (when (static-p p)
+           (collect p)))
+   (iter (for b in-vector state with-index i)
+         (when (= 1 b)
+           (collect (decode-fact i))))))
 
 (defmacro enumerate (name &body name-or-value)
   "Define a type NAME which could take some values specified by name-or-value.
