@@ -604,7 +604,7 @@ Signals an error when the type is not connected to the root OBJECT type."
                                (incf i)
                                (push (list :action (let ((*package* (symbol-package name)))
                                                      ;; not specifying PDDL for testing convenience
-                                                     (symbolicate name (princ-to-string i)))
+                                                     (symbolicate name '@ (princ-to-string i)))
                                            :original-action name
                                            :parameters params
                                            :precondition pre
