@@ -36,7 +36,8 @@
 (deftype axiom-layer ()
   '(array effect))
 
-(declaim (alien.lib:index *fact-index* *op-sexp-index*))
+(declaim (alien.lib:index *fact-index*))
+(declaim (hash-table *op-sexp-index*))
 (declaim (fixnum *fact-size* *state-size* *op-size*))
 (declaim (cons *fact-trie*))
 (declaim ((array op) *instantiated-ops*))
@@ -86,7 +87,7 @@
 
 (defun instantiate-ops (index trie)
   (log:info "Instantiating operator objects")
-  (let ((op-sexp-index (alien.lib:make-index :test 'equal))
+  (let ((op-sexp-index (make-hash-table :test 'equal)) ; HACK! abusing a single hash table
         (op-index      (alien.lib:make-index :test 'equalp)))
     (log:info "Making an operator index")
     (dolist (op-sexp *ops*)
@@ -94,13 +95,17 @@
         ;; op with conflicting precond should be pruned
         (let ((op (instantiate-op op-sexp index trie)))
           (multiple-value-bind (id inserted) (alien.lib:index-insert op-index op)
-            (declare (ignore id))
-            (when inserted
-              ;; op-sexp is a list of action representation (e.g. (pickup
-              ;; block)) and its reachable effects.  However, we only store the
-              ;; action representation into the op-sexp-index for the later
-              ;; cross-retrieval of the action <-> op-id mapping.
-              (alien.lib:index-insert op-sexp-index (first op-sexp)))))))
+            ;; op-sexp is a list of action representation (e.g. (pickup
+            ;; block)) and its reachable effects.  However, we only store the
+            ;; action representation into the op-sexp-index for the later
+            ;; cross-retrieval of the action <-> op-id mapping.
+            
+            ;; using a single hash table as a bidirectional map.
+            ;; id -> sexp is a multi mapping that stores a list.
+            (ensure-gethash id op-sexp-index)
+            (push (first op-sexp) (gethash id op-sexp-index))
+            ;; sexp -> id is a single mapping.
+            (setf (gethash (first op-sexp) op-sexp-index) id)))))
 
     (log:info "Removed duplicated operators: ~a -> ~a" (length *ops*) (alien.lib:index-size op-index))
 
@@ -108,6 +113,34 @@
             (make-array (alien.lib:index-size op-index)
                         :element-type 'op
                         :initial-contents (alien.lib:index-array op-index)))))
+
+(defun original-action-name (name)
+  (getf (find name *actions* :key #'second) :original-action))
+
+(defun decode-op (op)
+  (ematch op
+    ((integer)
+     ;; Due to the duplicated action pruning, there are several
+     ;; candidates. However, it does not matter which action is selected because
+     ;; they all have the same precondition / effects.
+     (match (first (gethash op *op-sexp-index*))
+       ((list* name args)
+        (list* (original-action-name name) args))))
+    ((op)
+     (decode-op (position op *instantiated-ops*)))))
+
+(defun encode-op (op)
+  "map the action signature (as used in the original pddl) to the internal operator id"
+  (ematch op
+    ((list* name args)
+     ;; since a disjunctinve condition duplicates the action for each disjunctive branch,
+     ;; we should search which branch this action corresponds to.
+     (iter (for candidate-definition in (remove-if-not (curry #'equal name) *actions* :key #'fourth))
+           (for internal-name = (getf candidate-definition :action))
+           ;; by specifying the arguments,
+           (for id = (gethash (list* internal-name args) *op-sexp-index*))
+           (when id
+             (collect id))))))
 
 (defun opposite-effect-p (a b)
   (match* (a b)
