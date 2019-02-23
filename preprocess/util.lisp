@@ -216,6 +216,20 @@
           (adjust-array vector (* 2 (array-total-size vector))))
       (vector-push element vector))))
 
+
+(defun safe-aref (vector i &optional (initial-element nil initial-element-supplied-p))
+  (if (not (array-in-bounds-p vector i))
+      (if (adjustable-array-p vector)
+          (let ((old-size (array-total-size vector))
+                (new-size (expt 2 (integer-length i))))
+            (if initial-element-supplied-p
+                (adjust-array vector new-size :initial-element initial-element)
+                (adjust-array vector new-size))
+            (aref vector i))
+          initial-element)
+      (aref vector i)))
+
+#+(or)
 (defmacro safe-aref (vector i &optional (initial-element nil initial-element-supplied-p))
   (once-only (vector i)
     `(if (not (array-in-bounds-p ,vector ,i))
