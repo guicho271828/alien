@@ -40,6 +40,7 @@
 (defun recompile-instance-dependent-code ()
   (let ((sb-ext:*inline-expansion-limit* 10))
     (proclaim '(sb-ext:muffle-conditions style-warning sb-ext:compiler-note))
+    (asdf:clear-system :alien.instance-dependent)
     (unwind-protect
          (let ((*compile-verbose* nil)
                (*compile-print* nil))
