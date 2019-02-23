@@ -126,17 +126,43 @@ A generator node is just a list containing operator indices."
            (with add-flag = nil)
            (with del-flag = nil)
            (with add = 0)
+           ;; a 64bit number initially
+           ;; 0000000000000000000000000000000000000000000000000000000000000000
+           ;; each add effect sets 1 bit in this number
            (with del = (1- (expt 2 64)))
+           ;; a 64bit number initially
+           ;; 1111111111111111111111111111111111111111111111111111111111111111
+           ;; each del effect unsets 1 bit in this number
            (when (and pstart (< pstart start))
+             ;; accumulate --- happens every 64 bits.
+             ;; Resulting array has a variable number of elements.
+             ;; If the current element's 32th and 33 bit are true,
+             ;; the effect needs to read out 2 more elements that
+             ;; corresponds to add / delete effects.
+             ;; If only the 32th / 33th bit is true,
+             ;; the effect needs to read 1 more element
+             ;; corresponding to add / delete effects.
+             ;; If neither of 32th and 33th bits are true,
+             ;; the effect immediately reads the next element to process the next 64bits,
+             ;; as this 64bit segment does not have any effect.
              (cond
                ((and add-flag del-flag)
+                ;; 00000000000000000000000000000011[pstart value, assumed 32bit]
+                ;; ^                              ^
+                ;; 64                             32
                 (push (logior (ash 3 32) pstart) results)
                 (push add results)
                 (push del results))
                (add-flag
+                ;; 00000000000000000000000000000001[pstart value, assumed 32bit]
+                ;; ^                              ^
+                ;; 64                             32
                 (push (logior (ash 1 32) pstart) results)
                 (push add results))
                (del-flag
+                ;; 00000000000000000000000000000010[pstart value, assumed 32bit]
+                ;; ^                              ^
+                ;; 64                             32
                 (push (logior (ash 2 32) pstart) results)
                 (push del results)))
              (setf add-flag nil
