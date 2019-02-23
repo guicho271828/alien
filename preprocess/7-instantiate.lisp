@@ -273,11 +273,17 @@
        (when (positive atom)
          (assert (notany #'variablep atom))
          (setf eff (alien.lib:index-id index atom)))
-       (when (negative atom)
+       (when (negative atom)            ; e.g. (NOT (PDDL::Z93))
          (assert (notany #'variablep (second atom)))
          (let ((i (alien.lib:index-id index (second atom))))
-           (when i ; otherwise unreachable
-             (setf eff (lognot i)))))
+           (if i
+               (setf eff (lognot i))
+               ;; The ATOM = (PDDL::Z93) is unreachable.
+               ;; It is important to skip the linear-extend operation three lines below
+               ;; because the EFF slot of the new effect E is uninitialized --
+               ;; this makes the later successor generation phase confused!
+               ;; So it should return from the function immediately.
+               (return-from instantiate-effect-aux2))))
        ;; note: ignoring action cost at the moment
        (assert (/= most-positive-fixnum eff))))
     (linear-extend effects e)))
