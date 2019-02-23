@@ -334,29 +334,114 @@ Signals an error when the type is not connected to the root OBJECT type."
      `(not ,condition))))
 
 (defun to-nnf (condition)
+  (simplify-nnf (%to-nnf condition)))
+
+(defun %to-nnf (condition)
   (ematch condition
     (`(imply ,a ,b)
-      `(or ,(to-nnf `(not ,a))
-           ,(to-nnf b)))
+      `(or ,(%to-nnf `(not ,a))
+           ,(%to-nnf b)))
     (`(not (imply ,a ,b))
-      `(and ,(to-nnf a)
-            ,(to-nnf `(not ,b))))
+      `(and ,(%to-nnf a)
+            ,(%to-nnf `(not ,b))))
     
     ((list* (and kind (or 'and 'or)) rest)
-     `(,kind ,@(mapcar #'to-nnf rest)))
+     `(,kind ,@(mapcar #'%to-nnf rest)))
     ((list (and kind (or 'forall 'exists)) args body)
-     `(,kind ,args ,(to-nnf body)))
+     `(,kind ,args ,(%to-nnf body)))
     ((list 'when condition body)
-     `(when ,(to-nnf condition)
-        ,(to-nnf body)))
+     `(when ,(%to-nnf condition)
+        ,(%to-nnf body)))
     ((list 'not (and a (list* (or 'and 'or 'forall 'exists 'not) _)))
-     (to-nnf (negate a)))
+     (%to-nnf (negate a)))
     (`(not (when ,_ ,_))
       (error "(not (when ...)) should not happen! ~%~A" condition))
     ((list 'not _)
      condition)
     (_
      condition)))
+
+(defun %merge-same-clauses (type forms)
+  (iter (for elem in forms)
+        (match elem
+          ((list* (eq type) subrest)
+           (appending subrest))
+          (_
+           (collecting elem)))))
+
+(defun simplify-nnf (form)
+  "Remove some obvious constants / conflicts. The result does not contain:
+Single compound forms:
+ (and X), (or X)
+Compound forms that contains true/false consants:
+ (and ... (or) ... ) -> (or)
+ (or ... (and) ... ) -> (and)
+ (or ... X ... (not X) ... ) -> (and)
+ (and ... X ... (not X) ... ) -> (or)
+Duplicated forms:
+ (and ... X ... X ... ) -> (and ... X ... ...)
+ (or  ... X ... X ... ) -> (or  ... X ... ...)
+"
+  (ematch form
+    ((list 'and) form)
+    ((list 'or)  form)
+    ((list 'and x) (simplify-nnf x))
+    ((list 'or  x) (simplify-nnf x))
+    ((list* 'and rest)
+     (let* ((rest (mapcar #'simplify-nnf rest))
+            (rest (%merge-same-clauses 'and rest)) ; (and) is eliminated here
+            )
+       (cond
+         ((member '(or) rest :test 'equal)
+          '(or))
+         ((iter outer
+                (for (c1 . rest2) on rest)
+                (iter (for c2 in rest2)
+                      (in outer
+                          (thereis
+                           (match c2
+                             ((list 'not (equal c1)) t))))))
+          '(or))
+         (t
+          (match (remove-duplicates rest :test 'equal)
+            ((list x) x)
+            (nil
+             ;; happens when rest = '((and) (and)) is reduced by %merge-same-clauses
+             `(and))
+            (result
+             (list* 'and result)))))))
+    ((list* 'or rest)
+     (let* ((rest (mapcar #'simplify-nnf rest))
+            (rest (%merge-same-clauses 'or rest)) ;(or) is eliminated here
+            )
+       (cond
+         ((member '(and) rest :test 'equal)
+          '(and))
+         ((iter outer
+                (for (c1 . rest2) on rest)
+                (iter (for c2 in rest2)
+                      (in outer
+                          (thereis
+                           (match c2
+                             ((list 'not (equal c1)) t))))))
+          ;; (or ... A ... (not A) ...)
+          '(and))
+         (t
+          (match (remove-duplicates rest :test 'equal)
+            ((list x) x)
+            (nil
+             ;; happens when rest = '((or) (or)) is reduced by %merge-same-clauses
+             `(or))
+            (result
+             (list* 'or result)))))))
+    
+    ((list (and kind (or 'forall 'exists)) args body)
+     `(,kind ,args ,(simplify-nnf body)))
+    ((list 'when condition body)
+     `(when ,(simplify-nnf condition)
+        ,(simplify-nnf body)))
+    (_
+     form)))
 
 (defun nnf-actions ()
   (dolist (it *actions*)
