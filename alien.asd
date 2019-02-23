@@ -54,7 +54,8 @@
                             (:file "non-axiom-goals")
                             (:file "relaxation")
                             (:file "timeout")
-                            (:file "run")))
+                            (:file "run")
+                            (:file "main")))
               (:module "validate"
                :components ((:file "validate"))))
  :description "A ALIEN planner"
