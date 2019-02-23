@@ -68,6 +68,7 @@ See https://gist.github.com/guicho271828/707be5ad51edb858ff751d954e37c267 for su
                      ;; no more conditions
                      (ematch current
                        ((type list) ; leaf branch
+                        (assert (/= eff most-positive-fixnum))
                         (if (member eff current)
                             current
                             (cons eff current)))
@@ -134,6 +135,7 @@ A generator node is just a list containing operator indices."
            ;; 1111111111111111111111111111111111111111111111111111111111111111
            ;; each del effect unsets 1 bit in this number
            (when (and pstart (< pstart start))
+             (assert (< pstart (expt 2 32)))
              ;; accumulate --- happens every 64 bits.
              ;; Resulting array has a variable number of elements.
              ;; If the current element's 32th and 33 bit are true,
@@ -175,6 +177,9 @@ A generator node is just a list containing operator indices."
                (setf add-flag t
                      (ldb (byte 1 offset) add) 1))
            (finally
+            (assert (< start (expt 2 32)) nil
+                    "(< start (expt 2 32)) failed ~@{~a ~}"
+                    sg c var offset start pstart)
             (cond
               ((and add-flag del-flag)
                (push (logior (ash 3 32) start) results)

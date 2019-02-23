@@ -279,7 +279,7 @@
            (when i ; otherwise unreachable
              (setf eff (lognot i)))))
        ;; note: ignoring action cost at the moment
-       ))
+       (assert (/= most-positive-fixnum eff))))
     (linear-extend effects e)))
 
 (defun instantiate-axiom-layers (index trie)
