@@ -638,14 +638,14 @@ Duplicated forms:
   ;; OR clause is converted into an iterator.
   (ematch condition
     (`(or ,@conditions)
-      (let ((&conditions (mapcar #'&nnf-dnf conditions)))
+      (let ((&conditions (mapcar #'&nnf-dnf/effect conditions)))
         (lambda (k)
           ;; calls k for each element
           (dolist (&now &conditions)
             (funcall &now k)))))
 
     (`(and ,@conditions)
-      (let ((&conditions (mapcar #'&nnf-dnf conditions)))
+      (let ((&conditions (mapcar #'&nnf-dnf/effect conditions)))
         (lambda (k)
           (labels ((rec (&conditions stack)
                      (ematch &conditions
@@ -658,7 +658,7 @@ Duplicated forms:
             (rec &conditions nil)))))
     
     (`(exists ,args ,body)
-      (let ((&body (&nnf-dnf body)))
+      (let ((&body (&nnf-dnf/effect body)))
         (lambda (k)
           (funcall &body
                    (lambda (result)
