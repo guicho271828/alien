@@ -689,6 +689,15 @@ Duplicated forms:
                     (funcall &eff
                              (lambda (eff)
                                (incf i)
+                               (when (member 'or (flatten eff))
+                                 (break+ (list :action (let ((*package* (symbol-package name)))
+                                                         ;; not specifying PDDL for testing convenience
+                                                         (symbolicate name '@ (princ-to-string i)))
+                                               :original-action name
+                                               :parameters params
+                                               :precondition pre
+                                               :effect eff)
+                                         it))
                                (push (list :action (let ((*package* (symbol-package name)))
                                                      ;; not specifying PDDL for testing convenience
                                                      (symbolicate name '@ (princ-to-string i)))
