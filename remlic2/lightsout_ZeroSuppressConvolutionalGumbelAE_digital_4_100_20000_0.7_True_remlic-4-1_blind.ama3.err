@@ -1,0 +1,76 @@
+/u/jp576066/.local/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+2019-02-25 02:32:09.297864: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2019-02-25 02:32:09.487127: E tensorflow/stream_executor/cuda/cuda_driver.cc:406] failed call to cuInit: CUDA_ERROR_NO_DEVICE
+2019-02-25 02:32:09.487166: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:158] retrieving CUDA diagnostic information for host: dccxc210
+2019-02-25 02:32:09.487178: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:165] hostname: dccxc210
+2019-02-25 02:32:09.487250: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:189] libcuda reported version is: 387.26.0
+2019-02-25 02:32:09.487299: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:193] kernel reported version is: 387.26.0
+2019-02-25 02:32:09.487313: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:300] kernel version seems to match DSO: 387.26.0
+LIMIT_SH FINISHED CPU 216.80 MEM 534544 MAXMEM 2163876 STALE 0 MAXMEM_RSS 1543448
+<time name="ALL">213880</time>
+ <INFO> [02:36:04] alien run.lisp (solve-common) - [0.000s] [+0.000s] STARTED
+ <INFO> [02:36:04] alien run.lisp (solve-common) -
+  Solving noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.pddl
+ <INFO> [02:36:07] alien specials.lisp (log-milestone) - [3.291s] [+3.291s] PARSE
+ <INFO> [02:36:12] alien specials.lisp (log-milestone) - [7.944s] [+4.653s] EASY-INVARIANT
+Unhandled MATCH-ERROR in thread #<SB-THREAD:THREAD "main thread" RUNNING {10005305B3}>:
+  Pattern: (((SYMBOL :NAME (STRING* #\? _)) T) ((SYMBOL) NIL)) 
+ Values: ((PDDL::Z91)) 
+
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {10005305B3}>
+0: (SB-DEBUG::DEBUGGER-DISABLED-HOOK #<MATCH-ERROR {1033005803}> #<unused argument> :QUIT T)
+1: (SB-DEBUG::RUN-HOOK SB-EXT:*INVOKE-DEBUGGER-HOOK* #<MATCH-ERROR {1033005803}>)
+2: (INVOKE-DEBUGGER #<MATCH-ERROR {1033005803}>)
+3: (ERROR MATCH-ERROR :PATTERN (((SYMBOL :NAME (STRING* #\? _)) T) ((SYMBOL) NIL)) :VALUES ((PDDL::Z91)))
+4: (VARIABLEP (PDDL::Z91))
+5: ((FLET "WRAPPER65" :IN ALL-RELAXED-REACHABLE2) (PDDL::Z91))
+6: (SB-KERNEL:%MAP-FOR-EFFECT-ARITY-1 #<CLOSURE (FLET "WRAPPER65" :IN ALL-RELAXED-REACHABLE2) {2AD805FA78CB}> ((PDDL::Z91) (PDDL::Z97)))
+7: (ALL-RELAXED-REACHABLE2 ((OR (PDDL::Z91) (PDDL::Z97))))
+8: (REGISTER-OPS)
+9: (RELAXED-REACHABILITY)
+10: (%GROUND)
+11: (GROUND (:MONOTONICITY (:STATIC (=) :GENERIC (PDDL::Z0 PDDL::Z6 PDDL::Z7 PDDL::Z18 PDDL::Z19 PDDL::Z24 PDDL::Z25 PDDL::Z28 PDDL::Z29 PDDL::Z31 PDDL::Z33 PDDL::Z38 ...) :MONOTONIC- (PDDL::Z1 PDDL::Z2 PDDL::Z3 PDDL::Z4 PDDL::Z5 PDDL::Z8 PDDL::Z9 PDDL::Z10 PDDL::Z11 PDDL::Z12 PDDL::Z13 PDDL::Z14 ...) :AXIOM (PDDL::GOAL-AXIOM594)) :TYPE NIL :OBJECTS NIL :PREDICATES ((PDDL::GOAL-AXIOM594) (PDDL::Z99) (PDDL::Z98) (PDDL::Z97) (PDDL::Z96) (PDDL::Z95) (PDDL::Z94) (PDDL::Z93) (PDDL::Z92) (PDDL::Z91) (PDDL::Z90) (PDDL::Z89) ...) :PREDICATE-TYPES ((PDDL::Z99) (PDDL::Z98) (PDDL::Z97) (PDDL::Z96) (PDDL::Z95) (PDDL::Z94) (PDDL::Z93) (PDDL::Z92) (PDDL::Z91) (PDDL::Z90) (PDDL::Z89) (PDDL::Z88) ...) :INIT ((PDDL::Z18) (PDDL::Z24) (PDDL::Z28) (PDDL::Z40) (PDDL::Z50) (PDDL::Z57) (PDDL::Z64) (PDDL::Z65) (PDDL::Z70) (PDDL::Z83) (PDDL::Z89)) ...) #<PACKAGE "PDDL">)
+12: (SOLVE-COMMON "samples/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True/remlic-4-1.pddl" "noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.pddl" #<CLOSURE (LAMBDA NIL :IN SIMULATE-PLAN-FROM-FILE) {1002C91D2B}>)
+13: (SIMULATE-MAIN "samples/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True/remlic-4-1.pddl" "noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.pddl" "noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.plan" "noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.trace")
+14: (ROSWELL::ENTRY "ALIEN::MAIN")
+15: (ROSWELL:RUN ((:ENTRY "ALIEN::MAIN")))
+16: ((FLET SB-UNIX::BODY :IN SB-EXT:SAVE-LISP-AND-DIE))
+17: ((FLET "WITHOUT-INTERRUPTS-BODY-27" :IN SB-EXT:SAVE-LISP-AND-DIE))
+18: ((LABELS SB-IMPL::RESTART-LISP :IN SB-EXT:SAVE-LISP-AND-DIE))
+
+unhandled condition in --disable-debugger mode, quitting
+Unhandled SB-INT:SIMPLE-FILE-ERROR in thread #<SB-THREAD:THREAD "main thread" RUNNING
+                                                {10005105B3}>:
+  error opening #P"/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.trace":
+    No such file or directory
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {10005105B3}>
+0: (SB-DEBUG::DEBUGGER-DISABLED-HOOK #<SB-INT:SIMPLE-FILE-ERROR "~@<~?~@[: ~2I~_~A~]~:>" {1001E9E1D3}> #<unused argument> :QUIT T)
+1: (SB-DEBUG::RUN-HOOK SB-EXT:*INVOKE-DEBUGGER-HOOK* #<SB-INT:SIMPLE-FILE-ERROR "~@<~?~@[: ~2I~_~A~]~:>" {1001E9E1D3}>)
+2: (INVOKE-DEBUGGER #<SB-INT:SIMPLE-FILE-ERROR "~@<~?~@[: ~2I~_~A~]~:>" {1001E9E1D3}>)
+3: (ERROR SB-INT:SIMPLE-FILE-ERROR :PATHNAME #P#<(SIMPLE-ARRAY CHARACTER (223)) /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True... {1001EB6BAF}> :FORMAT-CONTROL "~@<~?~@[: ~2I~_~A~]~:>" :FORMAT-ARGUMENTS ("error opening ~S" (#P#<(SIMPLE-ARRAY CHARACTER (223)) /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True... {1001EB7AFF}>) "No such file or directory"))
+4: ((FLET SB-IMPL::VANILLA-OPEN-ERROR :IN OPEN))
+5: (OPEN "noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.trace" :DIRECTION :INPUT :ELEMENT-TYPE BASE-CHAR :IF-EXISTS NIL :IF-DOES-NOT-EXIST NIL :EXTERNAL-FORMAT :DEFAULT :CLASS SB-SYS:FD-STREAM)
+6: (MAIN "noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.trace" "100" "noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.csv")
+7: (ROSWELL::ENTRY "ROS.SCRIPT.READ-LATENT-STATE-TRACES.3759822099::MAIN")
+8: (ROSWELL:RUN ((:ENTRY "ROS.SCRIPT.READ-LATENT-STATE-TRACES.3759822099::MAIN")))
+9: ((FLET SB-UNIX::BODY :IN SB-EXT:SAVE-LISP-AND-DIE))
+10: ((FLET "WITHOUT-INTERRUPTS-BODY-27" :IN SB-EXT:SAVE-LISP-AND-DIE))
+11: ((LABELS SB-IMPL::RESTART-LISP :IN SB-EXT:SAVE-LISP-AND-DIE))
+
+unhandled condition in --disable-debugger mode, quitting
+Traceback (most recent call last):
+  File "/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/helper/../rf-planner.py", line 181, in <module>
+    main(*sys.argv[1:])
+  File "/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/helper/../rf-planner.py", line 157, in main
+    plan = np.loadtxt(output("csv"), dtype=int)
+  File "/u/jp576066/.local/lib/python3.6/site-packages/numpy/lib/npyio.py", line 917, in loadtxt
+    fh = np.lib._datasource.open(fname, 'rt', encoding=encoding)
+  File "/u/jp576066/.local/lib/python3.6/site-packages/numpy/lib/_datasource.py", line 260, in open
+    return ds.open(path, mode, encoding=encoding, newline=newline)
+  File "/u/jp576066/.local/lib/python3.6/site-packages/numpy/lib/_datasource.py", line 616, in open
+    raise IOError("%s not found." % path)
+OSError: noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.csv not found.

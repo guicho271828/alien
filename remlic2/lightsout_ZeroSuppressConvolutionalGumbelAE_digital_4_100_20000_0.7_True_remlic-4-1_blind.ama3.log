@@ -1,0 +1,216 @@
+Default float: float32
+['/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/helper/../rf-planner.py', 'samples/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True/remlic-4-1.pddl', 'noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000', 'blind']
+@[     0.000 +     0.000] main
+noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000 samples/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True
+@[     0.000 +     0.000] loaded puzzle
+@[     8.044 +     8.044] loaded sae
+@[     8.209 +     0.164] loaded init/goal
+init: 0.0 1.0
+goal: 0.0 1.0
+[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0
+ 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 1 0 0 0 0 1 0 0 0
+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0]
+[1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0
+ 0 1 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0
+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 0]
+init (reconstruction): 8.289672e-09 1.0
+goal (reconstruction): 1.121853e-09 4.481967e-06
+noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_init_goal_reconstruction.png
+init BCE: 1.9532073193958333
+init MAE: 0.1296299994829768
+init MSE: 12.961476115642556
+goal BCE: 1.6399719822281096
+goal MAE: 0.1118832068631422
+goal MSE: 12.041587319296136
+0 images have some panels which match 0 or >2 panels, out of which
+0 images have some panels which are unlike any panels
+0 images have some panels which match >2 panels
+2 images have panels (all of them) which match exactly 1 panel each
+@[     9.513 +     1.304] visualized init/goal
+['helper/problem.sh', 'noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_ama1_ig.csv', 'noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.pddl']
+helper/problem.sh noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_ama1_ig.csv noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.pddl
+@[     9.564 +     0.051] generated problem
+['helper/fd.sh', '--search astar(blind())', 'noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.pddl', 'samples/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True/remlic-4-1.pddl']
+Running limit.sh(26434): -v -o --search astar(blind()) -- fd-clean noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.pddl samples/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True/remlic-4-1.pddl
+limit.sh(26434): mem: unlimited kB, time: unlimited sec
+limit.sh(26434): running at /tmp/newtmp/limit.xiYTdhdYGm
+limit.sh(26434): command to execute: /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/planner-scripts/fd-clean
+limit.sh(26434): current planner options : --search astar(blind())
+limit.sh(26434): note: time precision is 0.5 sec
+TIMEOUT_IDSTR=LIMIT_SH /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/planner-scripts/timeout/timeout -x 0.1 -c /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/planner-scripts/fd-clean noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.pddl samples/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True/remlic-4-1.pddl
+finding FD installation from /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/planner-scripts ...
+finding FD installation from /dccstor/latplan1/repos/latplan-zsae-icaps/latplan ...
+jp576066@dccxc210
+/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/downward/fast-downward.py --build release64 --translate --log-level info domain.pddl problem.pddl
+INFO     Running translator.
+INFO     translator input: ['domain.pddl', 'problem.pddl']
+INFO     translator arguments: []
+INFO     translator time limit: None
+INFO     translator memory limit: None
+INFO     callstring: /opt/share/Python-2.7.12/x86_64/bin/python /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/downward/builds/release64/bin/translate/translate.py domain.pddl problem.pddl
+Parsing...
+Parsing: [0.490s CPU, 0.497s wall-clock]
+Normalizing task... [4.910s CPU, 4.909s wall-clock]
+Instantiating...
+Generating Datalog program... [7.860s CPU, 7.991s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [9.260s CPU, 9.396s wall-clock]
+Preparing model... [12.770s CPU, 12.895s wall-clock]
+Generated 606084 rules.
+Computing model... [0.570s CPU, 0.576s wall-clock]
+2305 relevant atoms
+0 auxiliary atoms
+2305 final queue length
+40213 total queue pushes
+Completing instantiation... [1.510s CPU, 1.515s wall-clock]
+Instantiating: [33.240s CPU, 33.640s wall-clock]
+Computing fact groups...
+Finding invariants...
+100 initial candidates
+Finding invariants: [158.150s CPU, 160.152s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.000s wall-clock]
+Choosing groups...
+28 uncovered facts
+Choosing groups: [0.000s CPU, 0.000s wall-clock]
+Building translation key... [0.000s CPU, 0.000s wall-clock]
+Computing fact groups: [158.150s CPU, 160.153s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.000s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Processing axioms: [0.110s CPU, 0.103s wall-clock]
+Translating task: [1.670s CPU, 1.661s wall-clock]
+32114 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+0 propositions removed
+Detecting unreachable propositions: [0.320s CPU, 0.331s wall-clock]
+Translator variables: 28
+Translator derived variables: 0
+Translator facts: 56
+Translator goal facts: 28
+Translator mutex groups: 0
+Translator total mutex groups size: 0
+Translator operators: 2212
+Translator axioms: 0
+Translator task size: 105170
+Translator peak memory: 1768924 KB
+Writing output... [0.140s CPU, 0.140s wall-clock]
+Done! [199.000s CPU, 201.401s wall-clock]
+
+real	3m21.635s
+user	3m17.393s
+sys	0m1.769s
+Building causal graph...
+The causal graph is not acyclic.
+28 variables of 28 necessary
+0 of 0 mutex groups necessary.
+2212 of 2212 operators necessary.
+0 of 0 axiom rules necessary.
+Building domain transition graphs...
+solveable in poly time 0
+Building successor generator...
+Preprocessor facts: 56
+Preprocessor derived variables: 0
+Preprocessor task size: 105170
+Writing output...
+done
+
+real	0m0.370s
+user	0m0.201s
+sys	0m0.129s
+/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/downward/fast-downward.py --build release64 --search --validate --plan-file /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.plan --log-level info output --search astar(blind())
+INFO     Running search (release64).
+INFO     search input: output
+INFO     search arguments: ['--search', 'astar(blind())']
+INFO     search time limit: None
+INFO     search memory limit: None
+INFO     search executable: /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/downward/builds/release64/bin/downward
+INFO     callstring: /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/downward/builds/release64/bin/downward --search 'astar(blind())' --internal-plan-file /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.plan < output
+reading input... [t=7.1699e-05 (sec)]
+done reading input! [t=0.0647405 (sec)]
+packing state variables...done! [t=0.0647673 (sec)]
+Variables: 28
+Facts: 56
+Bytes per state: 4
+Building successor generator...done! [t=0.0683221 (sec)]
+done initalizing global data [t=0.068335 (sec)]
+Conducting best first search with reopening closed nodes, (real) bound = 2147483647
+Initializing blind search heuristic...
+New best heuristic value for blind: 1
+[g=0, 1 evaluated, 0 expanded, t=0.0686627 (sec), 24368 KB]
+f = 1 [1 evaluated, 0 expanded, t=0.0687359 (sec), 24368 KB]
+Initial heuristic value for blind: 1
+f = 2 [35 evaluated, 1 expanded, t=0.0688814 (sec), 24368 KB]
+f = 3 [692 evaluated, 35 expanded, t=0.0720297 (sec), 24368 KB]
+f = 4 [7569 evaluated, 692 expanded, t=0.133873 (sec), 24844 KB]
+f = 5 [41702 evaluated, 7569 expanded, t=0.799255 (sec), 27324 KB]
+f = 6 [111987 evaluated, 41702 expanded, t=4.05444 (sec), 32468 KB]
+f = 7 [184214 evaluated, 111987 expanded, t=11.038 (sec), 37996 KB]
+f = 8 [233906 evaluated, 184214 expanded, t=19.0754 (sec), 41068 KB]
+New best heuristic value for blind: 0
+[g=8, 247527 evaluated, 205619 expanded, t=21.5679 (sec), 41880 KB]
+Solution found!
+Actual search time: 21.4992 (sec) [t=21.568 (sec)]
+a70  (1)
+a11  (1)
+a69  (1)
+a19  (1)
+a28  (1)
+a95  (1)
+a92  (1)
+a66  (1)
+Plan length: 8 step(s).
+Plan cost: 8
+Expanded 205620 state(s).
+Reopened 0 state(s).
+Evaluated 247527 state(s).
+Evaluations: 247527
+Generated 43177095 state(s).
+Dead ends: 0 state(s).
+Expanded until last jump: 184214 state(s).
+Reopened until last jump: 0 state(s).
+Evaluated until last jump: 233906 state(s).
+Generated until last jump: 38028221 state(s).
+Number of registered states: 247527
+Search time: 21.4994 (sec)
+Total time: 21.568 (sec)
+Solution found.
+Peak memory: 41880 KB
+INFO     Running validate.
+INFO     validate input: ['domain.pddl', 'output', '/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.plan']
+INFO     validate arguments: []
+INFO     validate time limit: None
+INFO     validate memory limit: None
+INFO     validate executable: /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/downward/builds/release64/bin/validate
+INFO     callstring: /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/downward/builds/release64/bin/validate domain.pddl output /dccstor/latplan1/repos/latplan-zsae-icaps/latplan/noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.plan
+Command '['/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/downward/builds/release64/bin/validate', 'domain.pddl', 'output', '/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.plan']' returned non-zero exit status -11
+common.sh(26447): forcibly killing all subprocesses
+
+real	0m22.372s
+user	0m21.546s
+sys	0m0.087s
+kill -9 26469
+[34;1m--------------------------------------------------------
+Result:
+Plan cost: 8
+--------------------------------------------------------[0m
+/dccstor/latplan1/repos/latplan-zsae-icaps/latplan/noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.plan
+limit.sh(26434): The program successfully finished.
+removed ‘/tmp/newtmp/limit.xiYTdhdYGm/problem.pddl’
+removed ‘/tmp/newtmp/limit.xiYTdhdYGm/domain.pddl’
+removed ‘/tmp/newtmp/limit.xiYTdhdYGm/log’
+removed ‘/tmp/newtmp/limit.xiYTdhdYGm/output.sas’
+removed ‘/tmp/newtmp/limit.xiYTdhdYGm/output’
+removed directory: ‘/tmp/newtmp/limit.xiYTdhdYGm’
+@[   234.415 +   224.850] finished planning
+['lisp/alien-simulate.bin', 'samples/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True/remlic-4-1.pddl', 'noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.pddl', 'noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.plan', 'noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.trace']
+@[   242.431 +     8.017] simulated the plan
+['lisp/read-latent-state-traces.bin', 'noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.trace', '100', 'noise-0.6-0.12-ama3/saltpepper/latplan.puzzles.lightsout_digital/007-000-000/lightsout_ZeroSuppressConvolutionalGumbelAE_digital_4_100_20000_0.7_True_remlic-4-1_blind.csv']
