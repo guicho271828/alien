@@ -24,7 +24,7 @@
 
 (defpackage alien
   (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog2
-        )
+        :trivia.ppcre)
   (:shadowing-import-from :trivia :<>)
   (:shadow :iterate :else)
   (:shadow :info :node) ; cl-cudd

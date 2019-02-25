@@ -13,6 +13,7 @@
  :depends-on (:iterate
               :alexandria
               :trivia
+              :trivia.ppcre
               :trivia.quasiquote
               :arrow-macros
               :cl-prolog2.bprolog
