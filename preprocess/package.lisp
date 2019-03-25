@@ -5,7 +5,7 @@
 
 (in-package :cl-user)
 
-(defpackage pddl
+(defpackage alien.pddl
   (:import-from :cl :and :or :not :when :-
                 := :> :< :>= :<= :/ :* :+
                 :nil)
@@ -23,7 +23,7 @@
   (:documentation "The package for loading the symbols in the input"))
 
 (defpackage alien
-  (:use :cl :iterate :alexandria :trivia :pddl :arrow-macros :cl-prolog2
+  (:use :cl :iterate :alexandria :trivia :alien.pddl :arrow-macros :cl-prolog2
         :trivia.ppcre)
   (:shadowing-import-from :trivia :<>)
   (:shadow :iterate :else)

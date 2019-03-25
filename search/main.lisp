@@ -53,7 +53,7 @@
         (--search-option SEXP *search-option*)
         (--alias NAME *aliases*))))))
 
-(defun simulate-plan-with-val (domain problem plan-output-file &aux (*package* (find-package :pddl)))
+(defun simulate-plan-with-val (domain problem plan-output-file &aux (*package* (find-package :alien.pddl)))
   (match (read-from-string (read-file-into-string problem))
     ((list 'define (list 'problem _)
            (list :domain _)
@@ -93,13 +93,13 @@
      (let ((trace (simulate-plan-with-val domain problem plan-output-file)))
        (with-open-file (s trace-output-file :direction :output :if-does-not-exist :create :if-exists :supersede) 
          (iter (for state in trace)
-               (let ((*package* (find-package :pddl)))
+               (let ((*package* (find-package :alien.pddl)))
                  (print (sort state #'fact<) s)))
          (fresh-line s))))
     
     ((list domain problem plan-output-file)
      (iter (for state in (simulate-plan-with-val domain problem plan-output-file))
-           (let ((*package* (find-package :pddl)))
+           (let ((*package* (find-package :alien.pddl)))
              (print (sort state #'fact<))))
      (fresh-line))
     (_

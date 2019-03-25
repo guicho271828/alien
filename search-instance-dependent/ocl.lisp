@@ -40,7 +40,7 @@
              (apply-axioms child+axioms)
 
              (format s "~a : ~a, id: ~a~%" i (decode-op op-id) op-id)
-             (let ((*package* (find-package :pddl)))
+             (let ((*package* (find-package :alien.pddl)))
                (format s "     ~s~%" (match (alien.lib:index-ref *op-sexp-index* op-id)
                                        ((list* name _)
                                         (find name *actions* :key #'second)))))

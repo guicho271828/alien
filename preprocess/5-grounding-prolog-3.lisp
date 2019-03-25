@@ -8,7 +8,7 @@ This is a rewrite of 5-grounding-prolog with minimally using the lifted predicat
 (in-package :alien)
 (named-readtables:in-readtable :fare-quasiquote)
 
-(defun ground (info &optional (package (find-package :pddl)))
+(defun ground (info &optional (package (find-package :alien.pddl)))
   (with-parsed-information2 info
     (let ((result (%ground)))
       (let ((result2 (let ((*package* package))

@@ -1,5 +1,5 @@
 
-(in-package :pddl)
+(in-package :alien.pddl)
 
 (cl:defmacro define (name cl:&body body)
   (cl:declare (cl:ignore name body))

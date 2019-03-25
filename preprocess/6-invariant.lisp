@@ -30,7 +30,7 @@
     (list* :axiom-layers (axiom-layers)
            info)))
 
-(defun axiom-layers (&optional (package (find-package :pddl)))
+(defun axiom-layers (&optional (package (find-package :alien.pddl)))
   (let* ((string (%axiom-layers))
          (list (let ((*package* package)) (read-from-string string)))
          (result (make-array 32 :element-type 'list :initial-element nil :adjustable t)))

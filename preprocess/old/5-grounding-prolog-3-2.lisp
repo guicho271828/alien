@@ -13,7 +13,7 @@ This does not have join ordering
 (defun ground (info)
   (with-parsed-information info
     (let ((result (%ground)))
-      (append (let ((*package* (find-package :pddl)))
+      (append (let ((*package* (find-package :alien.pddl)))
                 (read-from-string result))
               info))))
 
@@ -112,7 +112,7 @@ This does not have join ordering
 (with-parsed-information (parse (%rel "ipc2011-opt/transport-opt11/p01.pddl"))
   (print (%ground)))
 
-(let ((*package* (find-package :pddl)))
+(let ((*package* (find-package :alien.pddl)))
   (print (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))))
 
 (with-parsed-information (parse (%rel "axiom-domains/opttel-adl-derived/p01.pddl"))

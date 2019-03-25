@@ -24,10 +24,10 @@
 
 (defun parse0 (domain problem)
   (parse1
-   (let ((*package* (find-package :pddl)))
+   (let ((*package* (find-package :alien.pddl)))
      (with-open-file (s domain)
        (read s)))
-   (let ((*package* (find-package :pddl)))
+   (let ((*package* (find-package :alien.pddl)))
      (with-open-file (s problem)
        (read s)))))
 
@@ -571,7 +571,7 @@ Duplicated forms:
     ((list 'forall args body)
      ;; BODY is an NNF 
      (with-gensyms (forall-axiom)
-       (import forall-axiom :pddl)
+       (import forall-axiom :alien.pddl)
        (let* ((e `(exists ,args ,(remove-forall/condition
                                   (to-nnf
                                    ;; negated body is not an NNF
@@ -633,7 +633,7 @@ Duplicated forms:
    ;; note: original FastDownward parser checks if this contains disjunctions/existential quantifier.
    ;; I neglect doing this.
    (with-gensyms (goal-axiom)
-     (import goal-axiom :pddl)
+     (import goal-axiom :alien.pddl)
      (push `(,goal-axiom) *predicates*)
      (push `(:derived (,goal-axiom) ,(remove-forall/condition *goal3*)) *axioms4*)
      `(,goal-axiom))))

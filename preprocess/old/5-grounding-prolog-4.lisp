@@ -13,7 +13,7 @@ can be deleted).
   (with-parsed-information info
     (let ((result (%ground)))
       (destructuring-bind (&key facts ops fluents)
-          (let ((*package* (find-package :pddl)))
+          (let ((*package* (find-package :alien.pddl)))
             (read-from-string result))
         (format t "~%~a facts, ~a ops, ~a fluents." (length facts) (length ops) (length fluents))
         (list* :facts facts
