@@ -87,12 +87,14 @@
                   (error "EITHER type not currently supported"))
                  
                  ((list* '- type rest)
-                  (dolist (s (nreverse buffer))
+                  (setf buffer (nreverse buffer))
+                  (dolist (s buffer)
                     (add s type))
                   (setf buffer nil)
                   (rec rest))
                  
                  (nil
+                  (setf buffer (nreverse buffer))
                   (dolist (s buffer)
                     (add s 'object))
                   (nreverse db))
