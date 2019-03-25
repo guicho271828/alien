@@ -122,7 +122,8 @@
                        `(,current ,parent))))))))
 
 (defun flatten-type (type)
-  "Returns the list of all parent types (including itself and OBJECT), handling the infinite loop.
+  "Returns the list of all parent types (including itself and OBJECT),
+ handling the infinite loop.
 Signals an error when the type is not connected to the root OBJECT type."
   (let (acc)
     (labels ((rec (type)
@@ -142,13 +143,15 @@ Signals an error when the type is not connected to the root OBJECT type."
       acc)))
 
 (defun flatten-types/argument (arg type)
-  "Returns a list of type predicates for each parent type of TYPE, with ARG as the argument."
+  "Returns a list of type predicates for each parent type of TYPE,
+ with ARG as the argument."
   (iter (for parent in (flatten-type type))
         (unless (eq parent 'object)
           (collecting `(,parent ,arg)))))
 
 (defun flatten-types/predicate (predicate &optional include-parent-types)
-  "Look up the *predicate-types* and returns a list of type predicates and the original predicate."
+  "Look up the *predicate-types* and returns a list of type predicates and the
+original predicate."
   (ematch predicate
     ((list* name args)
      (list* predicate
@@ -165,7 +168,7 @@ Signals an error when the type is not connected to the root OBJECT type."
                         :key #'first))))))
 
 (defun flatten-typed-def (typed-def)
-  "Take a typed-def L and return two values:
+  "Takes a typed-def L and returns three values:
 1. the untyped version of L
 2. a list of literals converted from the types of the parameters, including the parent types
 3. alist of (arg . type)
