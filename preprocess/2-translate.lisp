@@ -278,30 +278,76 @@ original predicate."
      (setf *goal* (flatten-types/condition condition)))))
 
 (defun grovel-actions (domain)
-  (dolist (it (remove-if-not (lambda-match ((list* :action _) t)) domain))
-    (ematch it
-      ((plist :action name :parameters params
-              :precondition pre :effect eff)
+  (dolist (it domain)
+    (match it
+      ((list* :action name
+              (plist :parameters params
+                     :precondition pre :effect eff))
        (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
-         (push `(:action ,name
-                         :parameters ,w/o-type
-                         :precondition
-                         (and ,@type-conditions
-                              ,(flatten-types/condition pre))
-                         :effect ,(flatten-types/effect eff))
-               *actions*))))))
+         (push (unify-duplicates
+                w/o-type
+                (lambda (newparams unifiers)
+                  `(:action ,name
+                            :parameters ,newparams
+                            :precondition
+                            (and ,@type-conditions
+                                 ,@unifiers
+                                 ,(flatten-types/condition pre))
+                            :effect ,(flatten-types/effect eff))))
+               *actions*)))
+       ((list* something _)
+        ;; (log:info "ignoring (~s ...)" something)
+        ))))
 
 (defun grovel-axioms (domain)
-  (dolist (it (remove-if-not (lambda-match ((list* (or :derived :axiom) _) t)) domain))
-    (push 
-     (ematch it
-       ((list :derived (list* predicate params) condition)
+  (dolist (it domain)
+    (match it
+       ((list (or :derived :axiom) (list* predicate params) condition)
         (multiple-value-bind (w/o-type type-conditions) (flatten-typed-def params)
-          (list :derived
-                `(,predicate ,@w/o-type)
-                `(and ,@type-conditions
-                      ,(flatten-types/condition condition))))))
-     *axioms*)))
+          (push (unify-duplicates
+                 w/o-type
+                 (lambda (newparams unifiers)
+                   `(:derived (,predicate ,@newparams)
+                              (and ,@type-conditions
+                                   ,@unifiers
+                                   ,(flatten-types/condition condition)))))
+                *axioms*)))
+       ((list* something _)
+        ;; (log:info "ignoring (~s ...)" something)
+        ))))
+
+(defun new-variable ()
+  "Interns a new symbol in ARRIVAL.PDDL"
+  ;; The use of gentemp instead of gensym is intentional; Since the file was already read,
+  ;; it is safe to use gentemp
+  (gentemp "?" :arrival.pddl))
+
+(defun unify-duplicates (variables fn)
+  "If there are any duplicates in VARIABLES,
+the second or later appearances are replaced with a new symbol.
+FN is called with two arguments; The new, unique variable list
+and a list of equality constraints.
+"
+  (match variables
+    (nil
+     (funcall fn nil nil))
+    
+    ((list* v rest)
+     (if (find v rest)
+         (let ((new (new-variable)))
+           (warn "Found a duplicated parameter ~a, translated as equality constraints" v)
+           (unify-duplicates
+            (substitute new v rest)
+            (lambda (newparams unifiers)
+              (funcall fn
+                       (cons v newparams)
+                       (cons `(= ,v ,new) unifiers)))))
+         (unify-duplicates
+          rest
+          (lambda (newparams unifiers)
+            (funcall fn
+                     (cons v newparams)
+                     unifiers)))))))
 
 ;;; parse3 --- convert conditions to NNF (i.e. NOT appears on leafs only), compiling IMPLY away
 
